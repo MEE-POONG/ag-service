@@ -9,9 +9,11 @@ var apiResponse = require('../helpers/apiResponse')
 function AllianceData(data) {
   this.id = data._id
   this.userID = data.userID
+  this.webname = data.webname
   this.status = data.status
-  this.subBonusID = data.subBonusID
-  this.bonus = data.bonus
+  this.usernameAG = data.usernameAG
+  this.reserveUser = data.reserveUser
+  this.incomeDividID = data.incomeDividID
   this.statusFlag = data.statusFlag
   this.createdBy = data.createdBy
   this.createdAt = data.createdAt
@@ -56,16 +58,13 @@ exports.allianceDetail = [
   }
 ]
 exports.allianceStore = [
-  body('userID', 'userID must not be empty.')
+  body('webname', 'webname must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
   body('status', 'status must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
-  body('subBonusID', 'subBonusID must not be empty.')
-    .isLength({ min: 1, max: 200 })
-    .trim(),
-  body('bonus', 'bonus must not be empty.')
+  body('usernameAG', 'usernameAG must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
   body('statusFlag', 'statusFlag must be 1 length.')
@@ -93,9 +92,11 @@ exports.allianceStore = [
       // NEW ALLIANCE
       const alliance = new Alliance({
         userID: payload.userID,
+        webname: payload.webname,
         status: payload.status,
-        subBonusID: payload.subBonusID,
-        bonus: payload.bonus,
+        usernameAG: payload.usernameAG,
+        reserveUser: payload.reserveUser,
+        incomeDividID: payload.incomeDividID,
         statusFlag: payload.statusFlag,
         createdBy: payload.createdBy,
         updatedBy: payload.updatedBy
@@ -103,7 +104,7 @@ exports.allianceStore = [
       // SAVE ALLIANCE
       await alliance.save()
       let allianceData = new AllianceData(alliance)
-      
+
       return apiResponse.successResponseWithData(
         res,
         'Alliance add Success.',
@@ -115,16 +116,13 @@ exports.allianceStore = [
   }
 ]
 exports.allianceUpdate = [
-  body('userID', 'userID must not be empty.')
+  body('webname', 'webname must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
   body('status', 'status must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
-  body('subBonusID', 'subBonusID must not be empty.')
-    .isLength({ min: 1, max: 200 })
-    .trim(),
-  body('bonus', 'bonus must not be empty.')
+  body('usernameAG', 'usernameAG must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
   body('statusFlag', 'statusFlag must be 1 length.')
@@ -144,9 +142,12 @@ exports.allianceUpdate = [
     try {
       const alliance = new Alliance({
         userID: payload.userID,
+        webname: payload.webname,
         status: payload.status,
-        subBonusID: payload.subBonusID,
-        bonus: payload.bonus,
+        usernameAG: payload.usernameAG,
+        passwordAG: payload.passwordAG,
+        reserveUser: payload.reserveUser,
+        incomeDividID: payload.incomeDividID,
         statusFlag: payload.statusFlag,
         createdBy: payload.createdBy,
         updatedBy: payload.updatedBy,

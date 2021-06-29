@@ -4,9 +4,10 @@ const Schema = mongoose.Schema
 const allianceSchema = new Schema(
   {
     userID: String,
+    webname: String,
     status: String,
     usernameAG: String,
-    passwordAG: String,
+    reserveUser: String,
     incomeDividID: String,
     statusFlag: String,
     createdBy: String,
