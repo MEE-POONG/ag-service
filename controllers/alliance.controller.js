@@ -57,6 +57,35 @@ exports.allianceDetail = [
     }
   }
 ]
+exports.allianceSearch = [
+  sanitizeBody('*').escape(),
+  async (req, res) => {
+    console.log(req.body);
+    const keyword = req.body.keyword || '';
+    const webSearch = req.body.webSearch
+    try {
+      // VALIDATION USER
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return apiResponse.validationErrorWithData(
+          res,
+          'Validation Error.',
+          errors.array()
+        )
+      }
+      const alliance = await Alliance.aggregate([
+        { $match: { usernameAG: new RegExp(keyword, "i"), webname: webSearch } }
+      ])
+      return apiResponse.successResponseWithData(
+        res,
+        'Operation success',
+        alliance
+      )
+    } catch (error) {
+      return apiResponse.ErrorResponse(res, error)
+    }
+  }
+]
 exports.allianceStore = [
   body('webname', 'webname must not be empty.')
     .isLength({ min: 1, max: 200 })
@@ -87,6 +116,16 @@ exports.allianceStore = [
           res,
           'Validation Error.',
           errors.array()
+        )
+      }
+      const checkUser = await Alliance.findOne({
+        $or: [{ usernameAG: payload.usernameAG }],
+        statusFlag: 'A'
+      })
+      if (checkUser) {
+        return apiResponse.ErrorResponse(
+          res,
+          'usernameAG exists with this id'
         )
       }
       // NEW ALLIANCE
