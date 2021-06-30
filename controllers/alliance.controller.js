@@ -60,8 +60,10 @@ exports.allianceDetail = [
 exports.allianceSearch = [
   sanitizeBody('*').escape(),
   async (req, res) => {
-    console.log(req.body);
     const keyword = req.body.keyword || '';
+    const senior = req.body.seniorStatus;
+    const master = req.body.masterStatus;
+    const agen = req.body.agentStatus;
     const webSearch = req.body.webSearch
     try {
       // VALIDATION USER
@@ -74,12 +76,13 @@ exports.allianceSearch = [
         )
       }
       const alliance = await Alliance.aggregate([
-        { $match: { usernameAG: new RegExp(keyword, "i"), webname: webSearch } }
+        { $match: { usernameAG: new RegExp(keyword, "i"), webname: new RegExp(webSearch, "i") } }
       ])
       return apiResponse.successResponseWithData(
         res,
         'Operation success',
-        alliance
+        alliance,
+        console.log(alliance),
       )
     } catch (error) {
       return apiResponse.ErrorResponse(res, error)
