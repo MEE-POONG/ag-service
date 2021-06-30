@@ -79,5 +79,5 @@ USER pptruser
 # # Bundle app source
 # COPY . .
 
-EXPOSE 6002
+EXPOSE 6001
 CMD [ "node", "server.js" ]
