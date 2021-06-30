@@ -7,8 +7,8 @@
     "start": "node server.js",
     "format": "./node_modules/.bin/prettier --write server.js",
     "dev": "nodemon server.js",
-    "docker:build": "docker build -t chunwarayut/casino66-microservice:latest .",
-    "docker:push": "docker push chunwarayut/casino66-microservice:latest",
+    "docker:build": "docker build -t chunwarayut/ag-microservice:latest .",
+    "docker:push": "docker push chunwarayut/ag-microservice:latest",
     "docker:b:p": "npm run docker:build && npm run docker:push"
   },
   "keywords": [
