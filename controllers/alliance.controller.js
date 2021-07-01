@@ -61,9 +61,7 @@ exports.allianceSearch = [
   sanitizeBody('*').escape(),
   async (req, res) => {
     const keyword = req.body.keyword || '';
-    const senior = req.body.seniorStatus;
-    const master = req.body.masterStatus;
-    const agen = req.body.agentStatus;
+    const statusSearch = req.body.status || '';
     const webSearch = req.body.webSearch
     try {
       // VALIDATION USER
@@ -76,13 +74,12 @@ exports.allianceSearch = [
         )
       }
       const alliance = await Alliance.aggregate([
-        { $match: { usernameAG: new RegExp(keyword, "i"), webname: new RegExp(webSearch, "i") } }
+        { $match: { usernameAG: new RegExp(keyword, "i"), webname: new RegExp(webSearch, "i"), status: new RegExp(statusSearch, "i") } }
       ])
       return apiResponse.successResponseWithData(
         res,
         'Operation success',
         alliance,
-        console.log(alliance),
       )
     } catch (error) {
       return apiResponse.ErrorResponse(res, error)
@@ -112,6 +109,7 @@ exports.allianceStore = [
   async (req, res) => {
     const payload = req.body
     try {
+      console.log(payload);
       // VALIDATION ALLIANCE
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
