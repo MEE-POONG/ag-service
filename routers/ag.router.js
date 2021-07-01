@@ -1,8 +1,8 @@
 const express = require('express')
-// const agController = require('../controllers/ag.controller')
+const agController = require('../controllers/ag.controller')
 
 var router = express.Router()
-// router.post('/create', agController.agStore)
+router.post('/create-user', agController.agStoreUser)
 // router.post('/add-money', agController.agAddMoney)
 // router.post('/search', agController.agSearch)
 // router.post('/search', agController.agSearch)

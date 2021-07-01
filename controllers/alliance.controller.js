@@ -12,6 +12,7 @@ function AllianceData(data) {
   this.webname = data.webname
   this.status = data.status
   this.usernameAG = data.usernameAG
+  this.countUser = data.countUser
   this.reserveUser = data.reserveUser
   this.incomeDividID = data.incomeDividID
   this.statusFlag = data.statusFlag
@@ -109,7 +110,6 @@ exports.allianceStore = [
   async (req, res) => {
     const payload = req.body
     try {
-      console.log(payload);
       // VALIDATION ALLIANCE
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
@@ -135,6 +135,7 @@ exports.allianceStore = [
         webname: payload.webname,
         status: payload.status,
         usernameAG: payload.usernameAG,
+        countUser: payload.countUser,
         reserveUser: payload.reserveUser,
         incomeDividID: payload.incomeDividID,
         statusFlag: payload.statusFlag,
@@ -185,6 +186,7 @@ exports.allianceUpdate = [
         webname: payload.webname,
         status: payload.status,
         usernameAG: payload.usernameAG,
+        countUser: payload.countUser,
         passwordAG: payload.passwordAG,
         reserveUser: payload.reserveUser,
         incomeDividID: payload.incomeDividID,

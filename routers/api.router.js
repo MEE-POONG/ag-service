@@ -1,5 +1,6 @@
 var express = require('express')
 const allianceRoute = require('./alliance.router')
+const agRoute = require('./ag.router')
 // const allianceRoute = require('./condition.router')
 // const allianceRoute = require('./customer.router')
 // const promotionRoute = require('./promotion.router')
@@ -14,6 +15,7 @@ var apiResponse = require('../helpers/apiResponse')
 var app = express()
 
 app.use('/alliance/', allianceRoute)
+app.use('/ag/', agRoute)
 app.use('/user/', userRoute)
 
 

@@ -7,6 +7,7 @@ const allianceSchema = new Schema(
     webname: String,
     status: String,
     usernameAG: String,
+    countUser: Number,
     reserveUser: String,
     incomeDividID: String,
     statusFlag: String,
