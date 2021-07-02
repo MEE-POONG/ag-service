@@ -71,7 +71,7 @@ exports.agStoreUser = [
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
       const page = await browser.newPage();
-      const captchaPath = 'captcha' + '.png';
+      const captchaPath = 'captcha' + Math.floor(Math.random() * 100) + '.png';
       let element, formElement, tabs;
 
       await page.goto(`http://ag.ufa6666.com/Public/Default11.aspx?lang=EN-US`, { waitUntil: 'networkidle2' });
@@ -105,12 +105,12 @@ exports.agStoreUser = [
       for (const [idx, data] of arrayAG.entries()) {
 
 
-  
+
         console.log(chalk.black.bold.bgYellow("ag in for : ", idx))
         setUserNumber = (+customerLatest.substring(countUser) + idx)
           .toString()
           .padStart(4, '0')
-          console.log(chalk.black.bold.bgYellow(setUserNumber, " : ", customerLatest));
+        console.log(chalk.black.bold.bgYellow(setUserNumber, " : ", customerLatest));
         await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, { waitUntil: 'networkidle2' });
         element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`);
         console.log(chalk.black.bold.bgYellow("79 : ", idx));
