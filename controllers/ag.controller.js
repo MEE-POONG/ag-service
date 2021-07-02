@@ -53,7 +53,7 @@ exports.agStoreUser = [
   async (req, res) => {
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
-      const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
+      const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
       const page = await browser.newPage();
       let element, formElement, tabs;
 
@@ -64,30 +64,41 @@ exports.agStoreUser = [
       await element[0].type(webname === "UFA-66" ? agenSixPass : webname === "TOP-168" ? agenTopPass : "");
       element = await page.$x(`//*[@id="btnSignIn"]`);
       await element[0].click();
-      await delay(1000);
+      await delay(5000);
       for (const [idx, data] of arrayAG.entries()) {
-        console.log(idx);
+
+
+        console.log("ag in for : ",idx);
+
         setUserNumber = (+customerLatest.substring(countUser) + idx)
           .toString()
           .padStart(4, '0')
-        await page.goto(`http://ocean.isme99.com/_SubAg1/MemberSet.aspx?cName=${customerLatest}&set=1`, { waitUntil: 'networkidle2' });
+          console.log(setUserNumber," : ",customerLatest);
+        await page.goto(`https://ocean.isme99.com/_SubAg/MemberList.aspx`, { waitUntil: 'networkidle2' });
+        element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`);
+        console.log("79 : ",idx);
+        await element[0].click();
+        console.log("81 : ",idx);
+        await delay(1000);
         element = await page.$x(`//*[@id="txtUserName"]`);
         await element[0].type(setUserNumber);
+        console.log("85 : ",idx);
+        console.log("ag check username : ",idx," : ",setUserNumber);
         element = await page.$x(`//*[@id="txtPassword"]`);
         await element[0].type(`Aa123456+`);
         element = await page.$x(`//*[@id="txtTotalLimit"]`);
         await element[0].type(`0`);
         element = await page.$x(`//*[@id="btnSave"]`);
         await element[0].click();
+        console.log("ag seve customer for : ",idx);
         await delay(1000);
 
       }
-      // await browser.close();
+      await browser.close();
        return apiResponse.successResponseWithData(res, 'Operation success', {})
+       
     } catch (error) {
-      return apiResponse.ErrorResponse(error).then((error)=>{
-        console.log(error);
-      })
+      return apiResponse.ErrorResponse(res, error)
     }
   }
 ]
