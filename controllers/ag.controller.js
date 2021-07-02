@@ -67,7 +67,7 @@ exports.agStoreUser = [
       await delay(1000);
       for (const [idx, data] of arrayAG.entries()) {
         console.log(idx);
-        setUserNumber = (+customerLatest.substring(countUser) + idx + 1)
+        setUserNumber = (+customerLatest.substring(countUser) + idx)
           .toString()
           .padStart(4, '0')
         await page.goto(`http://ocean.isme99.com/_SubAg1/MemberSet.aspx?cName=${customerLatest}&set=1`, { waitUntil: 'networkidle2' });
