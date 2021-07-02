@@ -66,6 +66,7 @@ exports.agStoreUser = [
       await element[0].click();
       await delay(1000);
       for (const [idx, data] of arrayAG.entries()) {
+        console.log(idx);
         setUserNumber = (+customerLatest.substring(countUser) + idx + 1)
           .toString()
           .padStart(4, '0')
@@ -81,10 +82,12 @@ exports.agStoreUser = [
         await delay(1000);
 
       }
-      await browser.close();
-      return apiResponse.successResponseWithData(res, 'Operation success', {})
+      // await browser.close();
+       return apiResponse.successResponseWithData(res, 'Operation success', {})
     } catch (error) {
-      return apiResponse.ErrorResponse(res, error)
+      return apiResponse.ErrorResponse(error).then((error)=>{
+        console.log(error);
+      })
     }
   }
 ]
