@@ -29,7 +29,7 @@ app.use('/images/*', (req, res) => {
 })
 
 app.get('/', function (req, res) {
-  return apiResponse.successResponse(res, 'Welcome To Service TESTA-666 V1.0.0')
+  return apiResponse.successResponse(res, 'Welcome To Service AG - MICROSERVICE V1.0.0')
 })
 // throw 404 if URL not found
 app.all('*', function (req, res) {
