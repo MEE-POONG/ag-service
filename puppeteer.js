@@ -56,7 +56,7 @@ const args = [
   await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
   const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
   await captcha.screenshot({
-    path: 'captcha.png'
+    path: './assets/captcha/captcha.png'
   })
 
   element = await page.$x(`//*[@id="txtUserName"]`)
