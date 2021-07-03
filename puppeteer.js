@@ -46,7 +46,7 @@ const args = [
 ]
 
 ;(async () => {
-  const pathPhoto = __dirname + '/assets/captcha/captcha.png'
+  const pathPhoto = __dirname + '/captcha.png'
   console.log(pathPhoto)
 
   try {
