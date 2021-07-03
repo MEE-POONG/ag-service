@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer')
 const delay = require('delay')
 
 const { createWorker } = require('tesseract.js')
+const { unlinkSync } = require('fs')
 
 const worker = createWorker()
 const args = [
@@ -45,6 +46,16 @@ const args = [
 ]
 
 ;(async () => {
+  const pathPhoto = __dirname + '/assets/captcha/captcha.png'
+  console.log(pathPhoto)
+
+  try {
+    unlinkSync(pathPhoto)
+    console.log('successfully deleted ' + pathPhoto)
+  } catch (err) {
+    // handle the error
+  }
+
   const browser = await puppeteer.launch({
     headless: true,
     defaultViewport: { width: 1920, height: 1080 },
@@ -56,7 +67,7 @@ const args = [
   await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
   const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
   await captcha.screenshot({
-    path: './assets/captcha/captcha.png'
+    path: pathPhoto
   })
 
   element = await page.$x(`//*[@id="txtUserName"]`)
@@ -64,7 +75,7 @@ const args = [
   element = await page.$x(`//*[@id="txtPassword"]`)
   await element[0].type(`Est168168++`)
 
-  await tesseractGet('captcha.png')
+  await tesseractGet(pathPhoto)
     .then(async result => {
       console.log(result)
       element = await page.$x(`//*[@id="txtCode"]`)
