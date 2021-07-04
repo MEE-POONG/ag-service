@@ -49,12 +49,12 @@ const args = [
   const pathPhoto = __dirname + '/captcha.png'
   console.log(pathPhoto)
 
-  try {
-    unlinkSync(pathPhoto)
-    console.log('successfully deleted ' + pathPhoto)
-  } catch (err) {
-    // handle the error
-  }
+//  try {
+//    unlinkSync(pathPhoto)
+//    console.log('successfully deleted ' + pathPhoto)
+//  } catch (err) {
+//    // handle the error
+//  }
 
   const browser = await puppeteer.launch({
     headless: true,

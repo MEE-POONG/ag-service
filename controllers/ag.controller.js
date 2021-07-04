@@ -1,6 +1,6 @@
 const delay = require('delay')
 const puppeteer = require('puppeteer')
-;+require('dotenv').config()
+  ; +require('dotenv').config()
 const { createWorker } = require('tesseract.js')
 const worker = createWorker()
 const chalk = require('chalk')
@@ -69,15 +69,6 @@ async function tesseractGet(imagePath) {
 exports.agStoreUser = [
   async (req, res) => {
     try {
-      try {
-        const pathPhoto = __dirname + '/captcha.png'
-        console.log(pathPhoto)
-        unlinkSync(pathPhoto)
-        console.log('successfully deleted ' + pathPhoto)
-      } catch (err) {
-        // handle the error
-      }
-
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({
         headless: true,
@@ -86,35 +77,47 @@ exports.agStoreUser = [
       })
       const page = await browser.newPage()
       const captchaPath = 'captcha' + '.png'
-      let element, formElement, tabs
+      let element
 
       await page.goto(
-        `http://ag.ufa6666.com/Public/Default11.aspx?lang=EN-US`,
+        `http://ag.ufa6666.com/Public/Default11.aspx`,
         { waitUntil: 'networkidle2' }
       )
+      console.log(await page.title());
+      console.log(page.url());
       await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
+      console.log("waitForSelector('#divImgCode > img'");
       const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
+      console.log("captcha = await page.$('#divImgCode > img'");
+
       await captcha.screenshot({
         path: captchaPath
       })
+      console.log("captcha.screenshot");
 
       element = await page.$x(`//*[@id="txtUserName"]`)
       await element[0].type(usernameAG)
+      console.log("txtUserName");
+
       element = await page.$x(`//*[@id="txtPassword"]`)
+      console.log("txtPassword");
+
       await element[0].type(
         webname === 'UFA-66'
           ? agenSixPass
           : webname === 'TOP-168'
-          ? agenTopPass
-          : ''
+            ? agenTopPass
+            : ''
       )
+      console.log("typePassword");
+
       await tesseractGet(captchaPath)
         .then(async result => {
           console.log(result)
           element = await page.$x(`//*[@id="txtCode"]`)
           await element[0].type(result)
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.log(chalk.red(err))
         })
 
