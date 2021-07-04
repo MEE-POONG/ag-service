@@ -6,6 +6,7 @@ const worker = createWorker()
 const chalk = require('chalk')
 const { agenTopPass, agenSixPass } = process.env
 const { unlinkSync } = require('fs')
+const pm2 = require('pm2')
 
 const arrayAG = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 const args = [
@@ -130,6 +131,8 @@ exports.agStoreUser = [
 
       for (const [idx, data] of arrayAG.entries()) {
         console.log(chalk.black.bold.bgYellow('ag in for : ', idx))
+        console.log('countUser', countUser);
+        console.log('customerLatest', customerLatest);
         setUserNumber = (+customerLatest.substring(countUser) + idx)
           .toString()
           .padStart(4, '0')
@@ -165,7 +168,12 @@ exports.agStoreUser = [
         await delay(1000)
       }
       await page.close() // Close the website
-      return apiResponse.successResponseWithData(res, 'Operation success', {})
+
+      apiResponse.successResponseWithData(res, 'Operation success', {})
+      return pm2.restart('ag-service', (err, proc) => {
+        // Disconnects from PM2
+        pm2.disconnect()
+      })
     } catch (error) {
       return apiResponse.ErrorResponse(res, error)
     }
