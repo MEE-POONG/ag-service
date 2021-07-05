@@ -67,7 +67,7 @@ async function tesseractGet(imagePath) {
 exports.agStoreCustomer = [
 
   async (req, res) => {
-    
+
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({
@@ -123,7 +123,7 @@ exports.agStoreCustomer = [
 
       await delay(5000)
       const title = await page.title()
-      const urls = await page.url()
+      const urls = page.url()
 
       console.log('Page Title : ' + title)
       console.log('Page URL : ' + urls)
@@ -174,14 +174,18 @@ exports.agStoreCustomer = [
         pm2.disconnect()
       })
     } catch (error) {
-      return apiResponse.ErrorResponse(res, error)
+      apiResponse.ErrorResponse(res, error)
+      return pm2.restart('ag-service', (err, proc) => {
+        // Disconnects from PM2
+        pm2.disconnect()
+      })
     }
   }
 ]
 exports.agStoreAgen = [
 
   async (req, res) => {
-    
+
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
@@ -255,7 +259,7 @@ exports.agStoreAgen = [
 exports.agStoreMaster = [
 
   async (req, res) => {
-    
+
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
@@ -332,7 +336,7 @@ exports.agStoreMaster = [
 exports.agAgenMoney = [
 
   async (req, res) => {
-    
+
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
@@ -409,7 +413,7 @@ exports.agAgenMoney = [
 exports.agMasterMoney = [
 
   async (req, res) => {
-    
+
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
@@ -486,7 +490,7 @@ exports.agMasterMoney = [
 exports.agDownAgen = [
 
   async (req, res) => {
-    
+
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
@@ -563,7 +567,7 @@ exports.agDownAgen = [
 exports.agSetAgenPass = [
 
   async (req, res) => {
-    
+
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
@@ -640,7 +644,7 @@ exports.agSetAgenPass = [
 exports.agSetMasterPass = [
 
   async (req, res) => {
-    
+
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
@@ -717,7 +721,7 @@ exports.agSetMasterPass = [
 exports.agSetAgenAndPass = [
 
   async (req, res) => {
-    
+
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
@@ -790,4 +794,4 @@ exports.agSetAgenAndPass = [
     }
 
   }
-] 
+]
