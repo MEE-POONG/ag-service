@@ -9,6 +9,7 @@ var apiResponse = require('../helpers/apiResponse')
 function AllianceData(data) {
   this.id = data._id
   this.userID = data.userID
+  this.advisorID = data.advisorID
   this.webname = data.webname
   this.status = data.status
   this.usernameAG = data.usernameAG
@@ -132,6 +133,7 @@ exports.allianceStore = [
       // NEW ALLIANCE
       const alliance = new Alliance({
         userID: payload.userID,
+        advisorID: payload.advisorID,
         webname: payload.webname,
         status: payload.status,
         usernameAG: payload.usernameAG,
@@ -183,6 +185,7 @@ exports.allianceUpdate = [
     try {
       const alliance = new Alliance({
         userID: payload.userID,
+        advisorID: payload.advisorID,
         webname: payload.webname,
         status: payload.status,
         usernameAG: payload.usernameAG,
