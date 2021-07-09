@@ -3,7 +3,7 @@ const agController = require('../controllers/ag.controller')
 
 var router = express.Router()
 router.post('/create-customer', agController.agStoreCustomer)
-router.post('/create-allince', agController.agStoreAllince)
+router.post('/create-agen', agController.agStoreAgen)
 router.post('/money-allince', agController.agMoneyAllince)
 router.post('/down-agen', agController.agDownAgen)
 router.post('/set-pass-allince', agController.agSetPassAllince)

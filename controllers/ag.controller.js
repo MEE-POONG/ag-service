@@ -4,7 +4,7 @@ const puppeteer = require('puppeteer')
 const { createWorker } = require('tesseract.js')
 const worker = createWorker()
 const chalk = require('chalk')
-const { agenTopPass, agenSixPass } = process.env
+const { agenTopPass, agenSixPass, masterTopPass, masterSixPass } = process.env
 const { unlinkSync } = require('fs')
 const pm2 = require('pm2')
 const Alliance = require('../models/alliance.model')
@@ -184,117 +184,100 @@ exports.agStoreCustomer = [
     }
   }
 ]
-exports.agStoreAllince = [
-
+exports.agStoreAgen = [
   async (req, res) => {
-
     try {
-      const { usernameAG, webname, countUser, customerLatest } = req.body
+      const { _id, usernameAG, status, webname, countUser, customerLatest } = req.body
+      let userNewSet = usernameAG + "a0"
       const alliance = await Alliance.aggregate([
         { $match: { advisorID: _id } }
       ]).sort({ usernameAG: -1 }).limit(1);
+      if (alliance.length > 0) {
+        if (alliance[0].usernameAG.substr(-1) == 9) {
+          userNewSet = await usernameAG + String.fromCharCode(usernameAG, alliance[0].usernameAG.substr(-2, 1).charCodeAt(0) + 1) + "0"
+          console.log(alliance[0].usernameAG, " : ", userNewSet);
+        } else {
+          userNewSet = await alliance[0].usernameAG.substring(0, alliance[0].usernameAG.length - 1) + Number(alliance[0].usernameAG.substr(-1) + 1)
+          console.log(alliance[0].usernameAG, " : ", userNewSet);
+        }
+      }
+
+      const browser = await puppeteer.launch({
+        headless: false,
+        defaultViewport: { width: 1920, height: 1080 },
+        args
+      })
+      const page = await browser.newPage()
+      const birthday = new Date();
+      const date1 = birthday.getTime();
+      const captchaPath = 'captcha' + '.png'
+      let element
+
+      await page.goto(
+        `http://ag.ufa6666.com/Public/Default11.aspx`,
+        { waitUntil: 'networkidle2' }
+      )
+      console.log(await page.title());
+      console.log(page.url());
+      console.log(chalk.red('ag in dName : ', date1));
+      await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
+      console.log("waitForSelector('#divImgCode > img'");
+      const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
+      console.log("captcha = await page.$('#divImgCode > img'");
+
+      await captcha.screenshot({
+        path: captchaPath
+      })
+      console.log("captcha.screenshot");
+
+      element = await page.$x(`//*[@id="txtUserName"]`)
+      await element[0].type(usernameAG)
+      console.log("txtUserName");
+
+      element = await page.$x(`//*[@id="txtPassword"]`)
+      console.log("txtPassword");
+
+      await element[0].type(
+        webname === 'UFA-66'
+          ? masterSixPass
+          : webname === 'TOP-168'
+            ? masterTopPass
+            : ''
+      )
+      console.log("typePassword");
+
+      await tesseractGet(captchaPath)
+        .then(async result => {
+          console.log("captchaPath", result)
+          element = await page.$x(`//*[@id="txtCode"]`)
+          await element[0].type(result)
+        })
+        .catch(function (err) {
+          console.log(chalk.red(err))
+        })
+
+      await delay(5000)
+      const title = await page.title()
+      const urls = page.url()
+
+      console.log('Page Title : ' + title)
+      console.log('Page URL : ' + urls)
       console.log(alliance);
 
-      // const browser = await puppeteer.launch({
-      //   headless: false,
-      //   defaultViewport: { width: 1920, height: 1080 },
-      //   args
-      // })
-      // const page = await browser.newPage()
-      // const birthday = new Date();
-      // const date1 = birthday.getTime();
-      // const captchaPath = 'captcha' + '.png'
-      // let element
-
-      // await page.goto(
-      //   `http://ag.ufa6666.com/Public/Default11.aspx`,
-      //   { waitUntil: 'networkidle2' }
-      // )
-      // console.log(await page.title());
-      // console.log(page.url());
-      // console.log(chalk.red('ag in dName : ', date1));
-      // await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
-      // console.log("waitForSelector('#divImgCode > img'");
-      // const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
-      // console.log("captcha = await page.$('#divImgCode > img'");
-
-      // await captcha.screenshot({
-      //   path: captchaPath
-      // })
-      // console.log("captcha.screenshot");
-
-      // element = await page.$x(`//*[@id="txtUserName"]`)
-      // await element[0].type(usernameAG)
-      // console.log("txtUserName");
-
-      // element = await page.$x(`//*[@id="txtPassword"]`)
-      // console.log("txtPassword");
-
-      // await element[0].type(
-      //   webname === 'UFA-66'
-      //     ? agenSixPass
-      //     : webname === 'TOP-168'
-      //       ? agenTopPass
-      //       : ''
-      // )
-      // console.log("typePassword");
-
-      // await tesseractGet(captchaPath)
-      //   .then(async result => {
-      //     console.log("captchaPath", result)
-      //     element = await page.$x(`//*[@id="txtCode"]`)
-      //     await element[0].type(result)
-      //   })
-      //   .catch(function (err) {
-      //     console.log(chalk.red(err))
-      //   })
-
-      // await delay(5000)
-      // const title = await page.title()
-      // const urls = page.url()
-
-      // console.log('Page Title : ' + title)
-      // console.log('Page URL : ' + urls)
-
-      // for (const [idx, data] of arrayAG.entries()) {
-      //   console.log(chalk.black.bold.bgYellow('ag in for : ', idx))
-      //   console.log('countUser', countUser);
-      //   console.log('customerLatest', customerLatest);
-      //   setUserNumber = (+customerLatest.substring(countUser) + idx)
-      //     .toString()
-      //     .padStart(4, '0')
-      //   console.log(
-      //     chalk.black.bold.bgYellow(setUserNumber, ' : ', customerLatest)
-      //   )
-      //   await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, {
-      //     waitUntil: 'networkidle2'
-      //   })
-      //   await delay(1000)
-      //   element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`)
-      //   console.log(chalk.black.bold.bgYellow('79 : ', idx))
+      await page.goto(`https://ag.ufa6666.com/_Age/AgentList.aspx`, {
+        waitUntil: 'networkidle2'
+      })
+      element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`)
+      await element[0].click()
+      await delay(1000)
+      element = await page.$x(`//*[@id="txtUserName"]`)
+      await element[0].type(userNewSet)
+      element = await page.$x(`//*[@id="txtPassword"]`)
+      await element[0].type(`Aa123456+`)
+      element = await page.$x(`//*[@id="txtTotalLimit"]`)
+      await element[0].type(`0`)
+      //   element = await page.$x(`//*[@id="btnSave2"]`)
       //   await element[0].click()
-      //   await delay(1000)
-      //   element = await page.$x(`//*[@id="txtUserName"]`)
-      //   await element[0].type(setUserNumber)
-      //   console.log(chalk.black.bold.bgYellow('85 : ', idx))
-      //   console.log(
-      //     chalk.black.bold.bgYellow(
-      //       'ag check username : ',
-      //       idx,
-      //       ' : ',
-      //       setUserNumber
-      //     )
-      //   )
-      //   element = await page.$x(`//*[@id="txtPassword"]`)
-      //   await element[0].type(`Aa123456+`)
-      //   element = await page.$x(`//*[@id="txtTotalLimit"]`)
-      //   await element[0].type(`0`)
-      //   element = await page.$x(`//*[@id="btnSave"]`)
-      //   await element[0].click()
-      //   console.log(chalk.white.bgGreen.bold('ag seve customer for : ', idx))
-      //   await delay(1000)
-      // }
-      // await page.close() // Close the website
 
       // apiResponse.successResponseWithData(res, 'Operation success', {})
       // return pm2.restart('ag-service', (err, proc) => {
@@ -612,3 +595,86 @@ exports.agSetAgenAndPass = [
 
   }
 ]
+
+
+
+      // set Game
+      // console.log("Ball");
+      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[10]/td/table/tbody/tr[1]/td/table`);
+      // await element[0].click();
+      // console.log("GDG CASINO");
+      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[12]/td/table/tbody/tr[1]/td/table`);
+      // await element[0].click();
+      // console.log("SA GAMING");
+      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[14]/td/table/tbody/tr[1]/td/table`);
+      // await element[0].click();
+      // console.log("ITP (AE, CQ9, PNG, BNG, GF, APIU)");
+      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[16]/td/table/tbody/tr[1]/td/table`);
+      // await element[0].click();
+      // console.log("ITP (UPG/MG)");
+      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[18]/td/table/tbody/tr[1]/td/table`);
+      // await element[0].click();
+      // console.log("JOKER");
+      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[20]/td/table/tbody/tr[1]/td/table`);
+      // await element[0].click();
+      // console.log("GDG GH CASINO / EB CASINO");
+      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[22]/td/table/tbody/tr[1]/td/table`);
+      // await element[0].click();
+      // console.log("GH COCKFT");
+      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[24]/td/table/tbody/tr[1]/td/table`);
+      // await element[0].click();
+      // console.log("GDG CASINO");
+      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[12]/td/table/tbody/tr[1]/td/table`);
+      // await element[0].click();
+      // console.log("GDG CASINO");
+      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[12]/td/table/tbody/tr[1]/td/table`);
+      // await element[0].click();
+      // lstCommissionRAR
+      // lstCommissionRBF
+      // lstCommissionRBG
+      // lstCommissionRBM
+      // for (const [idx, data] of arrayAG.entries()) {
+      //   console.log(chalk.black.bold.bgYellow('ag in for : ', idx))
+      //   console.log('countUser', countUser);
+      //   console.log('customerLatest', customerLatest);
+      //   setUserNumber = (+customerLatest.substring(countUser) + idx)
+      //     .toString()
+      //     .padStart(4, '0')
+      //   console.log(
+      //     chalk.black.bold.bgYellow(setUserNumber, ' : ', customerLatest)
+      //   )
+      //   await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, {
+      //     waitUntil: 'networkidle2'
+      //   })
+      //   await delay(1000)
+      //   element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`)
+      //   console.log(chalk.black.bold.bgYellow('79 : ', idx))
+      //   await element[0].click()
+      //   await delay(1000)
+      //   element = await page.$x(`//*[@id="txtUserName"]`)
+      //   await element[0].type(setUserNumber)
+      //   console.log(chalk.black.bold.bgYellow('85 : ', idx))
+      //   console.log(
+      //     chalk.black.bold.bgYellow(
+      //       'ag check username : ',
+      //       idx,
+      //       ' : ',
+      //       setUserNumber
+      //     )
+      //   )
+      //   element = await page.$x(`//*[@id="txtPassword"]`)
+      //   await element[0].type(`Aa123456+`)
+      //   element = await page.$x(`//*[@id="txtTotalLimit"]`)
+      //   await element[0].type(`0`)
+      //   element = await page.$x(`//*[@id="btnSave"]`)
+      //   await element[0].click()
+      //   console.log(chalk.white.bgGreen.bold('ag seve customer for : ', idx))
+      //   await delay(1000)
+      // }
+      // await page.close() // Close the website
+
+      // apiResponse.successResponseWithData(res, 'Operation success', {})
+      // return pm2.restart('ag-service', (err, proc) => {
+      //   // Disconnects from PM2
+      //   pm2.disconnect()
+      // })
