@@ -184,13 +184,133 @@ exports.agStoreCustomer = [
     }
   }
 ]
+exports.agStoreCustomerTop = [
+
+  async (req, res) => {
+
+    try {
+      const { usernameAG, webname, countUser, customerLatest } = req.body
+      const browser = await puppeteer.launch({
+        headless: false,
+        defaultViewport: { width: 1920, height: 1080 },
+        args
+      })
+      const page = await browser.newPage()
+      const birthday = new Date();
+      const date1 = birthday.getTime();
+      const captchaPath = 'captcha' + '.png'
+      let element
+
+      await page.goto(
+        `http://ag.ufa6666.com/Public/Default11.aspx`,
+        { waitUntil: 'networkidle2' }
+      )
+      console.log(await page.title());
+      console.log(page.url());
+      console.log(chalk.red('ag in dName : ', date1));
+      await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
+      console.log("waitForSelector('#divImgCode > img'");
+      const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
+      console.log("captcha = await page.$('#divImgCode > img'");
+
+      await captcha.screenshot({
+        path: captchaPath
+      })
+      console.log("captcha.screenshot");
+
+      element = await page.$x(`//*[@id="txtUserName"]`)
+      await element[0].type(usernameAG)
+      console.log("txtUserName");
+
+      element = await page.$x(`//*[@id="txtPassword"]`)
+      console.log("txtPassword");
+
+      await element[0].type(
+        webname === 'UFA-66'
+          ? agenSixPass
+          : webname === 'TOP-168'
+            ? agenTopPass
+            : ''
+      )
+      console.log("typePassword");
+
+      await tesseractGet(captchaPath)
+        .then(async result => {
+          console.log("captchaPath", result)
+          element = await page.$x(`//*[@id="txtCode"]`)
+          await element[0].type(result)
+        })
+        .catch(function (err) {
+          console.log(chalk.red(err))
+        })
+
+      await delay(5000)
+      const title = await page.title()
+      const urls = page.url()
+
+      console.log('Page Title : ' + title)
+      console.log('Page URL : ' + urls)
+
+      for (const [idx, data] of arrayAG.entries()) {
+        console.log(chalk.black.bold.bgYellow('ag in for : ', idx))
+        console.log('countUser', countUser);
+        console.log('customerLatest', customerLatest);
+        setUserNumber = (+customerLatest.substring(countUser) + idx)
+          .toString()
+          .padStart(4, '0')
+        console.log(
+          chalk.black.bold.bgYellow(setUserNumber, ' : ', customerLatest)
+        )
+        await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, {
+          waitUntil: 'networkidle2'
+        })
+        await delay(1000)
+        element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`)
+        console.log(chalk.black.bold.bgYellow('79 : ', idx))
+        await element[0].click()
+        await delay(1000)
+        element = await page.$x(`//*[@id="txtUserName"]`)
+        await element[0].type(setUserNumber)
+        console.log(chalk.black.bold.bgYellow('85 : ', idx))
+        console.log(
+          chalk.black.bold.bgYellow(
+            'ag check username : ',
+            idx,
+            ' : ',
+            setUserNumber
+          )
+        )
+        element = await page.$x(`//*[@id="txtPassword"]`)
+        await element[0].type(`Aa123456+`)
+        element = await page.$x(`//*[@id="txtTotalLimit"]`)
+        await element[0].type(`0`)
+        element = await page.$x(`//*[@id="btnSave"]`)
+        await element[0].click()
+        console.log(chalk.white.bgGreen.bold('ag seve customer for : ', idx))
+        await delay(1000)
+      }
+      await page.close() // Close the website
+      apiResponse.successResponseWithData(res, 'Operation success', {})
+      return pm2.restart('ag-service', (err, proc) => {
+        // Disconnects from PM2
+        pm2.disconnect()
+      })
+    } catch (error) {
+      apiResponse.ErrorResponse(res, error)
+      return pm2.restart('ag-service', (err, proc) => {
+        // Disconnects from PM2
+        pm2.disconnect()
+      })
+    }
+  }
+]
 exports.agStoreAgen = [
   async (req, res) => {
     try {
       const { _id, usernameAG, status, webname, countUser, customerLatest } = req.body
       let userNewSet = usernameAG + "a0"
       const alliance = await Alliance.aggregate([
-        { $match: { advisorID: _id } }
+        { $match: { adviserID: _id } }
       ]).sort({ usernameAG: -1 }).limit(1);
       if (alliance.length > 0) {
         if (alliance[0].usernameAG.substr(-1) == 9) {
@@ -291,76 +411,123 @@ exports.agStoreAgen = [
   }
 ]
 exports.agMoneyAllince = [
-
   async (req, res) => {
-
     try {
-      const { usernameAG, webname, countUser, customerLatest } = req.body
-      const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
-      const page = await browser.newPage();
-      const captchaPath = 'captcha' + '.png';
-      let element, formElement, tabs;
+      const { adviserID, usernameAG, status, webname } = req.body
+      console.log(adviserID);
+      const alliance = await Alliance.findById(adviserID)
+      let seniorPass = "168Ufavip168++"
+      let passAg
+      let moneyAdd = "5000"
+      passAg = await alliance.webname === "UFA-66" ?
+        alliance.status === 'senior' ?
+          seniorPass : alliance.status === 'master' ?
+            masterSixpPass : ''
+        : alliance.webname === "TOP-168" ?
+          alliance.status === 'senior' ?
+            seniorPass : alliance.status === 'master' ?
+              masterSixpPass : ''
+          : ''
+      console.log(passAg);
+      const browser = await puppeteer.launch({
+        headless: false,
+        defaultViewport: { width: 1920, height: 1080 },
+        args
+      })
+      const page = await browser.newPage()
+      const birthday = new Date();
+      const date1 = birthday.getTime();
+      const captchaPath = 'captcha' + '.png'
+      let element
 
-      await page.goto(`http://ag.ufa6666.com/Public/Default11.aspx?lang=EN-US`, { waitUntil: 'networkidle2' });
-      await page.waitForSelector("#divImgCode > img"); // Method to ensure that the element is loaded
-      const captcha = await page.$("#divImgCode > img"); // captcha is the element you want to capture
+      await page.goto(
+        `http://ag.ufa6666.com/Public/Default11.aspx`,
+        { waitUntil: 'networkidle2' }
+      )
+      console.log(await page.title());
+      console.log(page.url());
+      console.log(chalk.red('ag in dName : ', date1));
+      await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
+      console.log("waitForSelector('#divImgCode > img'");
+      const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
+      console.log("captcha = await page.$('#divImgCode > img'");
+
       await captcha.screenshot({
-        path: captchaPath,
-      });
+        path: captchaPath
+      })
+      element = await page.$x(`//*[@id="txtUserName"]`)
+      await element[0].type(alliance.usernameAG)
+      element = await page.$x(`//*[@id="txtPassword"]`)
+      await element[0].type(passAg);
 
-      element = await page.$x(`//*[@id="txtUserName"]`);
-      await element[0].type(usernameAG);
-      element = await page.$x(`//*[@id="txtPassword"]`);
-      await element[0].type(webname === "UFA-66" ? agenSixPass : webname === "TOP-168" ? agenTopPass : "");
       await tesseractGet(captchaPath)
-        .then(async (result) => {
-          console.log(result);
-          element = await page.$x(`//*[@id="txtCode"]`);
-          await element[0].type(result);
+        .then(async result => {
+          console.log("captchaPath", result)
+          element = await page.$x(`//*[@id="txtCode"]`)
+          await element[0].type(result)
         })
         .catch(function (err) {
-          console.log(chalk.red(err));
-        });
+          console.log(chalk.red(err))
+        })
+      await delay(3000)
+      const title = await page.title()
+      const urls = page.url()
+      console.log('Page Title : ' + title)
+      console.log('Page URL : ' + urls)
+      // ค้นหา
 
-      await delay(5000);
-      const title = await page.title();
-      const urls = await page.url();
-
-      console.log("Page Title : " + title);
-      console.log("Page URL : " + urls);
-
-      for (const [idx, data] of arrayAG.entries()) {
-
-
-
-        console.log(chalk.black.bold.bgYellow("ag in for : ", idx))
-        setUserNumber = (+customerLatest.substring(countUser) + idx)
-          .toString()
-          .padStart(4, '0')
-        console.log(chalk.black.bold.bgYellow(setUserNumber, " : ", customerLatest));
-        await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, { waitUntil: 'networkidle2' });
-        element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`);
-        console.log(chalk.black.bold.bgYellow("79 : ", idx));
-        await element[0].click();
-        console.log(chalk.black.bold.bgYellow("81 : ", idx));
-        await delay(1000);
-        element = await page.$x(`//*[@id="txtUserName"]`);
-        await element[0].type(setUserNumber);
-        console.log(chalk.black.bold.bgYellow("85 : ", idx));
-        console.log(chalk.black.bold.bgYellow("ag check username : ", idx, " : ", setUserNumber));
-        element = await page.$x(`//*[@id="txtPassword"]`);
-        await element[0].type(`Aa123456+`);
-        element = await page.$x(`//*[@id="txtTotalLimit"]`);
-        await element[0].type(`0`);
-        element = await page.$x(`//*[@id="btnSave"]`);
-        await element[0].click();
-        console.log(chalk.white.bgGreen.bold("ag seve customer for : ", idx));
-        await delay(1000);
-
+      if (status === "master") {
+        console.log(status);
+        await page.goto(`https://ag.ufa6666.com/_Part/MasterList.aspx`, {
+          waitUntil: 'networkidle2'
+        })
+      } else if (status === "agen") {
+        console.log(status);
+        await page.goto(`https://ag.ufa6666.com/_Age/AgentList.aspx`, {
+          waitUntil: 'networkidle2'
+        })
+      } else {
+        console.log(status);
+        return apiResponse.ErrorResponse(res, error)
       }
-      await page.close(); // Close the website
-      return apiResponse.successResponseWithData(res, 'Operation success', {})
+      await page.goto(`https://ag.ufa6666.com/_Part1/MasterSet.aspx?userName=` + usernameAG + `&set=1`, {
+        waitUntil: 'networkidle2'
+      })
 
+      await delay(3000);
+      await page.waitForXPath(`//*[@id="txtTotalLimit"]`);
+      [element] = await page.$x(`//*[@id="txtTotalLimit"]`);
+      result = await page.evaluate(element => element.value, element);
+      console.log('result', result);
+      console.log('moneyAdd', Number(moneyAdd));
+      // element = await page.$x(`//*[@id="txtSearch"]`)
+      // await element[0].type(usernameAG)
+      // element = await page.$x(`//*[@id="btnSubmit"]`)
+      // await element[0].click()
+      // await delay(1000)
+      // element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnSetting"]`)
+      // await element[0].click()
+      // await delay(1000)
+
+      // element = await page.$x(`//*[@id="txtTotalLimit"]`)
+
+
+      // console.log('--- 11 ---');
+      // result = await page.evaluate(element => element.textContent, element);
+      // console.log('result', result);
+      // await element[0].click({ clickCount: 3 })
+      // await page.keyboard.press('Backspace')
+      // await element[0].type(`0`)
+
+      // element = await page.$x(`//*[@id="btnSave2"]`)
+      // await element[0].click()
+
+
+      // apiResponse.successResponseWithData(res, 'Operation success', {})
+      // return pm2.restart('ag-service', (err, proc) => {
+      //   // Disconnects from PM2
+      //   pm2.disconnect()
+      // })
     } catch (error) {
       return apiResponse.ErrorResponse(res, error)
     }
@@ -595,9 +762,6 @@ exports.agSetAgenAndPass = [
 
   }
 ]
-
-
-
       // set Game
       // console.log("Ball");
       // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[10]/td/table/tbody/tr[1]/td/table`);

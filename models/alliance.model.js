@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const allianceSchema = new Schema(
   {
     userID: String,
-    advisorID: String,
+    adviserID: String,
     webname: String,
     status: String,
     usernameAG: String,
