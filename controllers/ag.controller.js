@@ -49,7 +49,8 @@ const args = [
   '--ignore-certificate-errors'
 ];
 
-var apiResponse = require('../helpers/apiResponse')
+var apiResponse = require('../helpers/apiResponse');
+const e = require('cors');
 async function tesseractGet(imagePath) {
   await worker.load()
   await worker.loadLanguage('eng')
@@ -413,25 +414,26 @@ exports.agStoreAgen = [
 exports.agMoneyAllince = [
   async (req, res) => {
     try {
-      const { adviserID, usernameAG, status, webname } = req.body
-      console.log(adviserID);
-      const alliance = await Alliance.findById(adviserID)
+      const { adviserID, usernameAG, status, webname, moneyAdd } = req.body;
+      console.log(1000);
+      const alliance = await Alliance.findById(adviserID);
       let seniorPass = "168Ufavip168++"
       let passAg
-      let moneyAdd = "5000"
-      passAg = await alliance.webname === "UFA-66" ?
-        alliance.status === 'senior' ?
-          seniorPass : alliance.status === 'master' ?
-            masterSixpPass : ''
-        : alliance.webname === "TOP-168" ?
-          alliance.status === 'senior' ?
-            seniorPass : alliance.status === 'master' ?
-              masterSixpPass : ''
-          : ''
-      console.log(passAg);
+      let sumAdd
+      let moneyOld
+      
+      if (alliance.status === 'senior') {
+        passAg = await seniorPass;
+      } else if (alliance.status === 'master') {
+        console.log(alliance.webname);
+        passAg = await alliance.webname === 'UFA-66' ? masterSixPass : masterTopPass
+      } else {
+        return apiResponse.ErrorResponse(res, error)
+      }
+      console.log("passAg : ", passAg);
       const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: { width: 1920, height: 1080 },
+        headless: false,
+        defaultViewport: { width: 1600, height: 1080 },
         args
       })
       const page = await browser.newPage()
@@ -469,66 +471,60 @@ exports.agMoneyAllince = [
         .catch(function (err) {
           console.log(chalk.red(err))
         })
-      await delay(3000)
+      await delay(1000)
       const title = await page.title()
       const urls = page.url()
       console.log('Page Title : ' + title)
       console.log('Page URL : ' + urls)
       // ค้นหา
-
       if (status === "master") {
-        console.log(status);
-        await page.goto(`https://ag.ufa6666.com/_Part/MasterList.aspx`, {
+        console.log('480 : ', usernameAG)
+        await page.goto(urls.replace('/Main.aspx?lang=EN-US', '1/MasterSet.aspx?userName=' + usernameAG + '&set=1'), {
           waitUntil: 'networkidle2'
         })
       } else if (status === "agen") {
-        console.log(status);
-        await page.goto(`https://ag.ufa6666.com/_Age/AgentList.aspx`, {
+        console.log('485')
+        await page.goto(urls.replace('/Main.aspx?lang=EN-US', '1/AgentSet.aspx?userName=' + usernameAG + '&set=1'), {
           waitUntil: 'networkidle2'
         })
       } else {
-        console.log(status);
         return apiResponse.ErrorResponse(res, error)
       }
-      await page.goto(`https://ag.ufa6666.com/_Part1/MasterSet.aspx?userName=` + usernameAG + `&set=1`, {
-        waitUntil: 'networkidle2'
-      })
-
-      await delay(3000);
+      await delay(100)
       await page.waitForXPath(`//*[@id="txtTotalLimit"]`);
-      [element] = await page.$x(`//*[@id="txtTotalLimit"]`);
-      result = await page.evaluate(element => element.value, element);
-      console.log('result', result);
-      console.log('moneyAdd', Number(moneyAdd));
-      // element = await page.$x(`//*[@id="txtSearch"]`)
-      // await element[0].type(usernameAG)
-      // element = await page.$x(`//*[@id="btnSubmit"]`)
-      // await element[0].click()
-      // await delay(1000)
-      // element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnSetting"]`)
-      // await element[0].click()
-      // await delay(1000)
+      [elements] = await page.$x(`//*[@id="txtTotalLimit"]`);
+      result = await page.evaluate(element => element.value, elements);
+      moneyOld = Number(result.toString().replace(',', ''));
+      console.log("moneyAdd :", +moneyAdd);
+      console.log("moneyOld :", moneyOld);
+      moneyOld += +moneyAdd
+      console.log(moneyOld);
+      sumAdd = moneyOld.toString()
+      await delay(100);
+      element = await page.$x(`//*[@id="txtTotalLimit"]`);
+      await element[0].click({ clickCount: 3 })
+      await page.keyboard.press('Backspace')
+      await element[0].type(sumAdd);
+      element = await page.$x(`//*[@id="btnUpdateC"]`)
+      await element[0].click()
+      await delay(100);
+      await page.waitForXPath(`//*[@id="lblStatus"]`);
+      [element] = await page.$x(`//*[@id="lblStatus"]`);
 
-      // element = await page.$x(`//*[@id="txtTotalLimit"]`)
+      console.log('--- 11 ---');
+      result = await page.evaluate(element => element.textContent, element);
+      if (result === "Profile updated successfully.") {
+        apiResponse.successResponseWithData(res, 'Operation success', {})
+        return pm2.restart('ag-service', (err, proc) => {
+          pm2.disconnect()
+        })
+      } else {
+        console.log('error', data);
+        await browser.close();
+      }
 
-
-      // console.log('--- 11 ---');
-      // result = await page.evaluate(element => element.textContent, element);
-      // console.log('result', result);
-      // await element[0].click({ clickCount: 3 })
-      // await page.keyboard.press('Backspace')
-      // await element[0].type(`0`)
-
-      // element = await page.$x(`//*[@id="btnSave2"]`)
-      // await element[0].click()
-
-
-      // apiResponse.successResponseWithData(res, 'Operation success', {})
-      // return pm2.restart('ag-service', (err, proc) => {
-      //   // Disconnects from PM2
-      //   pm2.disconnect()
-      // })
     } catch (error) {
+      console.log(error);
       return apiResponse.ErrorResponse(res, error)
     }
 
