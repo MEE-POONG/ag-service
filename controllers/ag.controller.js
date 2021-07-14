@@ -4,7 +4,7 @@ const puppeteer = require('puppeteer')
 const { createWorker } = require('tesseract.js')
 const worker = createWorker()
 const chalk = require('chalk')
-const { agenTopPass, agenSixPass, masterTopPass, masterSixPass } = process.env
+const { agenTopPass, agenSixPass, masterTopPass, masterSixPass, adminUser, adminPass } = process.env
 const { unlinkSync } = require('fs')
 const pm2 = require('pm2')
 const Alliance = require('../models/alliance.model')
@@ -51,6 +51,7 @@ const args = [
 
 var apiResponse = require('../helpers/apiResponse');
 const e = require('cors');
+const { check } = require('express-validator');
 async function tesseractGet(imagePath) {
   await worker.load()
   await worker.loadLanguage('eng')
@@ -400,11 +401,12 @@ exports.agStoreAgen = [
       //   element = await page.$x(`//*[@id="btnSave2"]`)
       //   await element[0].click()
 
-      // apiResponse.successResponseWithData(res, 'Operation success', {})
-      // return pm2.restart('ag-service', (err, proc) => {
-      //   // Disconnects from PM2
-      //   pm2.disconnect()
-      // })
+      await page.close() // Close the website
+      apiResponse.successResponseWithData(res, 'Operation success', {})
+      return pm2.restart('ag-service', (err, proc) => {
+        // Disconnects from PM2
+        pm2.disconnect()
+      })
     } catch (error) {
       return apiResponse.ErrorResponse(res, error)
     }
@@ -415,18 +417,17 @@ exports.agMoneyAllince = [
   async (req, res) => {
     try {
       const { adviserID, usernameAG, status, webname, moneyAdd } = req.body;
-      console.log(1000);
       const alliance = await Alliance.findById(adviserID);
       let seniorPass = "168Ufavip168++"
       let passAg
       let sumAdd
       let moneyOld
-      
+
       if (alliance.status === 'senior') {
         passAg = await seniorPass;
       } else if (alliance.status === 'master') {
-        console.log(alliance.webname);
-        passAg = await alliance.webname === 'UFA-66' ? masterSixPass : masterTopPass
+        console.log(webname);
+        passAg = await webname === 'UFA-66' ? masterSixPass : masterTopPass
       } else {
         return apiResponse.ErrorResponse(res, error)
       }
@@ -474,8 +475,6 @@ exports.agMoneyAllince = [
       await delay(1000)
       const title = await page.title()
       const urls = page.url()
-      console.log('Page Title : ' + title)
-      console.log('Page URL : ' + urls)
       // ค้นหา
       if (status === "master") {
         console.log('480 : ', usernameAG)
@@ -494,11 +493,9 @@ exports.agMoneyAllince = [
       await page.waitForXPath(`//*[@id="txtTotalLimit"]`);
       [elements] = await page.$x(`//*[@id="txtTotalLimit"]`);
       result = await page.evaluate(element => element.value, elements);
-      moneyOld = Number(result.toString().replace(',', ''));
-      console.log("moneyAdd :", +moneyAdd);
-      console.log("moneyOld :", moneyOld);
+      moneyOld = Number(result.toString().replace(/,/g, ''));
       moneyOld += +moneyAdd
-      console.log(moneyOld);
+      console.log("moneyOld 3 : ", moneyOld);
       sumAdd = moneyOld.toString()
       await delay(100);
       element = await page.$x(`//*[@id="txtTotalLimit"]`);
@@ -511,19 +508,76 @@ exports.agMoneyAllince = [
       await page.waitForXPath(`//*[@id="lblStatus"]`);
       [element] = await page.$x(`//*[@id="lblStatus"]`);
 
-      console.log('--- 11 ---');
+      console.log('--- 511 ---');
       result = await page.evaluate(element => element.textContent, element);
       if (result === "Profile updated successfully.") {
+        console.log('--- 514 ---');
+        await page.close()
         apiResponse.successResponseWithData(res, 'Operation success', {})
         return pm2.restart('ag-service', (err, proc) => {
           pm2.disconnect()
         })
       } else {
-        console.log('error', data);
-        await browser.close();
+        console.log('--- 520 ---');
+        if (status === "agen") {
+          console.log('--- 523 ---');
+          await page.goto('https://ag.ufa6666.com/_Age/AccBal.aspx?role=ag&userName=' + alliance.usernameAG + '&searchKey=' + usernameAG + '&pageIndex=1', {
+            waitUntil: 'networkidle2'
+          })
+          await delay(1000)
+          console.log('--- 527 ---');
+          // element = await page.$x(`//*[@id="AccBal_cm1_txtSearch"]`);
+          // await element[0].type(usernameAG);
+          // element = await page.$x(`//a[@id='AccBal_cm1_btnSubmit']/span`);
+          // await element[0].click();
+          // element = await page.$x(`//a[@id='AccBal_cm1_btnSubmit']`);
+          // await element[0].click();
+          element = await page.$x(`//*[@id="chkPayAll"]`);
+          await element[0].click();
+          console.log('--- 536 ---');
+          element = await page.$x(`//*[@id="AccBal_cm1_btnPayAll"]`);
+          await element[0].click()
+          console.log('--- 539 ---');
+          await page.goto(`https://ag.ufa6666.com/_Age1/AgentSet.aspx?userName=` + usernameAG + `&set=1`, {
+            waitUntil: 'networkidle2'
+          })
+          await delay(100)
+          await page.waitForXPath(`//*[@id="txtTotalLimit"]`);
+          element = await page.$x(`//*[@id="txtTotalLimit"]`);
+          await element[0].click({ clickCount: 3 })
+          await page.keyboard.press('Backspace')
+          await element[0].type(sumAdd);
+          element = await page.$x(`//*[@id="btnUpdateC"]`)
+          await element[0].click()
+          await delay(100);
+          await page.waitForXPath(`//*[@id="lblStatus"]`);
+          [element] = await page.$x(`//*[@id="lblStatus"]`);
+          console.log('--- 552 ---');
+          result = await page.evaluate(element => element.textContent, element);
+          if (result === "Profile updated successfully.") {
+            console.log('--- 555 ---');
+            await page.close()
+            apiResponse.successResponseWithData(res, 'Operation success', {})
+            return pm2.restart('ag-service', (err, proc) => {
+              pm2.disconnect()
+            })
+          } else {
+            await page.close()
+            apiResponse.ErrorResponse(res, error)
+            return pm2.restart('ag-service', (err, proc) => {
+              pm2.disconnect()
+            })
+          }
+        } else {
+          await page.close()
+          apiResponse.ErrorResponse(res, error)
+          return pm2.restart('ag-service', (err, proc) => {
+            pm2.disconnect()
+          })
+        }
       }
-
     } catch (error) {
+      await page.close()
       console.log(error);
       return apiResponse.ErrorResponse(res, error)
     }
@@ -531,77 +585,89 @@ exports.agMoneyAllince = [
   }
 ]
 exports.agDownAgen = [
-
   async (req, res) => {
-
     try {
-      const { usernameAG, webname, countUser, customerLatest } = req.body
-      const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
-      const page = await browser.newPage();
-      const captchaPath = 'captcha' + '.png';
-      let element, formElement, tabs;
+      const { adviserID, usernameAG, status, webname, moneyAdd } = req.body;
+      console.log(usernameAG, webname);
 
-      await page.goto(`http://ag.ufa6666.com/Public/Default11.aspx?lang=EN-US`, { waitUntil: 'networkidle2' });
-      await page.waitForSelector("#divImgCode > img"); // Method to ensure that the element is loaded
-      const captcha = await page.$("#divImgCode > img"); // captcha is the element you want to capture
-      await captcha.screenshot({
-        path: captchaPath,
-      });
-
-      element = await page.$x(`//*[@id="txtUserName"]`);
-      await element[0].type(usernameAG);
-      element = await page.$x(`//*[@id="txtPassword"]`);
-      await element[0].type(webname === "UFA-66" ? agenSixPass : webname === "TOP-168" ? agenTopPass : "");
-      await tesseractGet(captchaPath)
-        .then(async (result) => {
-          console.log(result);
-          element = await page.$x(`//*[@id="txtCode"]`);
-          await element[0].type(result);
-        })
-        .catch(function (err) {
-          console.log(chalk.red(err));
-        });
-
-      await delay(5000);
-      const title = await page.title();
-      const urls = await page.url();
-
-      console.log("Page Title : " + title);
-      console.log("Page URL : " + urls);
-
-      for (const [idx, data] of arrayAG.entries()) {
-
-
-
-        console.log(chalk.black.bold.bgYellow("ag in for : ", idx))
-        setUserNumber = (+customerLatest.substring(countUser) + idx)
-          .toString()
-          .padStart(4, '0')
-        console.log(chalk.black.bold.bgYellow(setUserNumber, " : ", customerLatest));
-        await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, { waitUntil: 'networkidle2' });
-        element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`);
-        console.log(chalk.black.bold.bgYellow("79 : ", idx));
-        await element[0].click();
-        console.log(chalk.black.bold.bgYellow("81 : ", idx));
-        await delay(1000);
-        element = await page.$x(`//*[@id="txtUserName"]`);
-        await element[0].type(setUserNumber);
-        console.log(chalk.black.bold.bgYellow("85 : ", idx));
-        console.log(chalk.black.bold.bgYellow("ag check username : ", idx, " : ", setUserNumber));
-        element = await page.$x(`//*[@id="txtPassword"]`);
-        await element[0].type(`Aa123456+`);
-        element = await page.$x(`//*[@id="txtTotalLimit"]`);
-        await element[0].type(`0`);
-        element = await page.$x(`//*[@id="btnSave"]`);
-        await element[0].click();
-        console.log(chalk.white.bgGreen.bold("ag seve customer for : ", idx));
-        await delay(1000);
-
+      const browser = await puppeteer.launch({
+        headless: false,
+        defaultViewport: { width: 1800, height: 1080 },
+        args
+      })
+      const page = await browser.newPage()
+      const birthday = new Date();
+      let element
+      let userStar
+      let agenPass
+      if (webname === "UFA-66") {
+        agenPass = await agenSixPass
+        userStar = await "****"
+      } else if (webname === "TOP-168") {
+        agenPass = await agenTopPass
+        userStar = await "***"
+      } else {
+        return apiResponse.ErrorResponse(res, error)
       }
-      await page.close(); // Close the website
-      return apiResponse.successResponseWithData(res, 'Operation success', {})
+      console.log(agenPass);
+      webname === "UFA-66" ? "****" : webname === "TOP-168" ? "***" : ''
+      await page.goto(`http://ufa66.office168.work/?action=login`, { waitUntil: 'networkidle2' });
+      await delay(500);
+      element = await page.$x(`//*[@name="username"]`);
+      await element[0].type(adminUser);
+      element = await page.$x(`//*[@name="password"]`);
+      await element[0].type(adminPass);
+      element = await page.$x(`//*[@name="login"]`);
+      await element[0].click();
+      console.log('--- 1 ---');
+      await delay(3000);
+      await page.waitForXPath(`//a[contains(text(),'ตามลูกค้า')]`);
+      element = await page.$x(`//a[contains(text(),'ตามลูกค้า')]`);
+      await element[0].click();
+      // await page.waitForXPath(`/html/body/div/div/div[1]/ul/li/ul/li[5]/a`);
+      // element = await page.$x(`/html/body/div/div/div[1]/ul/li/ul/li[5]/a`);
+      await element[0].click();
+      console.log('--- 2 ---');
+      await delay(100);
+      await page.bringToFront();
+      await page.goto(`http://ufa66.play168.xyz/__admin/?action=agent-list&game_id=1`, { waitUntil: 'networkidle2' });
+
+      await delay(3000);
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[1]/div/input`);
+      await element[0].type(usernameAG);
+      console.log('--- 3 ---', usernameAG);
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[4]/div/input`);
+      await element[0].type(usernameAG);
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[5]/div/input`);
+      await element[0].type(agenPass);
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[7]/div/textarea`);
+      await element[0].type(`_SubAg`);
+      console.log('--- 4 ---');
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[8]/div/input`);
+      await element[0].type(usernameAG);
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[9]/div/input`);
+      await element[0].type(agenPass);
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[11]/div/input`);
+      await element[0].type(`_SubAg`);
+      console.log('--- 5 ---');
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[12]/div/input`);
+      await element[0].type(usernameAG + userStar);
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[13]/div/input`);
+      await element[0].type(`1`);
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[14]/div/input`);
+      await element[0].type(webname === "UFA-66" ? "9999" : "999");
+      console.log('--- 6 ---');
+      element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[16]/div/button`);
+      await element[0].click()
+      await page.close() // Close the website
+      apiResponse.successResponseWithData(res, 'Operation success', {})
+      return pm2.restart('ag-service', (err, proc) => {
+        pm2.disconnect()
+      })
 
     } catch (error) {
+      await page.close()
+      console.log(error);
       return apiResponse.ErrorResponse(res, error)
     }
 
@@ -758,83 +824,3 @@ exports.agSetAgenAndPass = [
 
   }
 ]
-      // set Game
-      // console.log("Ball");
-      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[10]/td/table/tbody/tr[1]/td/table`);
-      // await element[0].click();
-      // console.log("GDG CASINO");
-      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[12]/td/table/tbody/tr[1]/td/table`);
-      // await element[0].click();
-      // console.log("SA GAMING");
-      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[14]/td/table/tbody/tr[1]/td/table`);
-      // await element[0].click();
-      // console.log("ITP (AE, CQ9, PNG, BNG, GF, APIU)");
-      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[16]/td/table/tbody/tr[1]/td/table`);
-      // await element[0].click();
-      // console.log("ITP (UPG/MG)");
-      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[18]/td/table/tbody/tr[1]/td/table`);
-      // await element[0].click();
-      // console.log("JOKER");
-      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[20]/td/table/tbody/tr[1]/td/table`);
-      // await element[0].click();
-      // console.log("GDG GH CASINO / EB CASINO");
-      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[22]/td/table/tbody/tr[1]/td/table`);
-      // await element[0].click();
-      // console.log("GH COCKFT");
-      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[24]/td/table/tbody/tr[1]/td/table`);
-      // await element[0].click();
-      // console.log("GDG CASINO");
-      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[12]/td/table/tbody/tr[1]/td/table`);
-      // await element[0].click();
-      // console.log("GDG CASINO");
-      // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[12]/td/table/tbody/tr[1]/td/table`);
-      // await element[0].click();
-      // lstCommissionRAR
-      // lstCommissionRBF
-      // lstCommissionRBG
-      // lstCommissionRBM
-      // for (const [idx, data] of arrayAG.entries()) {
-      //   console.log(chalk.black.bold.bgYellow('ag in for : ', idx))
-      //   console.log('countUser', countUser);
-      //   console.log('customerLatest', customerLatest);
-      //   setUserNumber = (+customerLatest.substring(countUser) + idx)
-      //     .toString()
-      //     .padStart(4, '0')
-      //   console.log(
-      //     chalk.black.bold.bgYellow(setUserNumber, ' : ', customerLatest)
-      //   )
-      //   await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, {
-      //     waitUntil: 'networkidle2'
-      //   })
-      //   await delay(1000)
-      //   element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`)
-      //   console.log(chalk.black.bold.bgYellow('79 : ', idx))
-      //   await element[0].click()
-      //   await delay(1000)
-      //   element = await page.$x(`//*[@id="txtUserName"]`)
-      //   await element[0].type(setUserNumber)
-      //   console.log(chalk.black.bold.bgYellow('85 : ', idx))
-      //   console.log(
-      //     chalk.black.bold.bgYellow(
-      //       'ag check username : ',
-      //       idx,
-      //       ' : ',
-      //       setUserNumber
-      //     )
-      //   )
-      //   element = await page.$x(`//*[@id="txtPassword"]`)
-      //   await element[0].type(`Aa123456+`)
-      //   element = await page.$x(`//*[@id="txtTotalLimit"]`)
-      //   await element[0].type(`0`)
-      //   element = await page.$x(`//*[@id="btnSave"]`)
-      //   await element[0].click()
-      //   console.log(chalk.white.bgGreen.bold('ag seve customer for : ', idx))
-      //   await delay(1000)
-      // }
-      // await page.close() // Close the website
-
-      // apiResponse.successResponseWithData(res, 'Operation success', {})
-      // return pm2.restart('ag-service', (err, proc) => {
-      //   // Disconnects from PM2
-      //   pm2.disconnect()
-      // })
