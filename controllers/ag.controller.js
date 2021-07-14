@@ -433,7 +433,7 @@ exports.agMoneyAllince = [
       }
       console.log("passAg : ", passAg);
       const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: { width: 1600, height: 1080 },
         args
       })
@@ -591,7 +591,7 @@ exports.agDownAgen = [
       console.log(usernameAG, webname);
 
       const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         defaultViewport: { width: 1800, height: 1080 },
         args
       })
