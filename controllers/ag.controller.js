@@ -67,13 +67,11 @@ async function tesseractGet(imagePath) {
 }
 
 exports.agStoreCustomer = [
-
   async (req, res) => {
-
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: { width: 1920, height: 1080 },
         args
       })
@@ -81,6 +79,7 @@ exports.agStoreCustomer = [
       const birthday = new Date();
       const date1 = birthday.getTime();
       const captchaPath = 'captcha' + '.png'
+      let checkZero = customerLatest.length - countUser
       let element
 
       await page.goto(
@@ -135,131 +134,12 @@ exports.agStoreCustomer = [
 
       for (const [idx, data] of arrayAG.entries()) {
         console.log(chalk.black.bold.bgYellow('ag in for : ', idx))
-        console.log('countUser', countUser);
-        console.log('customerLatest', customerLatest);
+        console.log(idx, 'countUser', countUser);
+        console.log(idx, 'customerLatest', customerLatest);
+        console.log(idx, 'customerLatest.length', customerLatest.length);
         setUserNumber = (+customerLatest.substring(countUser) + idx)
           .toString()
-          .padStart(4, '0')
-        console.log(
-          chalk.black.bold.bgYellow(setUserNumber, ' : ', customerLatest)
-        )
-        await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, {
-          waitUntil: 'networkidle2'
-        })
-        await delay(1000)
-        element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`)
-        console.log(chalk.black.bold.bgYellow('79 : ', idx))
-        await element[0].click()
-        await delay(1000)
-        element = await page.$x(`//*[@id="txtUserName"]`)
-        await element[0].type(setUserNumber)
-        console.log(chalk.black.bold.bgYellow('85 : ', idx))
-        console.log(
-          chalk.black.bold.bgYellow(
-            'ag check username : ',
-            idx,
-            ' : ',
-            setUserNumber
-          )
-        )
-        element = await page.$x(`//*[@id="txtPassword"]`)
-        await element[0].type(`Aa123456+`)
-        element = await page.$x(`//*[@id="txtTotalLimit"]`)
-        await element[0].type(`0`)
-        element = await page.$x(`//*[@id="btnSave"]`)
-        await element[0].click()
-        console.log(chalk.white.bgGreen.bold('ag seve customer for : ', idx))
-        await delay(1000)
-      }
-      await page.close() // Close the website
-      apiResponse.successResponseWithData(res, 'Operation success', {})
-      return pm2.restart('ag-service', (err, proc) => {
-        // Disconnects from PM2
-        pm2.disconnect()
-      })
-    } catch (error) {
-      apiResponse.ErrorResponse(res, error)
-      return pm2.restart('ag-service', (err, proc) => {
-        // Disconnects from PM2
-        pm2.disconnect()
-      })
-    }
-  }
-]
-exports.agStoreCustomerTop = [
-
-  async (req, res) => {
-
-    try {
-      const { usernameAG, webname, countUser, customerLatest } = req.body
-      const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: { width: 1920, height: 1080 },
-        args
-      })
-      const page = await browser.newPage()
-      const birthday = new Date();
-      const date1 = birthday.getTime();
-      const captchaPath = 'captcha' + '.png'
-      let element
-
-      await page.goto(
-        `http://ag.ufa6666.com/Public/Default11.aspx`,
-        { waitUntil: 'networkidle2' }
-      )
-      console.log(await page.title());
-      console.log(page.url());
-      console.log(chalk.red('ag in dName : ', date1));
-      await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
-      console.log("waitForSelector('#divImgCode > img'");
-      const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
-      console.log("captcha = await page.$('#divImgCode > img'");
-
-      await captcha.screenshot({
-        path: captchaPath
-      })
-      console.log("captcha.screenshot");
-
-      element = await page.$x(`//*[@id="txtUserName"]`)
-      await element[0].type(usernameAG)
-      console.log("txtUserName");
-
-      element = await page.$x(`//*[@id="txtPassword"]`)
-      console.log("txtPassword");
-
-      await element[0].type(
-        webname === 'UFA-66'
-          ? agenSixPass
-          : webname === 'TOP-168'
-            ? agenTopPass
-            : ''
-      )
-      console.log("typePassword");
-
-      await tesseractGet(captchaPath)
-        .then(async result => {
-          console.log("captchaPath", result)
-          element = await page.$x(`//*[@id="txtCode"]`)
-          await element[0].type(result)
-        })
-        .catch(function (err) {
-          console.log(chalk.red(err))
-        })
-
-      await delay(5000)
-      const title = await page.title()
-      const urls = page.url()
-
-      console.log('Page Title : ' + title)
-      console.log('Page URL : ' + urls)
-
-      for (const [idx, data] of arrayAG.entries()) {
-        console.log(chalk.black.bold.bgYellow('ag in for : ', idx))
-        console.log('countUser', countUser);
-        console.log('customerLatest', customerLatest);
-        setUserNumber = (+customerLatest.substring(countUser) + idx)
-          .toString()
-          .padStart(4, '0')
+          .padStart(checkZero, '0')
         console.log(
           chalk.black.bold.bgYellow(setUserNumber, ' : ', customerLatest)
         )
