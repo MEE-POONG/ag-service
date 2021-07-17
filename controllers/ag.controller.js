@@ -2,7 +2,6 @@ const delay = require('delay')
 const puppeteer = require('puppeteer')
   ; +require('dotenv').config()
 const { createWorker } = require('tesseract.js')
-const worker = createWorker()
 const chalk = require('chalk')
 const { agenTopPass, agenSixPass, masterTopPass, masterSixPass, adminUser, adminPass } = process.env
 const { unlinkSync } = require('fs')
@@ -53,12 +52,18 @@ var apiResponse = require('../helpers/apiResponse');
 const e = require('cors');
 const { check } = require('express-validator');
 async function tesseractGet(imagePath) {
+  const worker = createWorker()
+  console.log(1)
   await worker.load()
+  console.log(2)
   await worker.loadLanguage('eng')
+  console.log(3)
   await worker.initialize('eng')
+  console.log(4)
   await worker.setParameters({
     tessedit_char_whitelist: '0123456789'
   })
+  console.log(5)
   const {
     data: { text }
   } = await worker.recognize(imagePath)
@@ -71,7 +76,7 @@ exports.agStoreCustomer = [
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: { width: 1920, height: 1080 },
         args
       })
@@ -172,17 +177,10 @@ exports.agStoreCustomer = [
         await delay(1000)
       }
       await page.close() // Close the website
+      await browser.close();
       apiResponse.successResponseWithData(res, 'Operation success', {})
-      return pm2.restart('ag-service', (err, proc) => {
-        // Disconnects from PM2
-        pm2.disconnect()
-      })
     } catch (error) {
       apiResponse.ErrorResponse(res, error)
-      return pm2.restart('ag-service', (err, proc) => {
-        // Disconnects from PM2
-        pm2.disconnect()
-      })
     }
   }
 ]
@@ -205,7 +203,7 @@ exports.agStoreAgen = [
       }
 
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: { width: 1920, height: 1080 },
         args
       })
@@ -282,11 +280,8 @@ exports.agStoreAgen = [
       //   await element[0].click()
 
       await page.close() // Close the website
+      await browser.close();
       apiResponse.successResponseWithData(res, 'Operation success', {})
-      return pm2.restart('ag-service', (err, proc) => {
-        // Disconnects from PM2
-        pm2.disconnect()
-      })
     } catch (error) {
       return apiResponse.ErrorResponse(res, error)
     }
@@ -313,7 +308,7 @@ exports.agMoneyAllince = [
       }
       console.log("passAg : ", passAg);
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: { width: 1600, height: 1080 },
         args
       })
@@ -393,10 +388,8 @@ exports.agMoneyAllince = [
       if (result === "Profile updated successfully.") {
         console.log('--- 514 ---');
         await page.close()
+        await browser.close();
         apiResponse.successResponseWithData(res, 'Operation success', {})
-        return pm2.restart('ag-service', (err, proc) => {
-          pm2.disconnect()
-        })
       } else {
         console.log('--- 520 ---');
         if (status === "agen") {
@@ -437,27 +430,22 @@ exports.agMoneyAllince = [
           if (result === "Profile updated successfully.") {
             console.log('--- 555 ---');
             await page.close()
+            await browser.close();
             apiResponse.successResponseWithData(res, 'Operation success', {})
-            return pm2.restart('ag-service', (err, proc) => {
-              pm2.disconnect()
-            })
           } else {
             await page.close()
+            await browser.close();
             apiResponse.ErrorResponse(res, error)
-            return pm2.restart('ag-service', (err, proc) => {
-              pm2.disconnect()
-            })
           }
         } else {
           await page.close()
+          await browser.close();
           apiResponse.ErrorResponse(res, error)
-          return pm2.restart('ag-service', (err, proc) => {
-            pm2.disconnect()
-          })
         }
       }
     } catch (error) {
       await page.close()
+      await browser.close();
       console.log(error);
       return apiResponse.ErrorResponse(res, error)
     }
@@ -471,7 +459,7 @@ exports.agDownAgen = [
       console.log(usernameAG, webname);
 
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: { width: 1800, height: 1080 },
         args
       })
@@ -540,17 +528,14 @@ exports.agDownAgen = [
       element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[16]/div/button`);
       await element[0].click()
       await page.close() // Close the website
+      await browser.close();
       apiResponse.successResponseWithData(res, 'Operation success', {})
-      return pm2.restart('ag-service', (err, proc) => {
-        pm2.disconnect()
-      })
-
     } catch (error) {
       await page.close()
+      await browser.close();
       console.log(error);
       return apiResponse.ErrorResponse(res, error)
     }
-
   }
 ]
 exports.agSetPassAllince = [
@@ -559,7 +544,7 @@ exports.agSetPassAllince = [
 
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
-      const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
+      const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
       const page = await browser.newPage();
       const captchaPath = 'captcha' + '.png';
       let element, formElement, tabs;
@@ -617,7 +602,7 @@ exports.agSetPassAllince = [
         await element[0].type(`0`);
         element = await page.$x(`//*[@id="btnSave"]`);
         await element[0].click();
-        console.log(chalk.white.bgGreen.bold("ag seve customer for : ", idx));
+        console.log(chalk.white.bgGreen.bold("ag sever customer for : ", idx));
         await delay(1000);
 
       }
@@ -636,7 +621,7 @@ exports.agSetAgenAndPass = [
 
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
-      const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
+      const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
       const page = await browser.newPage();
       const captchaPath = 'captcha' + '.png';
       let element, formElement, tabs;
@@ -693,11 +678,10 @@ exports.agSetAgenAndPass = [
         await element[0].click();
         console.log(chalk.white.bgGreen.bold("ag seve customer for : ", idx));
         await delay(1000);
-
       }
       await page.close(); // Close the website
+      await browser.close();
       return apiResponse.successResponseWithData(res, 'Operation success', {})
-
     } catch (error) {
       return apiResponse.ErrorResponse(res, error)
     }
