@@ -444,9 +444,6 @@ exports.agMoneyAllince = [
         }
       }
     } catch (error) {
-      await page.close()
-      await browser.close();
-      console.log(error);
       return apiResponse.ErrorResponse(res, error)
     }
 
