@@ -154,8 +154,9 @@ exports.agStoreCustomer = [
         await delay(1000)
         element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`)
         console.log(chalk.black.bold.bgYellow('79 : ', idx))
+        await delay(1000);
         await element[0].click()
-        await delay(1000)
+        await delay(3000)
         element = await page.$x(`//*[@id="txtUserName"]`)
         await element[0].type(setUserNumber)
         console.log(chalk.black.bold.bgYellow('85 : ', idx))
@@ -587,9 +588,10 @@ exports.agSetPassAllince = [
         await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, { waitUntil: 'networkidle2' });
         element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`);
         console.log(chalk.black.bold.bgYellow("79 : ", idx));
+        await delay(1000);
         await element[0].click();
         console.log(chalk.black.bold.bgYellow("81 : ", idx));
-        await delay(1000);
+        await delay(3000);
         element = await page.$x(`//*[@id="txtUserName"]`);
         await element[0].type(setUserNumber);
         console.log(chalk.black.bold.bgYellow("85 : ", idx));
@@ -661,9 +663,10 @@ exports.agSetAgenAndPass = [
         await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, { waitUntil: 'networkidle2' });
         element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`);
         console.log(chalk.black.bold.bgYellow("79 : ", idx));
+        await delay(1000);
         await element[0].click();
         console.log(chalk.black.bold.bgYellow("81 : ", idx));
-        await delay(1000);
+        await delay(3000);
         element = await page.$x(`//*[@id="txtUserName"]`);
         await element[0].type(setUserNumber);
         console.log(chalk.black.bold.bgYellow("85 : ", idx));
