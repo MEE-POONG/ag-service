@@ -75,8 +75,10 @@ exports.agStoreCustomer = [
   async (req, res) => {
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
+      let passAgen = webname === 'UFA-66' ? agenSixPass : webname === 'TOP-168' ? agenTopPass : ''
+      let userCopy = webname === 'UFA-66' ? "0001" : webname === 'TOP-168' ? "001" : ''
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: { width: 1920, height: 1080 },
         args
       })
@@ -85,6 +87,7 @@ exports.agStoreCustomer = [
       const date1 = birthday.getTime();
       const captchaPath = 'captcha' + '.png'
       let checkZero = customerLatest.length - countUser
+      console.log("checkZero ", checkZero);
       let element
 
       await page.goto(
@@ -98,28 +101,13 @@ exports.agStoreCustomer = [
       console.log("waitForSelector('#divImgCode > img'");
       const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
       console.log("captcha = await page.$('#divImgCode > img'");
-
       await captcha.screenshot({
         path: captchaPath
       })
-      console.log("captcha.screenshot");
-
       element = await page.$x(`//*[@id="txtUserName"]`)
       await element[0].type(usernameAG)
-      console.log("txtUserName");
-
       element = await page.$x(`//*[@id="txtPassword"]`)
-      console.log("txtPassword");
-
-      await element[0].type(
-        webname === 'UFA-66'
-          ? agenSixPass
-          : webname === 'TOP-168'
-            ? agenTopPass
-            : ''
-      )
-      console.log("typePassword");
-
+      await element[0].type(passAgen)
       await tesseractGet(captchaPath)
         .then(async result => {
           console.log("captchaPath", result)
@@ -129,46 +117,19 @@ exports.agStoreCustomer = [
         .catch(function (err) {
           console.log(chalk.red(err))
         })
-
       await delay(5000)
       const title = await page.title()
       const urls = page.url()
-
       console.log('Page Title : ' + title)
       console.log('Page URL : ' + urls)
-
       for (const [idx, data] of arrayAG.entries()) {
-        console.log(chalk.black.bold.bgYellow('ag in for : ', idx))
-        console.log(idx, 'countUser', countUser);
-        console.log(idx, 'customerLatest', customerLatest);
-        console.log(idx, 'customerLatest.length', customerLatest.length);
-        setUserNumber = (+customerLatest.substring(countUser) + idx)
-          .toString()
-          .padStart(checkZero, '0')
-        console.log(
-          chalk.black.bold.bgYellow(setUserNumber, ' : ', customerLatest)
-        )
-        await page.goto(`https://ag.ufa6666.com/_SubAg/MemberList.aspx`, {
+        setUserNumber = (+customerLatest.substring(countUser) + idx).toString().padStart(checkZero, '0')
+        await page.goto(`https://ag.ufa6666.com/_SubAg1/MemberSet.aspx?cName=` + usernameAG + userCopy + `&set=1`, {
           waitUntil: 'networkidle2'
         })
-        await delay(1000)
-        element = await page.$x(`//*[@id="MemberList_cm1_g_ctl02_btnCopy"]`)
-        console.log(chalk.black.bold.bgYellow('79 : ', idx))
-        await delay(1000);
-        await element[0].click()
-        await delay(3000)
         element = await page.$x(`//*[@id="txtUserName"]`)
         await element[0].type(setUserNumber)
         console.log(chalk.black.bold.bgYellow('85 : ', idx))
-        console.log(
-          chalk.black.bold.bgYellow(
-            'ag check username : ',
-            idx,
-            ' : ',
-            setUserNumber
-          )
-        )
-        element = await page.$x(`//*[@id="txtPassword"]`)
         await element[0].type(`Aa123456+`)
         element = await page.$x(`//*[@id="txtTotalLimit"]`)
         await element[0].type(`0`)
@@ -204,7 +165,7 @@ exports.agStoreAgen = [
       }
 
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: { width: 1920, height: 1080 },
         args
       })
@@ -309,7 +270,7 @@ exports.agMoneyAllince = [
       }
       console.log("passAg : ", passAg);
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: { width: 1600, height: 1080 },
         args
       })
@@ -458,7 +419,7 @@ exports.agDownAgen = [
       console.log(usernameAG, webname);
 
       const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         defaultViewport: { width: 1800, height: 1080 },
         args
       })
@@ -543,7 +504,7 @@ exports.agSetPassAllince = [
 
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
-      const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
+      const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
       const page = await browser.newPage();
       const captchaPath = 'captcha' + '.png';
       let element, formElement, tabs;
@@ -621,7 +582,7 @@ exports.agSetAgenAndPass = [
 
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
-      const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
+      const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
       const page = await browser.newPage();
       const captchaPath = 'captcha' + '.png';
       let element, formElement, tabs;
