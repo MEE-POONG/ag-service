@@ -50,6 +50,18 @@ app.get('/pm2', function (req, res) {
   });
 })
 
+app.get('/log', function (req, res) {
+  exec("pm2 log server", (error, stdout, stderr) => {
+    if (error) {
+      return apiResponse.ErrorResponse(res, `error: ${error.message}`)
+    }
+    if (stderr) {
+      return apiResponse.successResponse(res, `stderr: ${stderr}`)
+    }
+    return apiResponse.successResponse(res, `stdout: ${stdout}`)
+  });
+})
+
 app.get('/', function (req, res) {
   return apiResponse.successResponse(res, 'Welcome To Service AG - MICROSERVICE V1.0.0')
 })
