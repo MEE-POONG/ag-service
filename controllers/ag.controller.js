@@ -77,7 +77,7 @@ exports.agStoreCustomer = [
     let passAgen = webname === 'UFA-66' ? sixAgenPass : webname === 'TOP-168' ? topAgenPass : ''
     let userCopy = webname === 'UFA-66' ? "0001" : webname === 'TOP-168' ? "001" : ''
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       defaultViewport: { width: 1920, height: 1080 },
       args
     })
