@@ -1,6 +1,7 @@
 FROM node:12
 
 LABEL maintainer="Eric Bidelman <ebidel@>"
+RUN useradd -ms /bin/bash admin
 
 # Run this like so:
 # docker run -i --rm --cap-add=SYS_ADMIN \
@@ -42,6 +43,10 @@ RUN chmod +x /usr/local/bin/dumb-init
 COPY . /app/
 #COPY local.conf /etc/fonts/local.conf
 WORKDIR /app
+
+RUN chown -R admin:admin /app
+RUN chmod 755 /app
+USER admin
 
 # Install deps for server.
 RUN yarn
