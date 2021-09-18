@@ -77,7 +77,7 @@ exports.agStoreCustomer = [
     let passAgen = webname === 'UFA-66' ? agenSixPass : webname === 'TOP-168' ? agenTopPass : ''
     let userCopy = webname === 'UFA-66' ? "0001" : webname === 'TOP-168' ? "001" : ''
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       defaultViewport: { width: 1920, height: 1080 },
       args
     })
@@ -151,7 +151,7 @@ exports.agStoreAgen = [
   async (req, res) => {
     const { _id, usernameAG, status, webname, countUser, customerLatest } = req.body
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       defaultViewport: { width: 1920, height: 1080 },
       args
     })
@@ -255,7 +255,7 @@ exports.agStoreAgen = [
 exports.agMoneyAllince = [
   async (req, res) => {
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       defaultViewport: { width: 1600, height: 1080 },
       args
     })
@@ -418,7 +418,7 @@ exports.agMoneyAllince = [
 exports.agDownAgen = [
   async (req, res) => {
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       defaultViewport: { width: 1800, height: 1080 },
       args
     })
@@ -505,7 +505,7 @@ exports.agDownAgen = [
 exports.agSetPassAllince = [
 
   async (req, res) => {
-    const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
+    const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
     const page = await browser.newPage();
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
@@ -585,7 +585,7 @@ exports.agSetPassAllince = [
 exports.agSetAgenAndPass = [
 
   async (req, res) => {
-    const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
+    const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
     const page = await browser.newPage();
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
