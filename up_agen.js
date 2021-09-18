@@ -15,6 +15,7 @@ const args = [
 	'--disable-component-update',
 	'--disable-default-apps',
 	'--disable-dev-shm-usage',
+  '--unhandled-rejections=strict',
 	'--disable-domain-reliability',
 	'--disable-extensions',
 	'--disable-features=AudioServiceOutOfProcess',
