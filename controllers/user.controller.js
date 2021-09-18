@@ -62,7 +62,7 @@ function UserDataLogin(data) {
 exports.userList = [
   async (req, res) => {
     try {
-      const users = await User.find({})
+      const users = await User.find({}).limit(50)
       const userData = users.map(e => {
         return new UserData(e)
       })

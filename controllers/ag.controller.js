@@ -73,16 +73,16 @@ async function tesseractGet(imagePath) {
 
 exports.agStoreCustomer = [
   async (req, res) => {
+    const { usernameAG, webname, countUser, customerLatest } = req.body
+    let passAgen = webname === 'UFA-66' ? agenSixPass : webname === 'TOP-168' ? agenTopPass : ''
+    let userCopy = webname === 'UFA-66' ? "0001" : webname === 'TOP-168' ? "001" : ''
+    const browser = await puppeteer.launch({
+      headless: false,
+      defaultViewport: { width: 1920, height: 1080 },
+      args
+    })
+    const page = await browser.newPage()
     try {
-      const { usernameAG, webname, countUser, customerLatest } = req.body
-      let passAgen = webname === 'UFA-66' ? agenSixPass : webname === 'TOP-168' ? agenTopPass : ''
-      let userCopy = webname === 'UFA-66' ? "0001" : webname === 'TOP-168' ? "001" : ''
-      const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: { width: 1920, height: 1080 },
-        args
-      })
-      const page = await browser.newPage()
       const birthday = new Date();
       const date1 = birthday.getTime();
       const captchaPath = 'captcha' + '.png'
@@ -142,14 +142,21 @@ exports.agStoreCustomer = [
       await browser.close();
       apiResponse.successResponseWithData(res, 'Operation success', {})
     } catch (error) {
+      browser.close()
       apiResponse.ErrorResponse(res, error)
     }
   }
 ]
 exports.agStoreAgen = [
   async (req, res) => {
+    const { _id, usernameAG, status, webname, countUser, customerLatest } = req.body
+    const browser = await puppeteer.launch({
+      headless: false,
+      defaultViewport: { width: 1920, height: 1080 },
+      args
+    })
+    const page = await browser.newPage()
     try {
-      const { _id, usernameAG, status, webname, countUser, customerLatest } = req.body
       let userNewSet = usernameAG + "a0"
       const alliance = await Alliance.aggregate([
         { $match: { adviserID: _id } }
@@ -164,12 +171,6 @@ exports.agStoreAgen = [
         }
       }
 
-      const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: { width: 1920, height: 1080 },
-        args
-      })
-      const page = await browser.newPage()
       const birthday = new Date();
       const date1 = birthday.getTime();
       const captchaPath = 'captcha' + '.png'
@@ -245,6 +246,7 @@ exports.agStoreAgen = [
       await browser.close();
       apiResponse.successResponseWithData(res, 'Operation success', {})
     } catch (error) {
+      browser.close()
       return apiResponse.ErrorResponse(res, error)
     }
 
@@ -252,6 +254,12 @@ exports.agStoreAgen = [
 ]
 exports.agMoneyAllince = [
   async (req, res) => {
+    const browser = await puppeteer.launch({
+      headless: false,
+      defaultViewport: { width: 1600, height: 1080 },
+      args
+    })
+    const page = await browser.newPage()
     try {
       const { adviserID, usernameAG, status, webname, moneyAdd } = req.body;
       const alliance = await Alliance.findById(adviserID);
@@ -269,12 +277,6 @@ exports.agMoneyAllince = [
         return apiResponse.ErrorResponse(res, error)
       }
       console.log("passAg : ", passAg);
-      const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: { width: 1600, height: 1080 },
-        args
-      })
-      const page = await browser.newPage()
       const birthday = new Date();
       const date1 = birthday.getTime();
       const captchaPath = 'captcha' + '.png'
@@ -407,6 +409,7 @@ exports.agMoneyAllince = [
       }
     } catch (error) {
       console.log(error)
+      browser.close()
       return apiResponse.ErrorResponse(res, error)
     }
 
@@ -414,16 +417,16 @@ exports.agMoneyAllince = [
 ]
 exports.agDownAgen = [
   async (req, res) => {
+    const browser = await puppeteer.launch({
+      headless: false,
+      defaultViewport: { width: 1800, height: 1080 },
+      args
+    })
+    const page = await browser.newPage()
     try {
       const { adviserID, usernameAG, status, webname, moneyAdd } = req.body;
       console.log(usernameAG, webname);
 
-      const browser = await puppeteer.launch({
-        headless: true,
-        defaultViewport: { width: 1800, height: 1080 },
-        args
-      })
-      const page = await browser.newPage()
       const birthday = new Date();
       let element
       let userStar
@@ -494,6 +497,7 @@ exports.agDownAgen = [
       await page.close()
       await browser.close();
       console.log(error);
+      browser.close()
       return apiResponse.ErrorResponse(res, error)
     }
   }
@@ -501,11 +505,11 @@ exports.agDownAgen = [
 exports.agSetPassAllince = [
 
   async (req, res) => {
-
+    const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
+    const page = await browser.newPage();
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
-      const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
-      const page = await browser.newPage();
+
       const captchaPath = 'captcha' + '.png';
       let element, formElement, tabs;
 
@@ -568,9 +572,11 @@ exports.agSetPassAllince = [
 
       }
       await page.close(); // Close the website
+      browser.close()
       return apiResponse.successResponseWithData(res, 'Operation success', {})
 
     } catch (error) {
+      browser.close()
       return apiResponse.ErrorResponse(res, error)
     }
 
@@ -579,11 +585,11 @@ exports.agSetPassAllince = [
 exports.agSetAgenAndPass = [
 
   async (req, res) => {
-
+    const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
+    const page = await browser.newPage();
     try {
       const { usernameAG, webname, countUser, customerLatest } = req.body
-      const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
-      const page = await browser.newPage();
+
       const captchaPath = 'captcha' + '.png';
       let element, formElement, tabs;
 
@@ -645,6 +651,7 @@ exports.agSetAgenAndPass = [
       await browser.close();
       return apiResponse.successResponseWithData(res, 'Operation success', {})
     } catch (error) {
+      browser.close()
       return apiResponse.ErrorResponse(res, error)
     }
 

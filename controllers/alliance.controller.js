@@ -26,7 +26,7 @@ function AllianceData(data) {
 exports.allianceList = [
   async (req, res) => {
     try {
-      const alliances = await Alliance.find({})
+      const alliances = await Alliance.find({}).limit(50)
       return apiResponse.successResponseWithData(
         res,
         'Operation success',
@@ -76,7 +76,8 @@ exports.allianceSearch = [
         )
       }
       const alliance = await Alliance.aggregate([
-        { $match: { usernameAG: new RegExp(keyword, "i"), webname: new RegExp(webSearch, "i"), status: new RegExp(statusSearch, "i") } }
+        { $match: { usernameAG: new RegExp(keyword, "i"), webname: new RegExp(webSearch, "i"), status: new RegExp(statusSearch, "i") } },
+        { $limit: 50 }
       ])
       return apiResponse.successResponseWithData(
         res,
