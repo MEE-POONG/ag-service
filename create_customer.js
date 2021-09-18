@@ -1,7 +1,7 @@
 const delay = require("delay");
 const puppeteer = require('puppeteer'); +
 	require('dotenv').config()
-const { masterTopPass, agenTopPass, masterSixPass, agenSixPass, adminuser, adminpass } = process.env
+const { topMasterPass, topAgenPass, sixMasterPass, sixAgenPass, adminuser, adminpass } = process.env
 const usernameAG = "ufh27oa1"
 const webname = "UFA-66"
 const customerLatest = "ufh27oa10031"
@@ -56,7 +56,7 @@ const args = [
 	element = await page.$x(`//*[@id="txtUserName"]`);
 	await element[0].type(usernameAG);
 	element = await page.$x(`//*[@id="txtPassword"]`);
-	await element[0].type(webname === "UFA-66" ? agenSixPass : webname === "TOP-168" ? agenTopPass : "");
+	await element[0].type(webname === "UFA-66" ? sixAgenPass : webname === "TOP-168" ? topAgenPass : "");
 	element = await page.$x(`//*[@id="btnSignIn"]`);
 	await element[0].click();
 	console.log('--- 1 ---');

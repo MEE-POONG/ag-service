@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer')
   ; +require('dotenv').config()
 const { createWorker } = require('tesseract.js')
 const chalk = require('chalk')
-const { agenTopPass, agenSixPass, masterTopPass, masterSixPass, adminUser, adminPass } = process.env
+const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
 const { unlinkSync } = require('fs')
 const pm2 = require('pm2')
 const Alliance = require('../models/alliance.model')
@@ -74,7 +74,7 @@ async function tesseractGet(imagePath) {
 exports.agStoreCustomer = [
   async (req, res) => {
     const { usernameAG, webname, countUser, customerLatest } = req.body
-    let passAgen = webname === 'UFA-66' ? agenSixPass : webname === 'TOP-168' ? agenTopPass : ''
+    let passAgen = webname === 'UFA-66' ? sixAgenPass : webname === 'TOP-168' ? topAgenPass : ''
     let userCopy = webname === 'UFA-66' ? "0001" : webname === 'TOP-168' ? "001" : ''
     const browser = await puppeteer.launch({
       headless: false,
@@ -202,9 +202,9 @@ exports.agStoreAgen = [
 
       await element[0].type(
         webname === 'UFA-66'
-          ? masterSixPass
+          ? sixMasterPass
           : webname === 'TOP-168'
-            ? masterTopPass
+            ? topMasterPass
             : ''
       )
       console.log("typePassword");
@@ -272,7 +272,7 @@ exports.agMoneyAllince = [
         passAg = await seniorPass;
       } else if (alliance.status === 'master') {
         console.log(webname);
-        passAg = await webname === 'UFA-66' ? masterSixPass : masterTopPass
+        passAg = await webname === 'UFA-66' ? sixMasterPass : topMasterPass
       } else {
         return apiResponse.ErrorResponse(res, error)
       }
@@ -432,10 +432,10 @@ exports.agDownAgen = [
       let userStar
       let agenPass
       if (webname === "UFA-66") {
-        agenPass = await agenSixPass
+        agenPass = await sixAgenPass
         userStar = await "****"
       } else if (webname === "TOP-168") {
-        agenPass = await agenTopPass
+        agenPass = await topAgenPass
         userStar = await "***"
       } else {
         return apiResponse.ErrorResponse(res, error)
@@ -523,7 +523,7 @@ exports.agSetPassAllince = [
       element = await page.$x(`//*[@id="txtUserName"]`);
       await element[0].type(usernameAG);
       element = await page.$x(`//*[@id="txtPassword"]`);
-      await element[0].type(webname === "UFA-66" ? agenSixPass : webname === "TOP-168" ? agenTopPass : "");
+      await element[0].type(webname === "UFA-66" ? sixAgenPass : webname === "TOP-168" ? topAgenPass : "");
       await tesseractGet(captchaPath)
         .then(async (result) => {
           console.log(result);
@@ -603,7 +603,7 @@ exports.agSetAgenAndPass = [
       element = await page.$x(`//*[@id="txtUserName"]`);
       await element[0].type(usernameAG);
       element = await page.$x(`//*[@id="txtPassword"]`);
-      await element[0].type(webname === "UFA-66" ? agenSixPass : webname === "TOP-168" ? agenTopPass : "");
+      await element[0].type(webname === "UFA-66" ? sixAgenPass : webname === "TOP-168" ? topAgenPass : "");
       await tesseractGet(captchaPath)
         .then(async (result) => {
           console.log(result);

@@ -1,7 +1,7 @@
 const delay = require("delay");
 const puppeteer = require('puppeteer'); +
 	require('dotenv').config()
-const { masterTopPass, agenTopPass, masterSixPass, agenSixPass, adminuser, adminpass } = process.env
+const { topMasterPass, topAgenPass, sixMasterPass, sixAgenPass, adminuser, adminpass } = process.env
 const usernameAG = "ufrcb0"
 const webname = "UFA-66"
 const args = [
@@ -72,14 +72,14 @@ const args = [
 	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[4]/div/input`);
 	await element[0].type(usernameAG);
 	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[5]/div/input`);
-	await element[0].type(webname === "UFA-66" ? agenSixPass : webname === "TOP-168" ? agenTopPass : "");
+	await element[0].type(webname === "UFA-66" ? sixAgenPass : webname === "TOP-168" ? topAgenPass : "");
 	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[7]/div/textarea`);
 	await element[0].type(`_SubAg`);
 
 	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[8]/div/input`);
 	await element[0].type(usernameAG);
 	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[9]/div/input`);
-	await element[0].type(webname === "UFA-66" ? agenSixPass : webname === "TOP-168" ? agenTopPass : "");
+	await element[0].type(webname === "UFA-66" ? sixAgenPass : webname === "TOP-168" ? topAgenPass : "");
 	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[11]/div/input`);
 	await element[0].type(`_SubAg`);
 
