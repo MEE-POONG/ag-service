@@ -44,10 +44,6 @@ COPY . /app/
 #COPY local.conf /etc/fonts/local.conf
 WORKDIR /app
 
-RUN chown -R admin:admin /app
-RUN chmod 755 /app
-USER admin
-
 # Install deps for server.
 RUN yarn
 
@@ -64,7 +60,8 @@ RUN yarn add puppeteer
 RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
     && mkdir -p /home/pptruser/Downloads \
     && chown -R pptruser:pptruser /home/pptruser \
-    && chown -R pptruser:pptruser /app
+    && chown -R pptruser:pptruser /app \
+    && chown 755 /app
 
 # Run user as non privileged.
 USER pptruser
