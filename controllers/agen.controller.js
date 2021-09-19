@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer')
   ; +require('dotenv').config()
 const { createWorker } = require('tesseract.js')
 const chalk = require('chalk')
-const { agtest, agtrue, topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, AgenPass } = process.env
+const { agtrue, topAgenPass, sixAgenPass, adminUser, AgenPass } = process.env
 const { unlinkSync } = require('fs')
 const pm2 = require('pm2')
 const Alliance = require('../models/alliance.model')
@@ -76,7 +76,7 @@ exports.aCreateCustomer = [
   async (req, res) => {
     const { usernameAG, webname } = req.body
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       defaultViewport: { width: 1920, height: 1080 },
       args
     })
@@ -85,7 +85,7 @@ exports.aCreateCustomer = [
       const captchaPath = 'captcha' + '.png'
       let element
 
-      await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
+      await page.goto(agtrue + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
 
       await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
       const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
@@ -96,7 +96,7 @@ exports.aCreateCustomer = [
       element = await page.$x(`//*[@id="txtUserName"]`)
       await element[0].type(usernameAG)
       element = await page.$x(`//*[@id="txtPassword"]`)
-      await element[0].type(webname === 'UFA-66' ? sixMasterPass : webname === 'TOP-168' ? topMasterPass : '')
+      await element[0].type(webname === 'UFA-66' ? sixAgenPass : webname === 'TOP-168' ? topAgenPass : '')
 
       await delay(3000)
 
@@ -116,7 +116,7 @@ exports.aCreateCustomer = [
       console.log('Page URL : ' + urls)
       await delay(3000)
 
-      await page.goto(agtest + `/_SubAg1/MemberSet.aspx?`, {
+      await page.goto(agtrue + `/_SubAg1/MemberSet.aspx?`, {
         waitUntil: 'networkidle2'
       })
       await delay(1000)
@@ -276,7 +276,7 @@ exports.aCoppyCustomer = [
   async (req, res) => {
     const { usernameAG, customerLatest, webname } = req.body
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       defaultViewport: { width: 1920, height: 1080 },
       args
     })
@@ -285,7 +285,7 @@ exports.aCoppyCustomer = [
       const captchaPath = 'captcha' + '.png'
       let element
 
-      await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
+      await page.goto(agtrue + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
 
       await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
       const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
@@ -296,7 +296,9 @@ exports.aCoppyCustomer = [
       await element[0].type(usernameAG)
       element = await page.$x(`//*[@id="txtPassword"]`)
       // await element[0].type(AgenPass)
-      await element[0].type(webname === 'UFA-66' ? sixMasterPass : webname === 'TOP-168' ? topMasterPass : '')
+      await element[0].type(webname === 'UFA-66' ? sixAgenPass : webname === 'TOP-168' ? topAgenPass : '')
+      console.log("usernameAG", usernameAG);
+      console.log("txtPassword", usernameAG);
       await delay(3000)
 
       await tesseractGet(captchaPath)
@@ -309,13 +311,12 @@ exports.aCoppyCustomer = [
           console.log(chalk.red(err))
         })
 
-      element = await Promise.all([pagelogin.click('#btnSignIn'), pagelogin.waitForNavigation(),]);
+      // element = await page.$x(`//*[@id="btnSignIn"]`)
+      // await element[0].click()
 
       const urls = page.url()
       console.log('Page URL : ' + urls)
 
-      // element = await page.$x(`//*[@id="btnSignIn"]`)
-      // await element[0].click()
       await delay(3000)
 
       for (const [idx, data] of arrayAG.entries()) {
@@ -323,7 +324,7 @@ exports.aCoppyCustomer = [
         console.log("125 : ", setUserNumber);
         console.log(idx);
         console.log(setUserNumber.substr(-1, 1));
-        await page.goto(agtest + `/_SubAg1/MemberSet.aspx?cName=` + usernameAG + `0&set=1`, {
+        await page.goto(agtrue + `/_SubAg1/MemberSet.aspx?cName=` + usernameAG + `0&set=1`, {
           waitUntil: 'networkidle2'
         })
         await delay(3000)
@@ -346,10 +347,12 @@ exports.aCoppyCustomer = [
           console.log('--- 514 ---');
           await page.close()
           await browser.close();
-          apiResponse.successResponseWithData(res, setUserNumber + 'faill สร้างไม่สำเร็จ', {})
-        }
-        if ((setUserNumber.substr(-1, 1) == 0 || idx == 9) && result == "Profile updated successfully.") {
-          idx = 9
+          apiResponse.successResponseWithData(res, 'สร้างยูส ' + setUserNumber + ' faill สร้างไม่สำเร็จ', {})
+        }else if (setUserNumber.substr(-1, 1) === 0 || idx === 9) {
+          console.log("125 : ", setUserNumber);
+          console.log(idx);
+          console.log(setUserNumber.substr(-1, 1));
+          console.log("เสร็จ");
           await page.close() // Close the website
           await browser.close();
           apiResponse.successResponseWithData(res, 'Operation success สำเร็จ 10 ยูส ' + usernameAG + setUserNumber, {})
