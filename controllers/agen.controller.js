@@ -233,12 +233,10 @@ exports.aCreateCustomer = [
       //  VIRTUAL SPORTS
       element = await page.$x(`//table[@onclick="toggleSetting('trRBO',this)"]`);
       await element[0].click();
-      lstCommissionRBO
-      optRBOProfile1
       //ปรับเซอเซน 0
-      element = await page.select("select#lstCommissionRBM", "0")
+      element = await page.select("select#lstCommissionRBO", "0")
       //ปรับไม้ 6 ระดับ
-      element = await page.$x(`//*[@id="optRBMProfile1"]`)
+      element = await page.$x(`//*[@id="optRBOProfile1"]`)
       await element[0].click()
 
       //  UFA LOTTO - YEEKEE
@@ -249,25 +247,25 @@ exports.aCreateCustomer = [
       element = await page.$x(`//table[@onclick="toggleSetting('trRCX',this)"]`);
       await element[0].click();
       //ยืนยัน
-      // element = await page.$x(`//*[@id="btnSave"]`)
-      // await element[0].click()
+      element = await page.$x(`//*[@id="btnSave"]`)
+      await element[0].click()
 
       element = await page.waitForXPath(`//*[@id="lblStatus"]`);
       [element] = await page.$x(`//*[@id="lblStatus"]`);
       result = await page.evaluate(element => element.textContent, element);
       if (result === "Profile updated successfully.") {
         console.log('--- 514 ---');
-        // await page.close()
-        // await browser.close();
+        await page.close()
+        await browser.close();
         apiResponse.successResponseWithData(res, 'Operation success สร้างสำเร็จ', {})
       } else {
-        // await page.close()
-        // await browser.close();
+        await page.close()
+        await browser.close();
         apiResponse.ErrorResponse(res, 'Operation success สร้างผิดพลาด', {})
       }
     } catch (error) {
-      // await page.close() // Close the website
-      // await browser.close();
+      await page.close() // Close the website
+      await browser.close();
       apiResponse.ErrorResponse(res, 'Operation Error', {})
     }
   }
