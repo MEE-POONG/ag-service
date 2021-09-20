@@ -190,7 +190,7 @@ exports.aCreateCustomer = [
       //ปรับเซอเซน 0
       element = await page.select("select#lstCommissionRBF", "0")
       //ปรับไม้ 6 ระดับ
-      element = await page.$x(`//*[@id="optRARProfile1"]`)
+      element = await page.$x(`//*[@id="optRBFProfile1"]`)
       await element[0].click()
 
       //  AE7
@@ -203,7 +203,7 @@ exports.aCreateCustomer = [
       //ปรับเซอเซน 0
       element = await page.select("select#lstCommissionRBG", "0")
       //ปรับไม้ 6 ระดับ
-      element = await page.$x(`//*[@id="optRAGProfile1"]`)
+      element = await page.$x(`//*[@id="optRBGProfile1"]`)
       await element[0].click()
 
       //  GH COCKFT / HORSE RACING
@@ -211,18 +211,18 @@ exports.aCreateCustomer = [
       await element[0].click();
 
       //  SIAM LOTTO
-      element = await page.$x(`//table[@onclick="toggleSetting('trRCI',this)"]`);
+      element = await page.$x(`//table[@onclick="toggleSetting('trRBI',this)"]`);
       await element[0].click();
       //ปรับไม้ 6 ระดับ
       element = await page.$x(`//*[@id="optRBIProfile1"]`)
       await element[0].click()
 
       //  UFA SLOT / UFA FISHING
-      element = await page.$x(`//table[@onclick="toggleSetting('trRCL',this)"]`);
+      element = await page.$x(`//table[@onclick="toggleSetting('trRBL',this)"]`);
       await element[0].click();
 
       //  MUAY STEP
-      element = await page.$x(`//table[@onclick="toggleSetting('trRCM',this)"]`);
+      element = await page.$x(`//table[@onclick="toggleSetting('trRBM',this)"]`);
       await element[0].click();
       //ปรับเซอเซน 0
       element = await page.select("select#lstCommissionRBM", "0")
@@ -231,7 +231,7 @@ exports.aCreateCustomer = [
       await element[0].click()
 
       //  VIRTUAL SPORTS
-      element = await page.$x(`//table[@onclick="toggleSetting('trRCO',this)"]`);
+      element = await page.$x(`//table[@onclick="toggleSetting('trRBO',this)"]`);
       await element[0].click();
       lstCommissionRBO
       optRBOProfile1
@@ -249,25 +249,25 @@ exports.aCreateCustomer = [
       element = await page.$x(`//table[@onclick="toggleSetting('trRCX',this)"]`);
       await element[0].click();
       //ยืนยัน
-      element = await page.$x(`//*[@id="btnSave"]`)
-      await element[0].click()
+      // element = await page.$x(`//*[@id="btnSave"]`)
+      // await element[0].click()
 
       element = await page.waitForXPath(`//*[@id="lblStatus"]`);
       [element] = await page.$x(`//*[@id="lblStatus"]`);
       result = await page.evaluate(element => element.textContent, element);
       if (result === "Profile updated successfully.") {
         console.log('--- 514 ---');
-        await page.close()
-        await browser.close();
+        // await page.close()
+        // await browser.close();
         apiResponse.successResponseWithData(res, 'Operation success สร้างสำเร็จ', {})
       } else {
-        await page.close()
-        await browser.close();
+        // await page.close()
+        // await browser.close();
         apiResponse.ErrorResponse(res, 'Operation success สร้างผิดพลาด', {})
       }
     } catch (error) {
-      await page.close() // Close the website
-      await browser.close();
+      // await page.close() // Close the website
+      // await browser.close();
       apiResponse.ErrorResponse(res, 'Operation Error', {})
     }
   }
