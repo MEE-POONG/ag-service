@@ -1,7 +1,6 @@
 const delay = require("delay");
-const puppeteer = require('puppeteer'); const { text } = require("stream/consumers");
-+
-	require('dotenv').config()
+const puppeteer = require('puppeteer');
+require('dotenv').config()
 const userS = "ufh27"
 const userM = "ufh27a5"
 const userA = "ufh27oa0"
@@ -107,8 +106,10 @@ const args = [
 
 	// ITP (CQ9, PNG, BNG, GF, PTS, AUG, NS, HB, MPoker, MTPoker)
 	console.log('ITP สำเร็จ');
-	element = await page.$x(`//div[@id="page_main"]/table/tbody/tr[10]/td/table/tbody/tr[6]/td/table/tbody/tr[1]/td/table`);
-	// element = await page.$x(`//table[@onclick="toggleSetting('trRAS',this)"]`);
+	// element = await page.$x(`//div[@id="page_main"]/table/tbody/tr[10]/td/table/tbody/tr[6]/td/table/tbody/tr[1]/td/table`);
+	element = await page.$x(`//table[@onclick="toggleSetting('trRAR',this)"]`);
+	await element[0].click();
+	element = await page.$x(`//table[@onclick="toggleSetting('trRAS',this)"]`);
 	await element[0].click();
 	// element = await page.$x(`//table[@onclick="toggleSetting('trRAS',this)"]`);
 	// await element[0].click();

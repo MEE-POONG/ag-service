@@ -1,7 +1,6 @@
 const delay = require("delay");
-const puppeteer = require('puppeteer');const { text } = require("stream/consumers");
- +
-	require('dotenv').config()
+const puppeteer = require('puppeteer');
+require('dotenv').config()
 const userS = "ufh27"
 const passS = "168Ufavip168++"
 const passM = "66Pplsix168<>+"
