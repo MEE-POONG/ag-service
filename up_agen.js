@@ -1,5 +1,5 @@
 const delay = require("delay");
-const puppeteer = require('puppeteer'); +
+const puppeteer = require('puppeteer');
 	require('dotenv').config()
 const { topMasterPass, topAgenPass, sixMasterPass, sixAgenPass, adminuser, adminpass } = process.env
 const usernameAG = "ufrcb0"

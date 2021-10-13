@@ -1,6 +1,6 @@
 const delay = require('delay')
-const puppeteer = require('puppeteer')
-  ; +require('dotenv').config()
+const puppeteer = require('puppeteer');
+  require('dotenv').config()
 const { createWorker } = require('tesseract.js')
 const chalk = require('chalk')
 const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
