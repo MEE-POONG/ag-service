@@ -69,8 +69,8 @@ const args = [
 	})
 	await delay(1000);
 	element = await page.$x(`//*[@id="txtSearch"]`)
-	await element[0].type(userM);
-	console.log('--- txtSearch ---');
+	await element[0].type(userM); +
+		console.log('--- txtSearch ---');
 	element = await page.$x(`//*[@id="btnSubmit"]`)
 	await element[0].click()
 	console.log('--- btnSubmit ---');
@@ -110,34 +110,15 @@ const args = [
 	console.log('--- 111 ---');
 	resultTable.shift();
 	resultTable.pop();
-	console.log("113 resultTable[2];", resultTable.length);
-	// for (var i = 0; i < resultTable.length; i++) {
-	// 	console.log(resultTable[i][3] === userM, " : " + i + " : ", resultTable[i]);
-	// 	if (resultTable[i][3] !== userM) {
-	// 		console.log(i, " : ", resultTable[i], ' === ', resultTable[i][1] === ' === ');
-	// 		resultTable.splice(i, 1);
-	// 	} else if (resultTable[i][1] === 'Copy') {
-	// 		resultTable.splice(i, 1);
-	// 		console.log(i, " : ", resultTable[i], 'Copy', resultTable[i][1] === 'Copy');
-	// 	}
-	// }
+	console.log("120 resultTable[2];", resultTable.length);
 	for (var i = 0; i < resultTable.length; i++) {
-		console.log(resultTable[i][1] == 'Copy', " : ", resultTable[i][3] !== userM, " : ", resultTable[i] == undefined);
-		if (resultTable[i][1] == 'Copy' || resultTable[i][3] !== userM || resultTable[i] == undefined) {
+		console.log("นอก IF : ", i, resultTable[i][1]);
+		if (resultTable[i][1] === 'Copy') {
+			console.log(i, " : ", resultTable[i]);
 			resultTable.splice(i, 1);
-			console.log(i, " : ");
-			// console.log(resultTable[i][1], " : ", resultTable[i][1] === 'Copy', " : ", resultTable[i][3] !== userM);
 		}
 	}
-	console.log("132 resultTable[2];", resultTable.length);
-	console.log("132 resultTable[2];", resultTable);
-	// for (var i = 0; i < resultTable.length; i++) {
-	// 	console.log(i, " คงเหลือ : ", resultTable[i][3], " : ", resultTable[i][3] !== userM);
-	// 	if ((resultTable[i][3] !== userM) === true) {
-	// 		resultTable.splice(i, 1);
-	// 	}
-	// }
-	console.log("139 resultTable[2];", resultTable.length);
+	console.log("คงเหลือ : ", resultTable);
 	//*[@id="MemberList_cm1_g"]/tbody/tr[2]/td[3]/table/tbody/tr/td[1]/a
 	// /html/body/form/div[3]/table/tbody/tr[4]/td/table/tbody/tr/td/table/tbody/tr[1]/td/table/tbody/tr[2]/td[7]/span
 	// MemberList_cm1_g_ctl02_btnAcc

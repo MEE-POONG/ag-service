@@ -71,12 +71,18 @@ const args = [
 	await delay(1000);
 
 	//SPORTSBOOK มาสเตอร์ไม่ใช่บอล
-	element = await page.$x(`//table[@onclick="toggleSetting('trSports',this)"]`);
+	// ON
+	element = await page.$x(`//table[@onclick="toggleSetting2('trSports',this,'btnUpdSB')"]`);
 	await element[0].click();
 	console.log('SPORTSBOOK สำเร็จ');
+	await delay(1000);
+	// OFF
+	element = await page.$x(`//table[@onclick="toggleSetting2('trSports',this,'btnUpdSB')"]`);
+	await element[0].click();
 
 	// SA GAMING
-	element = await page.$x(`//table[@onclick="toggleSetting('trRAR',this)"]`);
+	// element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[10]/td/table/tbody/tr[4]/td/table/tbody/tr[1]/td/table`);
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRAR',this,'btnUpdRAR')"]`);
 	await element[0].click();
 	console.log('เปิด SA GAMING สำเร็จ');
 	//ปิด เปิด
@@ -102,11 +108,12 @@ const args = [
 		radio.click();
 	});
 	// OFF
-	await delay(3000);
-
+	// OFF
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRAR',this,'btnUpdRAR')"]`);
+	await element[0].click();
 
 	// ITP (CQ9, PNG, BNG, GF, PTS, AUG, NS, HB, MPoker, MTPoker)
-	element = await page.$x(`//table[@onclick="toggleSetting('trRAS',this)"]`);
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRAS',this,'btnUpdRAS')"]`);
 	await element[0].click();
 	console.log('ITP สำเร็จ');
 	// //ปิด เปิด
@@ -118,15 +125,20 @@ const args = [
 		let radio = document.querySelector('#btnRASEnable');
 		radio.click();
 	});
-
+	// OFF
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRAS',this,'btnUpdRAS')"]`);
+	await element[0].click();
 
 	//  ITP (UPG/MG)
-	element = await page.$x(`//table[@onclick="toggleSetting('trRCV',this)"]`);
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRCV',this,'btnUpdRCV')"]`);
 	await element[0].click();
 	console.log(' ITP (UPG/MG) สำเร็จ');
+	// OFF
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRCV',this,'btnUpdRCV')"]`);
+	await element[0].click();
 
 	//  JOKER
-	element = await page.$x(`//table[@onclick="toggleSetting('trRAU',this)"]`);
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRAU',this,'btnUpdRAU')"]`);
 	await element[0].click();
 	console.log(' JOKER สำเร็จ');
 	//ปิด เปิด
@@ -138,10 +150,12 @@ const args = [
 		let radio = document.querySelector('#btnRAUEnable');
 		radio.click();
 	});
-	
+	// OFF
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRAU',this,'btnUpdRAU')"]`);
+	await element[0].click();
 
 	//GH CASINO / EB CASINO / BG
-	element = await page.$x(`//table[@onclick="toggleSetting('trRBF',this)"]`);
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRBF',this,'btnUpdRBF')"]`);
 	await element[0].click();
 	console.log('GH CASINO / EB CASINO / BG สำเร็จ');
 	//ปิด เปิด
@@ -165,11 +179,14 @@ const args = [
 		let radio = document.querySelector('#optRBFProfile1');
 		radio.click();
 	});
-	
-
-	// //  AE7
-	element = await page.$x(`//table[@onclick="toggleSetting('trRCZ',this)"]`);
+	// OFF
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRBF',this,'btnUpdRBF')"]`);
 	await element[0].click();
+
+	//  AE7
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRCZ',this,'btnUpdRCZ')"]`);
+	await element[0].click();
+	console.log('AE7 สำเร็จ');
 	//ปิด เปิด
 	element = await page.evaluate(() => {
 		let radio = document.querySelector('#btnRCZDisable');
@@ -179,11 +196,14 @@ const args = [
 		let radio = document.querySelector('#btnRCZEnable');
 		radio.click();
 	});
-	
-
-	// //  GH COCKFT / HORSE RACING
-	element = await page.$x(`//table[@onclick="toggleSetting('trRBG',this)"]`);
+	// OFF
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRCZ',this,'btnUpdRCZ')"]`);
 	await element[0].click();
+
+	// GH COCKFT / HORSE RACING
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRBG',this,'btnUpdRBG')"]`);
+	await element[0].click();
+	console.log('GH COCKFT / HORSE RACING สำเร็จ');
 	//ปรับเซอเซน 0
 	element = await page.select("select#lstCommissionRBG", "0")
 	//ปรับไม้ 6 ระดับ
@@ -194,14 +214,19 @@ const args = [
 	// Limit E	Min = 500 Max = 25000	 
 	element = await page.$x(`//*[@id="optRBGProfile1"]`)
 	await element[0].click()
-	
-	// //  GH SLOT / ESPORT / SABASPORT
-	element = await page.$x(`//table[@onclick="toggleSetting('trRBH',this)"]`);
+	// OFF
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRBG',this,'btnUpdRBG')"]`);
 	await element[0].click();
 
-	// //  SIAM LOTTO
-	element = await page.$x(`//table[@onclick="toggleSetting('trRBI',this)"]`);
+	//  GH SLOT / ESPORT / SABASPORT
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRBH',this,'btnUpdRBH')"]`);
 	await element[0].click();
+	console.log('GH SLOT / ESPORT / SABASPORT สำเร็จ');
+
+	//  SIAM LOTTO
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRBI',this,'btnUpdRBI')"]`);
+	await element[0].click();
+	console.log('SIAM LOTTO สำเร็จ');
 	//ปิด เปิด
 	element = await page.evaluate(() => {
 		let radio = document.querySelector('#btnRBIDisable');
@@ -218,12 +243,11 @@ const args = [
 	// Limit D	Min = 100 Max = 40000	 
 	element = await page.$x(`//*[@id="optRBIProfile1"]`)
 	await element[0].click()
-	
 
-
-	// //  UFA SLOT / UFA FISHING
-	element = await page.$x(`//table[@onclick="toggleSetting('trRBL',this)"]`);
+	//  UFA SLOT / UFA FISHING
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRBL',this,'btnUpdRBL')"]`);
 	await element[0].click();
+	console.log('UFA SLOT สำเร็จ');
 	//ปิด เปิด
 	element = await page.evaluate(() => {
 		let radio = document.querySelector('#btnRBLDisable');
@@ -233,10 +257,11 @@ const args = [
 		let radio = document.querySelector('#btnRBLEnable');
 		radio.click();
 	});
-	
-	// //  MUAY STEP
-	element = await page.$x(`//table[@onclick="toggleSetting('trRBM',this)"]`);
+
+	//  MUAY STEP
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRBM',this,'btnUpdRBM')"]`);
 	await element[0].click();
+	console.log('MUAY STEP สำเร็จ');
 	//ปิด เปิด
 	element = await page.evaluate(() => {
 		let radio = document.querySelector('#btnRBMDisable');
@@ -258,8 +283,9 @@ const args = [
 	await element[0].click()
 
 	//  VIRTUAL SPORTS
-	element = await page.$x(`//table[@onclick="toggleSetting('trRBO',this)"]`);
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRBO',this,'btnUpdRBO')"]`);
 	await element[0].click();
+	console.log('VIRTUAL SPORTS สำเร็จ');
 	//ปิด เปิด
 	element = await page.evaluate(() => {
 		let radio = document.querySelector('#btnRBODisable');
@@ -277,9 +303,10 @@ const args = [
 	element = await page.$x(`//*[@id="optRBOProfile1"]`)
 	await element[0].click()
 
-	// //  UFA LOTTO - YEEKEE
-	element = await page.$x(`//table[@onclick="toggleSetting('trRCW',this)"]`);
+	//  UFA LOTTO - YEEKEE
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRCW',this,'btnUpdRCW')"]`);
 	await element[0].click();
+	console.log('UFA LOTTO - YEEKEE สำเร็จ');
 	//ปิด เปิด
 	element = await page.evaluate(() => {
 		let radio = document.querySelector('#btnRCWDisable');
@@ -289,11 +316,11 @@ const args = [
 		let radio = document.querySelector('#btnRCWEnable');
 		radio.click();
 	});
-	
-	// //  UFA THAI LOTTO / ASEAN LOTTO
-	element = await page.$x(`//table[@onclick="toggleSetting('trRCX',this)"]`);
+
+	//  UFA THAI LOTTO / ASEAN LOTTO
+	element = await page.$x(`//table[@onclick="toggleSetting2('trRCX',this,'btnUpdRCX')"]`);
 	await element[0].click();
-	
+
 	//ยืนยัน
 	//   element = await page.$x(`//*[@id="btnSave"]`)
 	//   await element[0].click()
