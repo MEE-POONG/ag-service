@@ -12,5 +12,14 @@ router.post('/set-pass-allince', agController.agSetPassAllince)
 router.post('/set-agen-and-pass', agController.agSetAgenAndPass)
 // router.post('/a-create-customer', agenController.aCreateCustomer)
 // router.post('/a-coppy-customer', agenController.aCoppyCustomer)
+router.post('/create-customer', agenController.aCoppyCustomer)
+router.post('/create-agen', agenController.aCoppyCustomer)
+router.post('/create-master', agenController.aCoppyCustomer)
+router.post('/create-customer', agenController.aCoppyCustomer)
+router.post('/create-customer', agenController.aCoppyCustomer)
+router.post('/create-customer', agenController.aCoppyCustomer)
+router.post('/create-customer', agenController.aCoppyCustomer)
+router.post('/create-customer', agenController.aCoppyCustomer)
+
 
 module.exports = router
