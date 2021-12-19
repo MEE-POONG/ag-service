@@ -1,6 +1,6 @@
 const delay = require('delay')
-const puppeteer = require('puppeteer')
-  ; +require('dotenv').config()
+const puppeteer = require('puppeteer');
+require('dotenv').config()
 const { createWorker } = require('tesseract.js')
 const chalk = require('chalk')
 const { agtrue, topAgenPass, sixAgenPass, adminUser, AgenPass } = process.env
@@ -346,7 +346,7 @@ exports.aCoppyCustomer = [
           await page.close()
           await browser.close();
           apiResponse.successResponseWithData(res, 'สร้างยูส ' + setUserNumber + ' faill สร้างไม่สำเร็จ', {})
-        }else if (setUserNumber.substr(-1, 1) === 0 || idx === 9) {
+        } else if (setUserNumber.substr(-1, 1) === 0 || idx === 9) {
           console.log("125 : ", setUserNumber);
           console.log(idx);
           console.log(setUserNumber.substr(-1, 1));

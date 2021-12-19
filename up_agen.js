@@ -1,5 +1,5 @@
 const delay = require("delay");
-const puppeteer = require('puppeteer'); +
+const puppeteer = require('puppeteer');
 	require('dotenv').config()
 const { topMasterPass, topAgenPass, sixMasterPass, sixAgenPass, adminuser, adminpass } = process.env
 const usernameAG = "ufrcb0"
@@ -46,7 +46,7 @@ const args = [
 ];
 (async () => {
 
-	const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
+	const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 1080 }, args });
 	const page = await browser.newPage();
 	let element, formElement, tabs;
 
@@ -91,6 +91,6 @@ const args = [
 	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[14]/div/input`);
 	await element[0].type(`9999`);
 
-	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[16]/div/button`);
-	await element[0].click();
+	// element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[16]/div/button`);
+	// await element[0].click();
 })();
