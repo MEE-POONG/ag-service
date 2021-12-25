@@ -1,6 +1,7 @@
 const express = require('express')
 const agController = require('../controllers/ag.controller')
 const agenController = require('../controllers/agen.controller')
+const seniorController = require('../controllers/senior.controller')
 
 var router = express.Router()
 router.post('/create-customer', agenController.aCoppyCustomer)
