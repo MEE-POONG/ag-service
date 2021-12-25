@@ -366,3 +366,99 @@ exports.aCoppyCustomer = [
     }
   }
 ]
+exports.CreateCustomer = [
+  async (req, res) => {
+    const { usernameAG, customerLatest, webname } = req.body
+    const browser = await puppeteer.launch({
+      headless: true,
+      defaultViewport: { width: 1920, height: 1080 },
+      args
+    })
+    const page = await browser.newPage()
+    try {
+      const captchaPath = 'captcha' + '.png'
+      let element
+
+      await page.goto(agtrue + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
+
+      await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
+      const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
+      await captcha.screenshot({
+        path: captchaPath
+      })
+      element = await page.$x(`//*[@id="txtUserName"]`)
+      await element[0].type(usernameAG)
+      element = await page.$x(`//*[@id="txtPassword"]`)
+      // await element[0].type(AgenPass)
+      await element[0].type(webname === 'UFA-66' ? sixAgenPass : webname === 'TOP-168' ? topAgenPass : '')
+      console.log("usernameAG", usernameAG);
+      console.log("txtPassword", usernameAG);
+      await delay(3000)
+
+      await tesseractGet(captchaPath)
+        .then(async result => {
+          console.log("captchaPath", result)
+          element = await page.$x(`//*[@id="txtCode"]`)
+          await element[0].type(result)
+        })
+        .catch(function (err) {
+          console.log(chalk.red(err))
+        })
+
+      // element = await page.$x(`//*[@id="btnSignIn"]`)
+      // await element[0].click()
+
+      const urls = page.url()
+      console.log('Page URL : ' + urls)
+
+      await delay(3000)
+
+      for (const [idx, data] of arrayAG.entries()) {
+        setUserNumber = (+ customerLatest.substring() + idx).toString().padStart(customerLatest.length, '0')
+        console.log("125 : ", setUserNumber);
+        console.log(idx);
+        console.log(setUserNumber.substr(-1, 1));
+        await page.goto(agtrue + `/_SubAg1/MemberSet.aspx?cName=` + usernameAG + `0&set=1`, {
+          waitUntil: 'networkidle2'
+        })
+        await delay(3000)
+
+        element = await page.$x(`//*[@id="txtUserName"]`)
+        await element[0].type(setUserNumber)
+        element = await page.$x(`//*[@id="txtPassword"]`)
+        await element[0].type(`Aa123456+`)
+        element = await page.$x(`//*[@id="txtTotalLimit"]`)
+        await element[0].type(`0`)
+        element = await page.$x(`//*[@id="btnSave"]`)
+        await element[0].click()
+        await delay(1000)
+
+        element = await page.waitForXPath(`//*[@id="lblStatus"]`);
+        [element] = await page.$x(`//*[@id="lblStatus"]`);
+        result = await page.evaluate(element => element.textContent, element);
+
+        if (result !== "Profile updated successfully.") {
+          console.log('--- 514 ---');
+          await page.close()
+          await browser.close();
+          apiResponse.successResponseWithData(res, 'สร้างยูส ' + setUserNumber + ' faill สร้างไม่สำเร็จ', {})
+        } else if (setUserNumber.substr(-1, 1) === 0 || idx === 9) {
+          console.log("125 : ", setUserNumber);
+          console.log(idx);
+          console.log(setUserNumber.substr(-1, 1));
+          console.log("เสร็จ");
+          await page.close() // Close the website
+          await browser.close();
+          apiResponse.successResponseWithData(res, 'Operation success สำเร็จ 10 ยูส ' + usernameAG + setUserNumber, {})
+        }
+      }
+      await page.close() // Close the website
+      await browser.close();
+      apiResponse.successResponseWithData(res, 'Operation success อาจมีข้อผิดพลาด ' + usernameAG + setUserNumber, {})
+    } catch (error) {
+      await page.close() // Close the website
+      await browser.close();
+      apiResponse.ErrorResponse(res, error)
+    }
+  }
+]
