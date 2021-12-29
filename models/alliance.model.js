@@ -12,6 +12,7 @@ const allianceSchema = new Schema(
     reserveUser: String,
     incomeDividID: String,
     statusFlag: String,
+    statusServe: String,
     createdBy: String,
     updatedBy: String
   },

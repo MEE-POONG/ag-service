@@ -1,11 +1,15 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const allianceSchema = new Schema(
+const customerSchema = new Schema(
   {
-    userID: String,
-    usernamePlay: String,
-    passwordPlay: String,
+    webname: String,
+    usernameAG: String,
+    customerID: String,
+    customerTAG: String,
+    countCustomer: Number,
+    statusServe: String,
+    statusAG: String,
     statusFlag: String,
     createdBy: String,
     updatedBy: String
@@ -13,6 +17,6 @@ const allianceSchema = new Schema(
   { timestamps: true, versionKey: false }
 )
 
-const AllianceModel = mongoose.model('Alliance', allianceSchema)
+const CustomerModel = mongoose.model('Customer', customerSchema)
 
-module.exports = AllianceModel
+module.exports = CustomerModel
