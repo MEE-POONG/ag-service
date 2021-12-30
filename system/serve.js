@@ -26,6 +26,7 @@ const { createCustomer } = require("./createCustomer");
 const headless = true
 const link = headless ? 'http://ag.ufa6666.com' : 'http://ocean.isme99.com'
 const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
+var cmd = require('node-cmd');
 
 let statusFlags = 'R';
 async function login(usernameAG, worker) {
@@ -70,6 +71,7 @@ async function login(usernameAG, worker) {
         .catch(function (err) {
           console.log(chalk.red(err))
           fs.unlink(pathPhoto, (err => { return; }));
+          cmd.runSync('npm run serve:restart');
         })
 
     } else {
@@ -97,6 +99,7 @@ async function login(usernameAG, worker) {
     return { browser, page }
   } catch (error) {
     console.error(error)
+    cmd.runSync('npm run serve:restart');
   }
 }
 
@@ -110,7 +113,6 @@ async function start() {
 
   setInterval(async () => {
     try {
-      console.log(chalk.blue('--- JOB IS RUNNING ' + new Date().toISOString() + ' ---'));
       if (statusFlags === 'R') {
         const customerPending = await Customer.find({ statusServe: "PENDING" });
         if (customerPending.length > 0) {
@@ -134,6 +136,7 @@ async function start() {
       }
     } catch (error) {
       console.log(chalk.red(error));
+      cmd.runSync('npm run serve:restart');
     }
   }, 2000);
 
