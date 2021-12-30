@@ -132,6 +132,7 @@ async function start() {
           statusFlags = 'R'
           console.log(chalk.green('END JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          cmd.runSync('npm run serve:restart');
         }
       }
     } catch (error) {
