@@ -1,12 +1,17 @@
 require('dotenv').config()
-const fs = require('fs');
-
 const mongoose = require('mongoose')
 const MONGODB_URI = process.env.MONGODB_URI
-mongoose.connect(MONGODB_URI, { poolSize: 10, bufferMaxEntries: 0, reconnectTries: 5000, useNewUrlParser: true, useUnifiedTopology: true });
+
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, reconnectTries: 5000 })
 mongoose.connection.on('error', err => {
   console.error('MongoDB error', err)
 })
+
+
+
+
+const fs = require('fs');
+
 const Customer = require('../models/customer.model')
 
 const { createWorker } = require('tesseract.js')
@@ -105,6 +110,7 @@ async function start() {
 
   setInterval(async () => {
     try {
+      console.log(chalk.blue('--- JOB IS RUNNING ' + new Date().toISOString() + ' ---'));
       if (statusFlags === 'R') {
         const customerPending = await Customer.find({ statusServe: "PENDING" });
         if (customerPending.length > 0) {

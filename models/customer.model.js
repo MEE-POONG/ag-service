@@ -11,8 +11,8 @@ const customerSchema = new Schema(
     statusServe: String,
     statusAG: String,
     statusFlag: String,
-    createdBy: String,
-    updatedBy: String
+    createdBy: mongoose.Types.ObjectId,
+    updatedBy: mongoose.Types.ObjectId
   },
   { timestamps: true, versionKey: false }
 )

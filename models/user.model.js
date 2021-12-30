@@ -7,15 +7,15 @@ const userSchema = new Schema(
     password: String,
     firstname: String,
     lastname: String,
-    adviser: String,
-    bankName: String,
-    bankAccount: String,
     tel: String,
     line: String,
-    image: String,
+    team: String,
+    status: String,
+    bankName: String,
+    bankAccount: String,
     statusFlag: String,
-    createdBy: String,
-    updatedBy: String
+    createdBy: mongoose.Types.ObjectId,
+    updatedBy: mongoose.Types.ObjectId
   },
   { timestamps: true, versionKey: false }
 )

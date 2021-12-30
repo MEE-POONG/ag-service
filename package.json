@@ -9,6 +9,10 @@
     "dev": "nodemon server.js",
     "docker:build": "docker build -t chunwarayut/agservice:latest .",
     "docker:push": "docker push chunwarayut/agservice:latest",
+    "serve:start": "pm2 start system/login.js -n auto-bot-queue",
+    "serve:restart": "pm2 restart auto-bot-queue",
+    "serve:stop": "pm2 stop auto-bot-queue",
+    "serve:delete": "pm2 delete auto-bot-queue",
     "docker:b:p": "npm run docker:build && npm run docker:push"
   },
   "keywords": [
@@ -24,6 +28,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
     "chalk": "^4.1.0",
     "chromedriver": "^90.0.0",
     "connect": "^3.7.0",
@@ -42,9 +47,10 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
     "mongoose": "^5.12.14",
+    "node-cmd": "^5.0.0",
     "node-crontab": "^0.0.8",
     "nodemon": "^2.0.7",
-    "pm2": "^5.1.0",
+    "pm2": "^5.1.2",
     "puppeteer": "^10.2.0",
     "querystring": "^0.2.0",
     "selenium-webdriver": "^4.0.0-beta.3",
