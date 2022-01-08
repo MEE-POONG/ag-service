@@ -1,21 +1,14 @@
-const Alliance = require('../models/alliance.model')
+const Team = require('../models/team.model')
 const { body, validationResult } = require('express-validator')
 const { sanitizeBody } = require('express-validator')
 var mongoose = require('mongoose')
 
 var apiResponse = require('../helpers/apiResponse')
 
-// Alliance Schema
-function AllianceData(data) {
+// Team Schema
+function TeamData(data) {
     this.id = data._id
-    this.userID = data.userID
-    this.adviserID = data.adviserID
-    this.webname = data.webname
-    this.status = data.status
-    this.usernameAG = data.usernameAG
-    this.countUser = data.countUser
-    this.reserveUser = data.reserveUser
-    this.incomeDividID = data.incomeDividID
+    this.name = data.name
     this.statusFlag = data.statusFlag
     this.createdBy = data.createdBy
     this.createdAt = data.createdAt
@@ -23,33 +16,33 @@ function AllianceData(data) {
     this.updatedAt = data.updatedAt
 }
 
-exports.allianceList = [
+exports.teamList = [
     async(req, res) => {
         try {
-            const alliances = await Alliance.find({}).limit(50)
+            const teams = await Team.find({}).limit(50)
             return apiResponse.successResponseWithData(
                 res,
                 'Operation success',
-                alliances
+                teams
             )
         } catch (error) {
             return apiResponse.ErrorResponse(res, error)
         }
     }
 ]
-exports.allianceDetail = [
+exports.teamDetail = [
     async(req, res) => {
         const { id } = req.params
 
         try {
-            const alliance = await Alliance.findById(id)
+            const team = await Team.findById(id)
 
-            if (alliance !== null) {
-                let allianceData = new AllianceData(alliance)
+            if (team !== null) {
+                let teamData = new TeamData(team)
                 return apiResponse.successResponseWithData(
                     res,
                     'Operation success',
-                    allianceData
+                    teamData
                 )
             } else {
                 return apiResponse.successResponseWithData(res, 'Operation success', {})
@@ -59,12 +52,10 @@ exports.allianceDetail = [
         }
     }
 ]
-exports.allianceSearch = [
+exports.teamSearch = [
     sanitizeBody('*').escape(),
     async(req, res) => {
         const keyword = req.body.keyword || '';
-        const statusSearch = req.body.status || '';
-        const webSearch = req.body.webSearch
         try {
             // VALIDATION USER
             const errors = validationResult(req)
@@ -75,28 +66,22 @@ exports.allianceSearch = [
                     errors.array()
                 )
             }
-            const alliance = await Alliance.aggregate([
-                { $match: { usernameAG: new RegExp(keyword, "i"), webname: new RegExp(webSearch, "i"), status: new RegExp(statusSearch, "i") } },
+            const team = await Team.aggregate([
+                { $match: { usernameAG: new RegExp(keyword, "i") } },
                 { $limit: 50 }
             ])
             return apiResponse.successResponseWithData(
                 res,
                 'Operation success',
-                alliance,
+                team,
             )
         } catch (error) {
             return apiResponse.ErrorResponse(res, error)
         }
     }
 ]
-exports.allianceStore = [
-    body('webname', 'webname must not be empty.')
-    .isLength({ min: 1, max: 200 })
-    .trim(),
-    body('status', 'status must not be empty.')
-    .isLength({ min: 1, max: 200 })
-    .trim(),
-    body('usernameAG', 'usernameAG must not be empty.')
+exports.teamStore = [
+    body('team', 'team must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
     body('statusFlag', 'statusFlag must be 1 length.')
@@ -112,7 +97,7 @@ exports.allianceStore = [
     async(req, res) => {
         const payload = req.body
         try {
-            // VALIDATION ALLIANCE
+            // VALIDATION TEAM
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 return apiResponse.validationErrorWithData(
@@ -121,7 +106,7 @@ exports.allianceStore = [
                     errors.array()
                 )
             }
-            const checkUser = await Alliance.findOne({
+            const checkUser = await Team.findOne({
                 $or: [{ usernameAG: payload.usernameAG }],
                 statusFlag: 'A'
             })
@@ -131,42 +116,30 @@ exports.allianceStore = [
                     'usernameAG exists with this id'
                 )
             }
-            // NEW ALLIANCE
-            const alliance = new Alliance({
+            // NEW TEAM
+            const team = new Team({
                     userID: payload.userID,
-                    adviserID: payload.adviserID,
-                    webname: payload.webname,
-                    status: payload.status,
-                    usernameAG: payload.usernameAG,
-                    countUser: payload.countUser,
-                    reserveUser: payload.reserveUser,
-                    incomeDividID: payload.incomeDividID,
+                    name: payload.name,
                     statusFlag: payload.statusFlag,
                     createdBy: payload.createdBy,
                     updatedBy: payload.updatedBy
                 })
-                // SAVE ALLIANCE
-            await alliance.save()
-            let allianceData = new AllianceData(alliance)
+                // SAVE TEAM
+            await team.save()
+            let teamData = new TeamData(team)
 
             return apiResponse.successResponseWithData(
                 res,
-                'Alliance add Success.',
-                allianceData
+                'Team add Success.',
+                teamData
             )
         } catch (error) {
             return apiResponse.ErrorResponse(res, error)
         }
     }
 ]
-exports.allianceUpdate = [
-    body('webname', 'webname must not be empty.')
-    .isLength({ min: 1, max: 200 })
-    .trim(),
-    body('status', 'status must not be empty.')
-    .isLength({ min: 1, max: 200 })
-    .trim(),
-    body('usernameAG', 'usernameAG must not be empty.')
+exports.teamUpdate = [
+    body('name', 'name must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
     body('statusFlag', 'statusFlag must be 1 length.')
@@ -184,16 +157,8 @@ exports.allianceUpdate = [
         const { id } = req.params
 
         try {
-            const alliance = new Alliance({
-                userID: payload.userID,
-                adviserID: payload.adviserID,
-                webname: payload.webname,
-                status: payload.status,
-                usernameAG: payload.usernameAG,
-                countUser: payload.countUser,
-                passwordAG: payload.passwordAG,
-                reserveUser: payload.reserveUser,
-                incomeDividID: payload.incomeDividID,
+            const team = new Team({
+                name: payload.name,
                 statusFlag: payload.statusFlag,
                 createdBy: payload.createdBy,
                 updatedBy: payload.updatedBy,
@@ -208,24 +173,24 @@ exports.allianceUpdate = [
                 )
             }
 
-            const checkAlliance = await Alliance.findById(id)
-            if (checkAlliance === null) {
+            const checkTeam = await Team.findById(id)
+            if (checkTeam === null) {
                 return apiResponse.notFoundResponse(
                     res,
-                    'Alliance not exists with this id'
+                    'Team not exists with this id'
                 )
             }
 
-            const updateAlliance = await Alliance.findByIdAndUpdate(id, {
-                $set: alliance
+            const updateTeam = await Team.findByIdAndUpdate(id, {
+                $set: team
             })
 
-            if (updateAlliance) {
-                let allianceData = new AllianceData(await Alliance.findById(id))
+            if (updateTeam) {
+                let teamData = new TeamData(await Team.findById(id))
                 return apiResponse.successResponseWithData(
                     res,
-                    'Alliance update Success.',
-                    allianceData
+                    'Team update Success.',
+                    teamData
                 )
             } else {
                 return apiResponse.validationErrorWithData(
@@ -240,7 +205,7 @@ exports.allianceUpdate = [
     }
 ]
 
-exports.allianceDelete = [
+exports.teamDelete = [
     async(req, res) => {
         const { id } = req.params
 
@@ -253,17 +218,17 @@ exports.allianceDelete = [
                 )
             }
 
-            const checkAlliance = await Alliance.findById(id)
-            if (checkAlliance === null) {
+            const checkTeam = await Team.findById(id)
+            if (checkTeam === null) {
                 return apiResponse.notFoundResponse(
                     res,
-                    'Alliance not exists with this id'
+                    'Team not exists with this id'
                 )
             }
 
-            await Alliance.findByIdAndDelete(id)
+            await Team.findByIdAndDelete(id)
 
-            return apiResponse.successResponse(res, `Alliance delete Success.`)
+            return apiResponse.successResponse(res, `Team delete Success.`)
         } catch (error) {
             return apiResponse.ErrorResponse(res, error)
         }
