@@ -81,7 +81,7 @@ exports.teamSearch = [
     }
 ]
 exports.teamStore = [
-    body('team', 'team must not be empty.')
+    body('name', 'name must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
     body('statusFlag', 'statusFlag must be 1 length.')

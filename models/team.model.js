@@ -9,6 +9,6 @@ const teamSchema = new Schema({
     updatedBy: String
 }, { timestamps: true, versionKey: false })
 
-const AllianceModel = mongoose.model('Alliance', teamSchema)
+const TeamModel = mongoose.model('Team', teamSchema)
 
-module.exports = AllianceModel
+module.exports = TeamModel
