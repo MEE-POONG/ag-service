@@ -1,8 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const allianceSchema = new Schema(
-  {
+const allianceSchema = new Schema({
     userID: String,
     adviserID: String,
     webname: String,
@@ -15,9 +14,7 @@ const allianceSchema = new Schema(
     statusServe: String,
     createdBy: String,
     updatedBy: String
-  },
-  { timestamps: true, versionKey: false }
-)
+}, { timestamps: true, versionKey: false })
 
 const AllianceModel = mongoose.model('Alliance', allianceSchema)
 

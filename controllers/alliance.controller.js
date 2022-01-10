@@ -10,7 +10,6 @@ function AllianceData(data) {
     this.id = data._id
     this.userID = data.userID
     this.adviserID = data.adviserID
-    this.webname = data.webname
     this.status = data.status
     this.usernameAG = data.usernameAG
     this.countUser = data.countUser
@@ -90,9 +89,6 @@ exports.allianceSearch = [
     }
 ]
 exports.allianceStore = [
-    body('webname', 'webname must not be empty.')
-    .isLength({ min: 1, max: 200 })
-    .trim(),
     body('status', 'status must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
@@ -135,7 +131,6 @@ exports.allianceStore = [
             const alliance = new Alliance({
                     userID: payload.userID,
                     adviserID: payload.adviserID,
-                    webname: payload.webname,
                     status: payload.status,
                     usernameAG: payload.usernameAG,
                     countUser: payload.countUser,
@@ -160,9 +155,6 @@ exports.allianceStore = [
     }
 ]
 exports.allianceUpdate = [
-    body('webname', 'webname must not be empty.')
-    .isLength({ min: 1, max: 200 })
-    .trim(),
     body('status', 'status must not be empty.')
     .isLength({ min: 1, max: 200 })
     .trim(),
@@ -187,7 +179,6 @@ exports.allianceUpdate = [
             const alliance = new Alliance({
                 userID: payload.userID,
                 adviserID: payload.adviserID,
-                webname: payload.webname,
                 status: payload.status,
                 usernameAG: payload.usernameAG,
                 countUser: payload.countUser,
