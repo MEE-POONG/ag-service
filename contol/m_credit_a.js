@@ -68,6 +68,7 @@ const args = [
     })
     await delay(1000);
     //บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น
+    console.log('--- บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น ---');
 
     element = await page.$x(`//*[@id="txtSearch"]`)
     await element[0].type(userA);
@@ -91,6 +92,7 @@ const args = [
     resultTable.pop();
     console.log('--- 92 --- : ', resultTable);
     //ตัดข้อมูลทิ้ง
+    console.log('--- ตัดข้อมูลทิ้ง ---');
     for (var i = 0; i < resultTable.length; i++) {
         if (resultTable[i][1] == 'Copy') {
             resultTable.splice(i, 1);
@@ -98,6 +100,7 @@ const args = [
     }
     // console.log(resultTable);
     //วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด
+    console.log('--- วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด ---');
     console.log('--- 101 --- : ', resultTable);
     for (var i = 0; i < resultTable.length; i++) {
         if (resultTable[i][3] == userA) {
@@ -109,6 +112,7 @@ const args = [
     }
 
     //บรรทัด 111 สิ้นสุดจาการค้นหายูสเอเย่นแล้วเอาบาล้าน Credit Limit ออกมา
+    console.log('--- บรรทัด 111 สิ้นสุดจาการค้นหายูสเอเย่นแล้วเอาบาล้าน Credit Limit ออกมา ---');
 
     //บรรทัด 113 เข้าเช็คบาล้านลูกค้าในยูสเอเย่น
     await page.goto(agtest + `/_Age/SubAccountList.aspx?role=sa&userName=` + userA, {
@@ -125,6 +129,7 @@ const args = [
     });
     console.log('--- 126 --- : ', resultTable[resultTable.length - 1]);
     // สิ้นสุดการหาบาล้านเอเย่น
+    console.log('--- สิ้นสุดการหาบาล้านเอเย่น ---');
 
     /////////////////////////////////////โอนยอด////////////////////////////////////////////////////
     await page.goto(agtest + `/_Age/AccBal.aspx?role=ag&userName=` + userM, {
@@ -149,6 +154,7 @@ const args = [
     resultTransfer.shift();
     console.log(resultTransfer);
     //ตัดข้อมูลทิ้ง i+2 จะได้คลาสที่ถูกต้อง
+    console.log('--- ตัดข้อมูลทิ้ง i+2 จะได้คลาสที่ถูกต้อง ---');
     for (var i = 0; i < resultTransfer.length; i++) {
         console.log(resultTransfer[i][1] == userA);
         if (resultTransfer[i][1] == userA) {
@@ -166,10 +172,12 @@ const args = [
     await page.click(selectList);
 
     // ยืนยัน Transfer
+    console.log('--- ยืนยัน Transfer ---');
     // element = await page.$x(`//*[@id="AccBal_cm1_btnPayAll"]`)
     // await element[0].click()
     // await delay(1000);
     // หลังโอนยอดเสร็จ จะดึงบานล้านยอดที่ได้จากหน้าโอนยอดมา
+    console.log('--- หลังโอนยอดเสร็จ จะดึงบานล้านยอดที่ได้จากหน้าโอนยอดมา ---');
     for (var i = 0; i < resultTransfer.length; i++) {
         console.log(resultTransfer[i][1] == userA);
         if (resultTransfer[i][1] == userA) {
@@ -183,6 +191,7 @@ const args = [
     }
 
     // ////////////////////////////////////เติมเครดิต///////////////////////////////////////////
+    console.log('--- ------------------------เติมเครดิต------------------------ ---');
     await page.goto(agtest + `/_Age1/AgentSet.aspx?userName=` + userA + `&set=1`, {
         waitUntil: 'networkidle2'
     })
@@ -203,6 +212,7 @@ const args = [
     await element[0].type(sumAdd);
 
     //ยืนยัน
+    console.log('--- ------------------------ ยืนยัน ------------------------ ---');
     // element = await page.$x(`//*[@id="btnUpdateC"]`)
     // await element[0].click()
 
