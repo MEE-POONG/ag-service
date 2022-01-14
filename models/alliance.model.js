@@ -1,20 +1,22 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const allianceSchema = new Schema({
-    userID: String,
-    adviserID: String,
-    webname: String,
-    status: String,
+const allianceSchema = new Schema(
+  {
     usernameAG: String,
-    countUser: Number,
+    userID: String,
+    adviser: String,
+    status: String,
     reserveUser: String,
-    incomeDividID: String,
-    statusFlag: String,
+    setZero: String,
+    upSystem: Boolean,
     statusServe: String,
-    createdBy: String,
-    updatedBy: String
-}, { timestamps: true, versionKey: false })
+    action: String,
+    statusFlag: { type: String, default: 'A' },
+    createdBy: mongoose.Types.ObjectId,
+    updatedBy: mongoose.Types.ObjectId
+  }, { timestamps: true, versionKey: false }
+)
 
 const AllianceModel = mongoose.model('Alliance', allianceSchema)
 
