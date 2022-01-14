@@ -59,6 +59,7 @@ async function login(usernameAG, worker) {
         path: pathPhoto
       })
       await delay(2000)
+      console.log('usernameAG', usernameAG);
       element = await page.$x(`//*[@id="txtUserName"]`)
       await element[0].type(usernameAG)
       element = await page.$x(`//*[@id="txtPassword"]`)
