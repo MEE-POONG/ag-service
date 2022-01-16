@@ -14,12 +14,13 @@ exports.setAllianceZero = async (page, link, data, zero = '0') => {
 
 
 
-
+    await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
     console.log(chalk.green('START SET ALLIANCE ZERO'));
     await setZero(page, link, data, zero)
 
     return;
   } catch (error) {
+    await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED' } })
     console.log(chalk.red('ERROR SET ALLIANCE ZERO', error));
     return;
   }
