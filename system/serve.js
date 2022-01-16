@@ -32,7 +32,8 @@ const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, admin
 // var cmd = require('node-cmd');
 
 let statusFlags = 'R';
-async function login(usernameAG, worker) {
+async function login(data, worker, index, db) {
+  index += 1
   try {
     statusFlags = 'P'
     const browser = await puppeteer.launch({
@@ -52,6 +53,7 @@ async function login(usernameAG, worker) {
     )
     console.log(await page.title());
     console.log(page.url());
+    // console.log(data);
     if (headless) {
       const pathPhoto = __dirname + '/img/captcha' + date1 + '.png'
       await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
@@ -60,9 +62,9 @@ async function login(usernameAG, worker) {
         path: pathPhoto
       })
       await delay(2000)
-      console.log('usernameAG', usernameAG);
+      console.log('usernameAG', data.usernameAG);
       element = await page.$x(`//*[@id="txtUserName"]`)
-      await element[0].type(usernameAG)
+      await element[0].type(data.usernameAG)
       element = await page.$x(`//*[@id="txtPassword"]`)
       await element[0].type(sixAgenPass)
       await readImg(worker, pathPhoto)
@@ -80,7 +82,7 @@ async function login(usernameAG, worker) {
 
     } else {
       element = await page.$x(`//*[@id="txtUserName"]`)
-      await element[0].type(usernameAG)
+      await element[0].type(data.usernameAG)
       element = await page.$x(`//*[@id="txtPassword"]`)
       await element[0].type(sixAgenPass)
       element = await page.$x(`//*[@id="btnSignIn"]`)
@@ -93,7 +95,22 @@ async function login(usernameAG, worker) {
 
     if (title === ':: Management ::') {
       browser.close();
-      login(usernameAG, worker)
+      if (index >= 2) {
+        console.log('FAIL_TO_LOGIN');
+        console.log(db);
+        if (db === 'Customer') {
+          await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+          console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
+          return
+        }
+        if (db === 'Alliance') {
+          await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+          console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
+          return
+        }
+      } else {
+        login(data, worker, index, db)
+      }
       return;
     }
 
@@ -125,7 +142,7 @@ async function start() {
           const filterCustomerPending = await customerPending.filter(({ usernameAG }) => usernameAG === customerPending[0].usernameAG)
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
-          const { browser, page } = await login(customerPending[0].usernameAG, worker)
+          const { browser, page } = await login(customerPending[0], worker, 0, 'Customer')
           for (let data of filterCustomerPending) {
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB CUSTOMER CREATE ', data.customerID, new Date().toISOString()));
@@ -144,7 +161,7 @@ async function start() {
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           for (let data of zeroPending) {
-            const { browser, page } = await login(data.usernameAG, worker)
+            const { browser, page } = await login(data, worker, 0, 'Alliance')
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB SET ALLIANCE ZERO', data.usernameAG, new Date().toISOString()));
             await setAllianceZero(page, link, data)
@@ -156,19 +173,19 @@ async function start() {
           console.log(chalk.green('END JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
         } else if (upAgentPending.length > 0) {
-
+          statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB UP AGENT ', new Date().toISOString()));
           for (let data of upAgentPending) {
-            const { browser, page } = await login(data.usernameAG, worker)
+            const { browser, page } = await login(data, worker, 0, 'Alliance')
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB UP AGENT', data.usernameAG, new Date().toISOString()));
             await setUpAgent(page, link, data)
             console.log(chalk.green('END JOB UP AGENT ', data.usernameAG, new Date().toISOString()));
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+            browser.close()
           }
           statusFlags = 'R'
-          browser.close()
           console.log(chalk.green('END JOB UP AGENT ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
         }

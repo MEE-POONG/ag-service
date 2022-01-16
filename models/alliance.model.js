@@ -11,10 +11,12 @@ const allianceSchema = new Schema(
     setZero: String,
     upSystem: Boolean,
     statusServe: String,
-    action: String,
     statusFlag: { type: String, default: 'A' },
+    action: String,
     createdBy: mongoose.Types.ObjectId,
-    updatedBy: mongoose.Types.ObjectId
+    updatedBy: mongoose.Types.ObjectId,
+    setZeroBy: mongoose.Types.ObjectId,
+    upAgentBy: mongoose.Types.ObjectId
   }, { timestamps: true, versionKey: false }
 )
 
