@@ -7,7 +7,7 @@ const chalk = require('chalk');
 exports.createCustomer = async (page, link, data) => {
   try {
     console.log(chalk.green('START CREAT CUSTOMER'));
-    await page.goto(link + `/_SubAg1/MemberSet.aspx?cName=` + data.usernameAG + `0&set=1`, {
+    await page.goto(link + `/_SubAg1/MemberSet.aspx?cName=` + data.setZero + `&set=1`, {
       waitUntil: 'networkidle2'
     })
     element = await page.$x(`//*[@id="txtUserName"]`)

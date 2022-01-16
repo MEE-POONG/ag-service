@@ -1,7 +1,7 @@
 const delay = require("delay");
 const puppeteer = require('puppeteer');
 	require('dotenv').config()
-const { topMasterPass, topAgenPass, sixMasterPass, sixAgenPass, adminuser, adminpass } = process.env
+const { topMasterPass, topAgenPass, sixMasterPass, sixAgenPass, adminUser, adminPass } = process.env
 const usernameAG = "ufrcb0"
 const webname = "UFA-66"
 const args = [
@@ -51,10 +51,11 @@ const args = [
 	let element, formElement, tabs;
 
 	await page.goto(`http://ufa66.office168.work/?action=login`, { waitUntil: 'networkidle2' });
+  console.log('username', adminUser);
 	element = await page.$x(`//*[@name="username"]`);
-	await element[0].type(adminuser);
+	await element[0].type(adminUser);
 	element = await page.$x(`//*[@name="password"]`);
-	await element[0].type(adminpass);
+	await element[0].type(adminPass);
 	element = await page.$x(`//*[@name="login"]`);
 	await element[0].click();
 	console.log('--- 1 ---');
@@ -85,7 +86,7 @@ const args = [
 	await element[0].type(`_SubAg`);
 
 	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[12]/div/input`);
-	await element[0].type(usernameAG);
+	await element[0].type(usernameAG + '****');
 	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[13]/div/input`);
 	await element[0].type(`1`);
 	element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[14]/div/input`);

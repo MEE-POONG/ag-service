@@ -13,6 +13,7 @@ mongoose.connection.on('error', err => {
 const fs = require('fs');
 
 const Customer = require('../models/customer.model')
+const Alliance = require('../models/alliance.model')
 
 const { createWorker } = require('tesseract.js')
 const worker = createWorker()
@@ -23,6 +24,8 @@ const { args } = require('./configs/args');
 const { readImg } = require('./utils/tesseractGet');
 const chalk = require('chalk');
 const { createCustomer } = require("./createCustomer");
+const { setAllianceZero } = require('./setAllianceZero')
+const { setUpAgent } = require('./setUpAgent')
 const headless = true
 const link = headless ? 'http://ag.ufa6666.com' : 'http://ocean.isme99.com'
 const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
@@ -57,6 +60,7 @@ async function login(usernameAG, worker) {
         path: pathPhoto
       })
       await delay(2000)
+      console.log('usernameAG', usernameAG);
       element = await page.$x(`//*[@id="txtUserName"]`)
       await element[0].type(usernameAG)
       element = await page.$x(`//*[@id="txtPassword"]`)
@@ -115,6 +119,8 @@ async function start() {
     try {
       if (statusFlags === 'R') {
         const customerPending = await Customer.find({ statusServe: "PENDING" });
+        const zeroPending = await Alliance.find({ statusServe: "PENDING", action: "SET_ZERO" });
+        const upAgentPending = await Alliance.find({ statusServe: "PENDING", action: "SET_UP_AGENT" });
         if (customerPending.length > 0) {
           const filterCustomerPending = await customerPending.filter(({ usernameAG }) => usernameAG === customerPending[0].usernameAG)
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
@@ -133,6 +139,38 @@ async function start() {
           console.log(chalk.green('END JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           // cmd.runSync('npm run serve:restart');
+        } else if (zeroPending.length > 0) {
+
+          console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          console.log(chalk.green('START JOB SET ALLIANCE ZERO ', new Date().toISOString()));
+          for (let data of zeroPending) {
+            const { browser, page } = await login(data.usernameAG, worker)
+            console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+            console.log(chalk.green('START JOB SET ALLIANCE ZERO', data.usernameAG, new Date().toISOString()));
+            await setAllianceZero(page, link, data)
+            console.log(chalk.green('END JOB SET ALLIANCE ZERO ', data.usernameAG, new Date().toISOString()));
+            console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          }
+          statusFlags = 'R'
+          browser.close()
+          console.log(chalk.green('END JOB SET ALLIANCE ZERO ', new Date().toISOString()));
+          console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+        } else if (upAgentPending.length > 0) {
+
+          console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          console.log(chalk.green('START JOB UP AGENT ', new Date().toISOString()));
+          for (let data of upAgentPending) {
+            const { browser, page } = await login(data.usernameAG, worker)
+            console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+            console.log(chalk.green('START JOB UP AGENT', data.usernameAG, new Date().toISOString()));
+            await setUpAgent(page, link, data)
+            console.log(chalk.green('END JOB UP AGENT ', data.usernameAG, new Date().toISOString()));
+            console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          }
+          statusFlags = 'R'
+          browser.close()
+          console.log(chalk.green('END JOB UP AGENT ', new Date().toISOString()));
+          console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
         }
       }
     } catch (error) {
