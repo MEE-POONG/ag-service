@@ -163,7 +163,6 @@ const args = [
             console.log(resultTransfer[i][4]);
             console.log(resultTransfer[i][5]);
             listNum = i + 2
-
         }
     }
     await delay(1000);
