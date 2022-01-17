@@ -116,6 +116,7 @@ async function login(data, worker, index, db) {
           console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
           return
         }
+        statusFlags = 'R'
       } else {
         login(data, worker, index, db)
       }
