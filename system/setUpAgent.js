@@ -33,6 +33,7 @@ exports.setUpAgent = async (page, link, data) => {
     const found = (await page.content()).match(data.usernameAG)
     if (found !== null) {
       await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', action: '', upSystem: true } })
+      return
     }
 
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[1]/div/input`);
@@ -66,11 +67,13 @@ exports.setUpAgent = async (page, link, data) => {
     await delay(1000)
 
     const found = (await page.content()).match(data.usernameAG)
-    
+
     if (found !== null) {
       await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', action: '', upSystem: true } })
+      return
     } else {
       await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', action: '', upSystem: false } })
+      return
     }
 
     return;
