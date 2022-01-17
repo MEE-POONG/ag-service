@@ -9,7 +9,7 @@
     "dev": "nodemon server.js",
     "docker:build": "docker build -t chunwarayut/agservice:latest .",
     "docker:push": "docker push chunwarayut/agservice:latest",
-    "serve:start": "pm2 start system/serve.js -n auto-bot-queue -i max",
+    "serve:start": "pm2 start system/serve.js -n auto-bot-queue",
     "serve:restart": "pm2 restart auto-bot-queue",
     "serve:stop": "pm2 stop auto-bot-queue",
     "serve:delete": "pm2 delete auto-bot-queue",
