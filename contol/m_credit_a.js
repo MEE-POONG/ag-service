@@ -201,6 +201,7 @@ const args = [
     [elements] = await page.$x(`//*[@id="txtTotalLimit"]`);
     let result = await page.evaluate(element => element.value, elements);
     moneyOld = Number(result.toString().replace(/,/g, ''));
+    console.log("moneyOld 2 : ", moneyOld);
     moneyOld += +moneyAdd
     console.log("moneyOld 3 : ", moneyOld);
     let sumAdd = moneyOld.toString()

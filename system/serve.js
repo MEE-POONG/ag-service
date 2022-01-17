@@ -14,6 +14,7 @@ const fs = require('fs');
 
 const Customer = require('../models/customer.model')
 const Alliance = require('../models/alliance.model')
+const Credit = require('../models/credit.model')
 
 const { createWorker } = require('tesseract.js')
 const worker = createWorker()
@@ -26,6 +27,7 @@ const chalk = require('chalk');
 const { createCustomer } = require("./createCustomer");
 const { setAllianceZero } = require('./setAllianceZero')
 const { setUpAgent } = require('./setUpAgent')
+const { createCredit } = require('./createCredit')
 const headless = true
 const link = headless ? 'http://ag.ufa6666.com' : 'http://ocean.isme99.com'
 const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
@@ -34,7 +36,11 @@ const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, admin
 let statusFlags = 'R';
 async function login(data, worker, index, db) {
   index += 1
+  let password = sixAgenPass
   try {
+    if (data.status === 'master') {
+      password = sixMasterPass
+    }
     statusFlags = 'P'
     const browser = await puppeteer.launch({
       args,
@@ -64,9 +70,10 @@ async function login(data, worker, index, db) {
       await delay(2000)
       console.log('usernameAG', data.usernameAG);
       element = await page.$x(`//*[@id="txtUserName"]`)
-      await element[0].type(data.usernameAG)
+      await element[0].type(db === 'Credit' ? data.adviser : data.usernameAG)
       element = await page.$x(`//*[@id="txtPassword"]`)
-      await element[0].type(sixAgenPass)
+      console.log('password', password);
+      await element[0].type(password)
       await readImg(worker, pathPhoto)
         .then(async result => {
           console.log('IMG TXT', result)
@@ -81,10 +88,11 @@ async function login(data, worker, index, db) {
         })
 
     } else {
+      console.log('usernameAG', data.usernameAG);
       element = await page.$x(`//*[@id="txtUserName"]`)
-      await element[0].type(data.usernameAG)
+      await element[0].type(db === 'Credit' ? data.adviser : data.usernameAG)
       element = await page.$x(`//*[@id="txtPassword"]`)
-      await element[0].type(sixAgenPass)
+      console.log('password', password);
       element = await page.$x(`//*[@id="btnSignIn"]`)
       await element[0].click()
     }
@@ -138,6 +146,7 @@ async function start() {
         const customerPending = await Customer.find({ statusServe: "PENDING" });
         const zeroPending = await Alliance.find({ statusServe: "PENDING", action: "SET_ZERO" });
         const upAgentPending = await Alliance.find({ statusServe: "PENDING", action: "SET_UP_AGENT" });
+        const creditPending = await Credit.find({ statusServe: "PENDING" });
         if (customerPending.length > 0) {
           const filterCustomerPending = await customerPending.filter(({ usernameAG }) => usernameAG === customerPending[0].usernameAG)
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
@@ -187,6 +196,23 @@ async function start() {
           }
           statusFlags = 'R'
           console.log(chalk.green('END JOB UP AGENT ', new Date().toISOString()));
+          console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+        } else if (creditPending.length > 0) {
+          statusFlags = 'P'
+          console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          console.log(chalk.green('START JOB CREATE CREDIT ', new Date().toISOString()));
+          for (let data of creditPending) {
+            await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
+            const { browser, page } = await login(data, worker, 0, 'Credit')
+            console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+            console.log(chalk.green('START JOB CREATE CREDIT', data.usernameAG, new Date().toISOString()));
+            await createCredit(page, link, data)
+            console.log(chalk.green('END JOB CREATE CREDIT ', data.usernameAG, new Date().toISOString()));
+            console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+            browser.close()
+          }
+          statusFlags = 'R'
+          console.log(chalk.green('END JOB CREATE CREDIT ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
         }
       }
