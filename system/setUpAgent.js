@@ -30,8 +30,8 @@ exports.setUpAgent = async (page, link, data) => {
     await page.bringToFront();
     await page.goto(`http://ufa66.play168.xyz/__admin/?action=agent-list&game_id=1`, { waitUntil: 'networkidle2' });
 
-    const found = (await page.content()).match(data.usernameAG)
-    if (found !== null) {
+    const found_1 = (await page.content()).match(data.usernameAG)
+    if (found_1 !== null) {
       await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', action: '', upSystem: true } })
       console.log(chalk.red('--- มีอยู่แล้ว ---'));
       return
@@ -67,9 +67,9 @@ exports.setUpAgent = async (page, link, data) => {
 
     await delay(1000)
 
-    const found = (await page.content()).match(data.usernameAG)
+    const found_2 = (await page.content()).match(data.usernameAG)
 
-    if (found !== null) {
+    if (found_2 !== null) {
       await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', action: '', upSystem: true } })
       console.log(chalk.red('--- สร้างสำเร็จ ---'));
       return
