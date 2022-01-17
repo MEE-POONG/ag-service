@@ -68,7 +68,7 @@ const args = [
     await page.bringToFront();
     await page.goto(`http://ufa66.play168.xyz/__admin/?action=agent-list&game_id=1`, { waitUntil: 'networkidle2' });
     const found = (await page.content()).match('ufh27oa11')
-    console.log(found);
+    console.log(found === null);
 
     /////////////////////////////*******************************/////////////*/* */
     // console.log(resultTable);
