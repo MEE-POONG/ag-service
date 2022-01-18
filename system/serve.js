@@ -184,6 +184,7 @@ async function start() {
           browser.close()
           console.log(chalk.green('END JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          cmd.runSync('npm run serve:restart');
         } else if (upAgentPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
@@ -200,6 +201,7 @@ async function start() {
           statusFlags = 'R'
           console.log(chalk.green('END JOB UP AGENT ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          cmd.runSync('npm run serve:restart');
         } else if (creditPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
@@ -217,6 +219,7 @@ async function start() {
           statusFlags = 'R'
           console.log(chalk.green('END JOB CREATE CREDIT ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          cmd.runSync('npm run serve:restart');
         }
       }
     } catch (error) {
