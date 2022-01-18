@@ -31,7 +31,7 @@ const { createCredit } = require('./createCredit')
 const headless = true
 const link = headless ? 'http://ag.ufa6666.com' : 'http://ocean.isme99.com'
 const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
-// var cmd = require('node-cmd');
+var cmd = require('node-cmd');
 
 let statusFlags = 'R';
 async function login(data, worker, index, db) {
