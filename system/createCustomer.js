@@ -8,6 +8,11 @@ exports.createCustomer = async (page, link, data) => {
   try {
     console.log(chalk.green('START CREAT CUSTOMER'));
     await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
+    if (!data.setZero) {
+      await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', statusAG: 'ไม่มี USER ZERO' } })
+      console.log(chalk.red('ERROR CREATE CUSTOMER', 'ไม่มี USER ZERO'));
+      return;
+    }
     await page.goto(link + `/_SubAg1/MemberSet.aspx?cName=` + data.setZero + `&set=1`, {
       waitUntil: 'networkidle2'
     })
