@@ -103,7 +103,7 @@ async function login(data, worker, index, db) {
 
     if (title === ':: Management ::') {
       browser.close();
-      if (index >= 2) {
+      if (index >= 1) {
         statusFlags = 'R'
         console.log('FAIL_TO_LOGIN');
         console.log(db);
