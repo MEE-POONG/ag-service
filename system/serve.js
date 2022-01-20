@@ -173,6 +173,7 @@ async function start() {
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           for (let data of zeroPending) {
+            await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
             const { browser, page } = await login(data, worker, 0, 'Alliance')
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB SET ALLIANCE ZERO', data.usernameAG, new Date().toISOString()));
@@ -190,6 +191,7 @@ async function start() {
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB UP AGENT ', new Date().toISOString()));
           for (let data of upAgentPending) {
+            await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
             const { browser, page } = await login(data, worker, 0, 'Alliance')
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB UP AGENT', data.usernameAG, new Date().toISOString()));
