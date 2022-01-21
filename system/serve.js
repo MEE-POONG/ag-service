@@ -31,7 +31,7 @@ const { createCredit } = require('./createCredit')
 const headless = true
 const link = headless ? 'http://ag.ufa6666.com' : 'http://ocean.isme99.com'
 const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
-// var cmd = require('node-cmd');
+var cmd = require('node-cmd');
 
 let statusFlags = 'R';
 async function login(data, worker, index, db) {
@@ -84,7 +84,7 @@ async function login(data, worker, index, db) {
         .catch(function (err) {
           console.log(chalk.red(err))
           fs.unlink(pathPhoto, (err => { return; }));
-          // cmd.runSync('npm run serve:restart');
+          cmd.runSync('npm run serve:restart');
         })
 
     } else {
@@ -103,20 +103,22 @@ async function login(data, worker, index, db) {
 
     if (title === ':: Management ::') {
       browser.close();
-      if (index >= 2) {
+      if (index >= 1) {
+        statusFlags = 'R'
         console.log('FAIL_TO_LOGIN');
         console.log(db);
         if (db === 'Customer') {
           await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
           console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
+          cmd.runSync('npm run serve:restart');
           return
         }
         if (db === 'Alliance') {
           await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
           console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
+          cmd.runSync('npm run serve:restart');
           return
         }
-        statusFlags = 'R'
       } else {
         login(data, worker, index, db)
       }
@@ -128,8 +130,26 @@ async function login(data, worker, index, db) {
 
     return { browser, page }
   } catch (error) {
+    if (db === 'Customer') {
+      await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+      console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
+      cmd.runSync('npm run serve:restart');
+      return
+    }
+    if (db === 'Alliance') {
+      await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+      console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
+      cmd.runSync('npm run serve:restart');
+      return
+    }
+    if (db === 'Credit') {
+      await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+      console.log(`_id: ${data._id}, Credit: statusServe: FAIL_TO_LOGIN`);
+      cmd.runSync('npm run serve:restart');
+      return
+    }
     console.error(error)
-    // cmd.runSync('npm run serve:restart');
+    cmd.runSync('npm run serve:restart');
   }
 }
 
@@ -165,12 +185,13 @@ async function start() {
           statusFlags = 'R'
           console.log(chalk.green('END JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-          // cmd.runSync('npm run serve:restart');
+          cmd.runSync('npm run serve:restart');
         } else if (zeroPending.length > 0) {
 
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           for (let data of zeroPending) {
+            await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
             const { browser, page } = await login(data, worker, 0, 'Alliance')
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB SET ALLIANCE ZERO', data.usernameAG, new Date().toISOString()));
@@ -182,11 +203,13 @@ async function start() {
           browser.close()
           console.log(chalk.green('END JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          cmd.runSync('npm run serve:restart');
         } else if (upAgentPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB UP AGENT ', new Date().toISOString()));
           for (let data of upAgentPending) {
+            await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
             const { browser, page } = await login(data, worker, 0, 'Alliance')
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB UP AGENT', data.usernameAG, new Date().toISOString()));
@@ -198,6 +221,7 @@ async function start() {
           statusFlags = 'R'
           console.log(chalk.green('END JOB UP AGENT ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          cmd.runSync('npm run serve:restart');
         } else if (creditPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
@@ -215,11 +239,12 @@ async function start() {
           statusFlags = 'R'
           console.log(chalk.green('END JOB CREATE CREDIT ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          cmd.runSync('npm run serve:restart');
         }
       }
     } catch (error) {
       console.log(chalk.red(error));
-      // cmd.runSync('npm run serve:restart');
+      cmd.runSync('npm run serve:restart');
     }
   }, 2000);
 

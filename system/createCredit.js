@@ -9,6 +9,7 @@ const chalk = require('chalk');
 exports.createCredit = async (page, link, data) => {
   try {
     console.log(chalk.green('START CREATE CREDIT'));
+    await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
 
     console.log('--- ------------------------เติมเครดิต------------------------ ---');
     await page.goto(link + `/_Age1/AgentSet.aspx?userName=` + data.usernameAG + `&set=1`, {
