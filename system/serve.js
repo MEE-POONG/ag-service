@@ -1,6 +1,3 @@
-const chalk = require('chalk');
-console.log(chalk.green('START AG SETVICE VERSION 1.0.0'));
-
 
 require('dotenv').config()
 const mongoose = require('mongoose')
@@ -11,6 +8,9 @@ mongoose.connection.on('error', err => {
   console.error('MongoDB error', err)
 })
 
+
+const chalk = require('chalk');
+console.log(chalk.green('START AG SETVICE VERSION 1.0.0'));
 
 
 
