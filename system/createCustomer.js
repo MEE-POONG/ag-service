@@ -22,6 +22,8 @@ exports.createCustomer = async (page, link, data) => {
     await element[0].type(`Aa123456+`)
     element = await page.$x(`//*[@id="txtTotalLimit"]`)
     await element[0].type(`0`)
+    element = await page.$x(`//*[@id="btnUsaYes"]`)
+    await element[0].click()
     element = await page.$x(`//*[@id="btnSave"]`)
     await element[0].click()
     await delay(1000)
