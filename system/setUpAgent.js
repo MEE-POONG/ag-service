@@ -43,7 +43,7 @@ exports.setUpAgent = async (page, link, data) => {
 
     const found_1 = (await page.content()).match(data.usernameAG)
     if (found_1 !== null) {
-      await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', action: '', upSystem: true } })
+      await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', upSystem: true } })
       console.log(chalk.red('--- มีอยู่แล้ว ---'));
       return
     }
@@ -84,11 +84,11 @@ exports.setUpAgent = async (page, link, data) => {
     const found_2 = (await page.content()).match(data.usernameAG)
 
     if (found_2 !== null) {
-      await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', action: '', upSystem: true } })
+      await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', upSystem: true } })
       console.log(chalk.red('--- สร้างสำเร็จ ---'));
       return
     } else {
-      await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', action: '', upSystem: false } })
+      await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', upSystem: false } })
       console.log(chalk.red('--- สร้างไม่สำเร็จ ---'));
       return
     }

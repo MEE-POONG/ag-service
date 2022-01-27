@@ -415,7 +415,7 @@ async function setZero(page, link, data, zero) {
   if (result === "Profile updated successfully." || result === "อัพเดตข้อมูลเรียบร้อย") {
     console.log(chalk.green('--- สร้างสำเร็จ ---'));
     console.log(chalk.green("statusServe:", 'DONE', "action:", '', "setZero: ", data.usernameAG + zero));
-    await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', action: '', setZero: data.usernameAG + zero } })
+    await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', setZero: data.usernameAG + zero } })
   } else {
     console.log(chalk.red('--- สร้างไม่สำเร็จ ---'));
     console.log(chalk.red("statusServe: ", 'DONE', "action: ", '', "setZero: ", data.usernameAG + zero));
