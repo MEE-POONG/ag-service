@@ -1,3 +1,7 @@
+const chalk = require('chalk');
+console.log(chalk.green('START AG SETVICE VERSION 1.0.0'));
+
+
 require('dotenv').config()
 const mongoose = require('mongoose')
 const MONGODB_URI = process.env.MONGODB_URI
@@ -23,7 +27,6 @@ const delay = require("delay");
 const puppeteer = require('puppeteer');
 const { args } = require('./configs/args');
 const { readImg } = require('./utils/tesseractGet');
-const chalk = require('chalk');
 const { createCustomer } = require("./createCustomer");
 const { setAllianceZero } = require('./setAllianceZero')
 const { setUpAgent } = require('./setUpAgent')
