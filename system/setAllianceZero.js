@@ -14,7 +14,7 @@ exports.setAllianceZero = async (page, link, data, zero = '0') => {
 
 
 
-    await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
+    await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'START JOB' } })
     console.log(chalk.green('START SET ALLIANCE ZERO'));
     await setZero(page, link, data, zero)
 
@@ -31,19 +31,33 @@ async function setZero(page, link, data, zero) {
   await page.goto(link + `/_SubAg1/MemberSet.aspx`, {
     waitUntil: 'networkidle2'
   })
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'OPEN LINK' } })
+
   await delay(1000);
 
   element = await page.$x(`//*[@id="txtUserName"]`)
   await element[0].type(zero);
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'TYPE USER NAME' } })
+
   element = await page.$x(`//*[@id="txtPassword"]`)
   await element[0].type(`Aa123456+`);
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'TYPE PASSWORD' } })
+
   element = await page.$x(`//*[@id="txtTotalLimit"]`)
   await element[0].type(`0`);
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'TYPE TOTAL LIMIT' } })
 
   //SPORTSBOOK มาสเตอร์ไม่ใช่บอล
   // ON
   element = await page.$x(`//table[@onclick="toggleSetting2('trSports',this,'btnUpdSB')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'SPORTS BOOK สำเร็จ' } })
+
   console.log('SPORTSBOOK สำเร็จ');
   await delay(1000);
   element = await page.select("select#lstCommission", "0")
@@ -59,6 +73,9 @@ async function setZero(page, link, data, zero) {
   // element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[10]/td/table/tbody/tr[4]/td/table/tbody/tr[1]/td/table`);
   element = await page.$x(`//table[@onclick="toggleSetting2('trRAR',this,'btnUpdRAR')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'เปิด SA GAMING สำเร็จ' } })
+
   console.log('เปิด SA GAMING สำเร็จ');
   //ปิด เปิด
   element = await page.evaluate(() => {
@@ -90,6 +107,9 @@ async function setZero(page, link, data, zero) {
   // ITP (CQ9, PNG, BNG, GF, PTS, AUG, NS, HB, MPoker, MTPoker)
   element = await page.$x(`//table[@onclick="toggleSetting2('trRAS',this,'btnUpdRAS')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'ITP สำเร็จ' } })
+
   console.log('ITP สำเร็จ');
   // //ปิด เปิด
   element = await page.evaluate(() => {
@@ -108,6 +128,9 @@ async function setZero(page, link, data, zero) {
   //  ITP (UPG/MG)
   element = await page.$x(`//table[@onclick="toggleSetting2('trRCV',this,'btnUpdRCV')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'ITP (UPG/MG) สำเร็จ' } })
+
   console.log(' ITP (UPG/MG) สำเร็จ');
   // OFF
   element = await page.$x(`//table[@onclick="toggleSetting2('trRCV',this,'btnUpdRCV')"]`);
@@ -117,6 +140,9 @@ async function setZero(page, link, data, zero) {
   //  JOKER
   element = await page.$x(`//table[@onclick="toggleSetting2('trRAU',this,'btnUpdRAU')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'JOKER สำเร็จ' } })
+
   console.log(' JOKER สำเร็จ');
   //ปิด เปิด
   element = await page.evaluate(() => {
@@ -135,6 +161,9 @@ async function setZero(page, link, data, zero) {
   //GH CASINO / EB CASINO / BG
   element = await page.$x(`//table[@onclick="toggleSetting2('trRBF',this,'btnUpdRBF')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'GH CASINO / EB CASINO / BG สำเร็จ' } })
+
   console.log('GH CASINO / EB CASINO / BG สำเร็จ');
   //ปิด เปิด
   element = await page.evaluate(() => {
@@ -165,6 +194,9 @@ async function setZero(page, link, data, zero) {
   //  AE7
   element = await page.$x(`//table[@onclick="toggleSetting2('trRCZ',this,'btnUpdRCZ')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'AE7 สำเร็จ' } })
+
   console.log('AE7 สำเร็จ');
   //ปิด เปิด
   element = await page.evaluate(() => {
@@ -183,6 +215,9 @@ async function setZero(page, link, data, zero) {
   // GH COCKFT / HORSE RACING
   element = await page.$x(`//table[@onclick="toggleSetting2('trRBG',this,'btnUpdRBG')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'GH COCKFT / HORSE RACING สำเร็จ' } })
+
   console.log('GH COCKFT / HORSE RACING สำเร็จ');
   //ปรับเซอเซน 0
   element = await page.select("select#lstCommissionRBG", "0")
@@ -202,6 +237,9 @@ async function setZero(page, link, data, zero) {
   //  GH SLOT / ESPORT / SABASPORT
   element = await page.$x(`//table[@onclick="toggleSetting2('trRBH',this,'btnUpdRBH')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'GH SLOT / ESPORT / SABASPORT สำเร็จ' } })
+
   console.log('GH SLOT / ESPORT / SABASPORT สำเร็จ');
   // OFF
   element = await page.$x(`//table[@onclick="toggleSetting2('trRBH',this,'btnUpdRBH')"]`);
@@ -211,6 +249,9 @@ async function setZero(page, link, data, zero) {
   //  SIAM LOTTO
   element = await page.$x(`//table[@onclick="toggleSetting2('trRBI',this,'btnUpdRBI')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'SIAM LOTTO สำเร็จ' } })
+
   console.log('SIAM LOTTO สำเร็จ');
   //ปิด เปิด
   element = await page.evaluate(() => {
@@ -236,6 +277,9 @@ async function setZero(page, link, data, zero) {
   //  UFA SLOT / UFA FISHING
   element = await page.$x(`//table[@onclick="toggleSetting2('trRBL',this,'btnUpdRBL')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'UFA SLOT สำเร็จ' } })
+
   console.log('UFA SLOT สำเร็จ');
   //ปิด เปิด
   element = await page.evaluate(() => {
@@ -254,6 +298,9 @@ async function setZero(page, link, data, zero) {
   //  MUAY STEP
   element = await page.$x(`//table[@onclick="toggleSetting2('trRBM',this,'btnUpdRBM')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'MUAY STEP สำเร็จ' } })
+
   console.log('MUAY STEP สำเร็จ');
   //ปิด เปิด
   element = await page.evaluate(() => {
@@ -282,6 +329,9 @@ async function setZero(page, link, data, zero) {
   //  VIRTUAL SPORTS
   element = await page.$x(`//table[@onclick="toggleSetting2('trRBO',this,'btnUpdRBO')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'VIRTUAL SPORTS สำเร็จ' } })
+
   console.log('VIRTUAL SPORTS สำเร็จ');
   //ปิด เปิด
   element = await page.evaluate(() => {
@@ -307,6 +357,11 @@ async function setZero(page, link, data, zero) {
   //  UFA LOTTO - YEEKEE
   element = await page.$x(`//table[@onclick="toggleSetting2('trRCW',this,'btnUpdRCW')"]`);
   await element[0].click();
+
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'UFA LOTTO - YEEKEE สำเร็จ' } })
+
+
   console.log('UFA LOTTO - YEEKEE สำเร็จ');
   //ปิด เปิด
   element = await page.evaluate(() => {
@@ -325,6 +380,9 @@ async function setZero(page, link, data, zero) {
   //  UFA THAI LOTTO / ASEAN LOTTO
   element = await page.$x(`//table[@onclick="toggleSetting2('trRCX',this,'btnUpdRCX')"]`);
   await element[0].click();
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'UFA THAI LOTTO / ASEAN LOTTO สำเร็จ' } })
+
   console.log('UFA THAI LOTTO / ASEAN LOTTO สำเร็จ');
   // OFF
   element = await page.$x(`//table[@onclick="toggleSetting2('trRCX',this,'btnUpdRCX')"]`);
@@ -333,12 +391,23 @@ async function setZero(page, link, data, zero) {
   // ยืนยัน
   element = await page.$x(`//*[@id="btnSave"]`)
   await element[0].click()
+
+
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'ยืนยัน' } })
+
+
   console.log('ยืนยัน');
 
   await delay(1000);
   element = await page.waitForXPath(`//*[@id="lblStatus"]`);
   [element] = await page.$x(`//*[@id="lblStatus"]`);
   result = await page.evaluate(element => element.textContent, element);
+
+
+
+  await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'GET RESULT' } })
+
   console.log(result);
 
   console.log(chalk.yellow(result));

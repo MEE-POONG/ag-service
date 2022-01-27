@@ -8,10 +8,13 @@ const { sixAgenPass, adminUser, adminPass } = process.env
 exports.setUpAgent = async (page, link, data) => {
   try {
 
-    await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
+    await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'START JOB' } })
     console.log(chalk.green('START SET UP AGENT'));
 
     await page.goto(`http://ufa66.office168.work/?action=login`, { waitUntil: 'networkidle2' });
+
+    await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'OPEN LINK' } })
+
     console.log('http://ufa66.office168.work/?action=login');
     console.log('username', adminUser);
     element = await page.$x(`//*[@name="username"]`);
@@ -20,15 +23,23 @@ exports.setUpAgent = async (page, link, data) => {
     await element[0].type(adminPass);
     element = await page.$x(`//*[@name="login"]`);
     await element[0].click();
+
+    await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'LOGIN ufa66.office168' } })
+
     console.log('--- 1 ---');
     await delay(1000);
     await page.waitForXPath(`//a[contains(text(),'ตามลูกค้า')]`);
     element = await page.$x(`//a[contains(text(),'ตามลูกค้า')]`);
     await element[0].click();
+
+    await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'ตามลูกค้า' } })
+
     console.log('--- 2 ---');
     await delay(1000);
     await page.bringToFront();
     await page.goto(`http://ufa66.play168.xyz/__admin/?action=agent-list&game_id=1`, { waitUntil: 'networkidle2' });
+
+    await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'OPEN ufa66.play168.xyz agent-list&game_id=1' } })
 
     const found_1 = (await page.content()).match(data.usernameAG)
     if (found_1 !== null) {
@@ -64,6 +75,9 @@ exports.setUpAgent = async (page, link, data) => {
 
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[16]/div/button`);
     await element[0].click();
+
+    await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'ยืนยัน' } })
+
 
     await delay(1000)
 

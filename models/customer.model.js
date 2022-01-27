@@ -8,6 +8,7 @@ const customerSchema = new Schema(
     customerTAG: String,
     countCustomer: Number,
     statusServe: String,
+    jobServe: String,
     setZero: String,
     statusAG: String,
     statusFlag: { type: String, default: 'A' },

@@ -11,6 +11,7 @@ const allianceSchema = new Schema(
     setZero: String,
     upSystem: Boolean,
     statusServe: String,
+    jobServe: String,
     statusFlag: { type: String, default: 'A' },
     action: String,
     createdBy: mongoose.Types.ObjectId,

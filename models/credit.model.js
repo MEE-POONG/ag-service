@@ -9,6 +9,7 @@ const creditSchema = new Schema(
     status: String,
     creditBy: String,
     statusServe: String,
+    jobServe: String,
     statusAG: String,
     statusFlag: { type: String, default: 'A' },
     createdBy: mongoose.Types.ObjectId,

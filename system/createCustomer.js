@@ -7,7 +7,7 @@ const chalk = require('chalk');
 exports.createCustomer = async (page, link, data) => {
   try {
     console.log(chalk.green('START CREAT CUSTOMER'));
-    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
+    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'START JOB' } })
     if (!data.setZero) {
       await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', statusAG: 'ไม่มี USER ZERO' } })
       console.log(chalk.red('ERROR CREATE CUSTOMER', 'ไม่มี USER ZERO'));
@@ -16,16 +16,35 @@ exports.createCustomer = async (page, link, data) => {
     await page.goto(link + `/_SubAg1/MemberSet.aspx?cName=` + data.setZero + `&set=1`, {
       waitUntil: 'networkidle2'
     })
+
+    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'OPEN LINK' } })
+
     element = await page.$x(`//*[@id="txtUserName"]`)
     await element[0].type(data.customerTAG)
+
+    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'TYPE USER NAME' } })
+
     element = await page.$x(`//*[@id="txtPassword"]`)
     await element[0].type(`Aa123456+`)
+
+    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'TYPE PASSWORD' } })
+
+
     element = await page.$x(`//*[@id="txtTotalLimit"]`)
     await element[0].type(`0`)
+
+    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'TYPE TOTAL LIMIT' } })
+
     element = await page.$x(`//*[@id="btnUsaYes"]`)
     await element[0].click()
+
+    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'CLICK USA YES' } })
+
     element = await page.$x(`//*[@id="btnSave"]`)
     await element[0].click()
+
+    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'CLICK BTN SAVE' } })
+
     await delay(1000)
 
     element = await page.waitForXPath(`//*[@id="lblStatus"]`);
@@ -33,6 +52,8 @@ exports.createCustomer = async (page, link, data) => {
     result = await page.evaluate(element => element.textContent, element);
 
     console.log(chalk.yellow(result));
+
+    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'GET STATUS' } })
 
     if (result === "Profile updated successfully." || result === "อัพเดตข้อมูลเรียบร้อย") {
       console.log(chalk.green('--- สร้างสำเร็จ ---'));
