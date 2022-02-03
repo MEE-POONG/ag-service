@@ -107,18 +107,20 @@ async function login(data, worker, index, db) {
     if (title === ':: Management ::') {
       browser.close();
       if (index >= 1) {
-        statusFlags = 'R'
-        console.log('FAIL_TO_LOGIN');
         console.log(db);
         if (db === 'Customer') {
           await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
           console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
+          statusFlags = 'R'
+          console.log('FAIL_TO_LOGIN');
           cmd.runSync('npm run serve:restart');
           return
         }
         if (db === 'Alliance') {
           await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
           console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
+          statusFlags = 'R'
+          console.log('FAIL_TO_LOGIN');
           cmd.runSync('npm run serve:restart');
           return
         }
