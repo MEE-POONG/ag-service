@@ -153,7 +153,7 @@ async function login(data, worker, index, db) {
       cmd.runSync('npm run serve:restart');
       return
     }
-    console.error(error)
+    console.error(db, error)
     cmd.runSync('npm run serve:restart');
   }
 }
