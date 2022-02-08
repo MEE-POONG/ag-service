@@ -91,6 +91,7 @@ const args = [
     resultTable.shift();
     resultTable.pop();
     console.log('--- 92 --- : ', resultTable);
+    //เอาช่อง 4 ยูสเซอร์ ช่อง 9 Balance	 ช่อง 10 Balance แสดงสำหรับ เติมไม่ได้
     //ตัดข้อมูลทิ้ง
     console.log('--- ตัดข้อมูลทิ้ง ---');
     for (var i = 0; i < resultTable.length; i++) {
@@ -128,6 +129,9 @@ const args = [
         });
     });
     console.log('--- 126 --- : ', resultTable[resultTable.length - 1]);
+    //หากโอนยอดไม่สำเร็จ ต้องเข้าดูบาลานลูกค้า  
+    //ช่อง 6 Balance	 ช่อง 7 Balance แสดงสำหรับ เติมไม่ได้ 6 มากกว่า 7
+    //ช่อง 6 กับ 7 หักลบกัน + ยอดที่แจ้งเติม หากไม่ได้แจ้งว่ายอดล้น กับ เท่าไหร่ 7 เท่าไหร่
     // สิ้นสุดการหาบาล้านเอเย่น
     console.log('--- สิ้นสุดการหาบาล้านเอเย่น ---');
 
@@ -210,6 +214,8 @@ const args = [
     await element[0].click({ clickCount: 3 })
     await page.keyboard.press('Backspace')
     await element[0].type(sumAdd);
+    // moneyOld ยอดเครดิตจำกัดปัจจุบัน ต้องน้อยกว่า ยอด Max
+    // ถ้าไม่ ให้แจ้งว่าเครดิตใหญ่หมด
 
     //ยืนยัน
     console.log('--- ------------------------ ยืนยัน ------------------------ ---');
