@@ -112,7 +112,7 @@ const args = [
     }
     await delay(1000);
     console.log("resultTable : ", resultTable);
-
+//ตำแหน่ง 0 , 5, 9 , 10, 14
 
 
 })();
