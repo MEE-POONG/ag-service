@@ -44,7 +44,7 @@ const args = [
     '--use-mock-keychain',
     '--ignore-certificate-errors'
 ];
-(async() => {
+(async () => {
 
     const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
     const page = await browser.newPage();
@@ -60,19 +60,19 @@ const args = [
     console.log('login สำเร็จ');
     await delay(1000);
 
-    await page.goto(agtest + `/_SubAg1/MemberSet.aspx?cName=ufrcb18a10&set=1`, {
+    await page.goto(agtest + `/_SubAg/MemberList.aspx?type=member&role=sa&userName=` + userA , {
         waitUntil: 'networkidle2'
     })
     await delay(1000);
 
-    element = await page.$x(`//*[@id="txtUserName"]`)
-    await element[0].type(`0`);
-    element = await page.$x(`//*[@id="txtPassword"]`)
-    await element[0].type(`Aa123456+`);
-    element = await page.$x(`//*[@id="txtTotalLimit"]`)
-    await element[0].type(`0`);
-    element = await page.$x(`//*[@id="btnUsaYes"]`)
-    await element[0].click()
+    // element = await page.$x(`//*[@id="txtUserName"]`)
+    // await element[0].type(`0`);
+    // element = await page.$x(`//*[@id="txtPassword"]`)
+    // await element[0].type(`Aa123456+`);
+    // element = await page.$x(`//*[@id="txtTotalLimit"]`)
+    // await element[0].type(`0`);
+    // element = await page.$x(`//*[@id="btnUsaYes"]`)
+    // await element[0].click()
 
     // ยืนยัน
     // element = await page.$x(`//*[@id="btnSave"]`)
