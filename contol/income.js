@@ -99,13 +99,13 @@ const insertInCome = async (masterUser, browser) => {
 
     await delay(1000);
 
+    const title = await page.title()
     if (title === ':: Management ::') {
       browser.close();
       const failedLogin = new FailedLogin({
         usernameAG: masterUser
       });
       await failedLogin.save();
-      return
       return;
     }
 
