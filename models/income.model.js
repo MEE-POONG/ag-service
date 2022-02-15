@@ -11,10 +11,6 @@ const IncomeSchema = new Schema(
     winAndLoseMaster: String,
     agStatus:String,
     
-    positiveBalance: String,
-    deductionWind: String,
-    lastStatus:String,
-
     behindhand:String,
     statusFlag: { type: String, default: 'A' },
     action: String,
