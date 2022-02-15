@@ -3,14 +3,18 @@ const Schema = mongoose.Schema
 
 const IncomeSchema = new Schema(
   {
-    userAGID: String,
+    usernameAG: String,
     mindsetID: String,
     onlineCustomer: String,
     commissionAgen: String,
     winAndLoseAgen: String,
     winAndLoseMaster: String,
+    agStatus:String,
+    
     positiveBalance: String,
     deductionWind: String,
+    lastStatus:String,
+
     behindhand:String,
     statusFlag: { type: String, default: 'A' },
     action: String,
@@ -26,10 +30,10 @@ const IncomeModel = mongoose.model('Income', IncomeSchema)
 
 module.exports = IncomeModel
 // ------------ จาก AG
-//3 onlineCustomer 6 ออนไลน์
-//4 commissionAgen 10 ค่าคอม
-//5 winAndLoseAgen 11 ลูกได้เสียของเอเย่น
-// winAndLoseMaster 15 ลูกได้เสียของมาสเตอร์
+//3 onlineCustomer 5 ออนไลน์
+//4 commissionAgen 9 ค่าคอม
+//5 winAndLoseAgen 10 ลูกได้เสียของเอเย่น
+//6 winAndLoseMaster 14 ลูกได้เสียของมาสเตอร์
 //------------- จาก ยอดจากอาทิตย์ที่แล้ว
 //8 positiveBalance ยอดค้างบวกได้จาก 9 summaryLoss จาก คำนวนแสดงเอง
 //12 transferBalance ยอดค้างบวกได้จาก 13 transferAmount จาก คำนวนแสดงเอง
