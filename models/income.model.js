@@ -9,15 +9,15 @@ const IncomeSchema = new Schema(
     commissionAgen: String,
     winAndLoseAgen: String,
     winAndLoseMaster: String,
-    agStatus:String,
-    
-    behindhand:String,
+    agStatus: { type: String, default: '' },
+    incomeStartDate: Date,
+    incomeEndDate: Date,
+
+    behindhand: String,
     statusFlag: { type: String, default: 'A' },
-    action: String,
-    createdBy: mongoose.Types.ObjectId,
-    updatedBy: mongoose.Types.ObjectId,
-    setZeroBy: mongoose.Types.ObjectId,
-    upAgentBy: mongoose.Types.ObjectId
+    action: { type: String, default: '' },
+    createdBy: { type: mongoose.Types.ObjectId, default: mongoose.Types.ObjectId("61ff9d0049b196b7ba3476d6") },
+    updatedBy: { type: mongoose.Types.ObjectId, default: mongoose.Types.ObjectId("61ff9d0049b196b7ba3476d6") }
   },
   { timestamps: true, versionKey: false }
 )
