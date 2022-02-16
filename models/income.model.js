@@ -4,16 +4,15 @@ const Schema = mongoose.Schema
 const IncomeSchema = new Schema(
   {
     usernameAG: String,
-    mindsetID: String,
     onlineCustomer: String,
     commissionAgen: String,
     winAndLoseAgen: String,
     winAndLoseMaster: String,
+
     agStatus: { type: String, default: '' },
     incomeStartDate: Date,
     incomeEndDate: Date,
 
-    behindhand: String,
     statusFlag: { type: String, default: 'A' },
     action: { type: String, default: '' },
     createdBy: { type: mongoose.Types.ObjectId, default: mongoose.Types.ObjectId("61ff9d0049b196b7ba3476d6") },

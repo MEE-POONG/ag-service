@@ -48,11 +48,15 @@ const args = [
     '--use-mock-keychain',
     '--ignore-certificate-errors'
 ];
-(async() => {
+(async () => {
 
     const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
     const page = await browser.newPage();
     let element, formElement, tabs, resultTable, resultTransfer, listNum, selectList;
+    let moneyAdd = 5000
+    moneyAdd = moneyAdd * 4
+    console.log(moneyAdd);
+
     await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
 
     element = await page.$x(`//*[@id="txtUserName"]`)
@@ -63,78 +67,6 @@ const args = [
     await element[0].click()
     console.log('login สำเร็จ');
     await delay(1000);
-    await page.goto(agtest + `/_Age/AgentList.aspx?type=agent&role=ag&userName=` + userM, {
-        waitUntil: 'networkidle2'
-    })
-    await delay(1000);
-    //บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น
-    console.log('--- บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น ---');
-
-    element = await page.$x(`//*[@id="txtSearch"]`)
-    await element[0].type(userA);
-    console.log('--- txtSearch ---');
-    element = await page.$x(`//*[@id="btnSubmit"]`)
-    await element[0].click()
-    console.log('--- btnSubmit ---');
-    await delay(1000);
-    console.log('--- 101 ---');
-
-    resultTable = await page.evaluate(() => {
-        const rows = document.querySelectorAll('#MemberList_cm1_g tr');
-        return Array.from(rows, row => {
-            const columns = row.querySelectorAll('td');
-            console.log("columns : ", columns);
-            return Array.from(columns, column => column.innerText);
-        });
-    });
-    console.log('--- 89 --- : ', resultTable);
-    resultTable.shift();
-    resultTable.pop();
-    console.log('--- 92 --- : ', resultTable);
-    //เอาช่อง 4 ยูสเซอร์ ช่อง 9 Balance	 ช่อง 10 Balance แสดงสำหรับ เติมไม่ได้
-    //ตัดข้อมูลทิ้ง
-    console.log('--- ตัดข้อมูลทิ้ง ---');
-    for (var i = 0; i < resultTable.length; i++) {
-        if (resultTable[i][1] == 'Copy') {
-            resultTable.splice(i, 1);
-        }
-    }
-    // console.log(resultTable);
-    //วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด
-    console.log('--- วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด ---');
-    console.log('--- 101 --- : ', resultTable);
-    for (var i = 0; i < resultTable.length; i++) {
-        if (resultTable[i][3] == userA) {
-            console.log(i);
-            console.log(resultTable[i][3]);
-            console.log(resultTable[i][8]);
-            console.log(resultTable[i][9]);
-        }
-    }
-
-    //บรรทัด 111 สิ้นสุดจาการค้นหายูสเอเย่นแล้วเอาบาล้าน Credit Limit ออกมา
-    console.log('--- บรรทัด 111 สิ้นสุดจาการค้นหายูสเอเย่นแล้วเอาบาล้าน Credit Limit ออกมา ---');
-
-    //บรรทัด 113 เข้าเช็คบาล้านลูกค้าในยูสเอเย่น
-    await page.goto(agtest + `/_Age/SubAccountList.aspx?role=sa&userName=` + userA, {
-        waitUntil: 'networkidle2'
-    })
-    await delay(1000);
-    resultTable = await page.evaluate(() => {
-        const rows = document.querySelectorAll('#SubAccountList_cm1_g tr');
-        return Array.from(rows, row => {
-            const columns = row.querySelectorAll('td');
-            console.log("columns : ", columns);
-            return Array.from(columns, column => column.innerText);
-        });
-    });
-    console.log('--- 126 --- : ', resultTable[resultTable.length - 1]);
-    //หากโอนยอดไม่สำเร็จ ต้องเข้าดูบาลานลูกค้า  
-    //ช่อง 6 Balance	 ช่อง 7 Balance แสดงสำหรับ เติมไม่ได้ 6 มากกว่า 7
-    //ช่อง 6 กับ 7 หักลบกัน + ยอดที่แจ้งเติม หากไม่ได้แจ้งว่ายอดล้น กับ เท่าไหร่ 7 เท่าไหร่
-    // สิ้นสุดการหาบาล้านเอเย่น
-    console.log('--- สิ้นสุดการหาบาล้านเอเย่น ---');
-
     /////////////////////////////////////โอนยอด////////////////////////////////////////////////////
     await page.goto(agtest + `/_Age/AccBal.aspx?role=ag&userName=` + userM, {
         waitUntil: 'networkidle2'
@@ -192,6 +124,65 @@ const args = [
 
         }
     }
+    await delay(1000);
+
+    // resultTransfer[i][5] ไม่เป็น 0 ให้แจ้งโอนยอดไม่สำเร็จเติมเครดิตมาสเตอร์
+    // ซีเนี่ยร์เติมเข้ามาสเตอร์ 
+    ////////// จบโอนยอด
+
+    /////////////////// เช็คบาลาน /////////////////
+    await page.goto(agtest + `/_Age/AgentList.aspx?type=agent&role=ag&userName=` + userM, {
+        waitUntil: 'networkidle2'
+    })
+    await delay(1000);
+    //บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น
+    console.log('--- บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น ---');
+
+    element = await page.$x(`//*[@id="txtSearch"]`)
+    await element[0].type(userA);
+    console.log('--- txtSearch ---');
+    element = await page.$x(`//*[@id="btnSubmit"]`)
+    await element[0].click()
+    console.log('--- btnSubmit ---');
+    await delay(1000);
+    console.log('--- 101 ---');
+
+    resultTable = await page.evaluate(() => {
+        const rows = document.querySelectorAll('#MemberList_cm1_g tr');
+        return Array.from(rows, row => {
+            const columns = row.querySelectorAll('td');
+            console.log("columns : ", columns);
+            return Array.from(columns, column => column.innerText);
+        });
+    });
+    console.log('--- 89 --- : ', resultTable);
+    resultTable.shift();
+    resultTable.pop();
+    console.log('--- 92 --- : ', resultTable);
+    //เอาช่อง 4 ยูสเซอร์ ช่อง 9 Balance	 ช่อง 10 Balance แสดงสำหรับ เติมไม่ได้
+    //ตัดข้อมูลทิ้ง
+    console.log('--- ตัดข้อมูลทิ้ง ---');
+    for (var i = 0; i < resultTable.length; i++) {
+        if (resultTable[i][1] == 'Copy') {
+            resultTable.splice(i, 1);
+        }
+    }
+    // console.log(resultTable);
+    //วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด
+    console.log('--- วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด ---');
+    console.log('--- 101 --- : ', resultTable);
+    for (var i = 0; i < resultTable.length; i++) {
+        if (resultTable[i][3] == userA) {
+            console.log(i);
+            console.log(resultTable[i][3]);
+            console.log(resultTable[i][8]);
+            console.log(resultTable[i][9]);
+        }
+    }
+
+    //บรรทัด 111 สิ้นสุดจาการค้นหายูสเอเย่นแล้วเอาบาล้าน Credit Limit ออกมา
+    // ข้างหน้ามากกว่าข้างหลัง แจ้งพนักงาน
+    console.log('--- บรรทัด 111 สิ้นสุดจาการค้นหายูสเอเย่นแล้วเอาบาล้าน Credit Limit ออกมา ---');
 
     // ////////////////////////////////////เติมเครดิต///////////////////////////////////////////
     console.log('--- ------------------------เติมเครดิต------------------------ ---');
@@ -199,7 +190,6 @@ const args = [
         waitUntil: 'networkidle2'
     })
     await delay(1000);
-    let moneyAdd = 5000
 
     await page.waitForXPath(`//*[@id="txtTotalLimit"]`);
     [elements] = await page.$x(`//*[@id="txtTotalLimit"]`);
