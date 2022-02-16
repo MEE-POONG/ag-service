@@ -108,8 +108,7 @@ const insertInCome = async (masterUser, browser) => {
       await failedLogin.save();
       return;
     }
-
-    await page.goto(agtest + `/_Age/SubAccsWinLose2.aspx?role=ag&userName=` + masterUser + `&catId=&gId=-1`, {
+    await page.goto(agtest + `/_Age/SubAccsWinLose2.aspx?role=ag&userName=` + masterUser + `&catId=&gId=-1&checkAll=True`, {
       waitUntil: 'networkidle2'
     })
 
