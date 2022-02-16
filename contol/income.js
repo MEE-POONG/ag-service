@@ -139,6 +139,7 @@ const insertInCome = async (masterUser, browser) => {
 
     await delay(500);
     console.log('SubAccsWinLose_cm1_btnSubmit');
+    await page.waitForXPath(`//*[@id="SubAccsWinLose_cm1_btnSubmit"]`, { visible: true });
     element = await page.$x(`//*[@id="SubAccsWinLose_cm1_btnSubmit"]`);
     await element[0].click();
 
@@ -150,7 +151,8 @@ const insertInCome = async (masterUser, browser) => {
     await delay(2000);
 
     console.log('SubAccsWinLose_cm1_g tbody tr');
-    resultTable = await page.evaluate(() => {
+    await page.waitForXPath(`//*[@id="SubAccsWinLose_cm1_g"]`, { visible: true });
+    resultTable = await page.evaluate(async () => {
       const rows = document.querySelectorAll('#SubAccsWinLose_cm1_g tbody tr');
       console.log("rows 92 : ", rows);
       return Array.from(rows, row => {
