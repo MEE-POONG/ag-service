@@ -8,7 +8,7 @@ const IncomeSchema = new Schema(
     commissionAgen: String,
     winAndLoseAgen: String,
     winAndLoseMaster: String,
-
+    windCredit: String,
     agStatus: { type: String, default: '' },
     incomeStartDate: Date,
     incomeEndDate: Date,
@@ -29,6 +29,7 @@ module.exports = IncomeModel
 //4 commissionAgen 9 ค่าคอม
 //5 winAndLoseAgen 10 ลูกได้เสียของเอเย่น
 //6 winAndLoseMaster 14 ลูกได้เสียของมาสเตอร์
+//7 windCredit ยูสลม
 //------------- จาก ยอดจากอาทิตย์ที่แล้ว
 //8 positiveBalance ยอดค้างบวกได้จาก 9 summaryLoss จาก คำนวนแสดงเอง
 //12 transferBalance ยอดค้างบวกได้จาก 13 transferAmount จาก คำนวนแสดงเอง
