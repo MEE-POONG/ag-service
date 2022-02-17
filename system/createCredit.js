@@ -175,7 +175,7 @@ exports.createCredit = async (page, link, data) => {
       element = await page.$x(`//*[@id="btnSubmit"]`)
       await element[0].click()
       console.log('--- btnSubmit ---');
-      await delay(1000);
+      await delay(2000);
       console.log('--- 101 ---');
       await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'MemberList_cm1_g' } })
       resultTable = await page.evaluate(() => {
@@ -186,6 +186,7 @@ exports.createCredit = async (page, link, data) => {
           return Array.from(columns, column => column.innerText);
         });
       });
+      await delay(2000);
       await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'SHIFT 3' } })
       console.log('--- 89 --- : ', resultTable);
       resultTable.shift();
@@ -193,6 +194,7 @@ exports.createCredit = async (page, link, data) => {
       console.log('--- 92 --- : ', resultTable);
       //เอาช่อง 4 ยูสเซอร์ ช่อง 9 Balance	 ช่อง 10 Balance แสดงสำหรับ เติมไม่ได้
       //ตัดข้อมูลทิ้ง
+      await delay(2000);
       await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- ตัดข้อมูลทิ้ง ---' } })
       console.log('--- ตัดข้อมูลทิ้ง ---');
       for (var i = 0; i < resultTable.length; i++) {
