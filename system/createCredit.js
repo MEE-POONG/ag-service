@@ -58,7 +58,7 @@ const args = [
 exports.createCredit = async (page, link, data) => {
   try {
 
-    const message = `\nแจ้งเติม CREDIT\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\n`
+    const message = `\nแจ้งเติม CREDIT\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}`
 
     const lineData = qs.stringify({ message });
     console.log(lineData)
@@ -286,7 +286,7 @@ exports.createCredit = async (page, link, data) => {
       if (result === "Profile updated successfully." || result === "อัพเดตข้อมูลเรียบร้อย") {
         console.log(chalk.green('--- สร้างสำเร็จ ---'));
 
-        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${data.statusAG}\nSTATUS SERVER: DONE\n`
+        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: อัพเดตข้อมูลเรียบร้อย\nSTATUS SERVER: เติมสำเร็จ`
 
         const lineData = qs.stringify({ message });
         console.log(lineData)
@@ -307,7 +307,7 @@ exports.createCredit = async (page, link, data) => {
       } else {
         console.log(chalk.red('--- สร้างไม่สำเร็จ ---'));
 
-        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${data.statusAG}\nSTATUS SERVER: FAILED\n`
+        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${result}\nSTATUS SERVER: เติมไม่สำเร็จ`
 
         const lineData = qs.stringify({ message });
         console.log(lineData)
@@ -335,7 +335,7 @@ exports.createCredit = async (page, link, data) => {
     }
   } catch (error) {
 
-    const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: FAILED\n`
+    const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: เติมไม่สำเร็จ`
 
     const lineData = qs.stringify({ message });
     console.log(lineData)
@@ -502,7 +502,7 @@ const UpCreditMaster = async (userS, moneyAdd, page2, link, data) => {
   } catch (error) {
     browser.close();
 
-    const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: FAILED\n`
+    const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: เติมไม่สำเร็จ`
 
     const lineData = qs.stringify({ message });
     console.log(lineData)
@@ -739,7 +739,7 @@ const UpCreditAgentLast = async (page, link, data) => {
       if (result === "Profile updated successfully." || result === "อัพเดตข้อมูลเรียบร้อย") {
         console.log(chalk.green('--- สร้างสำเร็จ ---'));
 
-        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${data.statusAG}\nSTATUS SERVER: DONE\n`
+        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: อัพเดตข้อมูลเรียบร้อย\nSTATUS SERVER: เติมสำเร็จ`
 
         const lineData = qs.stringify({ message });
         console.log(lineData)
@@ -760,7 +760,7 @@ const UpCreditAgentLast = async (page, link, data) => {
       } else {
         console.log(chalk.red('--- สร้างไม่สำเร็จ ---'));
 
-        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${data.statusAG}\nSTATUS SERVER: FAILED\n`
+        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: เติมไม่สำเร็จ`
 
         const lineData = qs.stringify({ message });
         console.log(lineData)
@@ -784,7 +784,7 @@ const UpCreditAgentLast = async (page, link, data) => {
 
     } else {
 
-      const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: FAILED\n`
+      const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: เติมไม่สำเร็จ`
 
       const lineData = qs.stringify({ message });
       console.log(lineData)
@@ -808,7 +808,7 @@ const UpCreditAgentLast = async (page, link, data) => {
     }
   } catch (error) {
 
-    const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: FAILED\n`
+    const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: เติมไม่สำเร็จ`
 
     const lineData = qs.stringify({ message });
     console.log(lineData)
