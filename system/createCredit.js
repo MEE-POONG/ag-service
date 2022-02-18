@@ -9,6 +9,10 @@ const chalk = require('chalk');
 const passS = "168Ufavip168++"
 const passM = "66Pplsix168<>+"
 
+
+const axios = require('axios');
+const qs = require('qs');
+
 const agtest = "http://ocean.isme99.com"
 const args = [
   '--start-maximized',
@@ -53,6 +57,23 @@ const args = [
 
 exports.createCredit = async (page, link, data) => {
   try {
+
+    const message = `\nแจ้งเติม CREDIT\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\n`
+
+    const lineData = qs.stringify({ message });
+    console.log(lineData)
+    const config = {
+      method: 'post',
+      url: 'https://notify-api.line.me/api/notify',
+      headers: {
+        Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      data: lineData,
+    };
+
+    await axios(config);
+    console.log('Notify Success');
 
     console.log(chalk.green('START CREATE CREDIT'));
     await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING', jobServe: 'START JOB' } })
@@ -264,9 +285,45 @@ exports.createCredit = async (page, link, data) => {
 
       if (result === "Profile updated successfully." || result === "อัพเดตข้อมูลเรียบร้อย") {
         console.log(chalk.green('--- สร้างสำเร็จ ---'));
+
+        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${data.statusAG}\nSTATUS SERVER: DONE\n`
+
+        const lineData = qs.stringify({ message });
+        console.log(lineData)
+        const config = {
+          method: 'post',
+          url: 'https://notify-api.line.me/api/notify',
+          headers: {
+            Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          data: lineData,
+        };
+
+        await axios(config);
+        console.log('Notify Success');
+
         await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', statusAG: result } })
       } else {
         console.log(chalk.red('--- สร้างไม่สำเร็จ ---'));
+
+        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${data.statusAG}\nSTATUS SERVER: FAILED\n`
+
+        const lineData = qs.stringify({ message });
+        console.log(lineData)
+        const config = {
+          method: 'post',
+          url: 'https://notify-api.line.me/api/notify',
+          headers: {
+            Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          data: lineData,
+        };
+
+        await axios(config);
+        console.log('Notify Success');
+
         await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', statusAG: result } })
       }
       console.log(chalk.green('CLOSE CREATE CREDIT', data.usernameAG));
@@ -277,6 +334,23 @@ exports.createCredit = async (page, link, data) => {
       return;
     }
   } catch (error) {
+
+    const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: FAILED\n`
+
+    const lineData = qs.stringify({ message });
+    console.log(lineData)
+    const config = {
+      method: 'post',
+      url: 'https://notify-api.line.me/api/notify',
+      headers: {
+        Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      data: lineData,
+    };
+
+    await axios(config);
+    console.log('Notify Success');
     await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', statusAG: 'เติมไม่สำเร็จ' } })
     console.log(chalk.red('ERROR CREATE CREDIT', error));
     return;
@@ -299,7 +373,7 @@ const UpCreditMaster = async (userS, moneyAdd, page2, link, data) => {
     if (moneyAdd > 1e6) {
       moneyAdd = 1e6
     }
-  
+
 
     element = await page.$x(`//*[@id="txtUserName"]`)
     await element[0].type(userS);
@@ -427,6 +501,24 @@ const UpCreditMaster = async (userS, moneyAdd, page2, link, data) => {
 
   } catch (error) {
     browser.close();
+
+    const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: FAILED\n`
+
+    const lineData = qs.stringify({ message });
+    console.log(lineData)
+    const config = {
+      method: 'post',
+      url: 'https://notify-api.line.me/api/notify',
+      headers: {
+        Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      data: lineData,
+    };
+
+    await axios(config);
+    console.log('Notify Success');
+
     await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', statusAG: 'เติมไม่สำเร็จ' } })
     console.log(chalk.red('ERROR CREATE CREDIT', error));
     return;
@@ -646,21 +738,93 @@ const UpCreditAgentLast = async (page, link, data) => {
 
       if (result === "Profile updated successfully." || result === "อัพเดตข้อมูลเรียบร้อย") {
         console.log(chalk.green('--- สร้างสำเร็จ ---'));
+
+        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${data.statusAG}\nSTATUS SERVER: DONE\n`
+
+        const lineData = qs.stringify({ message });
+        console.log(lineData)
+        const config = {
+          method: 'post',
+          url: 'https://notify-api.line.me/api/notify',
+          headers: {
+            Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          data: lineData,
+        };
+
+        await axios(config);
+        console.log('Notify Success');
+
         await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', statusAG: result } })
       } else {
         console.log(chalk.red('--- สร้างไม่สำเร็จ ---'));
+
+        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${data.statusAG}\nSTATUS SERVER: FAILED\n`
+
+        const lineData = qs.stringify({ message });
+        console.log(lineData)
+        const config = {
+          method: 'post',
+          url: 'https://notify-api.line.me/api/notify',
+          headers: {
+            Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          data: lineData,
+        };
+
+        await axios(config);
+        console.log('Notify Success');
+
         await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', statusAG: result } })
       }
       console.log(chalk.green('CLOSE CREATE CREDIT', data.usernameAG));
       return;
 
     } else {
+
+      const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: FAILED\n`
+
+      const lineData = qs.stringify({ message });
+      console.log(lineData)
+      const config = {
+        method: 'post',
+        url: 'https://notify-api.line.me/api/notify',
+        headers: {
+          Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: lineData,
+      };
+
+      await axios(config);
+      console.log('Notify Success');
+
       await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', statusAG: 'เติมไม่สำเร็จ' } })
       console.log(chalk.red('เติมไม่สำเร็จ'));
       return;
 
     }
   } catch (error) {
+
+    const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: FAILED\n`
+
+    const lineData = qs.stringify({ message });
+    console.log(lineData)
+    const config = {
+      method: 'post',
+      url: 'https://notify-api.line.me/api/notify',
+      headers: {
+        Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      data: lineData,
+    };
+
+    await axios(config);
+    console.log('Notify Success');
+
     await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', statusAG: 'เติมไม่สำเร็จ' } })
     console.log(chalk.red('ERROR CREATE CREDIT', error));
     return;
