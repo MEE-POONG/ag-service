@@ -108,6 +108,9 @@ const insertInCome = async (masterUser, browser) => {
       await failedLogin.save();
       return;
     }
+    // ufrcbvip, ufrcevip, ufh27vip    Pass Pp123456++
+    // ufo88901 Pass Pop168168++
+    // /_Age_Sub/SubAccsWinLose2.aspx?role=ag&userName=ufo889&from=02/01/2022&to=02/13/2022&userID=ufrcb&checkAll=True
     await page.goto(agtest + `/_Age/SubAccsWinLose2.aspx?role=ag&userName=` + masterUser + `&catId=&gId=-1&checkAll=True`, {
       waitUntil: 'networkidle2'
     })
@@ -184,7 +187,7 @@ const insertInCome = async (masterUser, browser) => {
       console.log(chalk.yellow(iterator[0], iterator[5], iterator[9], iterator[10], iterator[14]));
       const income = new Income({
         usernameAG: iterator[0],
-        onlineCustomer: iterator[5],
+        online: iterator[5],
         commissionAgen: iterator[9],
         winAndLoseAgen: iterator[10],
         winAndLoseMaster: iterator[14],
