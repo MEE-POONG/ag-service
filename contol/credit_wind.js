@@ -18,7 +18,7 @@ const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
 const userM = "ufrcb0"
-const passA = "AP6168qtew++"
+const passA = "AP6168qtew++ผ"
 const agtest = "http://ocean.isme99.com"
 const headless = false;
 const args = [
