@@ -2,7 +2,7 @@ const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
 const userS = "ufrcb"
-const userM = "ufrcb1"
+const userM = "ufrcb18"
 const userA = "ufrcb18a1"
 const passS = "168Ufavip168++"
 const passM = "66Pplsix168<>+"
@@ -64,7 +64,7 @@ const args = [
 	console.log('login สำเร็จ');
 	await delay(1000);
 
-	await page.goto(agtest + `/_Age1/AgentSet.aspx?cName=ufrcb1a1&set=1`, {
+	await page.goto(agtest + `/_Age1/AgentSet.aspx?cName=ufrcb1818a8&set=1`, {
 		waitUntil: 'networkidle2'
 	})
 	await delay(1000);
