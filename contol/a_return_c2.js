@@ -66,16 +66,13 @@ const args = [
   '--no-default-browser-check',
   '--no-first-run',
   '--no-pings',
-  '--no-sandbox',
   '--no-zygote',
   '--password-store=basic',
   '--use-gl=swiftshader',
-  '--use-mock-keychain',
-  '--ignore-certificate-errors'
 ];
+<<<<<<< HEAD
 
 
-const handleWithdraw = async (username, web, browser) => {
 
   const page = await browser.newPage();
   let element, formElement, tabs;
@@ -233,3 +230,6 @@ const webTOP168 = async () => {
 webTOP168()
 // webUFA66()
 // 
+=======
+(async () => {
+	const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
