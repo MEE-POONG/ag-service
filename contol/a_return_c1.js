@@ -15,7 +15,6 @@ mongoose.connection.on('error', err => {
 
 
 
-const FailedLogin = require('../models/failedLogin.model')
 const ReturnCustomerPSD = require('../models/returnCustomerPSD')
 const ReturnCustomerUFA66 = require('../models/returnCustomerUFA66')
 const ReturnCustomerTOP = require('../models/returnCustomerTOP')
@@ -232,43 +231,5 @@ const webTOP168 = async () => {
 
 // webPoseidon99()
 // webTOP168()
-// webUFA66()
-
-const allWEB = async () => {
-  const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
-  for (const iterator of Poseidon99) {
-    try {
-      await handleWithdraw(iterator.username, iterator.web, browser)
-    } catch (error) {
-      const failedLogin = new FailedLogin({
-        usernameAG: iterator.username,
-        detail: '0.5'
-      });
-      await failedLogin.save();
-    }
-  }
-  // for (const iterator of UFA66) {
-  //   try {
-  //     await handleWithdraw(iterator.username, iterator.web, browser)
-  //   } catch (error) {
-  //     const failedLogin = new FailedLogin({
-  //       usernameAG: iterator.username,
-  //       detail: '0.5'
-  //     });
-  //     await failedLogin.save();
-  //   }
-  // }
-  // for (const iterator of TOP168) {
-  //   try {
-  //     await handleWithdraw(iterator.username, iterator.web, browser)
-  //   } catch (error) {
-  //     const failedLogin = new FailedLogin({
-  //       usernameAG: iterator.username,
-  //       detail: '0.5'
-  //     });
-  //     await failedLogin.save();
-  //   }
-  // }
-}
-
-allWEB()
+webUFA66()
+// 

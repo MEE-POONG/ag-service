@@ -3,7 +3,8 @@ const Schema = mongoose.Schema
 
 const FailedLoginSchema = new Schema(
   {
-    usernameAG: String
+    usernameAG: String,
+    detail: String,
   },
   { timestamps: true, versionKey: false }
 )
