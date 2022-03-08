@@ -88,5 +88,7 @@ const args = [
   }
   await resultTable.shift()
   console.log("89 : ", resultTable);
-
+  for (var i = 0; i < resultTable.length; i++) {
+    console.log(i," : ",resultTable[i][0]," : top : ",resultTable[i][8]," : 66 : ",resultTable[i][16]);
+   }
 })();
