@@ -1164,7 +1164,6 @@ exports.UFA66 = [
     {username:"ufrcbfb1",senior:"ufrcb",master:"ufrcbf",web:"UFA66"},
     {username:"ufrcbfb2",senior:"ufrcb",master:"ufrcbf",web:"UFA66"},
     {username:"ufrcbfb3",senior:"ufrcb",master:"ufrcbf",web:"UFA66"},
-    {username:"ufrcbga1",senior:"ufrcb",master:"ufrcbg",web:"UFA66"},
     {username:"ufrcbha1",senior:"ufrcb",master:"ufrcbh",web:"UFA66"},
     {username:"ufrcbha2",senior:"ufrcb",master:"ufrcbh",web:"UFA66"},
     {username:"ufrcbha4",senior:"ufrcb",master:"ufrcbh",web:"UFA66"},

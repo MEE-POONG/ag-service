@@ -49,7 +49,7 @@ const args = [
 	const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
 	const page = await browser.newPage();
 	let element, formElement, tabs;
-	await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
+	await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' })
 
 	element = await page.$x(`//*[@id="txtUserName"]`)
 	await element[0].type(userA);
