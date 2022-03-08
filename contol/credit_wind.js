@@ -1,3 +1,17 @@
+require('dotenv').config()
+
+const creditWindModel = require('../models/credit_wind')
+
+var moment = require('moment')
+var mongoose = require('mongoose')
+
+const MONGODB_URI = process.env.MONGODB_URI
+
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
+mongoose.connection.on('error', err => {
+  console.error('MongoDB error', err)
+})
+
 const delay = require('delay')
 const puppeteer = require('puppeteer')
 require('dotenv').config()
@@ -95,6 +109,14 @@ const args = [
   await resultTable.shift()
   console.log('89 : ', resultTable)
   for (var i = 0; i < resultTable.length; i++) {
-    console.log(i, ' : ', resultTable[i][0], resultTable[i][16])
+    const userWind = resultTable[i][0]
+    const winAndLoseCompany = resultTable[i][16]
+    console.log(i, ' : ', userWind, winAndLoseCompany)
+
+    const model = new creditWindModel({
+      userWind: userWind,
+      winAndLoseCompany: winAndLoseCompany
+    })
+    model.save()
   }
 })()

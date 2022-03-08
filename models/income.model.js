@@ -14,6 +14,8 @@ const IncomeSchema = new Schema(
     summaryLose: String,
     winAndLoseMaster: String,
     windCredit: String,
+    deductionWind: String,
+    transferAmount: String,
     agStatus: { type: String, default: '' },
     incomeStartDate: Date,
     incomeEndDate: Date,

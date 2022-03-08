@@ -5,6 +5,7 @@ const { Poseidon99, UFA66, TOP168 } = require('../dataWeb')
 const _ = require('lodash')
 const chalk = require('chalk')
 const Income = require('../models/income.model')
+const creditWindModel = require('../models/credit_wind')
 
 var moment = require('moment')
 var mongoose = require('mongoose')
@@ -63,7 +64,7 @@ const args = [
 ]
 ;(async () => {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: { width: 1920, height: 5000 },
     args
   })
@@ -83,11 +84,27 @@ const args = [
   ])
 
   for (const iterator of _.uniqBy(UFA66, 'master')) {
-    await fetchWinLose(page, iterator.master, iterator.senior, iterator.share, iterator.positiveBalance, iterator.transferBalance)
+    await fetchWinLose(
+      page,
+      iterator.master,
+      iterator.senior,
+      iterator.share,
+      iterator.positiveBalance,
+      iterator.transferBalance,
+      iterator.userWind
+    )
   }
 })()
 
-const fetchWinLose = async (page, master, senior, share, positiveBalance, transferBalance) => {
+const fetchWinLose = async (
+  page,
+  master,
+  senior,
+  share,
+  positiveBalance,
+  transferBalance,
+  userWind
+) => {
   await page.goto(
     agtest +
       `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=` +
@@ -124,6 +141,13 @@ const fetchWinLose = async (page, master, senior, share, positiveBalance, transf
   }
   await resultTable.shift()
   for (const iterator of resultTable) {
+    const creditWind = await creditWindModel.findOne({ userWind })
+    const windCredit = Number(
+      ((creditWind && creditWind.winAndLoseCompany) || 0)
+        .toString()
+        .replace(/,/g, '')
+    )
+
     const commissionAgen = await Number(
       iterator[9].toString().replace(/,/g, '')
     )
@@ -135,17 +159,23 @@ const fetchWinLose = async (page, master, senior, share, positiveBalance, transf
     )
     const customerWin = Math.floor((0 - winAndLoseAgen) * share)
     const summaryLose = customerWin + positiveBalance
+    const deductionWind =
+      (summaryLose > 0 ? summaryLose : 0) + commissionAgen + windCredit
+      const transferAmount = (deductionWind > 0 ? deductionWind : 0) + transferBalance
     console.log(
       chalk.yellow(
         iterator[0],
         iterator[5],
         iterator[9],
         iterator[10],
-        "customerWin:" + winAndLoseAgen > 0 ? customerWin : 0,
-        "customerLose:" + winAndLoseAgen < 0 ? customerWin : 0,
-        "positiveBalance:" + positiveBalance,
-        "transferBalance:" + transferBalance,
-        "summaryLose:" + summaryLose,
+        'customerWin:' + winAndLoseAgen > 0 ? customerWin : 0,
+        'customerLose:' + winAndLoseAgen < 0 ? customerWin : 0,
+        'positiveBalance:' + positiveBalance,
+        'transferBalance:' + transferBalance,
+        'summaryLose:' + summaryLose,
+        'windCredit:' + windCredit,
+        'deductionWind:' + deductionWind,
+        'transferAmount:' + transferAmount,
         iterator[14]
       )
     )
@@ -157,8 +187,11 @@ const fetchWinLose = async (page, master, senior, share, positiveBalance, transf
       customerWin: winAndLoseAgen > 0 ? customerWin : 0,
       customerLose: winAndLoseAgen < 0 ? customerWin : 0,
       positiveBalance: positiveBalance,
-      transferBalance: transferBalance,
       summaryLose: summaryLose,
+      windCredit: windCredit,
+      deductionWind: deductionWind,
+      transferBalance: transferBalance,
+      transferAmount: transferAmount,
       winAndLoseMaster: winAndLoseMaster,
       incomeStartDate: moment(
         incomeStartDate + ' 12:00',
