@@ -1,8 +1,8 @@
 const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
-const userA = "ufrcbxb8"
-const passA = "Tpufa168wptop++"
+const userA = "ufrcbvip"
+const passA = "Pp123456++"
 const agtest = "http://ocean.isme99.com"
 const args = [
 	'--start-maximized',
@@ -63,25 +63,25 @@ const args = [
 
 
 
-	for (let index = 195; index < 210; index++) {
-		let number = index.toString().padStart(3, '0').toString()
-		console.log(`/_SubAg1/MemberSet.aspx?userName=ufrcbxb8` + number + `&set=1`);
-		await page.goto(agtest + `/_SubAg1/MemberSet.aspx?userName=ufrcbxb8` + number + `&set=1`, {
+	// for (let index = 195; index < 210; index++) {
+	// 	let number = index.toString().padStart(3, '0').toString()
+	// 	console.log(`/_SubAg1/MemberSet.aspx?userName=ufrcbxb8` + number + `&set=1`);
+		await page.goto(agtest + `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` + agen + `&from=02/28/2022&to=03/06/2022&userID=` + master + `&checkAll=True`, {
 			waitUntil: 'networkidle2'
 		})
-		await delay(5000);
-		// SA GAMING
-		// element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[10]/td/table/tbody/tr[4]/td/table/tbody/tr[1]/td/table`);
-		element = await page.$x(`//table[@onclick="toggleSetting2('trRAR',this,'btnUpdRAR')"]`);
-		await element[0].click();
-		console.log('เปิด SA GAMING สำเร็จ');
-		//ปรับเซอเซน 0
-		element = await page.select("select#lstCommissionRAR", "0")
-		//ปิด เปิด
-		element = await page.$x(`//*[@id="btnUpdRAR"]`)
-		await element[0].click()
-		await delay(5000);
-	}
+	// 	await delay(5000);
+	// 	// SA GAMING
+	// 	// element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[10]/td/table/tbody/tr[4]/td/table/tbody/tr[1]/td/table`);
+	// 	element = await page.$x(`//table[@onclick="toggleSetting2('trRAR',this,'btnUpdRAR')"]`);
+	// 	await element[0].click();
+	// 	console.log('เปิด SA GAMING สำเร็จ');
+	// 	//ปรับเซอเซน 0
+	// 	element = await page.select("select#lstCommissionRAR", "0")
+	// 	//ปิด เปิด
+	// 	element = await page.$x(`//*[@id="btnUpdRAR"]`)
+	// 	await element[0].click()
+	// 	await delay(5000);
+	// }
 	// OFF
 	// element = await page.$x(`//table[@onclick="toggleSetting2('trRAR',this,'btnUpdRAR')"]`);
 	// await element[0].click();
