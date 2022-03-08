@@ -66,7 +66,7 @@ const args = [
 	// for (let index = 195; index < 210; index++) {
 	// 	let number = index.toString().padStart(3, '0').toString()
 	// 	console.log(`/_SubAg1/MemberSet.aspx?userName=ufrcbxb8` + number + `&set=1`);
-		await page.goto(agtest + `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` + agen + `&from=02/28/2022&to=03/06/2022&userID=` + master + `&checkAll=True`, {
+		await page.goto(agtest + `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=` + master + `&from=02/28/2022&to=03/06/2022&userID=` + senior + `&checkAll=True`, {
 			waitUntil: 'networkidle2'
 		})
 	// 	await delay(5000);
