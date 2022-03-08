@@ -5,6 +5,8 @@ const FailedLoginSchema = new Schema(
   {
     usernameAG: String,
     detail: String,
+    web: String,
+    master: String,
   },
   { timestamps: true, versionKey: false }
 )

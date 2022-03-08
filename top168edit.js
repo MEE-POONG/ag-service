@@ -49,7 +49,7 @@ const args = [
 	const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
 	const page = await browser.newPage();
 	let element, formElement, tabs;
-	await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
+	await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' })
 
 	element = await page.$x(`//*[@id="txtUserName"]`)
 	await element[0].type(userA);
@@ -67,7 +67,7 @@ const args = [
 	// 	let number = index.toString().padStart(3, '0').toString()
 	// 	console.log(`/_SubAg1/MemberSet.aspx?userName=ufrcbxb8` + number + `&set=1`);
 		await page.goto(agtest + `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` + agen + `&from=02/28/2022&to=03/06/2022&userID=` + master + `&checkAll=True`, {
-			waitUntil: 'networkidle2'
+			waitUntil: 'load'
 		})
 	// 	await delay(5000);
 	// 	// SA GAMING
