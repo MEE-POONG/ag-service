@@ -127,23 +127,23 @@ const fetchWinLose = async (page, master, senior) => {
   }
   await resultTable.shift()
   for (const iterator of resultTable) {
+    console.log(iterator[0])
     const { share, positiveBalance, transferBalance, userWind } = UFA66.find(
       ({ username }) => iterator[0] === username
     )
     const creditWind = await creditWindModel.findOne({ userWind })
+    const windCreditCal = Number(
+      ((creditWind && creditWind.winAndLoseCompany) || 0)
+        .toString()
+        .replace(/,/g, '')
+    )
     const windCredit =
-      Number(
-        ((creditWind && creditWind.winAndLoseCompany) || 0)
-          .toString()
-          .replace(/,/g, '')
-      ) | 0
+      windCreditCal < 0 ? Math.floor(windCreditCal) : Math.ceil(windCreditCal)
 
-    const commissionAgen =
-      (await Number(iterator[9].toString().replace(/,/g, ''))) | 0
-    const winAndLoseAgen =
-      (await Number(iterator[10].toString().replace(/,/g, ''))) | 0
+    const commissionAgen = Number(iterator[9].toString().replace(/,/g, '')) | 0
+    const winAndLoseAgen = Number(iterator[10].toString().replace(/,/g, '')) | 0
     const winAndLoseMaster =
-      (await Number(iterator[14].toString().replace(/,/g, ''))) | 0
+      Number(iterator[14].toString().replace(/,/g, '')) | 0
     const customerWin = Math.floor((0 - winAndLoseAgen) * share) | 0
     const summaryLose = (customerWin + positiveBalance) | 0
     const deductionWind =
