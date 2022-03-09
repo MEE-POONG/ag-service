@@ -805,5 +805,17 @@ exports.UFA66 = [
     { username: "ufrcbwe9", senior: "ufrcb", master: "ufrcbw", share: 0.25, positiveBalance: -147, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcbwf3", senior: "ufrcb", master: "ufrcbw", share: 0.20, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcbwg1", senior: "ufrcb", master: "ufrcbw", share: 0.20, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbya1", senior: "ufrcb", master: "ufrcby", share: 0.20, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbya2", senior: "ufrcb", master: "ufrcby", share: 0.20, positiveBalance: -32, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbya4", senior: "ufrcb", master: "ufrcby", share: 0.20, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbza1", senior: "ufrcb", master: "ufrcbz", share: 0.30, positiveBalance: -6616, transferBalance: 33, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbza3", senior: "ufrcb", master: "ufrcbz", share: 0.15, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbza4", senior: "ufrcb", master: "ufrcbz", share: 0.15, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbza5", senior: "ufrcb", master: "ufrcbz", share: 0.15, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbza7", senior: "ufrcb", master: "ufrcbz", share: 0.15, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbza9", senior: "ufrcb", master: "ufrcbz", share: 0.15, positiveBalance: -22, transferBalance: 5, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbzb1", senior: "ufrcb", master: "ufrcbz", share: 0.15, positiveBalance: -506, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbzb2", senior: "ufrcb", master: "ufrcbz", share: 0.15, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
+    { username: "ufrcbzb3", senior: "ufrcb", master: "ufrcbz", share: 0.30, positiveBalance: -7411, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
 
 ];
