@@ -147,7 +147,7 @@ const fetchWinLose = async (page, master, senior) => {
     const customerWin = Math.floor((0 - winAndLoseAgen) * share) | 0
     const summaryLose = (customerWin + positiveBalance) | 0
     const deductionWind =
-      ((summaryLose > 0 ? summaryLose : 0) + commissionAgen + windCredit) | 0
+      ((summaryLose > 0 ? summaryLose : 0) + commissionAgen - windCredit) | 0
     const transferAmount =
       ((deductionWind > 0 ? deductionWind : 0) + transferBalance) | 0
     console.log(
