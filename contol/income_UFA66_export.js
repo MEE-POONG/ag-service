@@ -47,7 +47,7 @@ const startExport = async () => {
     ws.cell(index, 9).string(iterator.transferBalance)
     ws.cell(index, 10).string(iterator.transferAmount)
   }
-  wb.write('รายได้พันธมิตร.xlsx')
+  wb.write('รายได้พันธมิตรUFA66.xlsx')
   console.log('Export Success')
 }
-exports.startExport()
+startExport()
