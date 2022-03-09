@@ -1,5 +1,7 @@
 require('dotenv').config()
 
+const { startExport } = require('./income_UFA66_export')
+
 const delay = require('delay')
 const { Poseidon99, UFA66, TOP168 } = require('../dataWeb')
 const _ = require('lodash')
@@ -194,6 +196,9 @@ const fetchWinLose = async (page, master, senior) => {
       updatedBy: mongoose.Types.ObjectId('61ff9d0049b196b7ba3476d6')
     })
     await income.save()
+  }
+  if (master === 'ufrcbw') {
+    await startExport()
   }
   return
 }

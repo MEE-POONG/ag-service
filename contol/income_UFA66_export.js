@@ -19,7 +19,7 @@ const Income = require('../models/income.model')
 // top	Tpufa168wptop++
 require('dotenv').config()
 
-const startExport = async () => {
+exports.startExport = async () => {
   const data = await Income.find({})
   var wb = new xl.Workbook()
   var ws = wb.addWorksheet('Sheet 1')
@@ -50,4 +50,3 @@ const startExport = async () => {
   wb.write('รายได้พันธมิตรUFA66.xlsx')
   console.log('Export Success')
 }
-startExport()
