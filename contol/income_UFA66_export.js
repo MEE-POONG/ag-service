@@ -22,7 +22,7 @@ require('dotenv').config()
 exports.startExport = async () => {
   const data = await Income.find({})
   var wb = new xl.Workbook()
-  var ws = wb.addWorksheet('Sheet 1')
+  var ws = wb.addWorksheet('รายได้พันธมิตร UFA66')
   ws.cell(1, 1).string('ยูส')
   ws.cell(1, 2).string('ออนไลน์')
   ws.cell(1, 3).string('คอมมิชชั่น')
