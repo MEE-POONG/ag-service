@@ -214,7 +214,6 @@ exports.UFA66 = [
     { username: "ufrcb52a1", senior: "ufrcb", master: "ufrcb52", share: 0.40, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcb52a2", senior: "ufrcb", master: "ufrcb52", share: 0.40, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcb52a3", senior: "ufrcb", master: "ufrcb52", share: 0.30, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
-    { username: "ufrcb577", senior: "ufrcb", master: "ufrcb5", share: 0.00, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcb59a1", senior: "ufrcb", master: "ufrcb59", share: 0.40, positiveBalance: -23579, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcb59a2", senior: "ufrcb", master: "ufrcb59", share: 0.40, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcb59a3", senior: "ufrcb", master: "ufrcb59", share: 0.20, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
