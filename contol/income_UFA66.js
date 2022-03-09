@@ -84,13 +84,24 @@ const args = [
     element[0].click(),
     page.waitForNavigation({ waitUntil: 'load' })
   ])
+  let pageIndex = 0
+  const masterUFA66 = _.uniqBy(UFA66, 'master')
 
-  for (const iterator of _.uniqBy(UFA66, 'master')) {
-    await fetchWinLose(page, iterator.master, iterator.senior)
+  const remove = await Income.remove({})
+  console.log(remove);
+
+  for (const iterator of masterUFA66) {
+    await fetchWinLose(
+      page,
+      iterator.master,
+      iterator.senior,
+      (pageIndex += 1),
+      masterUFA66.length
+    )
   }
 })()
 
-const fetchWinLose = async (page, master, senior) => {
+const fetchWinLose = async (page, master, senior, pageIndex, total) => {
   await page.goto(
     agtest +
       `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=` +
@@ -127,7 +138,6 @@ const fetchWinLose = async (page, master, senior) => {
   }
   await resultTable.shift()
   for (const iterator of resultTable) {
-    console.log(iterator[0])
     const { share, positiveBalance, transferBalance, userWind } = UFA66.find(
       ({ username }) => iterator[0] === username
     )
@@ -152,22 +162,24 @@ const fetchWinLose = async (page, master, senior) => {
       ((deductionWind > 0 ? deductionWind : 0) + transferBalance) | 0
     console.log(
       chalk.yellow(
+        master,
         iterator[0],
         iterator[5],
         iterator[9],
         iterator[10],
-        'customerWin:' + winAndLoseAgen > 0 ? customerWin : 0,
-        'customerLose:' + winAndLoseAgen < 0 ? customerWin : 0,
-        'positiveBalance:' + positiveBalance,
-        'transferBalance:' + transferBalance,
-        'summaryLose:' + summaryLose,
-        'windCredit:' + windCredit,
-        'deductionWind:' + deductionWind,
-        'transferAmount:' + transferAmount,
+        winAndLoseAgen > 0 ? customerWin : 0,
+        winAndLoseAgen < 0 ? customerWin : 0,
+        positiveBalance,
+        transferBalance,
+        summaryLose,
+        windCredit,
+        deductionWind,
+        transferAmount,
         iterator[14]
       )
     )
     const income = new Income({
+      master,
       usernameAG: iterator[0],
       online: iterator[5],
       commissionAgen: commissionAgen,
@@ -197,8 +209,9 @@ const fetchWinLose = async (page, master, senior) => {
     })
     await income.save()
   }
-  if (master === 'ufrcbzb3') {
-    await startExport()
+  if (pageIndex == total) {
+    console.log('START EXPORT EXCEL')
+    await startExport('20220228-20220306')
   }
   return
 }
