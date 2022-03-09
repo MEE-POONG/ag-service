@@ -197,7 +197,7 @@ const fetchWinLose = async (page, master, senior) => {
     })
     await income.save()
   }
-  if (master === 'ufrcbw') {
+  if (master === 'ufrcbzb3') {
     await startExport()
   }
   return
