@@ -84,27 +84,11 @@ const args = [
   ])
 
   for (const iterator of _.uniqBy(UFA66, 'master')) {
-    await fetchWinLose(
-      page,
-      iterator.master,
-      iterator.senior,
-      iterator.share,
-      iterator.positiveBalance,
-      iterator.transferBalance,
-      iterator.userWind
-    )
+    await fetchWinLose(page, iterator.master, iterator.senior)
   }
 })()
 
-const fetchWinLose = async (
-  page,
-  master,
-  senior,
-  share,
-  positiveBalance,
-  transferBalance,
-  userWind
-) => {
+const fetchWinLose = async (page, master, senior) => {
   await page.goto(
     agtest +
       `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=` +
@@ -141,27 +125,29 @@ const fetchWinLose = async (
   }
   await resultTable.shift()
   for (const iterator of resultTable) {
+    const { share, positiveBalance, transferBalance, userWind } = UFA66.find(
+      ({ username }) => iterator[0] === username
+    )
     const creditWind = await creditWindModel.findOne({ userWind })
-    const windCredit = Number(
-      ((creditWind && creditWind.winAndLoseCompany) || 0)
-        .toString()
-        .replace(/,/g, '')
-    )
+    const windCredit =
+      Number(
+        ((creditWind && creditWind.winAndLoseCompany) || 0)
+          .toString()
+          .replace(/,/g, '')
+      ) | 0
 
-    const commissionAgen = await Number(
-      iterator[9].toString().replace(/,/g, '')
-    )
-    const winAndLoseAgen = await Number(
-      iterator[10].toString().replace(/,/g, '')
-    )
-    const winAndLoseMaster = await Number(
-      iterator[14].toString().replace(/,/g, '')
-    )
-    const customerWin = Math.floor((0 - winAndLoseAgen) * share)
-    const summaryLose = customerWin + positiveBalance
+    const commissionAgen =
+      (await Number(iterator[9].toString().replace(/,/g, ''))) | 0
+    const winAndLoseAgen =
+      (await Number(iterator[10].toString().replace(/,/g, ''))) | 0
+    const winAndLoseMaster =
+      (await Number(iterator[14].toString().replace(/,/g, ''))) | 0
+    const customerWin = Math.floor((0 - winAndLoseAgen) * share) | 0
+    const summaryLose = (customerWin + positiveBalance) | 0
     const deductionWind =
-      (summaryLose > 0 ? summaryLose : 0) + commissionAgen + windCredit
-      const transferAmount = (deductionWind > 0 ? deductionWind : 0) + transferBalance
+      ((summaryLose > 0 ? summaryLose : 0) + commissionAgen + windCredit) | 0
+    const transferAmount =
+      ((deductionWind > 0 ? deductionWind : 0) + transferBalance) | 0
     console.log(
       chalk.yellow(
         iterator[0],

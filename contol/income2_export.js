@@ -50,4 +50,4 @@ const startExport = async () => {
   wb.write('รายได้พันธมิตร.xlsx')
   console.log('Export Success')
 }
-startExport()
+exports.startExport()
