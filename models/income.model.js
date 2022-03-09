@@ -6,6 +6,7 @@ const IncomeSchema = new Schema(
     master: String,
     usernameAG: String,
     online: Number,
+    share: Number,
     commissionAgen: Number,
     winAndLoseAgen: Number,
     customerWin: Number,
@@ -17,6 +18,7 @@ const IncomeSchema = new Schema(
     windCredit: Number,
     deductionWind: Number,
     transferAmount: Number,
+    userWind: String,
     
     agStatus: { type: String, default: '' },
     incomeStartDate: Date,
