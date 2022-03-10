@@ -68,7 +68,7 @@ const startExport = async days => {
   ws1.cell(1, 8).string('รายได้')
   let indexMaster = 1
   for (const iterator of _.uniqBy(data, 'master')) {
-    index += 1
+    indexMaster += 1
     ws1.cell(indexMaster, 1).string(iterator.master)
     ws1.cell(indexMaster, 2).number(iterator.windAndLossMaster)
     ws1.cell(indexMaster, 3).number(iterator.promotion)
