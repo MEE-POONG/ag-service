@@ -82,6 +82,5 @@ const startExport = async days => {
   wb.write(`รายได้-UFA66-${days}.xlsx`)
   console.log('Export Success')
 }
-startExport('2020-05-01')
 
 exports.startExport = startExport
