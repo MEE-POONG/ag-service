@@ -237,7 +237,7 @@ const fetchWinLose = async (
     })
     await income.save()
     sumCustomerLose += customerLose
-    summaryLoseMaster += summaryLose
+    summaryLoseMaster += summaryLose > 0 ? summaryLose : 0
   }
   const amountMaster = (windAndLossMaster + promotion + positiveMaster) | 0
   await Income.updateMany(
