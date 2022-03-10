@@ -19,6 +19,15 @@ const IncomeSchema = new Schema(
     deductionWind: Number,
     transferAmount: Number,
     userWind: String,
+
+    // TODO: MASTER
+    windAndLossMaster: Number,
+    promotion: Number,
+    sumCustomerLose: Number,
+    summaryLoseMaster: Number,
+    positiveMaster: Number,
+    amountMaster: Number,
+    sumMaster: Number,
     
     agStatus: { type: String, default: '' },
     incomeStartDate: Date,

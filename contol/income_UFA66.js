@@ -66,7 +66,7 @@ const args = [
 ]
 ;(async () => {
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     defaultViewport: { width: 1920, height: 5000 },
     args
   })
@@ -88,7 +88,7 @@ const args = [
   const masterUFA66 = _.uniqBy(UFA66, 'master')
 
   const remove = await Income.remove({})
-  console.log(remove);
+  console.log(remove)
 
   for (const iterator of masterUFA66) {
     await fetchWinLose(
@@ -96,12 +96,24 @@ const args = [
       iterator.master,
       iterator.senior,
       (pageIndex += 1),
-      masterUFA66.length
+      masterUFA66.length,
+      iterator.promotion,
+      iterator.positiveMaster,
+      iterator.shareMaster
     )
   }
 })()
 
-const fetchWinLose = async (page, master, senior, pageIndex, total) => {
+const fetchWinLose = async (
+  page,
+  master,
+  senior,
+  pageIndex,
+  total,
+  promotion,
+  positiveMaster,
+  shareMaster
+) => {
   await page.goto(
     agtest +
       `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=` +
@@ -131,12 +143,23 @@ const fetchWinLose = async (page, master, senior, pageIndex, total) => {
       return Array.from(columns, column => column.innerText)
     })
   })
+
+  if (resultTable.length <= 3) {
+    return
+  }
+
+  const windAndLossMaster = formatNumber(
+    resultTable[resultTable.length - 1][14]
+  )
+  console.log(windAndLossMaster)
   for (var i = 0; i < resultTable.length; i++) {
     if (resultTable[i][2] !== 'THB') {
       resultTable.splice(i, 1)
     }
   }
   await resultTable.shift()
+  let sumCustomerLose = 0
+  let summaryLoseMaster = 0
   for (const iterator of resultTable) {
     const { share, positiveBalance, transferBalance, userWind } = UFA66.find(
       ({ username }) => iterator[0] === username
@@ -160,6 +183,7 @@ const fetchWinLose = async (page, master, senior, pageIndex, total) => {
       ((summaryLose > 0 ? summaryLose : 0) + commissionAgen - windCredit) | 0
     const transferAmount =
       ((deductionWind > 0 ? deductionWind : 0) + transferBalance) | 0
+    const customerLose = winAndLoseAgen < 0 ? customerWin : 0
     console.log(
       chalk.yellow(
         master,
@@ -169,7 +193,7 @@ const fetchWinLose = async (page, master, senior, pageIndex, total) => {
         iterator[9],
         iterator[10],
         winAndLoseAgen > 0 ? customerWin : 0,
-        winAndLoseAgen < 0 ? customerWin : 0,
+        customerLose,
         positiveBalance,
         transferBalance,
         summaryLose,
@@ -188,7 +212,7 @@ const fetchWinLose = async (page, master, senior, pageIndex, total) => {
       commissionAgen: commissionAgen,
       winAndLoseAgen: winAndLoseAgen,
       customerWin: winAndLoseAgen > 0 ? customerWin : 0,
-      customerLose: winAndLoseAgen < 0 ? customerWin : 0,
+      customerLose: customerLose,
       positiveBalance: positiveBalance,
       summaryLose: summaryLose,
       windCredit: windCredit,
@@ -212,10 +236,29 @@ const fetchWinLose = async (page, master, senior, pageIndex, total) => {
       updatedBy: mongoose.Types.ObjectId('61ff9d0049b196b7ba3476d6')
     })
     await income.save()
+    sumCustomerLose += customerLose
+    summaryLoseMaster += summaryLose
   }
+  const amountMaster = (windAndLossMaster + promotion + positiveMaster) | 0
+  await Income.updateMany(
+    { master },
+    {
+      $set: {
+        windAndLossMaster: windAndLossMaster,
+        promotion: promotion,
+        sumCustomerLose: sumCustomerLose,
+        summaryLoseMaster: summaryLoseMaster,
+        positiveMaster: positiveMaster,
+        amountMaster: amountMaster,
+        sumMaster: (amountMaster * shareMaster) | 0
+      }
+    }
+  )
   if (pageIndex == total) {
     console.log('START EXPORT EXCEL')
     await startExport('20220228-20220306')
   }
   return
 }
+
+const formatNumber = item => Number(item.toString().replace(/,/g, ''))

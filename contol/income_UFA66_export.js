@@ -1,6 +1,7 @@
 require('dotenv').config()
 const delay = require('delay')
 var xl = require('excel4node')
+const _ = require('lodash')
 
 const mongoose = require('mongoose')
 const MONGODB_URI = process.env.MONGODB_URI
@@ -19,7 +20,7 @@ const Income = require('../models/income.model')
 // top	Tpufa168wptop++
 require('dotenv').config()
 
-exports.startExport = async (days) => {
+const startExport = async days => {
   const data = await Income.find({})
   var wb = new xl.Workbook()
   var ws = wb.addWorksheet(`รายได้พันธมิตร UFA66 ${days}`)
@@ -55,8 +56,32 @@ exports.startExport = async (days) => {
     ws.cell(index, 13).number(iterator.transferBalance)
     ws.cell(index, 14).number(iterator.transferAmount)
   }
-  wb.write(`รายได้พันธมิตร-UFA66-${days}.xlsx`)
+
+  var ws1 = wb.addWorksheet(`รายได้มาสเตอร์ UFA66 ${days}`)
+  ws1.cell(1, 1).string('ยูสมาสเตอร์')
+  ws1.cell(1, 2).string('เสียบวกมาสเตอร์')
+  ws1.cell(1, 3).string('ยอดโปรโมชั่น')
+  ws1.cell(1, 4).string('ยอดเสียเอเย่นต์')
+  ws1.cell(1, 5).string('ยอดเสียจ่ายจริง')
+  ws1.cell(1, 6).string('ยอดค้างเก่า')
+  ws1.cell(1, 7).string('สรุปยอดรวม')
+  ws1.cell(1, 8).string('รายได้')
+  let indexMaster = 1
+  for (const iterator of _.uniqBy(data, 'master')) {
+    index += 1
+    ws1.cell(indexMaster, 1).string(iterator.master)
+    ws1.cell(indexMaster, 2).number(iterator.windAndLossMaster)
+    ws1.cell(indexMaster, 3).number(iterator.promotion)
+    ws1.cell(indexMaster, 4).number(iterator.sumCustomerLose)
+    ws1.cell(indexMaster, 5).number(iterator.summaryLoseMaster)
+    ws1.cell(indexMaster, 6).number(iterator.positiveMaster)
+    ws1.cell(indexMaster, 7).number(iterator.amountMaster)
+    ws1.cell(indexMaster, 8).number(iterator.sumMaster)
+  }
+
+  wb.write(`รายได้-UFA66-${days}.xlsx`)
   console.log('Export Success')
 }
+startExport('2020-05-01')
 
-
+exports.startExport = startExport
