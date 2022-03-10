@@ -50,7 +50,7 @@ exports.startExport = async (days) => {
     ws.cell(index, 8).number(iterator.customerWin)
     ws.cell(index, 9).number(iterator.positiveBalance)
     ws.cell(index, 10).number(iterator.summaryLose)
-    ws.cell(index, 11).string(iterator.userWind)
+    ws.cell(index, 11).number(iterator.windCredit)
     ws.cell(index, 12).number(iterator.deductionWind)
     ws.cell(index, 13).number(iterator.transferBalance)
     ws.cell(index, 14).number(iterator.transferAmount)
@@ -58,3 +58,5 @@ exports.startExport = async (days) => {
   wb.write(`รายได้พันธมิตร-UFA66-${days}.xlsx`)
   console.log('Export Success')
 }
+
+
