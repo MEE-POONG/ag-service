@@ -240,10 +240,11 @@ const fetchWinLose = async (
     summaryLoseMaster += summaryLose > 0 ? summaryLose : 0
   }
   const amountMaster =
-    (windAndLossMaster -
-      promotion -
-      positiveMaster -
-      (payFull ? sumCustomerLose : summaryLoseMaster)) |
+    (windAndLossMaster +
+      (0 -
+        promotion +
+        positiveMaster +
+        (payFull ? -sumCustomerLose : -summaryLoseMaster))) |
     0
   await Income.updateMany(
     { master },
