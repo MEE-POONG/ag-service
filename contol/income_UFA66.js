@@ -99,7 +99,8 @@ const args = [
       masterUFA66.length,
       iterator.promotion,
       iterator.positiveMaster,
-      iterator.shareMaster
+      iterator.shareMaster,
+      iterator.payFull
     )
   }
 })()
@@ -112,7 +113,8 @@ const fetchWinLose = async (
   total,
   promotion,
   positiveMaster,
-  shareMaster
+  shareMaster,
+  payFull
 ) => {
   await page.goto(
     agtest +
@@ -148,10 +150,8 @@ const fetchWinLose = async (
     return
   }
 
-  const windAndLossMaster = formatNumber(
-    resultTable[resultTable.length - 1][14]
-  )
-  console.log(windAndLossMaster)
+  const windAndLossMaster =
+    formatNumber(resultTable[resultTable.length - 1][14]) | 0
   for (var i = 0; i < resultTable.length; i++) {
     if (resultTable[i][2] !== 'THB') {
       resultTable.splice(i, 1)
@@ -239,7 +239,12 @@ const fetchWinLose = async (
     sumCustomerLose += customerLose
     summaryLoseMaster += summaryLose > 0 ? summaryLose : 0
   }
-  const amountMaster = (windAndLossMaster + promotion + positiveMaster) | 0
+  const amountMaster =
+    (windAndLossMaster -
+      promotion -
+      positiveMaster -
+      (payFull ? sumCustomerLose : summaryLoseMaster)) |
+    0
   await Income.updateMany(
     { master },
     {
