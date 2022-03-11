@@ -179,7 +179,7 @@ const fetchWinLose = async (
     const windCredit =
       windCreditCal < 0 ? Math.floor(windCreditCal) : Math.ceil(windCreditCal)
 
-    const commissionAgen = Number(iterator[9].toString().replace(/,/g, '')) | 0
+    const commissionAgen = Number(iterator[7].toString().replace(/,/g, '')) | 0
     const lessCommission = Number(iterator[10].toString().replace(/,/g, '')) | 0
 
     const winAndLoseAgen = lessCommission + commissionAgen

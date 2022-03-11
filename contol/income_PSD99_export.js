@@ -94,4 +94,4 @@ const startExport = async days => {
 
 exports.startExport = startExport
 
-startExport('20220228-20220306')
+// startExport('20220228-20220306')
