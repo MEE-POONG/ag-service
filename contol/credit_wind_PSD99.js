@@ -84,7 +84,7 @@ const args = [
   // 	console.log(`/_SubAg1/MemberSet.aspx?userName=ufrcbxb8` + number + `&set=1`);
   await page.goto(
     agtest +
-      `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=ufrcb0&from=02/28/2022&to=03/06/2022&userID=ufrcb&checkAll=True`,
+      `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=ufruu00&from=02/28/2022&to=03/06/2022&userID=ufruu&checkAll=True`,
     {
       waitUntil: 'networkidle2'
     }
