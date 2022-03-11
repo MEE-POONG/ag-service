@@ -8,6 +8,7 @@ const IncomeSchema = new Schema(
     online: Number,
     share: Number,
     commissionAgen: Number,
+    lessCommission: Number,
     winAndLoseAgen: Number,
     customerWin: Number,
     customerLose: Number,
@@ -19,6 +20,9 @@ const IncomeSchema = new Schema(
     deductionWind: Number,
     transferAmount: Number,
     userWind: String,
+    hold: Boolean,
+    commission: Boolean,
+    pay: Boolean,
 
     // TODO: MASTER
     windAndLossMaster: Number,
