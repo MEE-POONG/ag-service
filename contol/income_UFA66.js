@@ -1,6 +1,7 @@
 require('dotenv').config()
 
 const { startExport } = require('./income_UFA66_export')
+const { credit_wind_UFA66 } = require('./credit_wind_UFA66')
 
 const delay = require('delay')
 const { Poseidon99, UFA66, TOP168 } = require('../dataWeb')
@@ -64,48 +65,13 @@ const args = [
   '--use-mock-keychain',
   '--ignore-certificate-errors'
 ]
-;(async () => {
-  const browser = await puppeteer.launch({
-    headless: false,
-    defaultViewport: { width: 1920, height: 5000 },
-    args
-  })
-  const page = await browser.newPage()
-  let element, formElement, tabs
-  await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' })
 
-  element = await page.$x(`//*[@id="txtUserName"]`)
-  await element[0].type(userA)
-  element = await page.$x(`//*[@id="txtPassword"]`)
-  await element[0].type(passA)
-  element = await page.$x(`//*[@id="btnSignIn"]`)
-
-  await Promise.all([
-    element[0].click(),
-    page.waitForNavigation({ waitUntil: 'load' })
-  ])
-  let pageIndex = 0
-  const masterUFA66 = _.uniqBy(UFA66, 'master')
-
-  const remove = await Income.remove({})
-  console.log(remove)
-
-  for (const iterator of masterUFA66) {
-    await fetchWinLose(
-      page,
-      iterator.master,
-      iterator.senior,
-      (pageIndex += 1),
-      masterUFA66.length,
-      iterator.promotion,
-      iterator.positiveMaster,
-      iterator.shareMaster,
-      iterator.payFull
-    )
-  }
-})()
+// const from = '07/03/2022'
+// const to = '13/03/2022'
 
 const fetchWinLose = async (
+  from,
+  to,
   page,
   master,
   senior,
@@ -120,7 +86,7 @@ const fetchWinLose = async (
     agtest +
       `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=` +
       master +
-      `&from=02/28/2022&to=03/06/2022&userID=` +
+      `&from=${from} &to=${to}&userID=` +
       senior +
       `&checkAll=True`,
     {
@@ -262,9 +228,53 @@ const fetchWinLose = async (
   )
   if (pageIndex == total) {
     console.log('START EXPORT EXCEL')
-    await startExport('20220228-20220306')
+    await startExport(from + '-' + to)
   }
   return
 }
 
 const formatNumber = item => Number(item.toString().replace(/,/g, ''))
+
+exports.income_UFA66 = async (from, to) => {
+  await credit_wind_UFA66(from, to)
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: { width: 1920, height: 5000 },
+    args
+  })
+  const page = await browser.newPage()
+  let element, formElement, tabs
+  await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' })
+
+  element = await page.$x(`//*[@id="txtUserName"]`)
+  await element[0].type(userA)
+  element = await page.$x(`//*[@id="txtPassword"]`)
+  await element[0].type(passA)
+  element = await page.$x(`//*[@id="btnSignIn"]`)
+
+  await Promise.all([
+    element[0].click(),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+  let pageIndex = 0
+  const masterUFA66 = _.uniqBy(UFA66, 'master')
+
+  const remove = await Income.remove({})
+  console.log(remove)
+
+  for (const iterator of masterUFA66) {
+    await fetchWinLose(
+      from,
+      to,
+      page,
+      iterator.master,
+      iterator.senior,
+      (pageIndex += 1),
+      masterUFA66.length,
+      iterator.promotion,
+      iterator.positiveMaster,
+      iterator.shareMaster,
+      iterator.payFull
+    )
+  }
+}

@@ -21,9 +21,10 @@ const Income = require('../models/income.model')
 require('dotenv').config()
 
 const startExport = async days => {
+  const name = days.replace(/[/]/g, "-")
   const data = await Income.find({})
   var wb = new xl.Workbook()
-  var ws = wb.addWorksheet(`รายได้พันธมิตร PSD99 ${days}`)
+  var ws = wb.addWorksheet(`รายได้พันธมิตร PSD99 ${name}`)
   ws.cell(1, 1).string('มาสเตอร์')
   ws.cell(1, 2).string('ยูส')
   ws.cell(1, 3).string('สู้ฟรี')
@@ -66,7 +67,7 @@ const startExport = async days => {
     ws.cell(index, 18).string(iterator.pay.toString())
   }
 
-  var ws1 = wb.addWorksheet(`รายได้มาสเตอร์ PSD99 ${days}`)
+  var ws1 = wb.addWorksheet(`รายได้มาสเตอร์ PSD99 ${name}`)
   ws1.cell(1, 1).string('ยูสมาสเตอร์')
   ws1.cell(1, 2).string('เสียบวกมาสเตอร์')
   ws1.cell(1, 3).string('ยอดโปรโมชั่น')
@@ -88,10 +89,10 @@ const startExport = async days => {
     ws1.cell(indexMaster, 8).number(iterator.sumMaster)
   }
 
-  wb.write(`รายได้-PSD99-${days}.xlsx`)
+  wb.write(`รายได้-PSD99-${name}.xlsx`)
   console.log('Export Success')
 }
 
 exports.startExport = startExport
 
-// startExport('20220228-20220306')
+// startExport(from + '-' + to)

@@ -58,7 +58,11 @@ const args = [
   '--use-mock-keychain',
   '--ignore-certificate-errors'
 ]
-;(async () => {
+
+exports.credit_wind_UFA66 = async (from, to) => {
+  const remove = await creditWindModel.remove({})
+  console.log(remove)
+
   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: { width: 1920, height: 5000 },
@@ -84,11 +88,12 @@ const args = [
   // 	console.log(`/_SubAg1/MemberSet.aspx?userName=ufrcbxb8` + number + `&set=1`);
   await page.goto(
     agtest +
-      `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=ufrcb0&from=02/28/2022&to=03/06/2022&userID=ufrcb&checkAll=True`,
+      `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=ufrcb0&from=${from}&to=${to}&userID=ufrcb&checkAll=True`,
     {
       waitUntil: 'networkidle2'
     }
   )
+  
   console.log('SubAccsWinLose_cm1_g tbody tr')
   await page.waitForXPath(`//*[@id="SubAccsWinLose_cm1_g"]`, { visible: true })
   resultTable = await page.evaluate(async () => {
@@ -119,4 +124,4 @@ const args = [
     })
     model.save()
   }
-})()
+}
