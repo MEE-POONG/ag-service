@@ -238,7 +238,7 @@ const formatNumber = item => Number(item.toString().replace(/,/g, ''))
 exports.income_UFA66 = async (from, to) => {
   await credit_wind_UFA66(from, to)
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: { width: 1920, height: 5000 },
     args
   })

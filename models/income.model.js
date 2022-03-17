@@ -32,6 +32,8 @@ const IncomeSchema = new Schema(
     positiveMaster: Number,
     amountMaster: Number,
     sumMaster: Number,
+
+    payFull: Boolean,
     
     agStatus: { type: String, default: '' },
     incomeStartDate: Date,
