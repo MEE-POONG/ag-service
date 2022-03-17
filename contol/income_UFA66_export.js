@@ -14,6 +14,7 @@ mongoose.connection.on('error', err => {
   console.error('MongoDB error', err)
 })
 const Income = require('../models/income.model')
+const AgInformation = require('../models/agInformation.model')
 
 // psd	T99Ppvip999.
 // 66	Vip66ufa~168++
@@ -22,9 +23,57 @@ require('dotenv').config()
 
 const startExport = async days => {
   const name = days.replace(/[/]/g, "-")
+  const AGdata = await AgInformation.find({})
   const data = await Income.find({})
   var wb = new xl.Workbook()
-  var ws = wb.addWorksheet(`รายได้พันธมิตร UFA66 ${name}`)
+
+  var ws0 = wb.addWorksheet(`ข้อมูล`)
+  ws0.cell(1, 1).string('N1')
+  ws0.cell(1, 2).string('N2')
+  ws0.cell(1, 3).string('N3')
+  ws0.cell(1, 4).string('N4')
+  ws0.cell(1, 5).string('N5')
+  ws0.cell(1, 6).string('N6')
+  ws0.cell(1, 7).string('N7')
+  ws0.cell(1, 8).string('N8')
+  ws0.cell(1, 9).string('N9')
+  ws0.cell(1, 10).string('N10')
+  ws0.cell(1, 11).string('N11')
+  ws0.cell(1, 12).string('N12')
+  ws0.cell(1, 13).string('N13')
+  ws0.cell(1, 14).string('N14')
+  ws0.cell(1, 15).string('N15')
+  ws0.cell(1, 16).string('N16')
+  ws0.cell(1, 17).string('N17')
+  ws0.cell(1, 18).string('N18')
+  ws0.cell(1, 19).string('N19')
+  
+  let idx = 1
+  for (const iterator of AGdata) {
+    idx += 1
+    ws0.cell(idx, 1).string(iterator.N1)
+    ws0.cell(idx, 2).string(iterator.N2)
+    ws0.cell(idx, 3).string(iterator.N3)
+    ws0.cell(idx, 4).string(iterator.N4)
+    ws0.cell(idx, 5).string(iterator.N5)
+    ws0.cell(idx, 6).string(iterator.N6)
+    ws0.cell(idx, 7).string(iterator.N7)
+    ws0.cell(idx, 8).string(iterator.N8)
+    ws0.cell(idx, 9).string(iterator.N9)
+    ws0.cell(idx, 10).string(iterator.N10)
+    ws0.cell(idx, 11).string(iterator.N11)
+    ws0.cell(idx, 12).string(iterator.N12)
+    ws0.cell(idx, 13).string(iterator.N13)
+    ws0.cell(idx, 14).string(iterator.N14)
+    ws0.cell(idx, 15).string(iterator.N15)
+    ws0.cell(idx, 16).string(iterator.N16)
+    ws0.cell(idx, 17).string(iterator.N17)
+    ws0.cell(idx, 18).string(iterator.N18)
+    ws0.cell(idx, 19).string(iterator.N19)
+  }
+
+
+  var ws = wb.addWorksheet(`รายได้พันธมิตร UFA66`)
   ws.cell(1, 1).string('มาสเตอร์')
   ws.cell(1, 2).string('ยูส')
   ws.cell(1, 3).string('สู้ฟรี')
@@ -58,7 +107,7 @@ const startExport = async days => {
     ws.cell(index, 14).number(iterator.transferAmount)
   }
 
-  var ws1 = wb.addWorksheet(`รายได้มาสเตอร์ UFA66 ${name}`)
+  var ws1 = wb.addWorksheet(`รายได้มาสเตอร์ UFA66`)
   ws1.cell(1, 1).string('ยูสมาสเตอร์')
   ws1.cell(1, 2).string('เสียบวกมาสเตอร์')
   ws1.cell(1, 3).string('ยอดโปรโมชั่น')
