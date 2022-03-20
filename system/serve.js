@@ -87,7 +87,7 @@ async function login(data, worker, index, db) {
         .catch(function (err) {
           console.log(chalk.red(err))
           fs.unlink(pathPhoto, (err => { return; }));
-          cmd.runSync('npm run serve:restart');
+          // cmd.runSync('npm run serve:restart');
         })
 
     } else {
@@ -113,7 +113,7 @@ async function login(data, worker, index, db) {
           console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
           statusFlags = 'R'
           console.log('FAIL_TO_LOGIN');
-          cmd.runSync('npm run serve:restart');
+          // cmd.runSync('npm run serve:restart');
           return
         }
         if (db === 'Alliance') {
@@ -121,7 +121,7 @@ async function login(data, worker, index, db) {
           console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
           statusFlags = 'R'
           console.log('FAIL_TO_LOGIN');
-          cmd.runSync('npm run serve:restart');
+          // cmd.runSync('npm run serve:restart');
           return
         }
       } else {
@@ -138,23 +138,23 @@ async function login(data, worker, index, db) {
     if (db === 'Customer') {
       await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
       console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
-      cmd.runSync('npm run serve:restart');
+      // cmd.runSync('npm run serve:restart');
       return
     }
     if (db === 'Alliance') {
       await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
       console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
-      cmd.runSync('npm run serve:restart');
+      // cmd.runSync('npm run serve:restart');
       return
     }
     if (db === 'Credit') {
       await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
       console.log(`_id: ${data._id}, Credit: statusServe: FAIL_TO_LOGIN`);
-      cmd.runSync('npm run serve:restart');
+      // cmd.runSync('npm run serve:restart');
       return
     }
     console.error(db, error)
-    cmd.runSync('npm run serve:restart');
+    // cmd.runSync('npm run serve:restart');
   }
 }
 
@@ -190,7 +190,7 @@ async function start() {
           statusFlags = 'R'
           console.log(chalk.green('END JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-          cmd.runSync('npm run serve:restart');
+          // cmd.runSync('npm run serve:restart');
         } else if (zeroPending.length > 0) {
 
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
@@ -208,7 +208,7 @@ async function start() {
           browser.close()
           console.log(chalk.green('END JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-          cmd.runSync('npm run serve:restart');
+          // cmd.runSync('npm run serve:restart');
         } else if (upAgentPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
@@ -226,7 +226,7 @@ async function start() {
           statusFlags = 'R'
           console.log(chalk.green('END JOB UP AGENT ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-          cmd.runSync('npm run serve:restart');
+          // cmd.runSync('npm run serve:restart');
         } else if (creditPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
@@ -244,12 +244,12 @@ async function start() {
           statusFlags = 'R'
           console.log(chalk.green('END JOB CREATE CREDIT ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-          cmd.runSync('npm run serve:restart');
+          // cmd.runSync('npm run serve:restart');
         }
       }
     } catch (error) {
       console.log(chalk.red(error));
-      cmd.runSync('npm run serve:restart');
+      // cmd.runSync('npm run serve:restart');
     }
   }, 2000);
 
