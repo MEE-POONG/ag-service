@@ -105,7 +105,7 @@ async function login(data, worker, index, db) {
     const urls = page.url()
 
     if (title === ':: Management ::') {
-      browser.close();
+      // browser.close();
       if (index >= 1) {
         console.log(db);
         if (db === 'Customer') {
@@ -186,7 +186,7 @@ async function start() {
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
 
           }
-          browser.close()
+          // browser.close()
           statusFlags = 'R'
           console.log(chalk.green('END JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
@@ -205,7 +205,7 @@ async function start() {
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           }
           statusFlags = 'R'
-          browser.close()
+          // browser.close()
           console.log(chalk.green('END JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           // cmd.runSync('npm run serve:restart');
@@ -221,7 +221,7 @@ async function start() {
             await setUpAgent(page, link, data)
             console.log(chalk.green('END JOB UP AGENT ', data.usernameAG, new Date().toISOString()));
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-            browser.close()
+            // browser.close()
           }
           statusFlags = 'R'
           console.log(chalk.green('END JOB UP AGENT ', new Date().toISOString()));
@@ -239,7 +239,7 @@ async function start() {
             await createCredit(page, link, data)
             console.log(chalk.green('END JOB CREATE CREDIT ', data.usernameAG, new Date().toISOString()));
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-            browser.close()
+            // browser.close()
           }
           statusFlags = 'R'
           console.log(chalk.green('END JOB CREATE CREDIT ', new Date().toISOString()));
