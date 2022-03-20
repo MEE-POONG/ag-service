@@ -13,7 +13,7 @@ const chalk = require('chalk');
 console.log(chalk.green('START AG SETVICE VERSION 1.0.0'));
 
 
-import io from "socket.io-client";
+const io = require("socket.io-client");
 
 var socket = io.connect("https://ag-bot-io.meetanggroup.com");
 socket.on("connect", function () {
