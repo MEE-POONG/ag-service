@@ -1,6 +1,14 @@
 require('dotenv').config()
-const delay = require("delay");
+const delay = require('delay')
 
+const chalk = require('chalk')
+console.log(chalk.green('START AG SETVICE VERSION 1.0.0'))
+
+const fs = require('fs')
+
+const { readImg } = require('../system/utils/tesseractGet')
+const { createWorker } = require('tesseract.js')
+const worker = createWorker()
 
 const mongoose = require('mongoose')
 const MONGODB_URI = process.env.MONGODB_URI
@@ -13,8 +21,6 @@ mongoose.connection.on('error', err => {
   console.error('MongoDB error', err)
 })
 
-
-
 const FailedLogin = require('../models/failedLogin.model')
 const ReturnCustomerPSD = require('../models/returnCustomerPSD')
 const ReturnCustomerUFA66 = require('../models/returnCustomerUFA66')
@@ -22,14 +28,14 @@ const ReturnCustomerTOP = require('../models/returnCustomerTOP')
 // psd	T99Ppvip999.
 // 66	Vip66ufa~168++
 // top	Tpufa168wptop++
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer')
 require('dotenv').config()
-const userA = "ufrcb38a2"
-const passA = "Vip66ufa~168++"
-const passPsd = "T99Ppvip999."
-const passTop = "Tpufa168wptop++"
-const agtest = "http://ocean.isme99.com"
-const { Poseidon99, UFA66, TOP168 } = require('../dataWeb');
+const userA = 'ufrcb38a2'
+const passA = 'Pp123456++'
+const passPsd = 'T99Ppvip999.'
+const passTop = 'Tpufa168wptop++'
+const agtest = 'http://ocean.isme99.com'
+const { Poseidon99, UFA66, TOP168 } = require('../dataWeb')
 // const web = "poseidon99";
 // const web = "UFA66";
 // const web = "TOP168";
@@ -73,202 +79,214 @@ const args = [
   '--use-gl=swiftshader',
   '--use-mock-keychain',
   '--ignore-certificate-errors'
-];
+]
 
-
-const handleWithdraw = async (username, web, browser) => {
-
-  const page = await browser.newPage();
-  let element, formElement, tabs;
-  await Promise.all([
-    page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' }),
-    page.waitForNavigation({ waitUntil: 'load' })
-  ]);
+const reconnect = async (web, page, agen, master, idx, total) => {
+  if (page.url() === 'http://ocean.isme99.com/AccessDenied.aspx') {
+    await delay(1000)
+    return await reconnect(web, page, agen, master, idx, total)
+  }
   element = await page.$x(`//*[@id="txtUserName"]`)
-  await element[0].type(username);
+  await element[0].type('ufrcbvip')
   element = await page.$x(`//*[@id="txtPassword"]`)
-  await element[0].type(web === "poseidon99" ? passPsd : web === "UFA66" ? passA : passTop);
-  console.log(web === "poseidon99" ? passPsd : web === "UFA66" ? passA : passTop)
+  await element[0].type(passA)
+  console.log(passA)
   element = await page.$x(`//*[@id="btnSignIn"]`)
+
   await Promise.all([
     element[0].click(),
     page.waitForNavigation({ waitUntil: 'load' })
-  ]);
+  ])
 
   const title = await page.title()
-  const urls = page.url()
 
   if (title === ':: Management ::') {
-    element = await page.$x(`//*[@id="txtUserName"]`)
-    await element[0].type(username);
-    element = await page.$x(`//*[@id="txtPassword"]`)
-    await element[0].type(web === "poseidon99" ? passPsd : web === "UFA66" ? passA : passTop);
-    console.log(web === "poseidon99" ? passPsd : web === "UFA66" ? passA : passTop)
-    element = await page.$x(`//*[@id="btnSignIn"]`)
-
-    await Promise.all([
-      element[0].click(),
-      page.waitForNavigation({ waitUntil: 'load' })
-    ]);
-
+    return await reconnect(web, page, agen, master, idx, total)
   }
 
-  console.log('Page Title :' + title)
-  console.log('Page URL : ' + urls)
-  console.log('login สำเร็จ');
-
+  return handleWithdraw(web, page, agen, master, idx, total)
+}
+const handleWithdraw = async (web, page, agen, master, idx, total) => {
   await Promise.all([
-    page.goto(agtest + `/_SubAg/SubAccsWinLose2.aspx?role=sa&userName=` + username + `&from=02/01/2022&to=02/28/2022&catId=&gId=-1&checkAll=True`, {
-      waitUntil: 'load'
-    }),
-    page.waitForNavigation({ waitUntil: 'load' })
-  ]);
+    await page.goto(
+      agtest +
+        `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` +
+        agen +
+        `&from=02/28/2022&to=03/06/2022&userID=` +
+        master +
+        `&checkAll=True`,
+      {
+        waitUntil: 'load'
+      }
+    )
+  ])
+  console.log(idx, '/', total, page.url(), await page.title())
 
+  if (page.url() === 'http://ocean.isme99.com/AccessDenied.aspx') {
+    await reconnect(web, page, agen, master, idx, total)
+  }
 
-  await page.waitForXPath(`//*[@id="SubAccsWinLose_cm1_g"]`, { visible: true });
+  await page.waitForXPath(`//*[@id="SubAccsWinLose_cm1_g"]`, {
+    visible: true
+  })
   resultTable = await page.evaluate(async () => {
-    const rows = document.querySelectorAll('#SubAccsWinLose_cm1_g tbody tr');
-    console.log("rows 92 : ", rows);
+    const rows = document.querySelectorAll('#SubAccsWinLose_cm1_g tbody tr')
+    console.log('rows 92 : ', rows)
     return Array.from(rows, row => {
-      const columns = row.querySelectorAll('td');
-      console.log("columns : ", columns);
-      return Array.from(columns, column => column.innerText);
-    });
-  });
+      const columns = row.querySelectorAll('td')
+      console.log('columns : ', columns)
+      return Array.from(columns, column => column.innerText)
+    })
+  })
 
-  await delay(1000);
+  if (resultTable.length <= 3) {
+    return
+  }
 
-  await resultTable.shift();
-  await resultTable.pop();
+  await resultTable.shift()
+  await resultTable.pop()
   // //เอาช่อง 4 ยูสเซอร์ ช่อง 9 Balance	 ช่อง 10 Balance แสดงสำหรับ เติมไม่ได้
   // //ตัดข้อมูลทิ้ง
-  console.log('--- ตัดข้อมูลทิ้ง ---');
+  console.log('--- ตัดข้อมูลทิ้ง ---')
 
   let i = 0
   for (const iterator of resultTable) {
-    if (await iterator[2] !== 'THB') {
-      await resultTable.splice(i, 1);
+    if ((await iterator[2]) !== 'THB') {
+      await resultTable.splice(i, 1)
     }
     i += await 1
   }
 
   let index = 0
   for (const iterator of resultTable) {
-    const money = await Number(iterator[10].toString().replace(/,/g, ''));
+    const money = await Number(iterator[10].toString().replace(/,/g, ''))
     const user = await iterator[0]
     withdraw = 0
-    if (web === "poseidon99") {
-      withdraw = await money < -2000 ? 0 - (money) * 0.05 : 0
-      withdraw = await withdraw > 3000 ? 3000 : withdraw
+    if (web === 'poseidon99') {
+      withdraw = (await money) < -2000 ? 0 - money * 0.05 : 0
+      withdraw = (await withdraw) > 3000 ? 3000 : withdraw
       const customerPSD = new ReturnCustomerPSD({
-        "usernameAG": user,
-        "winLose": money,
-        "returnCredit": withdraw,
-        "statusFlag": "A",
-        "createdBy": "60dc8d9e9762420ab43ba7b1",
-        "updatedBy": "60dc8d9e9762420ab43ba7b1",
+        usernameAG: user,
+        winLose: money,
+        returnCredit: withdraw,
+        statusFlag: 'A',
+        createdBy: '60dc8d9e9762420ab43ba7b1',
+        updatedBy: '60dc8d9e9762420ab43ba7b1'
       })
       // SAVE CUSTOMER
-      console.log(web, index += 1, user, " : ", money, ": คืน :", withdraw);
+      console.log(web, (index += 1), user, ' : ', money, ': คืน :', withdraw)
       await customerPSD.save()
-    } else if (web === "UFA66") {
-      withdraw = await money < 0 ? 0 - (money) * 0.05 : 0
-      withdraw = await withdraw > 1000 ? 1000 : withdraw
+    } else if (web === 'UFA66') {
+      withdraw = (await money) < 0 ? 0 - money * 0.05 : 0
+      withdraw = (await withdraw) > 1000 ? 1000 : withdraw
       const customerUFA66 = new ReturnCustomerUFA66({
-        "usernameAG": user,
-        "winLose": money,
-        "returnCredit": withdraw,
-        "statusFlag": "A",
-        "createdBy": "60dc8d9e9762420ab43ba7b1",
-        "updatedBy": "60dc8d9e9762420ab43ba7b1",
+        usernameAG: user,
+        winLose: money,
+        returnCredit: withdraw,
+        statusFlag: 'A',
+        createdBy: '60dc8d9e9762420ab43ba7b1',
+        updatedBy: '60dc8d9e9762420ab43ba7b1'
       })
       // SAVE CUSTOMER
-      console.log(web, index += 1, user, " : ", money, ": คืน :", withdraw);
+      console.log(web, (index += 1), user, ' : ', money, ': คืน :', withdraw)
       await customerUFA66.save()
-    } else if (web === "TOP168") {
-      withdraw = await money < -3000 ? 0 - (money) * 0.05 : 0
-      withdraw = await withdraw > 1000 ? 1000 : withdraw
+    } else if (web === 'TOP168') {
+      withdraw = (await money) < -3000 ? 0 - money * 0.05 : 0
+      withdraw = (await withdraw) > 1000 ? 1000 : withdraw
       const customerTOP = new ReturnCustomerTOP({
-        "usernameAG": user,
-        "winLose": money,
-        "returnCredit": withdraw,
-        "statusFlag": "A",
-        "createdBy": "60dc8d9e9762420ab43ba7b1",
-        "updatedBy": "60dc8d9e9762420ab43ba7b1",
+        usernameAG: user,
+        winLose: money,
+        returnCredit: withdraw,
+        statusFlag: 'A',
+        createdBy: '60dc8d9e9762420ab43ba7b1',
+        updatedBy: '60dc8d9e9762420ab43ba7b1'
       })
       // SAVE CUSTOMER
-      console.log(web, index += 1, user, " : ", money, ": คืน :", withdraw);
+      console.log(web, (index += 1), user, ' : ', money, ': คืน :', withdraw)
       await customerTOP.save()
     }
-
-  }
-
-  page.close();
-}
-
-
-
-
-const webPoseidon99 = async () => {
-  const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
-  for (const iterator of Poseidon99) {
-    await handleWithdraw(iterator.username, iterator.web, browser)
   }
 }
 
-const webUFA66 = async () => {
-  const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
+const startUFA66 = async () => {
+  await worker.load()
+  await worker.loadLanguage('eng')
+  await worker.initialize('eng')
+  await worker.setParameters({
+    tessedit_char_whitelist: '0123456789'
+  })
+
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: { width: 1920, height: 5000 },
+    args
+  })
+
+  const page = await browser.newPage()
+
+  let element
+  await Promise.all([
+    page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' }),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+  await delay(500)
+
+  // const birthday = new Date()
+  // const date1 = birthday.getTime()
+
+  // const pathPhoto = __dirname + '/img/captcha' + date1 + '.png'
+  // await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
+  // const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
+  // await captcha.screenshot({
+  //   path: pathPhoto
+  // })
+
+  element = await page.$x(`//*[@id="txtUserName"]`)
+  await element[0].type('ufrcbvip')
+  element = await page.$x(`//*[@id="txtPassword"]`)
+  await element[0].type(passA)
+  console.log(passA)
+  element = await page.$x(`//*[@id="btnSignIn"]`)
+
+  await Promise.all([
+    element[0].click(),
+    // await readImg(worker, pathPhoto)
+    //   .then(async result => {
+    //     console.log('IMG TXT', result)
+    //     element = await page.$x(`//*[@id="txtCode"]`)
+    //     await element[0].type(result)
+    //     fs.unlink(pathPhoto, err => {
+    //       return
+    //     })
+    //   })
+    //   .catch(function(err) {
+    //     console.log(chalk.red(err))
+    //     fs.unlink(pathPhoto, err => {
+    //       return
+    //     })
+    //     cmd.runSync('npm run serve:restart')
+    //   }),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+
+  const title = await page.title()
+  const urls = page.url()
+
+  console.log('Page Title :' + title)
+  console.log('Page URL : ' + urls)
+
+  index = 0
+
   for (const iterator of UFA66) {
-    await handleWithdraw(iterator.username, iterator.web, browser)
+    await handleWithdraw(
+      iterator.web,
+      page,
+      iterator.username,
+      iterator.master,
+      (index += 1),
+      UFA66.length
+    )
   }
 }
 
-const webTOP168 = async () => {
-  const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
-  for (const iterator of TOP168) {
-    await handleWithdraw(iterator.username, iterator.web, browser)
-  }
-}
-
-// webPoseidon99()
-// webTOP168()
-// webUFA66()
-
-const allWEB = async () => {
-  const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
-  for (const iterator of Poseidon99) {
-    try {
-      await handleWithdraw(iterator.username, iterator.web, browser)
-    } catch (error) {
-      const failedLogin = new FailedLogin({
-        usernameAG: iterator.username,
-        detail: '0.5'
-      });
-      await failedLogin.save();
-    }
-  }
-  // for (const iterator of UFA66) {
-  //   try {
-  //     await handleWithdraw(iterator.username, iterator.web, browser)
-  //   } catch (error) {
-  //     const failedLogin = new FailedLogin({
-  //       usernameAG: iterator.username,
-  //       detail: '0.5'
-  //     });
-  //     await failedLogin.save();
-  //   }
-  // }
-  // for (const iterator of TOP168) {
-  //   try {
-  //     await handleWithdraw(iterator.username, iterator.web, browser)
-  //   } catch (error) {
-  //     const failedLogin = new FailedLogin({
-  //       usernameAG: iterator.username,
-  //       detail: '0.5'
-  //     });
-  //     await failedLogin.save();
-  //   }
-  // }
-}
-
-allWEB()
+startUFA66()

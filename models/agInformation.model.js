@@ -1,43 +1,28 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const IncomeSchema = new Schema(
+const AgInformationSchema = new Schema(
   {
-    master: String,
-    usernameAG: String,
-    online: Number,
-    share: Number,
-    commissionAgen: Number,
-    lessCommission: Number,
-    winAndLoseAgen: Number,
-    customerWin: Number,
-    customerLose: Number,
-    positiveBalance: Number,
-    transferBalance: Number,
-    summaryLose: Number,
-    winAndLoseMaster: Number,
-    windCredit: Number,
-    deductionWind: Number,
-    transferAmount: Number,
-    userWind: String,
-    hold: Boolean,
-    commission: Boolean,
-    pay: Boolean,
-
-    // TODO: MASTER
-    windAndLossMaster: Number,
-    promotion: Number,
-    sumCustomerLose: Number,
-    summaryLoseMaster: Number,
-    positiveMaster: Number,
-    amountMaster: Number,
-    sumMaster: Number,
-
-    payFull: Boolean,
     
-    agStatus: { type: String, default: '' },
-    incomeStartDate: Date,
-    incomeEndDate: Date,
+    N1: String,
+    N2: String,
+    N3: String,
+    N4: String,
+    N5: String,
+    N6: String,
+    N7: String,
+    N8: String,
+    N9: String,
+    N10: String,
+    N11: String,
+    N12: String,
+    N13: String,
+    N14: String,
+    N15: String,
+    N16: String,
+    N17: String,
+    N18: String,
+    N19: String,
 
     statusFlag: { type: String, default: 'A' },
     action: { type: String, default: '' },
@@ -47,9 +32,9 @@ const IncomeSchema = new Schema(
   { timestamps: true, versionKey: false }
 )
 
-const IncomeModel = mongoose.model('Income', IncomeSchema)
+const AgInformationModel = mongoose.model('AgInformation', AgInformationSchema)
 
-module.exports = IncomeModel
+module.exports = AgInformationModel
 // ------------ จาก AG
 //3 online 5 ออนไลน์
 //4 commissionAgen 9 ค่าคอม

@@ -17,8 +17,8 @@ const FailedLogin = require('../models/failedLogin.model')
 const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
-const userM = "ufrcb0"
-const passA = "AP6168qtew++ผ"
+const userM = "ufrcbvip"
+const passA = "AP6168qtew++"
 const agtest = "http://ocean.isme99.com"
 const headless = false;
 const args = [
@@ -90,7 +90,7 @@ const insertInCome = async (masterUser, browser) => {
 
     console.log(chalk.green('LOGIN'));
     element = await page.$x(`//*[@id="txtUserName"]`)
-    await element[0].type(masterUser);
+    await element[0].type(userM);
     element = await page.$x(`//*[@id="txtPassword"]`)
     await element[0].type(passA);
     element = await page.$x(`//*[@id="btnSignIn"]`)
