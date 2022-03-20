@@ -13,6 +13,12 @@ const chalk = require('chalk');
 console.log(chalk.green('START AG SETVICE VERSION 1.0.0'));
 
 
+import io from "socket.io-client";
+
+var socket = io.connect("https://ag-bot-io.meetanggroup.com");
+socket.on("connect", function () {
+  socket.emit("join", "Hello world from client");
+});
 
 const fs = require('fs');
 
@@ -242,12 +248,14 @@ async function start() {
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB CUSTOMER CREATE ', data.customerID, new Date().toISOString()));
             await createCustomer(page, link, data)
+            await socket.emit("customer-history-updated", "update");
             console.log(chalk.green('END JOB CUSTOMER CREATE ', data.customerID, new Date().toISOString()));
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
 
           }
           // browser.close()
           statusFlags = 'R'
+          await socket.emit("customer-history-updated", "success");
           console.log(chalk.green('END JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           cmd.runSync('npm run serve:restart');
