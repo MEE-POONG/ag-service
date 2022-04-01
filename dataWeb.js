@@ -643,7 +643,7 @@ exports.PSD99 = [
 ];
 exports.UFH27 = [
     { username: "ufh270a3", senior: "ufh27", master: "ufh270", share: 0.2, shareMaster: 0.3, payFull: "N", positiveMaster: 0, promotion: 0, positiveBalance: 0, transferBalance: 82, userWind: "", web: "UFA66", userCheck: "ufh27vip" },
-    { username: "ufh273a", senior: "ufh27", master: "ufh273", share: 0.2, shareMaster: 0.35, payFull: "N", positiveMaster: -1384.02, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufh27vip" },
+    { username: "ufh273a1", senior: "ufh27", master: "ufh273", share: 0.2, shareMaster: 0.35, payFull: "N", positiveMaster: -1384.02, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufh27vip" },
     { username: "ufh273a2", senior: "ufh27", master: "ufh273", share: 0.2, shareMaster: 0.35, payFull: "N", positiveMaster: -1384.02, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufh27vip" },
     { username: "ufh273a3", senior: "ufh27", master: "ufh273", share: 0.2, shareMaster: 0.35, payFull: "N", positiveMaster: -1384.02, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufh27vip" },
     { username: "ufh273a8", senior: "ufh27", master: "ufh273", share: 0.2, shareMaster: 0.35, payFull: "N", positiveMaster: -1384.02, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufh27vip" },

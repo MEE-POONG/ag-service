@@ -87,10 +87,10 @@ const args = [
   '--ignore-certificate-errors'
 ]
 
-const reconnect = async (web, page, agen, master, idx, total) => {
+const reconnect = async (web, page, agen, senior, idx, total) => {
   if (page.url() === 'http://ocean.isme99.com/AccessDenied.aspx') {
     await delay(1000)
-    return await reconnect(web, page, agen, master, idx, total)
+    return await reconnect(web, page, agen, senior, idx, total)
   }
   element = await page.$x(`//*[@id="txtUserName"]`)
   await element[0].type('ufrcbvip')
@@ -107,18 +107,18 @@ const reconnect = async (web, page, agen, master, idx, total) => {
   const title = await page.title()
 
   if (title === ':: Management ::') {
-    return await reconnect(web, page, agen, master, idx, total)
+    return await reconnect(web, page, agen, senior, idx, total)
   }
 
-  return handleWithdraw(web, page, agen, master, idx, total)
+  return handleWithdraw(web, page, agen, senior, idx, total)
 }
-const handleWithdraw = async (web, page, agen, master, idx, total) => {
+const handleWithdraw = async (web, page, agen, senior, idx, total) => {
   console.log(
     agtest +
       `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` +
       agen +
       `&from=${FROM}&to=${TO}&userID=` +
-      master +
+      senior +
       `&checkAll=True`
   )
   await Promise.all([
@@ -127,7 +127,7 @@ const handleWithdraw = async (web, page, agen, master, idx, total) => {
         `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` +
         agen +
         `&from=${FROM}&to=${TO}&userID=` +
-        master +
+        senior +
         `&checkAll=True`,
       {
         waitUntil: 'load'
@@ -137,7 +137,7 @@ const handleWithdraw = async (web, page, agen, master, idx, total) => {
   console.log(idx, '/', total, page.url(), await page.title())
 
   if (page.url() === 'http://ocean.isme99.com/AccessDenied.aspx') {
-    await reconnect(web, page, agen, master, idx, total)
+    await reconnect(web, page, agen, senior, idx, total)
   }
 
   await page.waitForXPath(`//*[@id="SubAccsWinLose_cm1_g"]`, {
@@ -271,7 +271,7 @@ const startUFH27 = async () => {
       iterator.web,
       page,
       iterator.username,
-      iterator.master,
+      iterator.senior,
       (index += 1),
       UFH27.length
     )
@@ -328,7 +328,7 @@ const startUFRCB = async () => {
       iterator.web,
       page,
       iterator.username,
-      iterator.master,
+      iterator.senior,
       (index += 1),
       UFRCB.length
     )
@@ -385,7 +385,7 @@ const startUFRCE = async () => {
       iterator.web,
       page,
       iterator.username,
-      iterator.master,
+      iterator.senior,
       (index += 1),
       UFRCE.length
     )
@@ -441,7 +441,7 @@ const startTOP = async () => {
       iterator.web,
       page,
       iterator.username,
-      iterator.master,
+      iterator.senior,
       (index += 1),
       TOP.length
     )
@@ -498,7 +498,7 @@ const startPSD = async () => {
       iterator.web,
       page,
       iterator.username,
-      iterator.master,
+      iterator.senior,
       (index += 1),
       PSD99.length
     )
