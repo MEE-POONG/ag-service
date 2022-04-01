@@ -118,7 +118,7 @@ const handleWithdraw = async (username, web, browser) => {
   console.log('login สำเร็จ');
 
   await Promise.all([
-    page.goto(agtest + `/_SubAg/SubAccsWinLose2.aspx?role=sa&userName=` + username + `&from=02/01/2022&to=02/28/2022&catId=&gId=-1&checkAll=True`, {
+    page.goto(agtest + `/_SubAg/SubAccsWinLose2.aspx?role=sa&userName=` + username + `&from=03/01/2022&to=03/31/2022&catId=&gId=-1&checkAll=True`, {
       waitUntil: 'load'
     }),
     page.waitForNavigation({ waitUntil: 'load' })
@@ -218,7 +218,7 @@ const webPoseidon99 = async () => {
 
 const webUFA66 = async () => {
   const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
-  for (const iterator of UFA66) {
+  for (const iterator of UFH27) {
     await handleWithdraw(iterator.username, iterator.web, browser)
   }
 }
@@ -247,7 +247,7 @@ const allWEB = async () => {
   //     await failedLogin.save();
   //   }
   // }
-  for (const iterator of UFA66) {
+  for (const iterator of UFH27) {
     try {
       await handleWithdraw(iterator.username, iterator.web, browser)
     } catch (error) {

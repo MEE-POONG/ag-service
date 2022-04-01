@@ -641,7 +641,7 @@ exports.PSD99 = [
     { username: "ufruu9914", share: 0.35, master: "ufruu99", shareMaster: 0.50, masterWind: "", positiveBalance: -9352, userWind: "", transferBalance: 0, positiveMaster: 0, hold: true, holdMaster: true, commission: true, pay: true, web: "PSD66", senior: "ufruuvip" },
     { username: "ufruu9915", share: 0.35, master: "ufruu99", shareMaster: 0.50, masterWind: "", positiveBalance: 0, userWind: "", transferBalance: 0, positiveMaster: 0, hold: true, holdMaster: true, commission: true, pay: true, web: "PSD66", senior: "ufruuvip" },
 ];
-exports.ufh27 = [
+exports.UFH27 = [
     { username: "ufh270a3", senior: "ufh27", master: "ufh270", share: 0.2, shareMaster: 0.3, payFull: "N", positiveMaster: 0, promotion: 0, positiveBalance: 0, transferBalance: 82, userWind: "", web: "UFA66", userCheck: "ufh27vip" },
     { username: "ufh273a", senior: "ufh27", master: "ufh273", share: 0.2, shareMaster: 0.35, payFull: "N", positiveMaster: -1384.02, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufh27vip" },
     { username: "ufh273a2", senior: "ufh27", master: "ufh273", share: 0.2, shareMaster: 0.35, payFull: "N", positiveMaster: -1384.02, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufh27vip" },
@@ -1216,7 +1216,7 @@ exports.ufh27 = [
     { username: "ufh27e01", senior: "ufh27", master: "ufh27e", share: 0.3, shareMaster: 0, payFull: "N", positiveMaster: 0, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufh27vip" },
     { username: "ufh27po9", senior: "ufh27", master: "ufh27p", share: 0.3, shareMaster: 0.5, payFull: "N", positiveMaster: 0, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufh27vip" },
 ];
-exports.ufrcb = [
+exports.UFRCB = [
     { username: "ufrcb05a4", senior: "ufrcb", master: "ufrcb05", share: 0.2, shareMaster: 0.4, payFull: "N", positiveMaster: -62, promotion: 0, positiveBalance: -1097, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcb05a6", senior: "ufrcb", master: "ufrcb05", share: 0.2, shareMaster: 0.4, payFull: "N", positiveMaster: -62, promotion: 0, positiveBalance: -119, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcb05a7", senior: "ufrcb", master: "ufrcb05", share: 0.2, shareMaster: 0.4, payFull: "N", positiveMaster: -62, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
@@ -2044,7 +2044,7 @@ exports.ufrcb = [
     { username: "ufrcbzb2", senior: "ufrcb", master: "ufrcbz", share: 0.15, shareMaster: 0.4, payFull: "N", positiveMaster: -16, promotion: 0, positiveBalance: -755, transferBalance: 35, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcbzb3", senior: "ufrcb", master: "ufrcbz", share: 0.3, shareMaster: 0.4, payFull: "N", positiveMaster: -16, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
 ];
-exports.ufrce = [
+exports.UFRCE = [
     { username: "ufrcera1", senior: "ufrce", master: "ufrcer", share: 0.4, shareMaster: 0.4, payFull: "N", positiveMaster: 0, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcevip" },
     { username: "ufrceta4", senior: "ufrce", master: "ufrcet", share: 0.4, shareMaster: 0.4, payFull: "N", positiveMaster: 0, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcevip" },
     { username: "ufrcena7", senior: "ufrce", master: "ufrcen", share: 0.25, shareMaster: 0.4, payFull: "N", positiveMaster: -217769, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcevip" },
