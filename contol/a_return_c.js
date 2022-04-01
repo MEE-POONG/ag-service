@@ -4,7 +4,6 @@ const UFRCEUSER = 'ufrcbvip'
 const TOPUSER = 'ufrcbvip'
 const PSDUSER = 'ufrcbvip'
 
-
 require('dotenv').config()
 const delay = require('delay')
 
@@ -236,7 +235,6 @@ const startUFH27 = async () => {
   ])
   await delay(500)
 
-
   element = await page.$x(`//*[@id="txtUserName"]`)
   await element[0].type(UFH27USER)
   element = await page.$x(`//*[@id="txtPassword"]`)
@@ -270,8 +268,6 @@ const startUFH27 = async () => {
   }
   await Excel(ReturnCustomerUFA66, 'UFH27')
   await ReturnCustomerUFA66.remove({}, function(err) {})
-
-
 }
 const startUFRCB = async () => {
   await worker.load()
@@ -329,7 +325,6 @@ const startUFRCB = async () => {
   }
   await Excel(ReturnCustomerUFA66, 'UFRCB')
   await ReturnCustomerUFA66.remove({}, function(err) {})
-
 }
 const startUFRCE = async () => {
   await worker.load()
@@ -387,7 +382,6 @@ const startUFRCE = async () => {
   }
   await Excel(ReturnCustomerUFA66, 'UFRCE')
   await ReturnCustomerUFA66.remove({}, function(err) {})
-
 }
 const startTOP = async () => {
   await worker.load()
@@ -431,7 +425,6 @@ const startTOP = async () => {
 
   index = 0
 
-
   await ReturnCustomerTOP.remove({}, function(err) {})
   for (const iterator of TOP) {
     await handleWithdraw(
@@ -445,7 +438,6 @@ const startTOP = async () => {
   }
   await Excel(ReturnCustomerTOP, 'TOP')
   await ReturnCustomerTOP.remove({}, function(err) {})
-
 }
 const startPSD = async () => {
   await worker.load()
@@ -503,6 +495,12 @@ const startPSD = async () => {
   }
   await Excel(ReturnCustomerPSD, 'PSD99')
   await ReturnCustomerPSD.remove({}, function(err) {})
-
 }
 
+;async () => {
+  await startUFH27()  //UFH27
+  await startUFRCB()  //UFRCB
+  await startUFRCE()  //UFRCE
+  await startTOP()  //TOP
+  await startPSD()  //PSD
+}
