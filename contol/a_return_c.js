@@ -1,3 +1,10 @@
+const UFH27USER = 'ufrcbvip'
+const UFRCBUSER = 'ufrcbvip'
+const UFRCEUSER = 'ufrcbvip'
+const TOPUSER = 'ufrcbvip'
+const PSDUSER = 'ufrcbvip'
+
+
 require('dotenv').config()
 const delay = require('delay')
 
@@ -35,11 +42,9 @@ const passA = 'Pp123456++'
 const passPsd = 'T99Ppvip999.'
 const passTop = 'Tpufa168wptop++'
 const agtest = 'http://ocean.isme99.com'
-const { Poseidon99, UFA66, TOP168 } = require('../dataWeb')
-// const web = "poseidon99";
-// const web = "UFA66";
-// const web = "TOP168";
-// const web = "UFA66";
+const { PSD99, UFH27, UFRCB, UFRCE, TOP } = require('../dataWeb')
+const { Excel } = require('./a_return_c_export')
+
 const args = [
   '--start-maximized',
   '--autoplay-policy=user-gesture-required',
@@ -208,7 +213,7 @@ const handleWithdraw = async (web, page, agen, master, idx, total) => {
   }
 }
 
-const startUFA66 = async () => {
+const startUFH27 = async () => {
   await worker.load()
   await worker.loadLanguage('eng')
   await worker.initialize('eng')
@@ -231,18 +236,9 @@ const startUFA66 = async () => {
   ])
   await delay(500)
 
-  // const birthday = new Date()
-  // const date1 = birthday.getTime()
-
-  // const pathPhoto = __dirname + '/img/captcha' + date1 + '.png'
-  // await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
-  // const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
-  // await captcha.screenshot({
-  //   path: pathPhoto
-  // })
 
   element = await page.$x(`//*[@id="txtUserName"]`)
-  await element[0].type('ufrcbvip')
+  await element[0].type(UFH27USER)
   element = await page.$x(`//*[@id="txtPassword"]`)
   await element[0].type(passA)
   console.log(passA)
@@ -250,22 +246,6 @@ const startUFA66 = async () => {
 
   await Promise.all([
     element[0].click(),
-    // await readImg(worker, pathPhoto)
-    //   .then(async result => {
-    //     console.log('IMG TXT', result)
-    //     element = await page.$x(`//*[@id="txtCode"]`)
-    //     await element[0].type(result)
-    //     fs.unlink(pathPhoto, err => {
-    //       return
-    //     })
-    //   })
-    //   .catch(function(err) {
-    //     console.log(chalk.red(err))
-    //     fs.unlink(pathPhoto, err => {
-    //       return
-    //     })
-    //     cmd.runSync('npm run serve:restart')
-    //   }),
     page.waitForNavigation({ waitUntil: 'load' })
   ])
 
@@ -277,16 +257,252 @@ const startUFA66 = async () => {
 
   index = 0
 
-  for (const iterator of UFA66) {
+  await ReturnCustomerUFA66.remove({}, function(err) {})
+  for (const iterator of UFH27) {
     await handleWithdraw(
       iterator.web,
       page,
       iterator.username,
       iterator.master,
       (index += 1),
-      UFA66.length
+      UFH27.length
     )
   }
+  await Excel(ReturnCustomerUFA66, 'UFH27')
+  await ReturnCustomerUFA66.remove({}, function(err) {})
+
+
+}
+const startUFRCB = async () => {
+  await worker.load()
+  await worker.loadLanguage('eng')
+  await worker.initialize('eng')
+  await worker.setParameters({
+    tessedit_char_whitelist: '0123456789'
+  })
+
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: { width: 1920, height: 5000 },
+    args
+  })
+
+  const page = await browser.newPage()
+
+  let element
+  await Promise.all([
+    page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' }),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+  await delay(500)
+
+  element = await page.$x(`//*[@id="txtUserName"]`)
+  await element[0].type(UFRCBUSER)
+  element = await page.$x(`//*[@id="txtPassword"]`)
+  await element[0].type(passA)
+  console.log(passA)
+  element = await page.$x(`//*[@id="btnSignIn"]`)
+
+  await Promise.all([
+    element[0].click(),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+
+  const title = await page.title()
+  const urls = page.url()
+
+  console.log('Page Title :' + title)
+  console.log('Page URL : ' + urls)
+
+  index = 0
+
+  await ReturnCustomerUFA66.remove({}, function(err) {})
+  for (const iterator of UFRCB) {
+    await handleWithdraw(
+      iterator.web,
+      page,
+      iterator.username,
+      iterator.master,
+      (index += 1),
+      UFRCB.length
+    )
+  }
+  await Excel(ReturnCustomerUFA66, 'UFRCB')
+  await ReturnCustomerUFA66.remove({}, function(err) {})
+
+}
+const startUFRCE = async () => {
+  await worker.load()
+  await worker.loadLanguage('eng')
+  await worker.initialize('eng')
+  await worker.setParameters({
+    tessedit_char_whitelist: '0123456789'
+  })
+
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: { width: 1920, height: 5000 },
+    args
+  })
+
+  const page = await browser.newPage()
+
+  let element
+  await Promise.all([
+    page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' }),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+  await delay(500)
+
+  element = await page.$x(`//*[@id="txtUserName"]`)
+  await element[0].type(UFRCEUSER)
+  element = await page.$x(`//*[@id="txtPassword"]`)
+  await element[0].type(passA)
+  console.log(passA)
+  element = await page.$x(`//*[@id="btnSignIn"]`)
+
+  await Promise.all([
+    element[0].click(),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+
+  const title = await page.title()
+  const urls = page.url()
+
+  console.log('Page Title :' + title)
+  console.log('Page URL : ' + urls)
+
+  index = 0
+
+  await ReturnCustomerUFA66.remove({}, function(err) {})
+  for (const iterator of UFRCE) {
+    await handleWithdraw(
+      iterator.web,
+      page,
+      iterator.username,
+      iterator.master,
+      (index += 1),
+      UFRCE.length
+    )
+  }
+  await Excel(ReturnCustomerUFA66, 'UFRCE')
+  await ReturnCustomerUFA66.remove({}, function(err) {})
+
+}
+const startTOP = async () => {
+  await worker.load()
+  await worker.loadLanguage('eng')
+  await worker.initialize('eng')
+  await worker.setParameters({
+    tessedit_char_whitelist: '0123456789'
+  })
+
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: { width: 1920, height: 5000 },
+    args
+  })
+
+  const page = await browser.newPage()
+
+  let element
+  await Promise.all([
+    page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' }),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+  await delay(500)
+  element = await page.$x(`//*[@id="txtUserName"]`)
+  await element[0].type(TOPUSER)
+  element = await page.$x(`//*[@id="txtPassword"]`)
+  await element[0].type(passA)
+  console.log(passA)
+  element = await page.$x(`//*[@id="btnSignIn"]`)
+
+  await Promise.all([
+    element[0].click(),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+
+  const title = await page.title()
+  const urls = page.url()
+
+  console.log('Page Title :' + title)
+  console.log('Page URL : ' + urls)
+
+  index = 0
+
+
+  await ReturnCustomerTOP.remove({}, function(err) {})
+  for (const iterator of TOP) {
+    await handleWithdraw(
+      iterator.web,
+      page,
+      iterator.username,
+      iterator.master,
+      (index += 1),
+      TOP.length
+    )
+  }
+  await Excel(ReturnCustomerTOP, 'TOP')
+  await ReturnCustomerTOP.remove({}, function(err) {})
+
+}
+const startPSD = async () => {
+  await worker.load()
+  await worker.loadLanguage('eng')
+  await worker.initialize('eng')
+  await worker.setParameters({
+    tessedit_char_whitelist: '0123456789'
+  })
+
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: { width: 1920, height: 5000 },
+    args
+  })
+
+  const page = await browser.newPage()
+
+  let element
+  await Promise.all([
+    page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' }),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+  await delay(500)
+
+  element = await page.$x(`//*[@id="txtUserName"]`)
+  await element[0].type(PSDUSER)
+  element = await page.$x(`//*[@id="txtPassword"]`)
+  await element[0].type(passA)
+  console.log(passA)
+  element = await page.$x(`//*[@id="btnSignIn"]`)
+
+  await Promise.all([
+    element[0].click(),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+
+  const title = await page.title()
+  const urls = page.url()
+
+  console.log('Page Title :' + title)
+  console.log('Page URL : ' + urls)
+
+  index = 0
+
+  await ReturnCustomerPSD.remove({}, function(err) {})
+  for (const iterator of PSD99) {
+    await handleWithdraw(
+      iterator.web,
+      page,
+      iterator.username,
+      iterator.master,
+      (index += 1),
+      PSD99.length
+    )
+  }
+  await Excel(ReturnCustomerPSD, 'PSD99')
+  await ReturnCustomerPSD.remove({}, function(err) {})
+
 }
 
-startUFA66()

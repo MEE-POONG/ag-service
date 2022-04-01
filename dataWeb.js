@@ -2181,7 +2181,7 @@ exports.UFRCE = [
     { username: "ufrcemc9", senior: "ufrce", master: "ufrcem", share: 0.4, shareMaster: 0.4, payFull: "N", positiveMaster: -64281, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcevip" },
     { username: "ufrcemd1", senior: "ufrce", master: "ufrcem", share: 0.4, shareMaster: 0.4, payFull: "N", positiveMaster: -64281, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcevip" },
 ];
-exports.top = [
+exports.TOP = [
     { username: "ufrcb3a0", senior: "ufrcb", master: "ufrcb3", share: 0.4, payFull: "N", positiveMaster: 0, promotion: 0, positiveBalance: -8382, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcb3a1", senior: "ufrcb", master: "ufrcb3", share: 0.25, payFull: "N", positiveMaster: 0, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
     { username: "ufrcb3a2", senior: "ufrcb", master: "ufrcb3", share: 0.25, payFull: "N", positiveMaster: 0, promotion: 0, positiveBalance: 0, transferBalance: 0, userWind: "", web: "UFA66", userCheck: "ufrcbvip" },
