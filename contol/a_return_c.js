@@ -3,6 +3,8 @@ const UFRCBUSER = 'ufrcbvip'
 const UFRCEUSER = 'ufrcevip'
 const TOPUSER = 'ufrcbvip'
 const PSDUSER = 'ufruuvip'
+const FROM = '03/01/2022'
+const TO = '03/31/2022'
 
 require('dotenv').config()
 const delay = require('delay')
@@ -111,12 +113,20 @@ const reconnect = async (web, page, agen, master, idx, total) => {
   return handleWithdraw(web, page, agen, master, idx, total)
 }
 const handleWithdraw = async (web, page, agen, master, idx, total) => {
+  console.log(
+    agtest +
+      `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` +
+      agen +
+      `&from=${FROM}&to=${TO}&userID=` +
+      master +
+      `&checkAll=True`
+  )
   await Promise.all([
     await page.goto(
       agtest +
         `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` +
         agen +
-        `&from=02/28/2022&to=03/06/2022&userID=` +
+        `&from=${FROM}&to=${TO}&userID=` +
         master +
         `&checkAll=True`,
       {
