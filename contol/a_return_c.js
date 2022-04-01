@@ -497,10 +497,10 @@ const startPSD = async () => {
   await ReturnCustomerPSD.remove({}, function(err) {})
 }
 
-;async () => {
-  await startUFH27()  //UFH27
-  await startUFRCB()  //UFRCB
-  await startUFRCE()  //UFRCE
-  await startTOP()  //TOP
-  await startPSD()  //PSD
-}
+;(async () => {
+  await startUFH27() //UFH27
+  await startUFRCB() //UFRCB
+  await startUFRCE() //UFRCE
+  await startTOP() //TOP
+  await startPSD() //PSD
+})()
