@@ -8,6 +8,7 @@ const { Poseidon99, UFA66, TOP168 } = require('../dataWeb')
 const _ = require('lodash')
 const chalk = require('chalk')
 const Income = require('../models/income.model')
+const AgInformation = require('../models/agInformation.model')
 const creditWindModel = require('../models/credit_wind')
 
 var moment = require('moment')
@@ -170,6 +171,28 @@ const fetchWinLose = async (
         iterator[14]
       )
     )
+    const agInformation = new AgInformation({
+      N1: iterator[0],
+      N2: iterator[1],
+      N3: iterator[2],
+      N4: iterator[3],
+      N5: iterator[4],
+      N6: iterator[5],
+      N7: iterator[6],
+      N8: iterator[7],
+      N9: iterator[8],
+      N10: iterator[9],
+      N11: iterator[10],
+      N12: iterator[11],
+      N13: iterator[12],
+      N14: iterator[13],
+      N15: iterator[14],
+      N16: iterator[15],
+      N17: iterator[16],
+      N18: iterator[17],
+      N19: iterator[18],
+    })
+    await agInformation.save()
     const income = new Income({
       master,
       usernameAG: iterator[0],
@@ -261,6 +284,8 @@ exports.income_UFA66 = async (from, to) => {
 
   const remove = await Income.remove({})
   console.log(remove)
+  const removeAG = await AgInformation.remove({})
+  console.log(removeAG)
 
   for (const iterator of masterUFA66) {
     await fetchWinLose(

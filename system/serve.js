@@ -13,6 +13,12 @@ const chalk = require('chalk');
 console.log(chalk.green('START AG SETVICE VERSION 1.0.0'));
 
 
+const io = require("socket.io-client");
+
+var socket = io.connect("https://ag-bot-io.meetanggroup.com");
+socket.on("connect", function () {
+  socket.emit("join", "Hello world from client");
+});
 
 const fs = require('fs');
 
@@ -105,7 +111,7 @@ async function login(data, worker, index, db) {
     const urls = page.url()
 
     if (title === ':: Management ::') {
-      browser.close();
+      // browser.close();
       if (index >= 1) {
         console.log(db);
         if (db === 'Customer') {
@@ -169,29 +175,9 @@ async function start() {
   setInterval(async () => {
     try {
       if (statusFlags === 'R') {
-        const customerPending = await Customer.find({ statusServe: "PENDING" });
-        const zeroPending = await Alliance.find({ statusServe: "PENDING", action: "SET_ZERO" });
-        const upAgentPending = await Alliance.find({ statusServe: "PENDING", action: "SET_UP_AGENT" });
-        const creditPending = await Credit.find({ statusServe: "PENDING" });
-        if (customerPending.length > 0) {
-          const filterCustomerPending = await customerPending.filter(({ usernameAG }) => usernameAG === customerPending[0].usernameAG)
-          console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-          console.log(chalk.green('START JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
-          const { browser, page } = await login(customerPending[0], worker, 0, 'Customer')
-          for (let data of filterCustomerPending) {
-            console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-            console.log(chalk.green('START JOB CUSTOMER CREATE ', data.customerID, new Date().toISOString()));
-            await createCustomer(page, link, data)
-            console.log(chalk.green('END JOB CUSTOMER CREATE ', data.customerID, new Date().toISOString()));
-            console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
 
-          }
-          browser.close()
-          statusFlags = 'R'
-          console.log(chalk.green('END JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
-          console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-          cmd.runSync('npm run serve:restart');
-        } else if (zeroPending.length > 0) {
+        const zeroPending = await Alliance.find({ statusServe: "PENDING", action: "SET_ZERO" });
+        if (zeroPending.length > 0) {
 
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB SET ALLIANCE ZERO ', new Date().toISOString()));
@@ -205,11 +191,13 @@ async function start() {
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           }
           statusFlags = 'R'
-          browser.close()
+          // browser.close()
           console.log(chalk.green('END JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           cmd.runSync('npm run serve:restart');
-        } else if (upAgentPending.length > 0) {
+        } 
+        const upAgentPending = await Alliance.find({ statusServe: "PENDING", action: "SET_UP_AGENT" });
+         if (upAgentPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB UP AGENT ', new Date().toISOString()));
@@ -221,13 +209,16 @@ async function start() {
             await setUpAgent(page, link, data)
             console.log(chalk.green('END JOB UP AGENT ', data.usernameAG, new Date().toISOString()));
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-            browser.close()
+            // browser.close()
           }
           statusFlags = 'R'
           console.log(chalk.green('END JOB UP AGENT ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           cmd.runSync('npm run serve:restart');
-        } else if (creditPending.length > 0) {
+        } 
+
+        const creditPending = await Credit.find({ statusServe: "PENDING" });
+        if (creditPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB CREATE CREDIT ', new Date().toISOString()));
@@ -239,10 +230,33 @@ async function start() {
             await createCredit(page, link, data)
             console.log(chalk.green('END JOB CREATE CREDIT ', data.usernameAG, new Date().toISOString()));
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
-            browser.close()
+            // browser.close()
           }
           statusFlags = 'R'
           console.log(chalk.green('END JOB CREATE CREDIT ', new Date().toISOString()));
+          console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          cmd.runSync('npm run serve:restart');
+        }
+        
+        const customerPending = await Customer.find({ statusServe: "PENDING" });
+        if (customerPending.length > 0) {
+          const filterCustomerPending = await customerPending.filter(({ usernameAG }) => usernameAG === customerPending[0].usernameAG)
+          console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+          console.log(chalk.green('START JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
+          const { browser, page } = await login(customerPending[0], worker, 0, 'Customer')
+          for (let data of filterCustomerPending) {
+            console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+            console.log(chalk.green('START JOB CUSTOMER CREATE ', data.customerID, new Date().toISOString()));
+            await createCustomer(page, link, data)
+            await socket.emit("customer-history-updated", "update");
+            console.log(chalk.green('END JOB CUSTOMER CREATE ', data.customerID, new Date().toISOString()));
+            console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
+
+          }
+          // browser.close()
+          statusFlags = 'R'
+          await socket.emit("customer-history-updated", "success");
+          console.log(chalk.green('END JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           cmd.runSync('npm run serve:restart');
         }

@@ -495,12 +495,12 @@ const UpCreditMaster = async (userS, moneyAdd, page2, link, data) => {
     element = await page.waitForXPath(`//*[@id="lblStatus"]`, { visible: true });
     [element] = await page.$x(`//*[@id="lblStatus"]`);
     result = await page.evaluate(element => element.textContent, element);
-    browser.close();
+    // browser.close();
     await UpCreditAgentLast(page2, link, data)
     return;
 
   } catch (error) {
-    browser.close();
+    // browser.close();
 
     const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: เติมไม่สำเร็จ`
 

@@ -58,6 +58,7 @@
     "querystring": "^0.2.0",
     "selenium-webdriver": "^4.0.0-beta.3",
     "sharp": "^0.25.4",
+    "socket.io-client": "^4.4.1",
     "stream": "0.0.2",
     "tesseract.js": "^2.1.1",
     "text-from-image": "^1.1.1",
