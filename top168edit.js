@@ -51,14 +51,14 @@ const args = [
 	let element, formElement, tabs;
 	await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' })
 
-	element = await page.$x(`//*[@id="txtUserName"]`)
-	await element[0].type(userA);
-	element = await page.$x(`//*[@id="txtPassword"]`)
-	await element[0].type(passA);
-	element = await page.$x(`//*[@id="btnSignIn"]`)
-	await element[0].click()
-	console.log('login สำเร็จ');
-	await delay(5000);
+	// element = await page.$x(`//*[@id="txtUserName"]`)
+	// await element[0].type(userA);
+	// element = await page.$x(`//*[@id="txtPassword"]`)
+	// await element[0].type(passA);
+	// element = await page.$x(`//*[@id="btnSignIn"]`)
+	// await element[0].click()
+	// console.log('login สำเร็จ');
+	// await delay(5000);
 
 
 
@@ -66,9 +66,9 @@ const args = [
 	// for (let index = 195; index < 210; index++) {
 	// 	let number = index.toString().padStart(3, '0').toString()
 	// 	console.log(`/_SubAg1/MemberSet.aspx?userName=ufrcbxb8` + number + `&set=1`);
-		await page.goto(agtest + `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=` + master + `&from=02/28/2022&to=03/06/2022&userID=` + senior + `&checkAll=True`, {
-			waitUntil: 'networkidle2'
-		})
+		// await page.goto(agtest + `/_Part_Sub/SubAccsWinLose2.aspx?role=ag&userName=` + master + `&from=02/28/2022&to=03/06/2022&userID=` + senior + `&checkAll=True`, {
+		// 	waitUntil: 'networkidle2'
+		// })
 	// 	await delay(5000);
 	// 	// SA GAMING
 	// 	// element = await page.$x(`/html/body/form/div[3]/table/tbody/tr[10]/td/table/tbody/tr[4]/td/table/tbody/tr[1]/td/table`);

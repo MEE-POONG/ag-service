@@ -2,9 +2,10 @@ const UFH27USER = 'ufh27vipp'
 const UFRCBUSER = 'ufrcbvip'
 const UFRCEUSER = 'ufrcevip'
 const TOPUSER = 'ufrcbvip'
-const PSDUSER = 'ufruuvip'
-const FROM = '03/01/2022'
-const TO = '03/31/2022'
+const UFRUUUSER = 'ufruuvip'
+const UFRUVUSER = 'ufruvvip'
+const FROM = '04/01/2022'
+const TO = '04/30/2022'
 
 require('dotenv').config()
 const delay = require('delay')
@@ -43,7 +44,7 @@ const passA = 'Pp123456++'
 const passPsd = 'T99Ppvip999.'
 const passTop = 'Tpufa168wptop++'
 const agtest = 'http://ocean.isme99.com'
-const { PSD99, UFH27, UFRCB, UFRCE, TOP } = require('../dataWeb')
+const { UFRUU, UFRUV, UFH27, UFRCB, UFRCE, TOP } = require('../dataWeb')
 const { Excel } = require('./a_return_c_export')
 
 const args = [
@@ -115,20 +116,20 @@ const reconnect = async (web, page, agen, senior, idx, total) => {
 const handleWithdraw = async (web, page, agen, senior, idx, total) => {
   console.log(
     agtest +
-      `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` +
-      agen +
-      `&from=${FROM}&to=${TO}&userID=` +
-      senior +
-      `&checkAll=True`
+    `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` +
+    agen +
+    `&from=${FROM}&to=${TO}&userID=` +
+    senior +
+    `&checkAll=True`
   )
   await Promise.all([
     await page.goto(
       agtest +
-        `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` +
-        agen +
-        `&from=${FROM}&to=${TO}&userID=` +
-        senior +
-        `&checkAll=True`,
+      `/_Part_Sub/SubAccsWinLose2.aspx?role=sa&userName=` +
+      agen +
+      `&from=${FROM}&to=${TO}&userID=` +
+      senior +
+      `&checkAll=True`,
       {
         waitUntil: 'load'
       }
@@ -176,7 +177,7 @@ const handleWithdraw = async (web, page, agen, senior, idx, total) => {
     const money = await Number(iterator[10].toString().replace(/,/g, ''))
     const user = await iterator[0]
     withdraw = 0
-    if (web === 'poseidon99') {
+    if (web === 'PSD99') {
       withdraw = (await money) < -2000 ? 0 - money * 0.05 : 0
       withdraw = (await withdraw) > 3000 ? 3000 : withdraw
       const customerPSD = new ReturnCustomerPSD({
@@ -265,7 +266,7 @@ const startUFH27 = async () => {
 
   index = 0
 
-  await ReturnCustomerUFA66.remove({}, function(err) {})
+  await ReturnCustomerUFA66.remove({}, function (err) { })
   for (const iterator of UFH27) {
     await handleWithdraw(
       iterator.web,
@@ -277,7 +278,7 @@ const startUFH27 = async () => {
     )
   }
   await Excel(ReturnCustomerUFA66, 'UFH27')
-  await ReturnCustomerUFA66.remove({}, function(err) {})
+  await ReturnCustomerUFA66.remove({}, function (err) { })
 }
 const startUFRCB = async () => {
   await worker.load()
@@ -322,7 +323,7 @@ const startUFRCB = async () => {
 
   index = 0
 
-  await ReturnCustomerUFA66.remove({}, function(err) {})
+  await ReturnCustomerUFA66.remove({}, function (err) { })
   for (const iterator of UFRCB) {
     await handleWithdraw(
       iterator.web,
@@ -334,7 +335,7 @@ const startUFRCB = async () => {
     )
   }
   await Excel(ReturnCustomerUFA66, 'UFRCB')
-  await ReturnCustomerUFA66.remove({}, function(err) {})
+  await ReturnCustomerUFA66.remove({}, function (err) { })
 }
 const startUFRCE = async () => {
   await worker.load()
@@ -379,7 +380,7 @@ const startUFRCE = async () => {
 
   index = 0
 
-  await ReturnCustomerUFA66.remove({}, function(err) {})
+  await ReturnCustomerUFA66.remove({}, function (err) { })
   for (const iterator of UFRCE) {
     await handleWithdraw(
       iterator.web,
@@ -391,7 +392,7 @@ const startUFRCE = async () => {
     )
   }
   await Excel(ReturnCustomerUFA66, 'UFRCE')
-  await ReturnCustomerUFA66.remove({}, function(err) {})
+  await ReturnCustomerUFA66.remove({}, function (err) { })
 }
 const startTOP = async () => {
   await worker.load()
@@ -435,7 +436,7 @@ const startTOP = async () => {
 
   index = 0
 
-  await ReturnCustomerTOP.remove({}, function(err) {})
+  await ReturnCustomerTOP.remove({}, function (err) { })
   for (const iterator of TOP) {
     await handleWithdraw(
       iterator.web,
@@ -447,9 +448,9 @@ const startTOP = async () => {
     )
   }
   await Excel(ReturnCustomerTOP, 'TOP')
-  await ReturnCustomerTOP.remove({}, function(err) {})
+  await ReturnCustomerTOP.remove({}, function (err) { })
 }
-const startPSD = async () => {
+const startUFRUU = async () => {
   await worker.load()
   await worker.loadLanguage('eng')
   await worker.initialize('eng')
@@ -473,7 +474,7 @@ const startPSD = async () => {
   await delay(500)
 
   element = await page.$x(`//*[@id="txtUserName"]`)
-  await element[0].type(PSDUSER)
+  await element[0].type(UFRUUUSER)
   element = await page.$x(`//*[@id="txtPassword"]`)
   await element[0].type(passA)
   console.log(passA)
@@ -492,25 +493,83 @@ const startPSD = async () => {
 
   index = 0
 
-  await ReturnCustomerPSD.remove({}, function(err) {})
-  for (const iterator of PSD99) {
+  await ReturnCustomerPSD.remove({}, function (err) { })
+  for (const iterator of UFRUU) {
     await handleWithdraw(
       iterator.web,
       page,
       iterator.username,
       iterator.senior,
       (index += 1),
-      PSD99.length
+      UFRUU.length
     )
   }
-  await Excel(ReturnCustomerPSD, 'PSD99')
-  await ReturnCustomerPSD.remove({}, function(err) {})
+  await Excel(ReturnCustomerPSD, 'UFRUU')
+  await ReturnCustomerPSD.remove({}, function (err) { })
+}
+const startUFRUV = async () => {
+  await worker.load()
+  await worker.loadLanguage('eng')
+  await worker.initialize('eng')
+  await worker.setParameters({
+    tessedit_char_whitelist: '0123456789'
+  })
+
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: { width: 1920, height: 5000 },
+    args
+  })
+
+  const page = await browser.newPage()
+
+  let element
+  await Promise.all([
+    page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' }),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+  await delay(500)
+
+  element = await page.$x(`//*[@id="txtUserName"]`)
+  await element[0].type(UFRUVUSER)
+  element = await page.$x(`//*[@id="txtPassword"]`)
+  await element[0].type(passA)
+  console.log(passA)
+  element = await page.$x(`//*[@id="btnSignIn"]`)
+
+  await Promise.all([
+    element[0].click(),
+    page.waitForNavigation({ waitUntil: 'load' })
+  ])
+
+  const title = await page.title()
+  const urls = page.url()
+
+  console.log('Page Title :' + title)
+  console.log('Page URL : ' + urls)
+
+  index = 0
+
+  await ReturnCustomerPSD.remove({}, function (err) { })
+  for (const iterator of UFRUV) {
+    await handleWithdraw(
+      iterator.web,
+      page,
+      iterator.username,
+      iterator.senior,
+      (index += 1),
+      UFRUV.length
+    )
+  }
+  await Excel(ReturnCustomerPSD, 'UFRUV')
+  await ReturnCustomerPSD.remove({}, function (err) { })
 }
 
-;(async () => {
-  await startUFH27() //UFH27
-  await startUFRCB() //UFRCB
-  await startUFRCE() //UFRCE
-  await startTOP() //TOP
-  await startPSD() //PSD
-})()
+  ; (async () => {
+    // await startUFH27() //UFH27
+    // await startUFRCB() //UFRCB
+    // await startUFRCE() //UFRCE
+    // await startTOP() //TOP
+    await startUFRUU() //PSD
+    await startUFRUV() //PSD
+  })()
