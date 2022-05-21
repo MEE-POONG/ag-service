@@ -6,7 +6,7 @@ const Credit = require('../models/credit.model')
 const delay = require("delay");
 const chalk = require('chalk');
 
-const passS = "168Ufavip168++"
+const passS = "168Ufa<>168++"
 const passM = "66Pplsix168<>+"
 
 

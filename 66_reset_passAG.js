@@ -1,8 +1,12 @@
 const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
-const userA = "ufrcbvip"
-const passA = "Pp123456++"
+const userS = "ufrcbvip"
+const userM = "ufrcbvip"
+const userA = "ufh276a1"
+const passS = "Pp123456++"
+const passM = "66Pplsix168<>+"
+const passA = "Vip66ufa~168++"
 const agtest = "http://ocean.isme99.com"
 const args = [
 	'--start-maximized',
@@ -64,26 +68,6 @@ const args = [
 	const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
 	const page = await browser.newPage();
 	let element, formElement, tabs, checkMaster;
-	await delay(2000);
-	await page.goto(`http://ufa66.office168.work/?action=login`, {
-		waitUntil: 'networkidle2'
-	})
-	await delay(3000);
-	element = await page.$x(`//*[@name="username"]`);
-	await element[0].type(`est`);
-	element = await page.$x(`//*[@name="password"]`);
-	await element[0].type(`15460607`);
-	element = await page.$x(`//*[@name="login"]`);
-	await element[0].click();
-	await delay(3000);
-	element = await page.$x(`//a[contains(text(),'ตามลูกค้า')]`);
-	await element[0].click();
-	await delay(1000);
-	await page.bringToFront();
-	await delay(1000);
-
-	await page.goto(`http://ufa66.play168.xyz/__admin/?action=agent-list&game_id=1`, { waitUntil: 'networkidle0' });
-	await delay(1000);
 
 	for (const [idx, data] of agen_loop.entries()) {
 
@@ -112,23 +96,6 @@ const args = [
 		element = await page.$x(`//*[@id="btnUpdateG"]`);
 		await element[0].click();
 		await delay(2000);
-
-		await page.goto(`http://ufa66.play168.xyz/__admin/?action=agent-list&game_id=1`, { waitUntil: 'networkidle0' });
-		await delay(2000);
-
-		element = await page.$x(`/html/body/div/div/div[2]/table/tbody/tr[` + (idx + 1) + `]/td[10]/a[1]`);
-		await element[0].click();
-		await delay(2000);
-		element = await page.$x(`/html/body/div[1]/div/div[2]/div[3]/div/div/div[2]/form/div[5]/div/input`);
-		await element[0].click({ clickCount: 3 });
-		await element[0].type(`Vip66ufa~168++`);
-		element = await page.$x(`/html/body/div[1]/div/div[2]/div[3]/div/div/div[2]/form/div[9]/div/input`);
-		await element[0].click({ clickCount: 3 });
-		await element[0].type(`Vip66ufa~168++`);
-		element = await page.$x(`//button[@type='submit']`);
-		await element[0].click();
-		await delay(2000);
-
 
 	}
 

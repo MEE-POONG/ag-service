@@ -4,7 +4,7 @@ require('dotenv').config()
 const userS = "ufh27"
 const userM = "ufh27a5"
 const userA = "ufh27oa0"
-const passS = "168Ufavip168++"
+const passS = "168Ufa<>168++"
 const passM = "66Pplsix168<>+"
 const passA = "Vip66ufa~168++"
 const agtest = "http://ocean.isme99.com"
