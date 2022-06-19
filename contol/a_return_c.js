@@ -4,8 +4,8 @@ const UFRCEUSER = 'ufrcevip'
 const TOPUSER = 'ufrcbvip'
 const UFRUUUSER = 'ufruuvip'
 const UFRUVUSER = 'ufruvvip'
-const FROM = '04/01/2022'
-const TO = '04/30/2022'
+const FROM = '05/01/2022'
+const TO = '05/31/2022'
 
 require('dotenv').config()
 const delay = require('delay')
@@ -571,5 +571,5 @@ const startUFRUV = async () => {
     // await startUFRCE() //UFRCE
     // await startTOP() //TOP
     await startUFRUU() //PSD
-    await startUFRUV() //PSD
+    // await startUFRUV() //PSD
   })()

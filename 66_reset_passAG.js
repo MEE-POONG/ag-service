@@ -50,20 +50,26 @@ const args = [
 ];
 (async () => {
 	const agen_loop = [
-		{ username: 'ufh270a3', master: 'ufh270' },
-		{ username: 'ufh273a2', master: 'ufh273' },
-		{ username: 'ufh273a3', master: 'ufh273' },
-		{ username: 'ufh273a8', master: 'ufh273' },
-		{ username: 'ufh273b1', master: 'ufh273' },
-		{ username: 'ufh273b3', master: 'ufh273' },
-		{ username: 'ufh273b6', master: 'ufh273' },
-		{ username: 'ufh273b7', master: 'ufh273' },
-		{ username: 'ufh273b8', master: 'ufh273' },
-		{ username: 'ufh273c1', master: 'ufh273' },
-		{ username: 'ufh273c2', master: 'ufh273' },
-		{ username: 'ufh273c3', master: 'ufh273' },
-		{ username: 'ufh273c4', master: 'ufh273' },
-		{ username: 'ufh273c5', master: 'ufh273' },
+		{ username :'ufo8892',master:'ufo88901'},
+		{ username :'ufo8895',master:'ufo889'},
+		{ username :'ufo889b',master:'ufo889'},
+		{ username :'ufo889c',master:'ufo889'},
+		{ username :'ufo889d',master:'ufo889'},
+		{ username :'ufo889e',master:'ufo889'},
+		{ username :'ufo889f',master:'ufo889'},
+		{ username :'ufo889h',master:'ufo889'},
+		{ username :'ufo889i',master:'ufo889'},
+		{ username :'ufo889j',master:'ufo889'},
+		{ username :'ufo889k',master:'ufo889'},
+		{ username :'ufo889l',master:'ufo889'},
+		{ username :'ufo889n',master:'ufo889'},
+		{ username :'ufo889r',master:'ufo889'},
+		{ username :'ufo889t',master:'ufo889'},
+		{ username :'ufo889u',master:'ufo889'},
+		{ username :'ufo889v',master:'ufo889'},
+		{ username :'ufo889w',master:'ufo889'},
+		{ username :'ufo889x',master:'ufo889'},
+		{ username :'ufo889y',master:'ufo889'},
 	];
 	const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
 	const page = await browser.newPage();
@@ -79,7 +85,7 @@ const args = [
 			element = await page.$x(`//*[@id="txtUserName"]`)
 			await element[0].type(data.master);
 			element = await page.$x(`//*[@id="txtPassword"]`)
-			await element[0].type('66Pplsix168<>+');
+			await element[0].type('Pop168168++');
 			element = await page.$x(`//*[@id="btnSignIn"]`)
 			await element[0].click()
 			console.log('login สำเร็จ');
