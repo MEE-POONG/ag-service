@@ -19,12 +19,12 @@ const ReturnCustomerPSD = require('../models/returnCustomerPSD')
 const ReturnCustomerUFA66 = require('../models/returnCustomerUFA66')
 const ReturnCustomerTOP = require('../models/returnCustomerTOP')
 // psd	T99Ppvip999.
-// 66	Vip66ufa~168++
+// 66	Win+168ufa66pp+
 // top	Tpufa168wptop++
 const puppeteer = require('puppeteer');
 require('dotenv').config()
 const userA = "ufrcb38a2"
-const passA = "Vip66ufa~168++"
+const passA = "Win+168ufa66pp+"
 const passPsd = "T99Ppvip999."
 const passTop = "Tpufa168wptop++"
 const agtest = "http://ocean.isme99.com"

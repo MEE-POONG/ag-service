@@ -6,7 +6,7 @@ const userM = "ufrcb1"
 const userA = "ufrcb18a1"
 const passS = "168Ufavip168++"
 const passM = "66Pplsix168<>+"
-const passA = "Vip66ufa~168++"
+const passA = "Win+168ufa66pp+"
 const agtest = "http://ocean.isme99.com"
 const args = [
 	'--start-maximized',
