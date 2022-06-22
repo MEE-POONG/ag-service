@@ -23,7 +23,7 @@ const ReturnCustomerTOP = require('../models/returnCustomerTOP')
 // top	Tpufa168wptop++
 require('dotenv').config()
 
-const startExport = async () => {
+const PSD99 = async () => {
   const data = await ReturnCustomerPSD.find({})
   var wb = new xl.Workbook()
   var ws = wb.addWorksheet('Sheet 1')
@@ -35,7 +35,64 @@ const startExport = async () => {
     ws.cell(index, 1).string(iterator.usernameAG)
     ws.cell(index, 2).string(iterator.returnCredit)
   }
-  wb.write('ยอดเสีย5เปอร์เซ็นUFA66.xlsx');
-  console.log("Export Success")
+  wb.write('ยอดเสีย5เปอร์เซ็นPSD99.xlsx');
+  console.log("Export PSD99 Success")
 }
-startExport()
+
+const UFA66 = async () => {
+  const data = await ReturnCustomerUFA.find({})
+  var wb = new xl.Workbook()
+  var ws = wb.addWorksheet('Sheet 1')
+  ws.cell(1, 1).string('ยูส')
+  ws.cell(1, 2).string('ยอด')
+  let index = 1
+  for (const iterator of data) {
+    index += 1
+    ws.cell(index, 1).string(iterator.usernameAG)
+    ws.cell(index, 2).string(iterator.returnCredit)
+  }
+  wb.write('ยอดเสีย5เปอร์เซ็น UFA66.xlsx');
+  console.log("Export UFA66 Success")
+}
+
+const TOP168 = async () => {
+  const data = await ReturnCustomerTOP.find({})
+  var wb = new xl.Workbook()
+  var ws = wb.addWorksheet('Sheet 1')
+  ws.cell(1, 1).string('ยูส')
+  ws.cell(1, 2).string('ยอด')
+  let index = 1
+  for (const iterator of data) {
+    index += 1
+    ws.cell(index, 1).string(iterator.usernameAG)
+    ws.cell(index, 2).string(iterator.returnCredit)
+  }
+  wb.write('ยอดเสีย5เปอร์เซ็น TOP168.xlsx');
+  console.log("Export TOP168 Success")
+}
+
+const startExport = async () => {
+  await PSD99();
+  await UFA66();
+  await TOP168();
+}
+
+exports.startExport = startExport
+
+exports.Excel = async (model, name) => {
+  const data = await model.find({})
+  var wb = new xl.Workbook()
+  var ws = wb.addWorksheet('Sheet 1')
+  ws.cell(1, 1).string('ยูส')
+  ws.cell(1, 2).string('ยอด')
+  let index = 1
+  for (const iterator of data) {
+    index += 1
+    ws.cell(index, 1).string(iterator.usernameAG)
+    ws.cell(index, 2).string(iterator.returnCredit)
+  }
+  wb.write(`ยอดเสีย5เปอร์เซ็น ${name}.xlsx`);
+  console.log(`Export ${name}  Success`)
+}
+
+

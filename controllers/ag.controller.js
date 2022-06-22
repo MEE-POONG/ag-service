@@ -264,7 +264,7 @@ exports.agMoneyAllince = [
     try {
       const { adviserID, usernameAG, status, webname, moneyAdd } = req.body;
       const alliance = await Alliance.findById(adviserID);
-      let seniorPass = "168Ufavip168++"
+      let seniorPass = "168Ufa<>168++"
       let passAg
       let sumAdd
       let moneyOld
