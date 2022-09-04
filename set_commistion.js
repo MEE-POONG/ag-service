@@ -49,17 +49,23 @@ const args = [
     const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
     const page = await browser.newPage();
     let element, formElement, checkPosition, checkPass;
-    await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
-    await delay(1000);
-    element = await page.$x(`//*[@id="txtUserName"]`)
-    await element[0].type('ufruu1m18');
-    element = await page.$x(`//*[@id="txtPassword"]`)
-    await element[0].type(passA_PSD);
-    element = await page.$x(`//*[@id="btnSignIn"]`)
-    await element[0].click()
-    console.log('login สำเร็จ');
-    await delay(5000);
+
     for (const [idx, data] of Psd_Customer.entries()) {
+        if (checkPosition !== data.agent) {
+            checkPosition = data.agent
+            await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
+            await delay(1000);
+            element = await page.$x(`//*[@id="txtUserName"]`)
+            await element[0].type(data.agent);
+            element = await page.$x(`//*[@id="txtPassword"]`)
+            await element[0].type(passA_PSD);
+            element = await page.$x(`//*[@id="btnSignIn"]`)
+            await element[0].click()
+            console.log('login สำเร็จ');
+            await delay(5000);
+        }
+
+
         console.log(idx, " data.username : ", data.username);
         await page.goto(agtest + `/_SubAg1/MemberSet.aspx?userName=` + data.username + `&set=1`, {
             waitUntil: 'networkidle2'
@@ -96,10 +102,6 @@ const args = [
         });
         //ปรับเซอเซน 0
         element = await page.select("select#lstCommissionRAR", "0.7")
-        element = await page.evaluate(() => {
-            let radio = document.querySelector('#optRARProfile1');
-            radio.click();
-        });
         // OFF
         // element = await page.$x(`//table[@onclick="toggleSetting2('trRAR',this,'btnUpdRAR')"]`);
         element = await page.$x(`//*[@id="btnUpdRAR"]`)
