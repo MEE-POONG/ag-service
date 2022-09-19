@@ -1,4 +1,4 @@
-FROM node:12
+FROM node:14.1.0
 
 LABEL maintainer="Eric Bidelman <ebidel@>"
 RUN useradd -ms /bin/bash admin
