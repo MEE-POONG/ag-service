@@ -178,8 +178,8 @@ const handleWithdraw = async (web, page, agen, senior, idx, total) => {
     const user = await iterator[0]
     withdraw = 0
     if (web === 'PSD99') {
-      withdraw = (await money) < -2000 ? 0 - money * 0.05 : 0
-      withdraw = (await withdraw) > 3000 ? 3000 : withdraw
+      withdraw = (await money) < -1000 ? 0 - money * 0.05 : 0
+      withdraw = (await withdraw) > 50000 ? 50000 : withdraw
       const customerPSD = new ReturnCustomerPSD({
         usernameAG: user,
         winLose: money,
