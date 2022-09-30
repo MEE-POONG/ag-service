@@ -2,7 +2,7 @@ const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
 const { Psd_Customer } = require('./psd_ufruu1m18')
-const passA_PSD = "Upp99tpp99-168+"
+const passA_PSD = "Maxufapsd168-++"
 const agtest = "http://ocean.isme99.com"
 const args = [
     '--start-maximized',
