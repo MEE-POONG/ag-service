@@ -84,7 +84,7 @@ exports.createCredit = async (page, link, data) => {
     console.log(moneyAdd);
 
     await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'OPEN LINK' } })
-    await page.goto(link + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
+    await page.goto(link + `/Public/Default11.aspx`, { waitUntil: 'load' })
 
     await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'TYPE USER NAME' } })
     element = await page.$x(`//*[@id="txtUserName"]`)
@@ -101,7 +101,7 @@ exports.createCredit = async (page, link, data) => {
     await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'โอนยอด' + data.adviser } })
     /////////////////////////////////////โอนยอด////////////////////////////////////////////////////
     await page.goto(link + `/_Age/AccBal.aspx?role=ag&userName=` + data.adviser, {
-      waitUntil: 'networkidle2'
+      waitUntil: 'load'
     })
     await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'AccBal_cm1_txtSearch' } })
     await page.waitForXPath(`//*[@id="AccBal_cm1_txtSearch"]`, { timeout: 60000 });
@@ -173,166 +173,166 @@ exports.createCredit = async (page, link, data) => {
     console.log('resultTransfer[0][5] === 0', +resultTransfer[0][5] !== 0);
 
     // ////////// จบโอนยอด
-    const isUpMaster = +resultTransfer[0][5] === 0
-    // // resultTransfer[i][5] ไม่เป็น 0 ให้แจ้งโอนยอดไม่สำเร็จเติมเครดิตมาสเตอร์
+    // const isUpMaster = +resultTransfer[0][5] === 0
+    // resultTransfer[i][5] ไม่เป็น 0 ให้แจ้งโอนยอดไม่สำเร็จเติมเครดิตมาสเตอร์
     // // ซีเนี่ยร์เติมเข้ามาสเตอร์
 
 
-    if (isUpMaster) {
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'เช็คบาลาน' } })
+    // if (isUpMaster) {
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'เช็คบาลาน' } })
 
-      /////////////////// เช็คบาลาน /////////////////
-      await page.goto(link + `/_Age/AgentList.aspx?type=agent&role=ag&userName=` + data.adviser, {
-        waitUntil: 'networkidle2'
-      })
-      await delay(1000);
-      //บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น
-      console.log('--- บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น ---');
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น ---' } })
-      element = await page.$x(`//*[@id="txtSearch"]`)
-      await element[0].type(data.usernameAG);
-      console.log('--- txtSearch ---');
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- btnSubmit เข้าเช็คบาล้านยูสเอเย่น ---' } })
-      element = await page.$x(`//*[@id="btnSubmit"]`)
-      await element[0].click()
-      console.log('--- btnSubmit ---');
-      await delay(2000);
-      console.log('--- 101 ---');
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'MemberList_cm1_g' } })
-      resultTable = await page.evaluate(() => {
-        const rows = document.querySelectorAll('#MemberList_cm1_g tr');
-        return Array.from(rows, row => {
-          const columns = row.querySelectorAll('td');
-          console.log("columns : ", columns);
-          return Array.from(columns, column => column.innerText);
-        });
+    /////////////////// เช็คบาลาน /////////////////
+    await page.goto(link + `/_Age/AgentList.aspx?type=agent&role=ag&userName=` + data.adviser, {
+      waitUntil: 'load'
+    })
+    await delay(1000);
+    //บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น
+    console.log('--- บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น ---');
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น ---' } })
+    element = await page.$x(`//*[@id="txtSearch"]`)
+    await element[0].type(data.usernameAG);
+    console.log('--- txtSearch ---');
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- btnSubmit เข้าเช็คบาล้านยูสเอเย่น ---' } })
+    element = await page.$x(`//*[@id="btnSubmit"]`)
+    await element[0].click()
+    console.log('--- btnSubmit ---');
+    await delay(2000);
+    console.log('--- 101 ---');
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'MemberList_cm1_g' } })
+    resultTable = await page.evaluate(() => {
+      const rows = document.querySelectorAll('#MemberList_cm1_g tr');
+      return Array.from(rows, row => {
+        const columns = row.querySelectorAll('td');
+        console.log("columns : ", columns);
+        return Array.from(columns, column => column.innerText);
       });
-      await delay(2000);
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'SHIFT 3' } })
-      console.log('--- 89 --- : ', resultTable);
-      resultTable.shift();
-      resultTable.pop();
-      console.log('--- 92 --- : ', resultTable);
-      //เอาช่อง 4 ยูสเซอร์ ช่อง 9 Balance	 ช่อง 10 Balance แสดงสำหรับ เติมไม่ได้
-      //ตัดข้อมูลทิ้ง
-      await delay(2000);
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- ตัดข้อมูลทิ้ง ---' } })
-      console.log('--- ตัดข้อมูลทิ้ง ---');
-      for (var i = 0; i < resultTable.length; i++) {
-        if (resultTable[i][1] == 'Copy') {
-          resultTable.splice(i, 1);
-        }
+    });
+    await delay(2000);
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'SHIFT 3' } })
+    console.log('--- 89 --- : ', resultTable);
+    resultTable.shift();
+    resultTable.pop();
+    console.log('--- 92 --- : ', resultTable);
+    //เอาช่อง 4 ยูสเซอร์ ช่อง 9 Balance	 ช่อง 10 Balance แสดงสำหรับ เติมไม่ได้
+    //ตัดข้อมูลทิ้ง
+    await delay(2000);
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- ตัดข้อมูลทิ้ง ---' } })
+    console.log('--- ตัดข้อมูลทิ้ง ---');
+    for (var i = 0; i < resultTable.length; i++) {
+      if (resultTable[i][1] == 'Copy') {
+        resultTable.splice(i, 1);
       }
-      // console.log(resultTable);
-      //วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด
-      console.log('--- วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด ---');
-      console.log('--- 101 --- : ', resultTable);
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด ---' } })
-      for (var i = 0; i < resultTable.length; i++) {
-        if (resultTable[i][3] == data.usernameAG) {
-          console.log(i);
-          console.log(resultTable[i][3]);
-          console.log(resultTable[i][8]);
-          console.log(resultTable[i][9]);
-        }
-      }
-
-      //บรรทัด 111 สิ้นสุดจาการค้นหายูสเอเย่นแล้วเอาบาล้าน Credit Limit ออกมา
-      // ข้างหน้ามากกว่าข้างหลัง แจ้งพนักงาน
-      console.log('--- บรรทัด 111 สิ้นสุดจาการค้นหายูสเอเย่นแล้วเอาบาล้าน Credit Limit ออกมา ---');
-
-      // ////////////////////////////////////เติมเครดิต///////////////////////////////////////////
-      console.log('--- ------------------------เติมเครดิต------------------------ ---');
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- เติมเครดิต ---' } })
-      await page.goto(link + `/_Age1/AgentSet.aspx?userName=` + data.usernameAG + `&set=1`, {
-        waitUntil: 'networkidle2'
-      })
-      await delay(1000);
-
-      await page.waitForXPath(`//*[@id="txtTotalLimit"]`);
-      [elements] = await page.$x(`//*[@id="txtTotalLimit"]`);
-      let result = await page.evaluate(element => element.value, elements);
-      moneyOld = Number(result.toString().replace(/,/g, ''));
-      console.log("moneyOld 2 : ", moneyOld);
-      moneyOld += +moneyAdd
-      console.log("moneyOld 3 : ", moneyOld);
-      let sumAdd = moneyOld.toString()
-      await delay(100);
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- txtTotalLimit ---' } })
-      element = await page.$x(`//*[@id="txtTotalLimit"]`);
-      await element[0].click({ clickCount: 3 })
-      await page.keyboard.press('Backspace')
-      await element[0].type(sumAdd);
-      // moneyOld ยอดเครดิตจำกัดปัจจุบัน ต้องน้อยกว่า ยอด Max
-      // ถ้าไม่ ให้แจ้งว่าเครดิตใหญ่หมด
-
-      //ยืนยัน
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- ยืนยัน  btnUpdateC ---' } })
-      console.log('--- ------------------------ ยืนยัน ------------------------ ---');
-      element = await page.$x(`//*[@id="btnUpdateC"]`)
-      await element[0].click()
-
-
-      await delay(1000)
-
-      element = await page.waitForXPath(`//*[@id="lblStatus"]`);
-      [element] = await page.$x(`//*[@id="lblStatus"]`);
-      result = await page.evaluate(element => element.textContent, element);
-
-      await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'GET RESULT' } })
-
-      console.log(chalk.yellow(result));
-
-      if (result === "Profile updated successfully." || result === "อัพเดตข้อมูลเรียบร้อย") {
-        console.log(chalk.green('--- สร้างสำเร็จ ---'));
-
-        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: อัพเดตข้อมูลเรียบร้อย\nSTATUS SERVER: เติมสำเร็จ`
-
-        const lineData = qs.stringify({ message });
-        console.log(lineData)
-        const config = {
-          method: 'post',
-          url: 'https://notify-api.line.me/api/notify',
-          headers: {
-            Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          data: lineData,
-        };
-
-        await axios(config);
-        console.log('Notify Success');
-
-        await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', statusAG: result } })
-      } else {
-        console.log(chalk.red('--- สร้างไม่สำเร็จ ---'));
-
-        const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${result}\nSTATUS SERVER: เติมไม่สำเร็จ`
-
-        const lineData = qs.stringify({ message });
-        console.log(lineData)
-        const config = {
-          method: 'post',
-          url: 'https://notify-api.line.me/api/notify',
-          headers: {
-            Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          data: lineData,
-        };
-
-        await axios(config);
-        console.log('Notify Success');
-
-        await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', statusAG: result } })
-      }
-      console.log(chalk.green('CLOSE CREATE CREDIT', data.usernameAG));
-      return;
-
-    } else {
-      await UpCreditMaster(data.usernameAG.substring(0, 5), money * 100, page, link, data)
-      return;
     }
+    // console.log(resultTable);
+    //วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด
+    console.log('--- วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด ---');
+    console.log('--- 101 --- : ', resultTable);
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- วนหายูสที่ตรงกัน returnd กลับ หากช่อง 8 เยอะว่าช่อง 9 ให้โอนยอด ---' } })
+    for (var i = 0; i < resultTable.length; i++) {
+      if (resultTable[i][3] == data.usernameAG) {
+        console.log(i);
+        console.log(resultTable[i][3]);
+        console.log(resultTable[i][8]);
+        console.log(resultTable[i][9]);
+      }
+    }
+
+    //บรรทัด 111 สิ้นสุดจาการค้นหายูสเอเย่นแล้วเอาบาล้าน Credit Limit ออกมา
+    // ข้างหน้ามากกว่าข้างหลัง แจ้งพนักงาน
+    console.log('--- บรรทัด 111 สิ้นสุดจาการค้นหายูสเอเย่นแล้วเอาบาล้าน Credit Limit ออกมา ---');
+
+    // ////////////////////////////////////เติมเครดิต///////////////////////////////////////////
+    console.log('--- ------------------------เติมเครดิต------------------------ ---');
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- เติมเครดิต ---' } })
+    await page.goto(link + `/_Age1/AgentSet.aspx?userName=` + data.usernameAG + `&set=1`, {
+      waitUntil: 'load'
+    })
+    await delay(1000);
+
+    await page.waitForXPath(`//*[@id="txtTotalLimit"]`);
+    [elements] = await page.$x(`//*[@id="txtTotalLimit"]`);
+    let result = await page.evaluate(element => element.value, elements);
+    moneyOld = Number(result.toString().replace(/,/g, ''));
+    console.log("moneyOld 2 : ", moneyOld);
+    moneyOld += +moneyAdd
+    console.log("moneyOld 3 : ", moneyOld);
+    let sumAdd = moneyOld.toString()
+    await delay(100);
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- txtTotalLimit ---' } })
+    element = await page.$x(`//*[@id="txtTotalLimit"]`);
+    await element[0].click({ clickCount: 3 })
+    await page.keyboard.press('Backspace')
+    await element[0].type(sumAdd);
+    // moneyOld ยอดเครดิตจำกัดปัจจุบัน ต้องน้อยกว่า ยอด Max
+    // ถ้าไม่ ให้แจ้งว่าเครดิตใหญ่หมด
+
+    //ยืนยัน
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- ยืนยัน  btnUpdateC ---' } })
+    console.log('--- ------------------------ ยืนยัน ------------------------ ---');
+    element = await page.$x(`//*[@id="btnUpdateC"]`)
+    await element[0].click()
+
+
+    await delay(1000)
+
+    element = await page.waitForXPath(`//*[@id="lblStatus"]`);
+    [element] = await page.$x(`//*[@id="lblStatus"]`);
+    result = await page.evaluate(element => element.textContent, element);
+
+    await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'GET RESULT' } })
+
+    console.log(chalk.yellow(result));
+
+    if (result === "Profile updated successfully." || result === "อัพเดตข้อมูลเรียบร้อย") {
+      console.log(chalk.green('--- สร้างสำเร็จ ---'));
+
+      const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: อัพเดตข้อมูลเรียบร้อย\nSTATUS SERVER: เติมสำเร็จ`
+
+      const lineData = qs.stringify({ message });
+      console.log(lineData)
+      const config = {
+        method: 'post',
+        url: 'https://notify-api.line.me/api/notify',
+        headers: {
+          Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: lineData,
+      };
+
+      await axios(config);
+      console.log('Notify Success');
+
+      await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'DONE', statusAG: result } })
+    } else {
+      console.log(chalk.red('--- สร้างไม่สำเร็จ ---'));
+
+      const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: ${result}\nSTATUS SERVER: เติมไม่สำเร็จ`
+
+      const lineData = qs.stringify({ message });
+      console.log(lineData)
+      const config = {
+        method: 'post',
+        url: 'https://notify-api.line.me/api/notify',
+        headers: {
+          Authorization: `Bearer 9pby54WwShRCPL4UgGEXKazB1H05WXC2wG7EN14jn04`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: lineData,
+      };
+
+      await axios(config);
+      console.log('Notify Success');
+
+      await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAILED', statusAG: result } })
+    }
+    console.log(chalk.green('CLOSE CREATE CREDIT', data.usernameAG));
+    return;
+
+    // } else {
+    //   await UpCreditMaster(data.usernameAG.substring(0, 5), money * 100, page, link, data)
+    //   return;
+    // }
   } catch (error) {
 
     const message = `\nUSER: ${data.usernameAG}\nCREDIT: ${data.credit}\nBY: ${data.creditBy}\nSTATUS: เติมไม่สำเร็จ\nSTATUS SERVER: เติมไม่สำเร็จ`
@@ -365,11 +365,11 @@ const UpCreditMaster = async (userS, moneyAdd, page2, link, data) => {
   const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
   const page = await browser.newPage();
   let element, formElement, tabs, resultTable, resultTransfer, listNum, selectList;
-  await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
+  await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'load' })
   try {
 
     console.log('STAT UpCreditMaster')
-    console.log(moneyAdd)
+    console.log('moneyAdd', moneyAdd)
     if (moneyAdd > 1e6) {
       moneyAdd = 1e6
     }
@@ -384,11 +384,15 @@ const UpCreditMaster = async (userS, moneyAdd, page2, link, data) => {
     console.log('login สำเร็จ');
     await delay(1000);
 
+    console.log('goto ', agtest + `/_Part/MasterList.aspx?type=master&role=pa&userName=` + userS);
     await page.goto(agtest + `/_Part/MasterList.aspx?type=master&role=pa&userName=` + userS, {
-      waitUntil: 'networkidle2'
+      waitUntil: 'load'
     })
+    console.log('stay ', agtest + `/_Part/MasterList.aspx?type=master&role=pa&userName=` + userS);
+
     await delay(1000);
     ////////////////////////////////////////ค้นหายอดบาล้าน/////////////////////////////////////////////////
+    console.log('type ', 'data.adviser' + data.adviser);
 
     element = await page.$x(`//*[@id="txtSearch"]`)
     await element[0].type(data.adviser);
@@ -430,7 +434,7 @@ const UpCreditMaster = async (userS, moneyAdd, page2, link, data) => {
     }
     /////////////////////////////////////โอนยอด////////////////////////////////////////////////////
     await page.goto(agtest + `/_Part/AccBal.aspx?role=pa&userName=` + userS, {
-      waitUntil: 'networkidle2'
+      waitUntil: 'load'
     })
     element = await page.$x(`//*[@id="AccBal_cm1_txtSearch"]`)
     await element[0].type(data.adviser);
@@ -470,7 +474,7 @@ const UpCreditMaster = async (userS, moneyAdd, page2, link, data) => {
     await delay(1000);
     ////////////////////////////////////เติมเครดิต///////////////////////////////////////////
     await page.goto(agtest + `/_Part1/MasterSet.aspx?userName=` + data.adviser + `&set=1`, {
-      waitUntil: 'networkidle2'
+      waitUntil: 'load'
     })
     await delay(1000);
 
@@ -539,7 +543,7 @@ const UpCreditAgentLast = async (page, link, data) => {
     console.log(moneyAdd);
 
     await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'OPEN LINK' } })
-    await page.goto(link + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
+    await page.goto(link + `/Public/Default11.aspx`, { waitUntil: 'load' })
 
     await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'TYPE USER NAME' } })
     element = await page.$x(`//*[@id="txtUserName"]`)
@@ -556,7 +560,7 @@ const UpCreditAgentLast = async (page, link, data) => {
     await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'โอนยอด' + data.adviser } })
     /////////////////////////////////////โอนยอด////////////////////////////////////////////////////
     await page.goto(link + `/_Age/AccBal.aspx?role=ag&userName=` + data.adviser, {
-      waitUntil: 'networkidle2'
+      waitUntil: 'load'
     })
     await Credit.updateOne({ _id: data._id }, { $set: { jobServe: 'AccBal_cm1_txtSearch' } })
     await page.waitForXPath(`//*[@id="AccBal_cm1_txtSearch"]`, { timeout: 60000 });
@@ -638,7 +642,7 @@ const UpCreditAgentLast = async (page, link, data) => {
 
       /////////////////// เช็คบาลาน /////////////////
       await page.goto(link + `/_Age/AgentList.aspx?type=agent&role=ag&userName=` + data.adviser, {
-        waitUntil: 'networkidle2'
+        waitUntil: 'load'
       })
       await delay(1000);
       //บรรทัด 113 เข้าเช็คบาล้านยูสเอเย่น
@@ -698,7 +702,7 @@ const UpCreditAgentLast = async (page, link, data) => {
       console.log('--- ------------------------เติมเครดิต------------------------ ---');
       await Credit.updateOne({ _id: data._id }, { $set: { jobServe: '--- เติมเครดิต ---' } })
       await page.goto(link + `/_Age1/AgentSet.aspx?userName=` + data.usernameAG + `&set=1`, {
-        waitUntil: 'networkidle2'
+        waitUntil: 'load'
       })
       await delay(1000);
 

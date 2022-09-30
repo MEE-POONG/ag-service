@@ -2,7 +2,7 @@ const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
 const passS = "Est1540+*#"
-const { UFRUU_AGENT_1 } = require('./psd_m_data')
+const { UFRUU_AGENT_3 } = require('./psd_m_data')
 const passM = "Ufr168pppt99~+"
 const passA = "Maxufapsd168-++"
 const agtest = "http://ocean.isme99.com"
@@ -53,7 +53,7 @@ const args = [
 	let element, formElement, tabs;
 
 	let check = '';
-	for (const [idx, data] of UFRUU_AGENT_1.entries()) {
+	for (const [idx, data] of UFRUU_AGENT_3.entries()) {
 		console.log(idx, " : ", data.username);
 		if (check != data.master) {
 			check = data.master

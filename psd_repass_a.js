@@ -4,7 +4,7 @@ require('dotenv').config()
 const passS = "Est1540+*#"
 const { UFRUU_AGENT } = require('./psd_m_data')
 const passM = "Ufr168pppt99~+"
-const passA = "Upp99tpp99-168+"
+const passA = "Maxufapsd168-++"
 const agtest = "http://ocean.isme99.com"
 const args = [
 	'--start-maximized',
@@ -54,6 +54,7 @@ const args = [
 
 	let check = '';
 	for (const [idx, data] of UFRUU_AGENT.entries()) {
+		console.log(idx, " : ", data.username);
 		if (check != data.master) {
 			check = data.master
 			await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
@@ -67,7 +68,6 @@ const args = [
 			console.log('login สำเร็จ');
 		}
 		await delay(1000);
-		console.log(idx, " : ", data.username);
 		await page.goto(agtest + `/_Age1/AgentSet.aspx?userName=` + data.username + `&set=1`, {
 			waitUntil: 'networkidle2'
 		})
