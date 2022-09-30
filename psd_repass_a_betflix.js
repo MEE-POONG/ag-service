@@ -2,7 +2,7 @@ const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
 const passS = "Est1540+*#"
-const { UFRUU_AGENT } = require('./psd_m_data')
+const { UFRUU_AGENT_1 } = require('./betflix_data')
 const passM = "Ufr168pppt99~+"
 const passA = "Maxufapsd168-++"
 const agtest = "https://bo.psg777.com/bo"
@@ -58,7 +58,7 @@ const args = [
 		defaultViewport: { width: 1920, height: 1080 },
 		args: args
 	});
-	
+
 	const page = await browser.newPage();
 	let element, formElement, tabs;
 	// element = await page.setUserAgent('5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36');
@@ -83,7 +83,7 @@ const args = [
 
 	let check = '';
 	//await delay(1000);
-	for (const [idx, data] of UFRUU_AGENT.entries()) {
+	for (const [idx, data] of UFRUU_AGENT_1.entries()) {
 		console.log(idx, " : ", data.username);
 		if (check != data.master) {
 			check = data.master
@@ -97,29 +97,38 @@ const args = [
 			element = await page.$x(`//*[@name="password"]`)
 			await element[0].type(passM);
 
-			
-			element = await page.$x(`//*[@type="submit"]`)			
+
+			element = await page.$x(`//*[@type="submit"]`)
 			await Promise.all([
 				element[0].click(),
 				page.waitForNavigation({ waitUntil: 'load' }),
 			])
 			console.log('login สำเร็จ');
+			await delay(2000);
+
+			element = await page.$x(`/html/body/div[1]/div[3]/div/div/div[3]/button`)
+			await Promise.all([
+				element[0].click(),
+				page.waitForNavigation({ waitUntil: 'load' }),
+			])
 		}
 
-		await page.goto(agtest + `/_Age1/AgentSet.aspx?userName=` + data.username + `&set=1`, {
-			waitUntil: 'load'
-		})
 
-		element = await page.waitForXPath(`//*[@id="txtPassword"]`);
-		element = await page.$x(`//*[@id="txtPassword"]`)
-		await element[0].type(passA);
-		// //ยืนยัน
-		
-		element = await page.$x(`//*[@id="btnUpdateG"]`)
-		await Promise.all([
-			element[0].click(),
-			page.waitForNavigation({ waitUntil: 'load' }),
-		])
+
+		// await page.goto(agtest + `/_Age1/AgentSet.aspx?userName=` + data.username + `&set=1`, {
+		// 	waitUntil: 'load'
+		// })
+
+		// element = await page.waitForXPath(`//*[@id="txtPassword"]`);
+		// element = await page.$x(`//*[@id="txtPassword"]`)
+		// await element[0].type(passA);
+		// // //ยืนยัน
+
+		// element = await page.$x(`//*[@id="btnUpdateG"]`)
+		// await Promise.all([
+		// 	element[0].click(),
+		// 	page.waitForNavigation({ waitUntil: 'load' }),
+		// ])
 
 	}
 
