@@ -2,10 +2,11 @@ const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
 const passS = "Est1540+*#"
-const { UFRUU_AGENT_1 } = require('./psd_m_data')
+const { UFRUU_AGENT } = require('./psd_m_data')
 const passM = "Ufr168pppt99~+"
 const passA = "Maxufapsd168-++"
-const agtest = "http://ocean.isme99.com"
+const agtest = "https://bo.psg777.com/bo"
+
 const args = [
 	'--start-maximized',
 	'--autoplay-policy=user-gesture-required',
@@ -44,39 +45,81 @@ const args = [
 	'--password-store=basic',
 	'--use-gl=swiftshader',
 	'--use-mock-keychain',
-	'--ignore-certificate-errors'
+	'--ignore-certificate-errors',
+	'--lang=th-TH,th',
+	'--user-data-dir=%userprofile%\\AppData\\Local\\Chromium\\User Data\\Profile 1'
 ];
 (async () => {
 
-	const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
+
+	const browser = await puppeteer.launch({
+		headless: false,
+		slowMo: 60, // slow down by 250ms
+		defaultViewport: { width: 1920, height: 1080 },
+		args: args
+	});
+	
 	const page = await browser.newPage();
 	let element, formElement, tabs;
+	// element = await page.setUserAgent('5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36');
+
+	element = await page.setUserAgent('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36');
+
+	element = await page.setExtraHTTPHeaders({
+		'Accept-Language': 'th'
+	});
+	element = await page.evaluateOnNewDocument(() => {
+		Object.defineProperty(navigator, "language", {
+			get: function () {
+				return "th-TH";
+			}
+		});
+		Object.defineProperty(navigator, "languages", {
+			get: function () {
+				return ["th-TH", "th"];
+			}
+		});
+	});
 
 	let check = '';
-	for (const [idx, data] of UFRUU_AGENT_1.entries()) {
+	//await delay(1000);
+	for (const [idx, data] of UFRUU_AGENT.entries()) {
 		console.log(idx, " : ", data.username);
 		if (check != data.master) {
 			check = data.master
-			await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
-			await delay(1000);
-			element = await page.$x(`//*[@id="txtUserName"]`)
+			element = await page.goto(agtest, { waitUntil: 'load' })
+
+			element = await page.waitForXPath(`//*[@name="username"]`);
+			element = await page.$x(`//*[@name="username"]`)
 			await element[0].type(data.master);
-			element = await page.$x(`//*[@id="txtPassword"]`)
+
+			element = await page.waitForXPath(`//*[@name="password"]`);
+			element = await page.$x(`//*[@name="password"]`)
 			await element[0].type(passM);
-			element = await page.$x(`//*[@id="btnSignIn"]`)
-			await element[0].click()
+
+			
+			element = await page.$x(`//*[@type="submit"]`)			
+			await Promise.all([
+				element[0].click(),
+				page.waitForNavigation({ waitUntil: 'load' }),
+			])
 			console.log('login สำเร็จ');
 		}
-		await delay(1000);
+
 		await page.goto(agtest + `/_Age1/AgentSet.aspx?userName=` + data.username + `&set=1`, {
-			waitUntil: 'networkidle2'
+			waitUntil: 'load'
 		})
+
+		element = await page.waitForXPath(`//*[@id="txtPassword"]`);
 		element = await page.$x(`//*[@id="txtPassword"]`)
 		await element[0].type(passA);
 		// //ยืนยัน
+		
 		element = await page.$x(`//*[@id="btnUpdateG"]`)
-		await element[0].click()
-		await delay(2000);
+		await Promise.all([
+			element[0].click(),
+			page.waitForNavigation({ waitUntil: 'load' }),
+		])
 
 	}
 
