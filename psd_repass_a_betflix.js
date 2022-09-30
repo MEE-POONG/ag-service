@@ -105,30 +105,40 @@ const args = [
 			])
 			console.log('login สำเร็จ');
 			await delay(2000);
-
+			
 			element = await page.$x(`/html/body/div[1]/div[3]/div/div/div[3]/button`)
 			await Promise.all([
 				element[0].click(),
 				page.waitForNavigation({ waitUntil: 'load' }),
 			])
+
+			await page.goto(agtest + `/downline`, {
+				waitUntil: 'load'
+			})
+
 		}
 
 
 
-		// await page.goto(agtest + `/_Age1/AgentSet.aspx?userName=` + data.username + `&set=1`, {
-		// 	waitUntil: 'load'
-		// })
+		//วนลูปคลิก edit
+		element = await page.$x(`//table[@id='table1']/tbody/tr/td[8]/button[2]`);
+		await element[0].click();
+		//วนลูปคลิก edit
+		// element = await page.$x(`//table[@id='table1']/tbody/tr[2]/td[8]/button[2]`);
+		// await element[0].click();
+		//วนลูปคลิก edit
+		// element = await page.$x(`//table[@id='table1']/tbody/tr[3]/td[8]/button[2]`);
+		// await element[0].click();
 
-		// element = await page.waitForXPath(`//*[@id="txtPassword"]`);
-		// element = await page.$x(`//*[@id="txtPassword"]`)
-		// await element[0].type(passA);
+		//ช่องเปลี่ยนรหัส
+		element = await page.$x(`//div[@id='custom-content-below-detail-edit']/div[2]/input`);
+		await element[0].click();
+		await element[0].type(passA);
+		//ซัพมิตร
+		element = await page.$x(`//form[@id='editdown_form']/div[3]/button`);
+		await element[0].click();
 		// // //ยืนยัน
 
-		// element = await page.$x(`//*[@id="btnUpdateG"]`)
-		// await Promise.all([
-		// 	element[0].click(),
-		// 	page.waitForNavigation({ waitUntil: 'load' }),
-		// ])
 
 	}
 
