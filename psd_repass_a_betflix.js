@@ -110,39 +110,6 @@ const args = [
 
     }
 
-		await page.waitForXPath(`//*[@id="table1"]`, { visible: true })
-		resultTable = await page.evaluate(async () => {
-			const rows = document.querySelectorAll('#table1 tbody tr')
-			return Array.from(rows, row => {
-				const columns = row.querySelectorAll('td')
-				return Array.from(columns, column => column.innerText)
-			})
-		})
-
-		for (var i = 0; i < resultTable.length; i++) {
-			if (resultTable[i][6] !== 'Active') {
-				resultTable.splice(i, 1)
-			}
-		}
-		console.log(resultTable.length);
-		for (var i = 0; i < resultTable.length; i++) {
-			console.log(i);
-			if (i = 0) {
-				console.log(i);
-				element = await page.$x(`//table[@id='table1']/tbody/tr/td[8]/button[2]`);
-				await element[0].click();
-			}
-			//ช่องเปลี่ยนรหัส
-			await delay(1000);
-			element = await page.$x(`//div[@id='custom-content-below-detail-edit']/div[2]/input`);
-			await element[0].click();
-			await element[0].type(passA);
-			await delay(1000);
-			// ซัพมิตร
-			element = await page.$x(`//form[@id='editdown_form']/div[3]/button`);
-			await element[0].click();
-			// //ยืนยัน
-		}
 
 
     //วนลูปคลิก edit
@@ -173,6 +140,5 @@ const args = [
     element = await page.goto('https://bo.psg777.com/auth/bologout_p', { waitUntil: 'load' })
 
   }
-
 
 })();
