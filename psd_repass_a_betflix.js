@@ -97,7 +97,6 @@ const args = [
 			element = await page.$x(`//*[@name="password"]`)
 			await element[0].type(passM);
 
-
 			element = await page.$x(`//*[@type="submit"]`)
 			await Promise.all([
 				element[0].click(),
@@ -105,12 +104,9 @@ const args = [
 			])
 			console.log('login สำเร็จ');
 			await delay(2000);
-			
-			element = await page.$x(`/html/body/div[1]/div[3]/div/div/div[3]/button`)
-			await Promise.all([
-				element[0].click(),
-				page.waitForNavigation({ waitUntil: 'load' }),
-			])
+
+			element = await page.$x(`//button[@type='button']`);
+			await element[0].click();
 
 			await page.goto(agtest + `/downline`, {
 				waitUntil: 'load'
@@ -118,28 +114,44 @@ const args = [
 
 		}
 
+		await page.waitForXPath(`//*[@id="table1"]`, { visible: true })
+		resultTable = await page.evaluate(async () => {
+			const rows = document.querySelectorAll('#table1 tbody tr')
+			return Array.from(rows, row => {
+				const columns = row.querySelectorAll('td')
+				return Array.from(columns, column => column.innerText)
+			})
+		})
+
+		for (var i = 0; i < resultTable.length; i++) {
+			if (resultTable[i][6] !== 'Active') {
+				resultTable.splice(i, 1)
+			}
+		}
+		console.log(resultTable.length);
+		for (var i = 0; i < resultTable.length; i++) {
+			console.log(i);
+			if (i = 0) {
+				console.log(i);
+				element = await page.$x(`//table[@id='table1']/tbody/tr/td[8]/button[2]`);
+				await element[0].click();
+			}
+			//ช่องเปลี่ยนรหัส
+			await delay(1000);
+			element = await page.$x(`//div[@id='custom-content-below-detail-edit']/div[2]/input`);
+			await element[0].click();
+			await element[0].type(passA);
+			await delay(1000);
+			// ซัพมิตร
+			element = await page.$x(`//form[@id='editdown_form']/div[3]/button`);
+			await element[0].click();
+			// //ยืนยัน
+		}
 
 
-		//วนลูปคลิก edit
-		element = await page.$x(`//table[@id='table1']/tbody/tr/td[8]/button[2]`);
-		await element[0].click();
-		//วนลูปคลิก edit
-		// element = await page.$x(`//table[@id='table1']/tbody/tr[2]/td[8]/button[2]`);
+		// element = await page.$x(`//a[contains(text(),'Log Out')]`);
 		// await element[0].click();
-		//วนลูปคลิก edit
-		// element = await page.$x(`//table[@id='table1']/tbody/tr[3]/td[8]/button[2]`);
-		// await element[0].click();
-
-		//ช่องเปลี่ยนรหัส
-		element = await page.$x(`//div[@id='custom-content-below-detail-edit']/div[2]/input`);
-		await element[0].click();
-		await element[0].type(passA);
-		//ซัพมิตร
-		element = await page.$x(`//form[@id='editdown_form']/div[3]/button`);
-		await element[0].click();
-		// // //ยืนยัน
-
-
+		// await page.waitForNavigation();
 	}
 
 
