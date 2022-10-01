@@ -55,7 +55,7 @@ const args = [
   const browser = await puppeteer.launch({
     headless: false,
     slowMo: 60, // slow down by 250ms
-    defaultViewport: { width: 1080, height: 1080 },
+    defaultViewport: { width: 1920, height: 1080 },
     args: args
   });
 
@@ -84,7 +84,7 @@ const args = [
   let check = '';
   //await delay(1000);
   for (const [idx, data] of UFRUU_AGENT_1.entries()) {
-    console.log(idx, " : ", data.username);
+    console.log(idx, " : ", data.master);
     if (check != data.master) {
       check = data.master
       element = await page.goto(agtest, { waitUntil: 'load' })
@@ -110,35 +110,83 @@ const args = [
 
     }
 
+    await page.waitForXPath(`//*[@id="table1"]`, { visible: true })
+    resultTable = await page.evaluate(async () => {
+      const rows = document.querySelectorAll('#table1 tbody tr')
+      return Array.from(rows, row => {
+        const columns = row.querySelectorAll('td')
+        return Array.from(columns, column => column.innerText)
+      })
+    })
 
+    for (var i = 0; i < resultTable.length; i++) {
+      if (resultTable[i][6] !== 'Active') {
+        resultTable.splice(i, 1)
+      }
+    }
+    console.log(resultTable.length);
+    for (var i = 0; i < resultTable.length; i++) {
+      console.log(`//*[@id="table1"]/tbody[1]/tr[${i + 1}]/td[8]//*[contains(text(),'Edit')]`);
+      //วนลูปคลิก edit
+      console.log(131);
+      element = await page.waitForXPath(`//*[@id="table1"]/tbody[1]/tr[${i + 1}]/td[8]//*[contains(text(),'Edit')]`);
+      element = await page.$x(`//*[@id="table1"]/tbody[1]/tr[${i + 1}]/td[8]//*[contains(text(),'Edit')]`)
+      await element[0].click();
+      // await page.evaluate(() => {
+      //   const xpath = `//*[@id="table1"]/tbody[1]/tr[1]/td[8]//*[contains(text(),'Edit')]`;
+      //   const result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
+      //   result.iterateNext().click();
+      // });
+      // ช่องเปลี่ยนรหัส
+      element = await page.waitForXPath(`//div[@id='custom-content-below-detail-edit']/div[2]/input`)
+      await page.evaluate(() => {
+        const xpath = `//div[@id='custom-content-below-detail-edit']/div[2]/input`;
+        const result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
+        result.iterateNext().click();
+      });
+      console.log(145);
+      element = await page.$x(`//div[@id='custom-content-below-detail-edit']/div[2]/input`)
+      await element[0].type(passA);
+      await delay(1000);
+      console.log("ซัพมิตร");
+      console.log(150);
+      //ซัพมิตร
+      element = await page.waitForXPath(`//form[@id='editdown_form']/div[3]/button`)
+      await page.evaluate(() => {
+        const xpath = `//form[@id='editdown_form']/div[3]/button`;
+        const result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
+        result.iterateNext().click();
+      });
+      //ยืนยัน
+    }
 
-    //วนลูปคลิก edit
-    element = await page.waitForXPath(`//*[@id="table1"]/tbody[1]/tr[1]/td[8]//*[contains(text(),'Edit')]`);
-    await page.evaluate(() => {
-      const xpath = `//*[@id="table1"]/tbody[1]/tr[1]/td[8]//*[contains(text(),'Edit')]`;
-      const result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
-      result.iterateNext().click();
-    });
-    // ช่องเปลี่ยนรหัส
-    element = await page.waitForXPath(`//div[@id='custom-content-below-detail-edit']/div[2]/input`)
-    await page.evaluate(() => {
-      const xpath = `//div[@id='custom-content-below-detail-edit']/div[2]/input`;
-      const result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
-      result.iterateNext().click();
-    });
-    element = await page.$x(`//div[@id='custom-content-below-detail-edit']/div[2]/input`)
-    await element[0].type(passA);
-    //ซัพมิตร
-    element = await page.waitForXPath(`//form[@id='editdown_form']/div[3]/button`)
-    await page.evaluate(() => {
-      const xpath = `//form[@id='editdown_form']/div[3]/button`;
-      const result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
-      result.iterateNext().click();
-    });
-    // // //ยืนยัน
-    
+    // //วนลูปคลิก edit
+    // element = await page.waitForXPath(`//*[@id="table1"]/tbody[1]/tr[1]/td[8]//*[contains(text(),'Edit')]`);
+    // await page.evaluate(() => {
+    //   const xpath = `//*[@id="table1"]/tbody[1]/tr[1]/td[8]//*[contains(text(),'Edit')]`;
+    //   const result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
+    //   result.iterateNext().click();
+    // });
+    // // ช่องเปลี่ยนรหัส
+    // element = await page.waitForXPath(`//div[@id='custom-content-below-detail-edit']/div[2]/input`)
+    // await page.evaluate(() => {
+    //   const xpath = `//div[@id='custom-content-below-detail-edit']/div[2]/input`;
+    //   const result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
+    //   result.iterateNext().click();
+    // });
+    // element = await page.$x(`//div[@id='custom-content-below-detail-edit']/div[2]/input`)
+    // await element[0].type(passA);
+    // //ซัพมิตร
+    // element = await page.waitForXPath(`//form[@id='editdown_form']/div[3]/button`)
+    // await page.evaluate(() => {
+    //   const xpath = `//form[@id='editdown_form']/div[3]/button`;
+    //   const result = document.evaluate(xpath, document, null, XPathResult.ANY_TYPE, null);
+    //   result.iterateNext().click();
+    // });
+    // // // //ยืนยัน
+
     element = await page.goto('https://bo.psg777.com/auth/bologout_p', { waitUntil: 'load' })
 
   }
-
+  await browser.close();
 })();

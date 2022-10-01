@@ -1,7 +1,7 @@
 
 exports.UFRUU_AGENT_1 = [
-    { username: 'b11ea0101', master: 'b11ea01' },
-    // { username: 'b11ea0201', master: 'b11ea02' },
+    { master: 'b11ea01' },
+    { master: 'b11ea02' },
     // { username: 'b11ea021', master: 'b11ea02' },
     // { username: 'b11ea022', master: 'b11ea02' },
     // { username: 'b11ea023', master: 'b11ea02' },
