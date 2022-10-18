@@ -50,30 +50,31 @@ exports.setUpAgent = async (page, link, data) => {
 
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[1]/div/input`);
     await element[0].type(data.usernameAG);
-    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[2]/div/input`);
-    await element[0].type(`0`);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[4]/div/input`);
-    await element[0].type(data.usernameAG);
+    await element[0].type(`0`);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[5]/div/input`);
-    await element[0].type(sixAgenPass);
-    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[7]/div/textarea`);
-    await element[0].type(`_SubAg`);
 
-    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[8]/div/input`);
     await element[0].type(data.usernameAG);
-    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[9]/div/input`);
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[7]/div/input`);
     await element[0].type(sixAgenPass);
-    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[11]/div/input`);
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[8]/div/textarea`);
     await element[0].type(`_SubAg`);
 
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[9]/div/input`);
+    await element[0].type(data.usernameAG);
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[6]/div/input`);
+    await element[0].type(sixAgenPass);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[12]/div/input`);
-    await element[0].type(data.usernameAG + '****');
+    await element[0].type(`_SubAg`);
+
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[13]/div/input`);
-    await element[0].type(`1`);
+    await element[0].type(data.usernameAG + '****');
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[14]/div/input`);
+    await element[0].type(`1`);
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[15]/div/input`);
     await element[0].type(`9999`);
 
-    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[16]/div/button`);
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[17]/div/button`);
     await element[0].click();
 
     await Alliance.updateOne({ _id: data._id }, { $set: { jobServe: 'ยืนยัน' } })
