@@ -52,8 +52,8 @@ exports.setUpAgent = async (page, link, data) => {
     await element[0].type(data.usernameAG);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[4]/div/input`);
     await element[0].type(`0`);
-    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[5]/div/input`);
 
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[6]/div/input`);
     await element[0].type(data.usernameAG);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[7]/div/input`);
     await element[0].type(sixAgenPass);
@@ -62,7 +62,7 @@ exports.setUpAgent = async (page, link, data) => {
 
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[9]/div/input`);
     await element[0].type(data.usernameAG);
-    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[6]/div/input`);
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[10]/div/input`);
     await element[0].type(sixAgenPass);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[12]/div/input`);
     await element[0].type(`_SubAg`);

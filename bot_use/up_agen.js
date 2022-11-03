@@ -2,7 +2,7 @@ const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
 const { topMasterPass, sixMasterPass, sixAgenPass, adminUser, adminPass } = process.env
-const usernameAG = "ufrcb0"
+const usernameAG = "ufrcb82a1"
 const webname = "UFA-66"
 const args = [
     '--start-maximized',
@@ -78,17 +78,17 @@ const args = [
     await element[0].type(usernameAG);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[4]/div/input`);
     await element[0].type(`0`);
+    
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[5]/div/input`);
-
     await element[0].type(usernameAG);
-    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[7]/div/input`);
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[6]/div/input`);
     await element[0].type(sixAgenPass);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[8]/div/textarea`);
     await element[0].type(`_SubAg`);
 
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[9]/div/input`);
     await element[0].type(usernameAG);
-    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[6]/div/input`);
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[10]/div/input`);
     await element[0].type(sixAgenPass);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[12]/div/input`);
     await element[0].type(`_SubAg`);
@@ -100,6 +100,6 @@ const args = [
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[15]/div/input`);
     await element[0].type(`9999`);
 
-    // element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[16]/div/button`);
-    // await element[0].click();
+    element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[17]/div/button`);
+    await element[0].click();
 })();
