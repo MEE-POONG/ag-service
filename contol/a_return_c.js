@@ -232,7 +232,7 @@ const startUFH27 = async () => {
   })
 
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: { width: 1920, height: 5000 },
     args
   })
@@ -289,7 +289,7 @@ const startUFRCB = async () => {
   })
 
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: { width: 1920, height: 5000 },
     args
   })
@@ -346,7 +346,7 @@ const startUFRCE = async () => {
   })
 
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: { width: 1920, height: 5000 },
     args
   })
@@ -403,7 +403,7 @@ const startTOP = async () => {
   })
 
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: { width: 1920, height: 5000 },
     args
   })
@@ -459,7 +459,7 @@ const startUFRUU = async () => {
   })
 
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: { width: 1920, height: 5000 },
     args
   })
@@ -516,7 +516,7 @@ const startUFRUV = async () => {
   })
 
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: { width: 1920, height: 5000 },
     args
   })

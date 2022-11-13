@@ -76,7 +76,7 @@ exports.CreateMaster = [
     const { usernameAG, webname } = req.body
     const ag = agtest
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       defaultViewport: { width: 1920, height: 1080 },
       args
     })
@@ -157,7 +157,7 @@ exports.CoppyMaster = [
     const { _id, webname } = req.body
     const ag = agtest
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       defaultViewport: { width: 1920, height: 1080 },
       args
     })

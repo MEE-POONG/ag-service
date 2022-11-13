@@ -64,7 +64,7 @@ exports.credit_wind_PSD99 = async (from, to) => {
   console.log(remove)
 
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: { width: 1920, height: 5000 },
     args
   })

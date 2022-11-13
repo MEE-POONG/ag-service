@@ -71,7 +71,7 @@ const args = [
 		{ username :'ufo889x',master:'ufo889'},
 		{ username :'ufo889y',master:'ufo889'},
 	];
-	const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
+	const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
 	const page = await browser.newPage();
 	let element, formElement, tabs, checkMaster;
 

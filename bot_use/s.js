@@ -53,7 +53,7 @@ const args = [
 
 
 	const browser = await puppeteer.launch({
-		headless: false,
+		headless: true,
 		slowMo: 60, // slow down by 250ms
 		defaultViewport: { width: 1920, height: 1080 },
 		args: args

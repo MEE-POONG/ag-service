@@ -53,7 +53,7 @@ const args = [
 
 const UpCreditAgent = async () => {
 
-  const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
+  const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
   const page = await browser.newPage();
   let element, formElement, tabs, resultTable, resultTransfer, listNum, selectList;
   const money = 5000
@@ -240,7 +240,7 @@ const UpCreditMaster = async (userS, moneyAdd) => {
     moneyAdd = 1e6
   }
 
-  const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
+  const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
   const page = await browser.newPage();
   let element, formElement, tabs, resultTable, resultTransfer, listNum, selectList;
   await page.goto(agtest + `/Public/Default11.aspx`, { waitUntil: 'networkidle2' })
@@ -374,7 +374,7 @@ const UpCreditMaster = async (userS, moneyAdd) => {
 
 const UpCreditAgentLast = async () => {
 
-  const browser = await puppeteer.launch({ headless: false, defaultViewport: { width: 1920, height: 5000 }, args });
+  const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 5000 }, args });
   const page = await browser.newPage();
   let element, formElement, tabs, resultTable, resultTransfer, listNum, selectList;
   const money = 5000
