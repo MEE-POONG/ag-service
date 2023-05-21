@@ -1,6 +1,7 @@
 
 require('dotenv').config()
 const mongoose = require('mongoose')
+console.log('START ag-service');
 const MONGODB_URI = process.env.MONGODB_URI
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, reconnectTries: 5000 })
@@ -38,8 +39,9 @@ const { setAllianceZero } = require('./setAllianceZero')
 const { setUpAgent } = require('./setUpAgent')
 const { createCredit } = require('./createCredit')
 const headless = true
-const link = headless ? 'http://ag.ufa6666.com' : 'http://ocean.isme99.com'
+const link = !headless ? 'http://ag.ufa6666.com' : 'http://ocean.isme99.com'
 const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
+
 var cmd = require('node-cmd');
 
 let statusFlags = 'R';
@@ -66,10 +68,19 @@ async function login(data, worker, index, db) {
       link,
       { waitUntil: 'networkidle2' }
     )
+    await page.screenshot({
+      path: 'screenshot_full.jpg',
+      fullPage: true 
+    })
+
     console.log(await page.title());
     console.log(page.url());
+    await page.screenshot({
+      path: 'screenshot_full.jpg',
+      fullPage: true 
+    })
     // console.log(data);
-    if (headless) {
+    if (!headless) {
       const pathPhoto = __dirname + '/img/captcha' + date1 + '.png'
       await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
       const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
@@ -97,11 +108,19 @@ async function login(data, worker, index, db) {
         })
 
     } else {
-      console.log('usernameAG', data.usernameAG);
+      console.log('usernameAG', db === 'Credit' ? data.adviser : data.usernameAG);
       element = await page.$x(`//*[@id="txtUserName"]`)
       await element[0].type(db === 'Credit' ? data.adviser : data.usernameAG)
-      element = await page.$x(`//*[@id="txtPassword"]`)
       console.log('password', password);
+      element = await page.$x(`//*[@id="txtPassword"]`)
+      await element[0].type(password)
+
+
+    await page.screenshot({
+      path: 'screenshot_full.jpg',
+      fullPage: true 
+    })
+
       element = await page.$x(`//*[@id="btnSignIn"]`)
       await element[0].click()
     }
@@ -110,58 +129,63 @@ async function login(data, worker, index, db) {
     const title = await page.title()
     const urls = page.url()
 
+    await page.screenshot({
+      path: 'screenshot_full.jpg',
+      fullPage: true
+    })
+
     if (title === ':: Management ::') {
-      // browser.close();
-      if (index >= 1) {
-        console.log(db);
-        if (db === 'Customer') {
-          await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
-          console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
-          statusFlags = 'R'
-          console.log('FAIL_TO_LOGIN');
-          cmd.runSync('npm run serve:restart');
-          return
-        }
-        if (db === 'Alliance') {
-          await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
-          console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
-          statusFlags = 'R'
-          console.log('FAIL_TO_LOGIN');
-          cmd.runSync('npm run serve:restart');
-          return
-        }
-      } else {
-        login(data, worker, index, db)
+    // browser.close();
+    if (index >= 1) {
+      console.log(db);
+      if (db === 'Customer') {
+        await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+        console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
+        statusFlags = 'R'
+        console.log('FAIL_TO_LOGIN');
+        cmd.runSync('npm run serve:restart');
+        return
       }
-      return;
+      if (db === 'Alliance') {
+        await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+        console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
+        statusFlags = 'R'
+        console.log('FAIL_TO_LOGIN');
+        cmd.runSync('npm run serve:restart');
+        return
+      }
+    } else {
+      login(data, worker, index, db)
     }
-
-    console.log('Page Title :' + title)
-    console.log('Page URL : ' + urls)
-
-    return { browser, page }
-  } catch (error) {
-    if (db === 'Customer') {
-      await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
-      console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
-      cmd.runSync('npm run serve:restart');
-      return
-    }
-    if (db === 'Alliance') {
-      await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
-      console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
-      cmd.runSync('npm run serve:restart');
-      return
-    }
-    if (db === 'Credit') {
-      await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
-      console.log(`_id: ${data._id}, Credit: statusServe: FAIL_TO_LOGIN`);
-      cmd.runSync('npm run serve:restart');
-      return
-    }
-    console.error(db, error)
-    cmd.runSync('npm run serve:restart');
+    return;
   }
+
+  console.log('Page Title :' + title)
+  console.log('Page URL : ' + urls)
+
+  return { browser, page }
+} catch (error) {
+  if (db === 'Customer') {
+    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+    console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
+    cmd.runSync('npm run serve:restart');
+    return
+  }
+  if (db === 'Alliance') {
+    await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+    console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
+    cmd.runSync('npm run serve:restart');
+    return
+  }
+  if (db === 'Credit') {
+    await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+    console.log(`_id: ${data._id}, Credit: statusServe: FAIL_TO_LOGIN`);
+    cmd.runSync('npm run serve:restart');
+    return
+  }
+  console.error(db, error)
+  cmd.runSync('npm run serve:restart');
+}
 }
 
 async function start() {
@@ -171,7 +195,7 @@ async function start() {
   await worker.setParameters({
     tessedit_char_whitelist: '0123456789'
   })
-
+  console.log('status flag', statusFlags);
   setInterval(async () => {
     try {
       if (statusFlags === 'R') {
@@ -195,9 +219,9 @@ async function start() {
           console.log(chalk.green('END JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           cmd.runSync('npm run serve:restart');
-        } 
+        }
         const upAgentPending = await Alliance.find({ statusServe: "PENDING", action: "SET_UP_AGENT" });
-         if (upAgentPending.length > 0) {
+        if (upAgentPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB UP AGENT ', new Date().toISOString()));
@@ -215,9 +239,11 @@ async function start() {
           console.log(chalk.green('END JOB UP AGENT ', new Date().toISOString()));
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           cmd.runSync('npm run serve:restart');
-        } 
+        }
 
         const creditPending = await Credit.find({ statusServe: "PENDING" });
+        console.log(creditPending);
+
         if (creditPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
@@ -237,7 +263,7 @@ async function start() {
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           cmd.runSync('npm run serve:restart');
         }
-        
+
         const customerPending = await Customer.find({ statusServe: "PENDING" });
         if (customerPending.length > 0) {
           const filterCustomerPending = await customerPending.filter(({ usernameAG }) => usernameAG === customerPending[0].usernameAG)
