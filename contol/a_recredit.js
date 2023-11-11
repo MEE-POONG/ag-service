@@ -2,7 +2,7 @@ const delay = require("delay");
 const puppeteer = require('puppeteer');
 require('dotenv').config()
 const userA = "ufrcb38a2"
-const passA = "Win+168ufa66pp+"
+const passA = "Win168+User66++"
 const agtest = "http://ocean.isme99.com"
 const args = [
     '--start-maximized',

@@ -6,7 +6,7 @@ const { UFA66_CUSTOMER } = require('./data_set_customer')
 const passM = "Ufr168pppt99~+"
 const passA_PSD = "Upp99tpp99-168+"
 const passA_TOP = "Upp99tpp99-168+"
-const passA_66 = "Win+168ufa66pp+"
+const passA_66 = "Win168+User66++"
 const agtest = "http://ocean.isme99.com"
 const args = [
     '--start-maximized',

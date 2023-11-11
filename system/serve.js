@@ -38,7 +38,7 @@ const { setAllianceZero } = require('./setAllianceZero')
 const { setUpAgent } = require('./setUpAgent')
 const { createCredit } = require('./createCredit')
 const headless = true
-const link = headless ? 'http://ag.ufa6666.com' : 'http://ocean.isme99.com'
+const link = headless ? 'http://aaa.ufa7777.com' : 'http://aaa.ufa7777.com'
 const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
 var cmd = require('node-cmd');
 
@@ -69,8 +69,12 @@ async function login(data, worker, index, db) {
     console.log(await page.title());
     console.log(page.url());
     // console.log(data);
+    console.log('71');
+    console.log(date1);
     if (headless) {
-      const pathPhoto = __dirname + '/img/captcha' + date1 + '.png'
+      const linkll = __dirname + '/img/captcha' + date1 + '.png'
+      console.log(linkll);
+      const pathPhoto = linkll
       await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
       const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
       await captcha.screenshot({

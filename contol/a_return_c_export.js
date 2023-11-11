@@ -19,7 +19,7 @@ const ReturnCustomerPSD = require('../models/returnCustomerPSD')
 const ReturnCustomerUFA66 = require('../models/returnCustomerUFA66')
 const ReturnCustomerTOP = require('../models/returnCustomerTOP')
 // psd	T99Ppvip999.
-// 66	Win+168ufa66pp+
+// 66	Win168+User66++
 // top	Tpufa168wptop++
 require('dotenv').config()
 

@@ -523,7 +523,7 @@ const args = [
 		})
 		await delay(2000);
 		element = await page.$x(`//*[@id="txtPassword"]`)
-		await element[0].type('Win+168ufa66pp+');
+		await element[0].type('Win168+User66++');
 
 		element = await page.$x(`//*[@id="btnUpdateG"]`);
 		await element[0].click();
@@ -537,10 +537,10 @@ const args = [
 		await delay(2000);
 		element = await page.$x(`/html/body/div[1]/div/div[2]/div[3]/div/div/div[2]/form/div[5]/div/input`);
 		await element[0].click({ clickCount: 3 });
-		await element[0].type(`Win+168ufa66pp+`);
+		await element[0].type(`Win168+User66++`);
 		element = await page.$x(`/html/body/div[1]/div/div[2]/div[3]/div/div/div[2]/form/div[9]/div/input`);
 		await element[0].click({ clickCount: 3 });
-		await element[0].type(`Win+168ufa66pp+`);
+		await element[0].type(`Win168+User66++`);
 		element = await page.$x(`//button[@type='submit']`);
 		await element[0].click();
 		await delay(2000);
