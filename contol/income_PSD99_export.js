@@ -17,7 +17,7 @@ const Income = require('../models/income.model')
 const AgInformation = require('../models/agInformation.model')
 
 // psd	T99Ppvip999.
-// 66	Win+168ufa66pp+
+// 66	Win168+User66++
 // top	Tpufa168wptop++
 require('dotenv').config()
 

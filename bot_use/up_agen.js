@@ -44,7 +44,7 @@ const args = [
     '--use-mock-keychain',
     '--ignore-certificate-errors'
 ];
-(async() => {
+(async () => {
 
     const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1920, height: 1080 }, args });
     const page = await browser.newPage();
@@ -60,8 +60,7 @@ const args = [
     await element[0].click();
     console.log('--- 1 ---');
     await delay(1000);
-    await page.waitForXPath(`//a[contains(text(),'ตามลูกค้า')]`);
-    element = await page.$x(`//a[contains(text(),'ตามลูกค้า')]`);
+    element = await page.$x(`//ul[@id='_web-list']/li/strong/span`);
     await element[0].click();
     console.log('--- 2 ---');
     await delay(1000);
@@ -78,7 +77,7 @@ const args = [
     await element[0].type(usernameAG);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[4]/div/input`);
     await element[0].type(`0`);
-    
+
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[5]/div/input`);
     await element[0].type(usernameAG);
     element = await page.$x(`/html/body/div/div/div[2]/div[2]/div[2]/form/div[6]/div/input`);
