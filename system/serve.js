@@ -39,7 +39,7 @@ const { setAllianceZero } = require('./setAllianceZero')
 const { setUpAgent } = require('./setUpAgent')
 const { createCredit } = require('./createCredit')
 const headless = true
-const link = !headless ? 'http://ag.ufa6666.com' : 'http://ocean.isme99.com'
+const link = !headless ? 'http://ag.777beer.com' : 'http://aaa.ufa7777.com'
 const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
 
 var cmd = require('node-cmd');
@@ -80,7 +80,7 @@ async function login(data, worker, index, db) {
       fullPage: true 
     })
     // console.log(data);
-    if (!headless) {
+    if (headless) {
       const pathPhoto = __dirname + '/img/captcha' + date1 + '.png'
       await page.waitForSelector('#divImgCode > img') // Method to ensure that the element is loaded
       const captcha = await page.$('#divImgCode > img') // captcha is the element you want to capture
@@ -99,6 +99,7 @@ async function login(data, worker, index, db) {
           console.log('IMG TXT', result)
           element = await page.$x(`//*[@id="txtCode"]`)
           await element[0].type(result)
+          await element[0].press('Enter');
           fs.unlink(pathPhoto, (err => { return; }));
         })
         .catch(function (err) {
