@@ -9,7 +9,6 @@ mongoose.connection.on('error', err => {
   console.error('MongoDB error', err)
 })
 
-
 const chalk = require('chalk');
 console.log(chalk.green(MONGODB_URI));
 console.log(chalk.green('START AG SETVICE VERSION 1.0.0'));
