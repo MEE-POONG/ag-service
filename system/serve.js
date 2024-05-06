@@ -201,18 +201,19 @@ async function start() {
     tessedit_char_whitelist: '0123456789'
   })
   console.log('status flag', statusFlags);
+  console.log('status flag', statusFlags);
   setInterval(async () => {
     try {
       if (statusFlags === 'R') {
 
-        const zeroPending = await Alliance.find({ statusServe: "PENDING", action: "SET_ZERO" });
+        const zeroPending = await Alliance.find({ statusServe: "PENDING", action: "SET_ZERO" }).limit(1);
         if (zeroPending.length > 0) {
 
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB SET ALLIANCE ZERO ', new Date().toISOString()));
           for (let data of zeroPending) {
             await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
-            const { browser, page } = await login(data, worker, 0, 'Alliance')
+            const { browser, page } = await login(data, 0, 'Alliance')
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB SET ALLIANCE ZERO', data.usernameAG, new Date().toISOString()));
             await setAllianceZero(page, link, data)
@@ -225,14 +226,14 @@ async function start() {
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           cmd.runSync('npm run serve:restart');
         }
-        const upAgentPending = await Alliance.find({ statusServe: "PENDING", action: "SET_UP_AGENT" });
+        const upAgentPending = await Alliance.find({ statusServe: "PENDING", action: "SET_UP_AGENT" }).limit(1);
         if (upAgentPending.length > 0) {
           statusFlags = 'P'
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB UP AGENT ', new Date().toISOString()));
           for (let data of upAgentPending) {
             await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
-            const { browser, page } = await login(data, worker, 0, 'Alliance')
+            const { browser, page } = await login(data, 0, 'Alliance')
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB UP AGENT', data.usernameAG, new Date().toISOString()));
             await setUpAgent(page, link, data)
@@ -246,7 +247,7 @@ async function start() {
           cmd.runSync('npm run serve:restart');
         }
 
-        const creditPending = await Credit.find({ statusServe: "PENDING" });
+        const creditPending = await Credit.find({ statusServe: "PENDING" }).limit(1);
         console.log(creditPending);
 
         if (creditPending.length > 0) {
@@ -255,7 +256,7 @@ async function start() {
           console.log(chalk.green('START JOB CREATE CREDIT ', new Date().toISOString()));
           for (let data of creditPending) {
             await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'WORKING' } })
-            const { browser, page } = await login(data, worker, 0, 'Credit')
+            const { browser, page } = await login(data, 0, 'Credit')
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB CREATE CREDIT', data.usernameAG, new Date().toISOString()));
             await createCredit(page, link, data)
@@ -269,12 +270,12 @@ async function start() {
           cmd.runSync('npm run serve:restart');
         }
 
-        const customerPending = await Customer.find({ statusServe: "PENDING" });
+        const customerPending = await Customer.find({ statusServe: "PENDING" }).limit(1);
         if (customerPending.length > 0) {
           const filterCustomerPending = await customerPending.filter(({ usernameAG }) => usernameAG === customerPending[0].usernameAG)
           console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
           console.log(chalk.green('START JOB CUSTOMER CREATE ', customerPending[0].usernameAG, new Date().toISOString()));
-          const { browser, page } = await login(customerPending[0], worker, 0, 'Customer')
+          const { browser, page } = await login(customerPending[0], 0, 'Customer')
           for (let data of filterCustomerPending) {
             console.log(chalk.cyan('\n----------------------------------------------------------------\n'));
             console.log(chalk.green('START JOB CUSTOMER CREATE ', data.customerID, new Date().toISOString()));
