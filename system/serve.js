@@ -11,6 +11,7 @@ mongoose.connection.on('error', err => {
 
 
 const chalk = require('chalk');
+console.log(chalk.green(MONGODB_URI));
 console.log(chalk.green('START AG SETVICE VERSION 1.0.0'));
 
 
@@ -27,37 +28,48 @@ const Customer = require('../models/customer.model')
 const Alliance = require('../models/alliance.model')
 const Credit = require('../models/credit.model')
 
-const { createWorker } = require('tesseract.js')
-const worker = createWorker()
 
 const delay = require("delay");
 const puppeteer = require('puppeteer');
+
+
+const tesseract = require("node-tesseract-ocr")
+
+const config = {
+  lang: "eng",
+  oem: 1,
+  psm: 3,
+}
+
 const { args } = require('./configs/args');
 const { readImg } = require('./utils/tesseractGet');
 const { createCustomer } = require("./createCustomer");
 const { setAllianceZero } = require('./setAllianceZero')
 const { setUpAgent } = require('./setUpAgent')
 const { createCredit } = require('./createCredit')
+
 const headless = true
-const link = headless ? 'http://aaa.ufa7777.com' : 'http://aaa.ufa7777.com'
+const link = headless ? 'https://ag.777whisky.com/' : 'https://ag.777whisky.com/'
 const { topAgenPass, sixAgenPass, topMasterPass, sixMasterPass, adminUser, adminPass } = process.env
 
 var cmd = require('node-cmd');
 
 let statusFlags = 'R';
-async function login(data, worker, index, db) {
+async function login(data, index, db) {
   index += 1
   let password = sixAgenPass
   try {
     if (data.status === 'master') {
       password = sixMasterPass
     }
+    console.log('statusFlags = P');
     statusFlags = 'P'
     const browser = await puppeteer.launch({
       args,
       headless,
       defaultViewport: null
     })
+    console.log('puppeteer.launch');
 
     const page = await browser.newPage()
     const birthday = new Date();
@@ -70,14 +82,14 @@ async function login(data, worker, index, db) {
     )
     await page.screenshot({
       path: 'screenshot_full.jpg',
-      fullPage: true 
+      fullPage: true
     })
 
     console.log(await page.title());
     console.log(page.url());
     await page.screenshot({
       path: 'screenshot_full.jpg',
-      fullPage: true 
+      fullPage: true
     })
     // console.log(data);
     console.log('71');
@@ -98,19 +110,26 @@ async function login(data, worker, index, db) {
       element = await page.$x(`//*[@id="txtPassword"]`)
       console.log('password', password);
       await element[0].type(password)
-      await readImg(worker, pathPhoto)
-        .then(async result => {
-          console.log('IMG TXT', result)
+      const img = fs.readFileSync(pathPhoto)
+
+      await tesseract.recognize(img, config)
+        .then(async text => {
+          console.log("Result:", text)
+
+          console.log('IMG TXT', text)
           element = await page.$x(`//*[@id="txtCode"]`)
-          await element[0].type(result)
+          await element[0].type(text)
           await element[0].press('Enter');
           fs.unlink(pathPhoto, (err => { return; }));
         })
-        .catch(function (err) {
-          console.log(chalk.red(err))
+        .catch(error => {
+          console.log(error.message)
+
+          console.log(chalk.red(error))
           fs.unlink(pathPhoto, (err => { return; }));
-          cmd.runSync('npm run serve:restart');
+          // cmd.runSync('npm run serve:restart');
         })
+
 
     } else {
       console.log('usernameAG', db === 'Credit' ? data.adviser : data.usernameAG);
@@ -121,10 +140,10 @@ async function login(data, worker, index, db) {
       await element[0].type(password)
 
 
-    await page.screenshot({
-      path: 'screenshot_full.jpg',
-      fullPage: true 
-    })
+      await page.screenshot({
+        path: 'screenshot_full.jpg',
+        fullPage: true
+      })
 
       element = await page.$x(`//*[@id="btnSignIn"]`)
       await element[0].click()
@@ -140,67 +159,63 @@ async function login(data, worker, index, db) {
     })
 
     if (title === ':: Management ::') {
-    // browser.close();
-    if (index >= 1) {
-      console.log(db);
-      if (db === 'Customer') {
-        await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
-        console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
-        statusFlags = 'R'
-        console.log('FAIL_TO_LOGIN');
-        cmd.runSync('npm run serve:restart');
-        return
+      // browser.close();
+      if (index >= 1) {
+        console.log(db);
+        if (db === 'Customer') {
+          await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+          console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
+          statusFlags = 'R'
+          console.log('FAIL_TO_LOGIN');
+          cmd.runSync('npm run serve:restart');
+          return
+        }
+        if (db === 'Alliance') {
+          await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+          console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
+          statusFlags = 'R'
+          console.log('FAIL_TO_LOGIN');
+          cmd.runSync('npm run serve:restart');
+          return
+        }
+      } else {
+        login(data, index, db)
       }
-      if (db === 'Alliance') {
-        await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
-        console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
-        statusFlags = 'R'
-        console.log('FAIL_TO_LOGIN');
-        cmd.runSync('npm run serve:restart');
-        return
-      }
-    } else {
-      login(data, worker, index, db)
+      return;
     }
-    return;
-  }
 
-  console.log('Page Title :' + title)
-  console.log('Page URL : ' + urls)
+    console.log('Page Title :' + title)
+    console.log('Page URL : ' + urls)
 
-  return { browser, page }
-} catch (error) {
-  if (db === 'Customer') {
-    await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
-    console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
+    return { browser, page }
+  } catch (error) {
+    console.log("error", error);
+
+    if (db === 'Credit') {
+      await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+      console.log(`_id: ${data._id}, Credit: statusServe: FAIL_TO_LOGIN`);
+      cmd.runSync('npm run serve:restart');
+      return
+    }
+    if (db === 'Customer') {
+      await Customer.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+      console.log(`_id: ${data._id}, Customer: statusServe: FAIL_TO_LOGIN`);
+      cmd.runSync('npm run serve:restart');
+      return
+    }
+    
+    if (db === 'Alliance') {
+      await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
+      console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
+      cmd.runSync('npm run serve:restart');
+      return
+    }
+    console.error(db, error)
     cmd.runSync('npm run serve:restart');
-    return
   }
-  if (db === 'Alliance') {
-    await Alliance.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
-    console.log(`_id: ${data._id}, Alliance: statusServe: FAIL_TO_LOGIN`);
-    cmd.runSync('npm run serve:restart');
-    return
-  }
-  if (db === 'Credit') {
-    await Credit.updateOne({ _id: data._id }, { $set: { statusServe: 'FAIL_TO_LOGIN' } })
-    console.log(`_id: ${data._id}, Credit: statusServe: FAIL_TO_LOGIN`);
-    cmd.runSync('npm run serve:restart');
-    return
-  }
-  console.error(db, error)
-  cmd.runSync('npm run serve:restart');
-}
 }
 
 async function start() {
-  await worker.load()
-  await worker.loadLanguage('eng')
-  await worker.initialize('eng')
-  await worker.setParameters({
-    tessedit_char_whitelist: '0123456789'
-  })
-  console.log('status flag', statusFlags);
   console.log('status flag', statusFlags);
   setInterval(async () => {
     try {
