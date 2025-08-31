@@ -17,64 +17,41 @@ export function useAuth(): UseAuthReturn {
   const router = useRouter()
 
   useEffect(() => {
-    const checkAuth = async () => {
+    let mounted = true
+    const run = async () => {
       try {
-        const token = localStorage.getItem('auth-token')
-        if (!token) {
-          setUserLoading(false)
-          // ถ้าไม่อยู่ในหน้า login ให้ redirect ไป login
-          if (router.pathname !== '/auth/login') {
-            router.push('/auth/login')
-          }
-          return
+        const res = await axios.get('/api/auth/me', { withCredentials: true })
+        if (!mounted) return
+        const u = res.data?.user ?? null
+        setUser(u)
+        if (!u && router.pathname !== '/auth/login') {
+          router.replace(`/auth/login?redirect=${encodeURIComponent(router.asPath)}`)
         }
-
-        const response = await axios.get('/api/auth/me')
-        const data = response.data
-        
-        if (response.status === 200 && data.user) {
-          setUser(data.user)
-        } else {
-          localStorage.removeItem('auth-token')
-          setUser(null)
-          // ถ้าไม่อยู่ในหน้า login ให้ redirect ไป login
-          if (router.pathname !== '/auth/login') {
-            router.push('/auth/login')
-          }
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error)
-        localStorage.removeItem('auth-token')
+      } catch (e) {
+        if (!mounted) return
         setUser(null)
         setError('การตรวจสอบสิทธิ์ล้มเหลว')
-        // ถ้าไม่อยู่ในหน้า login ให้ redirect ไป login
         if (router.pathname !== '/auth/login') {
-          router.push('/auth/login')
+          router.replace(`/auth/login?redirect=${encodeURIComponent(router.asPath)}`)
         }
       } finally {
-        setUserLoading(false)
+        if (mounted) setUserLoading(false)
       }
     }
-
-    checkAuth()
+    run()
+    return () => { mounted = false }
   }, [router])
 
   const logout = async () => {
     try {
-      await axios.post('/api/auth/logout')
-      localStorage.removeItem('auth-token')
+      await axios.post('/api/auth/logout', {}, { withCredentials: true })
+    } finally {
+      // สำหรับ session เก่าที่เคยใช้ localStorage
+      try { localStorage.removeItem('auth-token') } catch {}
       setUser(null)
-      router.push('/auth/login')
-    } catch (error) {
-      console.error('Logout failed:', error)
-      // Still remove token and redirect even if logout API fails
-      localStorage.removeItem('auth-token')
-      setUser(null)
-      router.push('/auth/login')
+      router.replace('/auth/login')
     }
   }
 
   return { user, userLoading, error, logout }
-} 
-
-
+}
