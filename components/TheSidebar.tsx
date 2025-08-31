@@ -16,7 +16,7 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   const [menuItems, setMenuItems] = useState<any[]>([]);
   const [filteredMenus, setFilteredMenus] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
@@ -33,6 +33,11 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
 
   // กรองเมนูตามสิทธิ์ของ user
   const filterMenusByPermissions = useCallback((menus: any[], user: any) => {
+    // ถ้าเป็น superadmin ให้เห็นเมนูทั้งหมด
+    if (user?.username === 'superadmin') {
+      return menus;
+    }
+
     if (!user || !user.permissions || user.permissions.length === 0) {
       return [];
     }
@@ -48,17 +53,17 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
     const filterMenu = (menu: any): any | null => {
       // ตรวจสอบว่า user มีสิทธิ์เข้าถึงเมนูนี้หรือไม่
       const userPermission = userPermissionsMap.get(menu.name);
-      
+
       // ถ้าไม่มีในระบบสิทธิ์เลย ให้ตรวจจาก permissions array (backward compatibility)
       const hasBasicPermission = user.permissions.includes(menu.name);
-      
+
       if (!userPermission && !hasBasicPermission) {
         // ตรวจสอบเมนูย่อยว่ามีสิทธิ์หรือไม่
         if (menu.children?.length > 0) {
           const filteredChildren = menu.children
             .map(filterMenu)
             .filter(Boolean);
-          
+
           if (filteredChildren.length > 0) {
             return {
               ...menu,
@@ -79,7 +84,7 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
         const filteredChildren = menu.children
           .map(filterMenu)
           .filter(Boolean);
-        
+
         return {
           ...menu,
           children: filteredChildren,
@@ -105,10 +110,6 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
     if (user && menuItems.length > 0) {
       const filtered = filterMenusByPermissions(menuItems, user);
       setFilteredMenus(filtered);
-      
-      console.log('User data:', user);
-      console.log('User permissions:', user.permissions);
-      console.log('Filtered menus:', filtered);
     } else {
       setFilteredMenus([]);
     }
@@ -166,7 +167,7 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
                   />
                 )
               )}
-              
+
               {/* ส่วนของเมนูสำหรับผู้พัฒนา */}
               {user_dev.includes(user?.username || "") && (
                 <MenuPage
