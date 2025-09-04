@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/D:\\web\\ag-service\\pages\\api\\admin-positions/**)",
+      "mcp__ide__getDiagnostics"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
