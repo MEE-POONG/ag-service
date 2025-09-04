@@ -17,7 +17,6 @@ type AgUserAccountItem = {
   position: string
   gaSecretEnc: string
 }
-
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountItem[]>([])
   const add = (item: AgUserAccountItem) => setItems(prev => [...prev, item])
@@ -42,7 +41,7 @@ export default function AgUserAccountPage() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   // Fetch list via react-query (server-side filter by keyword)
-  const { data, isFetching } = useQuery({
+  const { data, isFetching } = useQuery<{ items: AgUserAccountItem[]; pagination?: { totalItems: number; totalPages: number; currentPage: number; pageSize: number } }>({
     queryKey: qk.agUsers.listPaged(debouncedKeyword, page, pageSize),
     queryFn: async () => {
       const res = await axios.get('/api/aguseraccounts', { params: { keyword: debouncedKeyword, page, pageSize } })
@@ -53,7 +52,6 @@ export default function AgUserAccountPage() {
       }
     },
     staleTime: 30 * 1000,
-    keepPreviousData: true,
   })
 
   useEffect(() => {
