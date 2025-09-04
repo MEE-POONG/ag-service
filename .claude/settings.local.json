@@ -2,7 +2,19 @@
   "permissions": {
     "allow": [
       "Read(/D:\\web\\ag-service\\pages\\api\\admin-positions/**)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Read(/D:\\web\\ag-service\\pages\\admin/**)",
+      "Read(/D:\\web\\ag-service\\container\\admin\\departments/**)",
+      "Read(/D:\\web\\ag-service\\prisma/**)",
+      "Read(/D:\\web\\ag-service\\prisma/**)",
+      "Read(/D:\\web\\ag-service\\prisma/**)",
+      "Read(/D:\\web\\ag-service\\pages\\api\\admin-permissions/**)",
+      "Read(/D:\\web\\ag-service\\container\\admin\\departments/**)",
+      "Read(/D:\\web\\ag-service\\container\\admin\\departments/**)",
+      "Read(/D:\\web\\ag-service\\container\\admin\\departments/**)",
+      "Read(/D:\\web\\ag-service\\container\\admin\\departments/**)",
+      "Bash(npm run typecheck:*)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "ask": []

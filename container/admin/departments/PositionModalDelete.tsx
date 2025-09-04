@@ -24,7 +24,7 @@ const PositionModalDelete: React.FC<PositionModalDeleteProps> = ({ position, lis
       setError('');
 
       const res = await axios.delete('/api/admin-positions', {
-        data: { id: list.id }
+        data: { id: position.id }
       });
 
       if (res.data?.success) {
@@ -88,7 +88,7 @@ const PositionModalDelete: React.FC<PositionModalDeleteProps> = ({ position, lis
                 <span className="text-sm font-medium text-red-800">ข้อมูลที่จะลบ</span>
               </div>
               <div className="text-sm text-red-700">
-                <div><strong>ตำแหน่ง:</strong> {list.name}</div>
+                <div><strong>ตำแหน่ง:</strong> {position.name}</div>
                 {list && (
                   <div><strong>แผนก:</strong> {list.name}</div>
                 )}
