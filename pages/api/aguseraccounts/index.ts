@@ -34,6 +34,7 @@ async function getHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
           OR: [
             { username: { contains: kw, mode: 'insensitive' } },
             { userLogin: { contains: kw, mode: 'insensitive' } },
+            { webname: { contains: kw, mode: 'insensitive' } },
             { origin: { contains: kw, mode: 'insensitive' } },
             { position: { contains: kw, mode: 'insensitive' } },
             { reserve: { contains: kw, mode: 'insensitive' } },
@@ -59,7 +60,7 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
   const admin = await requireAuth(req, res)
   if (!admin) return
 
-  const { username, reserve, userLogin, origin, position, gaSecretEnc, statusServe = 'PENDING', note, meta } = req.body
+  const { username, reserve, userLogin, origin, position, gaSecretEnc, statusServe = 'PENDING', note, meta, webname } = req.body
   if (!username || !userLogin) return res.status(400).json({ success: false, error: 'username and userLogin are required' })
 
   const dup = await prisma.agUserAccountDB.findFirst({ where: { OR: [{ username }, { userLogin }] } })
@@ -71,6 +72,7 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
         username,
         reserve,
         userLogin,
+        webname,
         origin,
         position,
         gaSecretEnc,
@@ -93,7 +95,7 @@ async function putHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
   const admin = await requireAuth(req, res)
   if (!admin) return
 
-  const { id, username, reserve, userLogin, origin, position, gaSecretEnc, statusServe, note, meta, isActive } = req.body
+  const { id, username, reserve, userLogin, origin, position, gaSecretEnc, statusServe, note, meta, webname, isActive } = req.body
   if (!id) return res.status(400).json({ success: false, error: 'id is required' })
 
   const existing = await prisma.agUserAccountDB.findFirst({ where: { id } })
@@ -115,6 +117,7 @@ async function putHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
         ...(username !== undefined && { username }),
         ...(reserve !== undefined && { reserve }),
         ...(userLogin !== undefined && { userLogin }),
+        ...(webname !== undefined && { webname }),
         ...(origin !== undefined && { origin }),
         ...(position !== undefined && { position }),
         ...(gaSecretEnc !== undefined && { gaSecretEnc }),
@@ -172,4 +175,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(500).json({ success: false, error: 'Server error' })
   }
 }
-

@@ -271,6 +271,7 @@ model AgUserAccountDB {
   username     String      @unique
   reserve      String?
   userLogin    String      @unique
+  webname      String?
   origin       String?
   position     String?
   gaSecretEnc  String?

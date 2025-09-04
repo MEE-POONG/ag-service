@@ -60,6 +60,7 @@ export default function AgUserAccountPage() {
   useEffect(() => {
     if (data) {
       const mapped = (data.items || []).map((it: any) => {
+        if (it?.webname) return it
         try {
           const m = it?.meta ? JSON.parse(it.meta) : null
           return { ...it, webname: m?.webname }
@@ -111,14 +112,14 @@ export default function AgUserAccountPage() {
       // Replace temp with real if present
       queryClient.setQueryData(listKey, (old: any) => {
         const items = old?.items ?? []
-        const withWeb = (() => {
+        const withWeb = { ...created, webname: (created as any).webname ?? (() => {
           try {
-            const m = created?.meta ? JSON.parse((created as any).meta) : null
-            return { ...created, webname: m?.webname }
+            const m = (created as any)?.meta ? JSON.parse((created as any).meta) : null
+            return m?.webname
           } catch {
-            return created
+            return undefined
           }
-        })()
+        })() }
         const idx = items.findIndex((x: any) => String(x.id || '').startsWith('temp-'))
         if (idx >= 0) {
           items[idx] = withWeb
@@ -496,13 +497,7 @@ function AgUserAccountFormModal({
       return
     }
     setError('')
-    // Preserve existing meta and set webname
-    let existingMeta: any = {}
-    try {
-      existingMeta = initialValue?.meta ? JSON.parse(initialValue.meta) : {}
-    } catch {}
-    const payload = { ...form, meta: JSON.stringify({ ...existingMeta, webname: form.webname || '' }) }
-    onSubmit(payload, { setError, reset: resetForm })
+    onSubmit(form, { setError, reset: resetForm })
   }
 
   return (
