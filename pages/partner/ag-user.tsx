@@ -1,5 +1,6 @@
 import axios from '@/lib/axios'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
 import { TheLayout } from '@/components/TheLayout'
 import { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -26,6 +27,7 @@ function useAgUserAccounts() {
 }
 
 export default function AgUserAccountPage() {
+  const queryClient = useQueryClient()
   const { items, add, update, remove, setItems } = useAgUserAccounts()
   const [keyword, setKeyword] = useState('')
   const [openAdd, setOpenAdd] = useState(false)
@@ -49,7 +51,45 @@ export default function AgUserAccountPage() {
     if (data) setItems(data)
   }, [data, setItems])
 
-  // Mutations will be added in a follow-up commit
+  // Mutations: create, update, delete
+  const createMutation = useMutation({
+    mutationFn: async (val: AgUserAccountItem) => {
+      const res = await axios.post('/api/aguseraccounts', val)
+      if (!res.data?.success) throw new Error(res.data?.error || 'บันทึกไม่สำเร็จ')
+      return res.data.data as AgUserAccountItem
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['aguseraccounts', 'list'] })
+      toast.success('เพิ่ม AG User สำเร็จ')
+    },
+    onError: (e: any) => toast.error(e?.message || 'เกิดข้อผิดพลาด')
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: async (payload: AgUserAccountItem & { id: string }) => {
+      const res = await axios.put('/api/aguseraccounts', payload)
+      if (!res.data?.success) throw new Error(res.data?.error || 'อัปเดตไม่สำเร็จ')
+      return res.data.data as AgUserAccountItem
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['aguseraccounts', 'list'] })
+      toast.success('แก้ไข AG User สำเร็จ')
+    },
+    onError: (e: any) => toast.error(e?.message || 'เกิดข้อผิดพลาด')
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await axios.delete('/api/aguseraccounts', { data: { id } })
+      if (!res.data?.success) throw new Error(res.data?.error || 'ลบไม่สำเร็จ')
+      return true
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['aguseraccounts', 'list'] })
+      toast.success('ลบ AG User สำเร็จ')
+    },
+    onError: (e: any) => toast.error(e?.message || 'เกิดข้อผิดพลาด')
+  })
 
   const filtered = useMemo(() => {
     const kw = keyword.trim().toLowerCase()
@@ -174,8 +214,10 @@ export default function AgUserAccountPage() {
             helpers.setError('Username นี้ถูกใช้แล้ว')
             return
           }
-          add(val)
-          setOpenAdd(false)
+          createMutation.mutate(val, {
+            onSuccess: () => setOpenAdd(false),
+            onError: (e: any) => helpers.setError(e?.message || 'เกิดข้อผิดพลาด')
+          })
         }}
       />
 
@@ -194,8 +236,14 @@ export default function AgUserAccountPage() {
               return
             }
             const cur = items[selectedIndex]
-            update(selectedIndex, val)
-            setOpenEdit(false)
+            if (!cur?.id) {
+              helpers.setError('ไม่พบรหัสรายการ')
+              return
+            }
+            updateMutation.mutate({ ...val, id: cur.id }, {
+              onSuccess: () => setOpenEdit(false),
+              onError: (e: any) => helpers.setError(e?.message || 'เกิดข้อผิดพลาด')
+            })
           }}
         />
       )}
@@ -229,7 +277,12 @@ export default function AgUserAccountPage() {
               variant="destructive"
               className="rounded-full px-4 shadow flex items-center gap-1.5"
               onClick={() => {
-                remove(selectedIndex)
+                const cur = items[selectedIndex]
+                if (cur?.id) {
+                  deleteMutation.mutate(cur.id)
+                } else {
+                  toast.error('ไม่พบรหัสรายการ')
+                }
                 setOpenDelete(false)
               }}
             >
