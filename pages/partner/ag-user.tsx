@@ -216,7 +216,10 @@ export default function AgUserAccountPage() {
             return
           }
           createMutation.mutate(val, {
-            onSuccess: () => setOpenAdd(false),
+            onSuccess: () => {
+              helpers.reset()
+              setOpenAdd(false)
+            },
             onError: (e: any) => helpers.setError(e?.message || 'เกิดข้อผิดพลาด')
           })
         }}
@@ -297,7 +300,7 @@ export default function AgUserAccountPage() {
   )
 }
 
-type FormHelpers = { setError: (msg: string) => void }
+type FormHelpers = { setError: (msg: string) => void; reset: () => void }
 
 function AgUserAccountFormModal({
   title,
@@ -324,6 +327,18 @@ function AgUserAccountFormModal({
   )
   const [error, setError] = useState('')
 
+  const resetForm = () => {
+    setForm({
+      username: '',
+      reserve: '',
+      userLogin: '',
+      origin: '',
+      position: 'agent',
+      gaSecretEnc: '',
+    })
+    setError('')
+  }
+
   const updateField = (k: keyof AgUserAccountItem, v: string) => {
     setForm(prev => ({ ...prev, [k]: v }))
   }
@@ -335,7 +350,7 @@ function AgUserAccountFormModal({
       return
     }
     setError('')
-    onSubmit(form, { setError })
+    onSubmit(form, { setError, reset: resetForm })
   }
 
   return (
