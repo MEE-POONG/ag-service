@@ -170,9 +170,9 @@ export default function MenuPage({ dataList, collapsed, }: EnhancedMenuProps) {
                 <li className="mb-2">
                     <Link
                         href={item.link}
-                        className={`flex items-center w-full px-3 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${isActive(item.link, item)
-                            ? "scale-105 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                            : "from-purple-50 to-blue-50 hover:from-blue-200 hover:to-purple-200 bg-gray-100 text-gray-700 shadow-md"
+                        className={`flex items-center ${collapsed ? 'justify-center w-10 h-10 mx-auto px-0 py-0 rounded-full' : 'w-full px-4 py-2 rounded-full'} transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${isActive(item.link, item)
+                            ? "scale-105 from-[#A78BFA] to-[#34D399] text-white shadow-lg"
+                            : "from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-700 shadow-md"
                             }`}
                     >
                         <ReactIconComponent icon={item.icon} setClass="h-4 w-4 flex-shrink-0 transition-transform duration-300 hover:rotate-12" />
@@ -186,9 +186,9 @@ export default function MenuPage({ dataList, collapsed, }: EnhancedMenuProps) {
             <li className="mb-2">
                 <button
                     onClick={() => toggleGroup(item.name)}
-                    className={`flex items-center w-full px-3 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${parentActive
-                        ? "scale-105 from-blue-500 to-purple-600 text-white shadow-lg"
-                        : " from-purple-50 to-blue-50 hover:from-blue-200 hover:to-purple-200 bg-gray-100 text-gray-700 shadow-md hover:bg-gradient-to-r"
+                    className={`flex items-center ${collapsed ? 'justify-center w-10 h-10 mx-auto px-0 py-0 rounded-full' : 'w-full px-4 py-2 rounded-full'} transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${parentActive
+                        ? "scale-105 from-[#A78BFA] to-[#34D399] text-white shadow-lg"
+                        : " from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-700 shadow-md hover:bg-gradient-to-r"
                         }`}
                 >
                     <ReactIconComponent icon={item.icon} setClass="h-4 w-4 flex-shrink-0 transition-transform duration-300 hover:rotate-12" />
@@ -212,9 +212,9 @@ export default function MenuPage({ dataList, collapsed, }: EnhancedMenuProps) {
                                 <li key={subItem.link} className={`transition-all duration-300 ease-in-out ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`} style={{ transitionDelay: `${index * 50}ms` }}>
                                     <Link
                                         href={item.link + subItem.link}
-                                        className={`flex items-center w-full px-3 py-2 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md bg-gradient-to-r ${isActive(item.link + subItem.link, subItem)
-                                            ? "scale-105 from-blue-500 to-purple-600 text-white border-l-4 border-blue-300"
-                                            : "from-purple-50 to-blue-50 hover:from-blue-200 hover:to-purple-200 text-gray-600 hover:text-gray-900 hover:border-l-4 hover:border-blue-300"
+                                        className={`flex items-center w-full px-4 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md bg-gradient-to-r ${isActive(item.link + subItem.link, subItem)
+                                            ? "scale-105 from-[#A78BFA] to-[#34D399] text-white"
+                                            : "from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-600 hover:text-gray-900"
                                             }`}
                                     >
                                         {subItem.icon && <ReactIconComponent icon={subItem.icon} setClass="h-3 w-3 flex-shrink-0 transition-transform duration-300 hover:rotate-12 font-bold" />}

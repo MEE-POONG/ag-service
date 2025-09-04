@@ -32,7 +32,11 @@ export interface ModalCloseProps extends ButtonProps {
   "aria-label"?: string
 }
 
-const defaultContainer = typeof window !== "undefined" ? document.body : null
+// Prefer a modal root inside the app wrapper to inherit global fonts
+const getDefaultContainer = () => {
+  if (typeof window === 'undefined') return null
+  return document.getElementById('modal-root') ?? document.body
+}
 
 // หารายการ element ที่โฟกัสได้
 const getFocusable = (root: HTMLElement | null) => {
@@ -61,25 +65,39 @@ export const Modal = ({
   closeOnOverlayClick = true,
   closeOnEsc = true,
   id,
-  container = defaultContainer,
+  container,
   className = "",
   initialFocusRef,
   size = "md",
   children,
 }: ModalProps) => {
+  const [shouldRender, setShouldRender] = React.useState(open)
+  const [animatingOut, setAnimatingOut] = React.useState(false)
   const overlayRef = React.useRef<HTMLDivElement | null>(null)
   const panelRef = React.useRef<HTMLDivElement | null>(null)
   const lastFocusedRef = React.useRef<Element | null>(null)
 
+  // ควบคุมการ mount เพื่อให้มีแอนิเมชันออก
+  React.useEffect(() => {
+    if (open) {
+      setShouldRender(true)
+      setAnimatingOut(false)
+    } else if (shouldRender) {
+      setAnimatingOut(true)
+      const t = setTimeout(() => setShouldRender(false), 200)
+      return () => clearTimeout(t)
+    }
+  }, [open])
+
   // ล็อกสกอลล์ของ body เมื่อเปิด
   React.useEffect(() => {
-    if (!open) return
+    if (!shouldRender) return
     const original = document.body.style.overflow
     document.body.style.overflow = "hidden"
     return () => {
       document.body.style.overflow = original
     }
-  }, [open])
+  }, [shouldRender])
 
   // เก็บ element ที่โฟกัสก่อนเปิด และ restore เมื่อปิด
   React.useEffect(() => {
@@ -139,7 +157,8 @@ export const Modal = ({
     return () => document.removeEventListener("keydown", handleKeyDown, true)
   }, [open, closeOnEsc, onOpenChange, initialFocusRef])
 
-  if (!container || !open) return null
+  const resolvedContainer = container ?? getDefaultContainer()
+  if (!resolvedContainer || !shouldRender) return null
 
   const sizeClass =
     {
@@ -161,7 +180,7 @@ export const Modal = ({
       {/* Overlay */}
       <div
         ref={overlayRef}
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className={`absolute inset-0 bg-gradient-to-br from-[#A78BFA]/25 to-[#34D399]/25 backdrop-blur-md ${open && !animatingOut ? 'animate-modal-overlay-in' : 'animate-modal-overlay-out'}`}
         onMouseDown={(e) => {
           if (!closeOnOverlayClick) return
           // ปิดเฉพาะถ้าคลิกจริงๆ ที่ overlay (ไม่ใช่ลากจาก panel)
@@ -173,7 +192,7 @@ export const Modal = ({
       {/* Panel */}
       <div
         ref={panelRef}
-        className={`relative z-[1001] w-full ${sizeClass} mx-4 rounded-md bg-white shadow-xl outline-none focus:outline-none`}
+        className={`relative z-[1001] w-full ${sizeClass} mx-4 rounded-2xl bg-white/95 backdrop-blur ring-1 ring-gray-200 shadow-2xl outline-none focus:outline-none transform ${open && !animatingOut ? 'animate-modal-in' : 'animate-modal-out'}`}
         tabIndex={-1}
         onMouseDown={(e) => {
           // ป้องกันการลากแล้วปล่อยเมาส์ไปโดน overlay ทำให้ปิด
@@ -183,17 +202,17 @@ export const Modal = ({
         {children}
       </div>
     </div>,
-    container
+    resolvedContainer
   )
 }
 
 /* ---------- Subcomponents ---------- */
 
 export const ModalHeader = ({ className = "", ...props }: DivProps) => (
-  <div
-    className={`p-4 border-b flex items-start justify-between gap-4 ${className}`}
-    {...props}
-  />
+  <div className={`p-4 sm:p-5 flex items-start justify-between gap-4 relative ${className}`}>
+    {props.children}
+    <div aria-hidden className="pointer-events-none absolute left-4 right-4 -bottom-[1px] h-1 rounded-full bg-gradient-to-r from-[#A78BFA] to-[#34D399]" />
+  </div>
 )
 
 export const ModalTitle = ({
@@ -208,12 +227,12 @@ export const ModalDescription = ({ className = "", ...props }: DivProps) => (
 )
 
 export const ModalBody = ({ className = "", ...props }: DivProps) => (
-  <div className={`p-4 ${className}`} {...props} />
+  <div className={`p-4 sm:p-5 ${className}`} {...props} />
 )
 
 export const ModalFooter = ({ className = "", ...props }: DivProps) => (
   <div
-    className={`flex flex-col-reverse gap-2 p-4 border-t sm:flex-row sm:justify-end ${className}`}
+    className={`flex flex-col-reverse gap-2 p-4 sm:p-5 border-t bg-gray-50/60 sm:flex-row sm:justify-end ${className}`}
     {...props}
   />
 )

@@ -1,31 +1,25 @@
 import type { AppProps } from 'next/app'
 import '@/styles/globals.scss'
-import { Toaster } from 'react-hot-toast'
+import { Kanit } from 'next/font/google'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useState } from 'react'
-import { QueryClient, QueryClientProvider, HydrationBoundary } from '@tanstack/react-query'
-import { useAuth } from '@/hooks/useAuth'
+
+const kanit = Kanit({
+  subsets: ['thai', 'latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+})
 
 export default function App({ Component, pageProps }: AppProps) {
-
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        retry: 1,
-        staleTime: 5 * 60 * 1000,
-      },
-      mutations: {
-        retry: 0,
-      },
-    },
-  }))
+  const [queryClient] = useState(() => new QueryClient())
 
   return (
     <QueryClientProvider client={queryClient}>
-      <HydrationBoundary state={(pageProps as any).dehydratedState}>
+      <div className={`${kanit.className} antialiased`}>
         <Component {...pageProps} />
-      </HydrationBoundary>
-      <Toaster position="top-right" />
+        {/* Portal target so modals inherit Kanit and theme */}
+        <div id="modal-root" />
+      </div>
     </QueryClientProvider>
   )
 }

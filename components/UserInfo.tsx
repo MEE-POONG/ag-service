@@ -30,9 +30,9 @@ const UserInfo: React.FC<UserInfoProps> = ({ collapsed = false }) => {
     }
 
     return (
-        <div className="px-3 py-2 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200">
+        <div className={`rounded-xl bg-white/80 backdrop-blur ring-1 ring-gray-200 shadow-sm ${collapsed ? 'px-2 py-2' : 'px-3 py-2'}`}>
             <div className="flex items-center">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                <div className="w-8 h-8 bg-gradient-to-b from-[#A78BFA] to-[#34D399] rounded-full flex items-center justify-center text-white text-sm font-semibold shadow">
                     {user.username ? user.username.charAt(0).toUpperCase() : 'A'}
                 </div>
                 {!collapsed && (
@@ -50,10 +50,11 @@ const UserInfo: React.FC<UserInfoProps> = ({ collapsed = false }) => {
                 {!collapsed && (
                     <button
                         onClick={logout}
-                        className="ml-2 p-1 hover:bg-red-100 rounded transition-colors"
+                        className="ml-2 px-3 py-1.5 rounded-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors flex items-center gap-2"
                         title="ออกจากระบบ"
                     >
-                        <ReactIconComponent icon="FaSignOutAlt" setClass="h-4 w-4 text-red-500" />
+                        <ReactIconComponent icon="FaSignOutAlt" setClass="h-4 w-4" />
+                        <span className="sr-only">ออกจากระบบ</span>
                     </button>
                 )}
             </div>

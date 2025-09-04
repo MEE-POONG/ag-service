@@ -7,6 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Status for provisioning/serve state
+enum StatusServe {
+  PENDING
+  SUCCESS
+  WORKING
+  FAILED
+}
+
 // ระบบจัดการไฟล์รูปภาพ
 model ImageList {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -255,4 +263,25 @@ model WorkHistoryDB {
   @@index([userId])
   @@index([action])
   @@index([createdAt])
+}
+
+// AG user accounts management (separate from AGUserDB login mapping)
+model AgUserAccountDB {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  username     String      @unique
+  reserve      String?
+  userLogin    String      @unique
+  origin       String?
+  position     String?
+  gaSecretEnc  String?
+  statusServe  StatusServe @default(PENDING)
+  note         String?
+  meta         String?     // JSON string for extra data
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  createdBy    String
+  updatedAt    DateTime    @updatedAt
+  updatedBy    String
+  deleteAt     DateTime?
+  deleteBy     String?
 }

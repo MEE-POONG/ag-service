@@ -101,7 +101,7 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   }, [user, menus, filterMenusByPermissions]); // ✅ เพิ่ม deps ให้ครบ
 
   return (
-    <div className={`h-screen bg-white border-r border-gray-200 transition-all duration-300 ${collapsed ? "w-16" : "w-56"}`}>
+    <div className={`h-screen bg-white/70 backdrop-blur-xl border-r border-gray-200/60 shadow-sm transition-all duration-300 ${collapsed ? "w-16" : "w-56"}`}>
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="p-4 border-b border-gray-200">
@@ -146,8 +146,8 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-gray-200">
-          <UserInfo />
+        <div className="mt-auto p-3 border-t border-gray-200/70">
+          <UserInfo collapsed={collapsed} />
         </div>
       </div>
     </div>

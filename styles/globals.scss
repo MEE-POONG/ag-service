@@ -11,6 +11,75 @@ body {
   overflow-x: hidden;
 }
 
+/* === Global Theme: Pastel Purple + Mint === */
+:root {
+  --theme-pastel-purple: #A78BFA;
+  --theme-mint: #34D399;
+  --theme-fg: #1F2937; /* gray-800 for text instead of black */
+  --theme-bg: #F8FAFC; /* slate-50 */
+}
+
+/* Base background + foreground */
+html, body {
+  color: var(--theme-fg);
+  background: radial-gradient(1200px 600px at 10% -10%, rgba(167,139,250,0.09), transparent 40%),
+              radial-gradient(900px 500px at 110% 10%, rgba(52,211,153,0.08), transparent 45%),
+              var(--theme-bg);
+}
+
+/* Links pick up theme colors */
+a {
+  color: var(--theme-pastel-purple);
+  text-underline-offset: 2px;
+}
+a:hover {
+  color: var(--theme-mint);
+}
+
+/* Themed gradient button helper (opt-in) */
+.btn-theme {
+  background-image: linear-gradient(90deg, var(--theme-pastel-purple), var(--theme-mint));
+  color: #fff;
+  font-weight: 600;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+}
+
+/* Focus ring tint */
+:focus-visible {
+  outline-color: var(--theme-pastel-purple);
+}
+
+/* Do not use pure black; remap to gray for existing utilities */
+.text-black { color: #1F2937 !important; }
+.bg-black { background-color: #1F2937 !important; }
+.hover\:bg-black:hover { background-color: #1F2937 !important; }
+
+/* Muted gray replacement for very dark hover states used in codebase */
+.hover\:bg-\[\#111827\]:hover { background-color: #374151 !important; }
+
+/* === Modal animations === */
+@keyframes modalIn {
+  0% { opacity: 0; transform: translateY(6px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes modalOut {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(6px) scale(0.97); }
+}
+@keyframes modalOverlayIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes modalOverlayOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.animate-modal-in { animation: modalIn 0.18s ease-out forwards; }
+.animate-modal-out { animation: modalOut 0.18s ease-in forwards; }
+.animate-modal-overlay-in { animation: modalOverlayIn 0.18s ease-out forwards; }
+.animate-modal-overlay-out { animation: modalOverlayOut 0.18s ease-in forwards; }
+
 /* Navbar Animation Classes */
 .navbar {
   position: relative;

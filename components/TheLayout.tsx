@@ -37,7 +37,7 @@ export function TheLayout({ children }: LayoutProps) {
   }, [user])
 
   return (
-    <div className="min-h-screen bg-background font-sans antialiased">
+    <div className="min-h-screen bg-background antialiased">
       <div className={`min-h-screen flex ${darkMode ? 'dark' : ''}`}>
         {/* Sidebar - Fixed Position */}
         <div className="fixed inset-y-0 left-0 z-50">
@@ -57,7 +57,7 @@ export function TheLayout({ children }: LayoutProps) {
           />
 
           {/* Main Content Area - Adjusted for fixed header */}
-          <main className="md:pt-20 bg-slate-100 p-2 md:p-4 w-full overflow-y-auto min-h-full">
+          <main className="md:pt-20 bg-transparent p-2 md:p-4 w-full overflow-y-auto min-h-full">
             <div className="animate-fade-in max-w-full">
               {children}
             </div>
