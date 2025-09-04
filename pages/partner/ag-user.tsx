@@ -1,5 +1,6 @@
 import axios from '@/lib/axios'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
 import toast from 'react-hot-toast'
 import { TheLayout } from '@/components/TheLayout'
 import { useEffect, useMemo, useState } from 'react'
@@ -38,7 +39,7 @@ export default function AgUserAccountPage() {
 
   // Fetch list via react-query (server-side filter by keyword)
   const { data, isFetching } = useQuery({
-    queryKey: ['aguseraccounts', 'list', { keyword: debouncedKeyword }],
+    queryKey: qk.agUsers.list(debouncedKeyword),
     queryFn: async () => {
       const res = await axios.get('/api/aguseraccounts', { params: { keyword: debouncedKeyword } })
       if (!res.data?.success) throw new Error(res.data?.error || 'โหลดข้อมูลล้มเหลว')
@@ -60,7 +61,7 @@ export default function AgUserAccountPage() {
       return res.data.data as AgUserAccountItem
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['aguseraccounts', 'list'] })
+      await queryClient.invalidateQueries({ queryKey: qk.agUsers.base })
       toast.success('เพิ่ม AG User สำเร็จ')
     },
     onError: (e: any) => toast.error(e?.message || 'เกิดข้อผิดพลาด')
@@ -73,7 +74,7 @@ export default function AgUserAccountPage() {
       return res.data.data as AgUserAccountItem
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['aguseraccounts', 'list'] })
+      await queryClient.invalidateQueries({ queryKey: qk.agUsers.base })
       toast.success('แก้ไข AG User สำเร็จ')
     },
     onError: (e: any) => toast.error(e?.message || 'เกิดข้อผิดพลาด')
@@ -86,7 +87,7 @@ export default function AgUserAccountPage() {
       return true
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['aguseraccounts', 'list'] })
+      await queryClient.invalidateQueries({ queryKey: qk.agUsers.base })
       toast.success('ลบ AG User สำเร็จ')
     },
     onError: (e: any) => toast.error(e?.message || 'เกิดข้อผิดพลาด')
@@ -167,7 +168,7 @@ export default function AgUserAccountPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filtered.map((u, idx) => (
-                    <tr key={`${u.username}-${idx}`} className="hover:bg-[#A78BFA]/5 transition-colors">
+                    <tr key={u.id ?? `${u.username}-${idx}`} className="hover:bg-[#A78BFA]/5 transition-colors">
                       <td className="px-3 py-2 font-semibold text-gray-900">{u.username}</td>
                       <td className="px-3 py-2">{u.userLogin}</td>
                       <td className="px-3 py-2">{u.reserve}</td>
@@ -183,8 +184,18 @@ export default function AgUserAccountPage() {
                           >
                             แก้ไข
                           </Button>
-                          <Button size="xs" className="!bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-3" onClick={() => startDelete(idx)}>
-                            ลบ
+                          <Button
+                            size="xs"
+                            disabled={deleteMutation.isPending}
+                            className="!bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-3 disabled:opacity-60"
+                            onClick={() => startDelete(idx)}
+                          >
+                            {deleteMutation.isPending ? (
+                              <span className="inline-flex items-center gap-1">
+                                <ReactIconComponent icon="FaSpinner" setClass="h-3.5 w-3.5 animate-spin" />
+                                ลบ
+                              </span>
+                            ) : 'ลบ'}
                           </Button>
                         </div>
                       </td>
@@ -209,6 +220,7 @@ export default function AgUserAccountPage() {
         title="เพิ่ม AG User"
         open={openAdd}
         onOpenChange={setOpenAdd}
+        loading={createMutation.isPending}
         onSubmit={(val, helpers) => {
           // unique AgUserAccount
           if (items.some((i) => i.username === val.username)) {
@@ -231,6 +243,7 @@ export default function AgUserAccountPage() {
           title="แก้ไข AG User"
           open={openEdit}
           onOpenChange={setOpenEdit}
+          loading={updateMutation.isPending}
           initialValue={items[selectedIndex]}
           onSubmit={(val, helpers) => {
             // unique AgUserAccount (ignore current index)
@@ -279,7 +292,8 @@ export default function AgUserAccountPage() {
             </Button>
             <Button
               variant="destructive"
-              className="rounded-full px-4 shadow flex items-center gap-1.5"
+              className="rounded-full px-4 shadow flex items-center gap-1.5 disabled:opacity-60"
+              disabled={deleteMutation.isPending}
               onClick={() => {
                 const cur = items[selectedIndex]
                 if (cur?.id) {
@@ -290,8 +304,17 @@ export default function AgUserAccountPage() {
                 setOpenDelete(false)
               }}
             >
-              <ReactIconComponent icon="FaTrashAlt" setClass="h-4 w-4" />
-              ลบ
+              {deleteMutation.isPending ? (
+                <>
+                  <ReactIconComponent icon="FaSpinner" setClass="h-4 w-4 animate-spin" />
+                  กำลังลบ...
+                </>
+              ) : (
+                <>
+                  <ReactIconComponent icon="FaTrashAlt" setClass="h-4 w-4" />
+                  ลบ
+                </>
+              )}
             </Button>
           </ModalFooter>
         </Modal>
@@ -308,12 +331,14 @@ function AgUserAccountFormModal({
   onOpenChange,
   onSubmit,
   initialValue,
+  loading,
 }: {
   title: string
   open: boolean
   onOpenChange: (v: boolean) => void
   onSubmit: (val: AgUserAccountItem, helpers: FormHelpers) => void
   initialValue?: AgUserAccountItem
+  loading?: boolean
 }) {
   const [form, setForm] = useState<AgUserAccountItem>(
     initialValue ?? {
@@ -436,9 +461,22 @@ function AgUserAccountFormModal({
         >
           ยกเลิก
         </Button>
-        <Button className="btn-theme hover:!brightness-95 rounded-full px-4 flex items-center gap-1.5" onClick={handleSubmit}>
-          <ReactIconComponent icon="FaSave" setClass="h-4 w-4" />
-          บันทึก
+        <Button
+          disabled={!!loading}
+          className="btn-theme hover:!brightness-95 rounded-full px-4 flex items-center gap-1.5 disabled:opacity-60"
+          onClick={handleSubmit}
+        >
+          {loading ? (
+            <>
+              <ReactIconComponent icon="FaSpinner" setClass="h-4 w-4 animate-spin" />
+              กำลังบันทึก...
+            </>
+          ) : (
+            <>
+              <ReactIconComponent icon="FaSave" setClass="h-4 w-4" />
+              บันทึก
+            </>
+          )}
         </Button>
       </ModalFooter>
     </Modal>

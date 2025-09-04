@@ -14,6 +14,11 @@ export const qk = {
     list: ['admins', 'list'] as const,
     detail: (id: string) => ['admins', 'detail', id] as const,
   },
+  agUsers: {
+    base: ['aguseraccounts', 'list'] as const,
+    list: (keyword: string) => ['aguseraccounts', 'list', { keyword }] as const,
+    detail: (id: string) => ['aguseraccounts', 'detail', id] as const,
+  },
   settings: {
     root: ['settings'] as const,
   },
