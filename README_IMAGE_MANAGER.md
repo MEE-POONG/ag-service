@@ -38,7 +38,6 @@ model ImageList {
   updatedAt DateTime @updatedAt
   updatedBy String
   deleteBy  String?
-  isDeleted Boolean  @default(false)
 }
 ```
 
@@ -258,7 +257,6 @@ formData.append('allowDuplicates', 'false');
     "id": "image-id",
     "imageId": "cloudflare-image-id",
     "imageUrl": "https://imagedelivery.net/...",
-    "isDeleted": true
   }
 }
 ```

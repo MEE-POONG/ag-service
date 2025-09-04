@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { WebBaseDB } from '@prisma/client';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import React, { useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
@@ -32,7 +32,7 @@ const WebBaseModalAdd: React.FC<WebBaseModalAddProps> = ({
     createdBy: '',
     updatedAt: new Date(),
     updatedBy: '',
-    isDeleted: false,
+    
     name: '',
     passS: '',
     passM: '',
@@ -185,5 +185,4 @@ const WebBaseModalAdd: React.FC<WebBaseModalAddProps> = ({
 };
 
 export default WebBaseModalAdd;
-
 

@@ -66,7 +66,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
 
     // ดึงข้อมูลทั้งหมด (รองรับการค้นหาและกรอง)
     const where: any = {
-      isDeleted: false
+      
     };
 
     if (search) {

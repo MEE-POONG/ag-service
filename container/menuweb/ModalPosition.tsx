@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { MenuWebDB } from '@prisma/client';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
@@ -320,5 +320,4 @@ const MenuWebModalPosition: React.FC<MenuWebModalPositionProps> = ({ onSuccess, 
 };
 
 export default MenuWebModalPosition;
-
 

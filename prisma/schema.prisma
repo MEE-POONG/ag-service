@@ -9,36 +9,36 @@ datasource db {
 
 // ระบบจัดการไฟล์รูปภาพ
 model ImageList {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   imageUrl  String
   modelName String?
   nameFile  String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   createdBy String
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   updatedBy String
+  deleteAt  DateTime?
   deleteBy  String?
-  isDeleted Boolean  @default(false)
 }
 
 // ระบบผู้ใช้ทั่วไป
 model UserDB {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  username  String   @unique
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  username  String    @unique
   password  String
   img       String?
   firstname String
   lastname  String
   nickname  String?
-  email     String   @unique
+  email     String    @unique
   tel       String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
   createdBy String
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
   updatedBy String
+  deleteAt  DateTime?
   deleteBy  String?
-  isDeleted Boolean  @default(false)
 }
 
 // ระบบผู้ใช้ AG
@@ -55,6 +55,7 @@ model AGUserDB {
   createdBy String
   updatedAt DateTime  @updatedAt
   updatedBy String
+  deleteAt  DateTime?
   deleteBy  String?
   isDeleted Boolean   @default(false)
 }
@@ -74,8 +75,8 @@ model WebBaseDB {
   createdBy String
   updatedAt DateTime   @updatedAt
   updatedBy String
+  deleteAt  DateTime?
   deleteBy  String?
-  isDeleted Boolean    @default(false)
   AdminDB   AdminDB[]
   AGUserDB  AGUserDB[]
 }
@@ -98,8 +99,8 @@ model AdminDB {
   createdBy       String
   updatedAt       DateTime         @updatedAt
   updatedBy       String
+  deleteAt        DateTime?
   deleteBy        String?
-  isDeleted       Boolean          @default(false)
 }
 
 // ระบบสิทธิ์เริ่มต้นของตำแหน่ง
@@ -118,8 +119,8 @@ model AdminDefaultPermissionDB {
   createdBy         String
   updatedAt         DateTime        @updatedAt
   updatedBy         String
+  deleteAt          DateTime?
   deleteBy          String?
-  isDeleted         Boolean         @default(false)
 
   @@unique([adminPositionDBId, menuPageWebId])
 }
@@ -147,8 +148,8 @@ model MenuWebDB {
   createdBy                String
   updatedAt                DateTime                   @updatedAt
   updatedBy                String
+  deleteAt                 DateTime?
   deleteBy                 String?
-  isDeleted                Boolean                    @default(false)
   AdminDefaultPermissionDB AdminDefaultPermissionDB[]
 }
 
@@ -163,15 +164,15 @@ model AdminDepartmentDB {
   createdBy      String
   updatedAt      DateTime          @updatedAt
   updatedBy      String
+  deleteAt       DateTime?
   deleteBy       String?
-  isDeleted      Boolean           @default(false)
   adminPositions AdminPositionDB[]
 }
 
 // ระบบตำแหน่ง
 model AdminPositionDB {
   id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
-  name                     String                     @unique
+  name                     String
   description              String?
   priority                 Int                        @default(0)
   adminDepartmentId        String?                    @db.ObjectId
@@ -181,10 +182,16 @@ model AdminPositionDB {
   createdBy                String
   updatedAt                DateTime                   @updatedAt
   updatedBy                String
+  deleteAt                 DateTime?
   deleteBy                 String?
-  isDeleted                Boolean                    @default(false)
   admins                   AdminDB[]
   AdminDefaultPermissionDB AdminDefaultPermissionDB[]
+
+  // ✅ ชื่อซ้ำได้ข้ามแผนก แต่ "ห้ามซ้ำภายในแผนกเดียวกัน"
+  @@unique([adminDepartmentId, name], map: "uniq_position_name_per_dept")
+  // ✅ ลำดับห้ามชนภายในแผนก (รองรับ resequence)
+  @@unique([adminDepartmentId, priority], map: "uniq_position_priority_per_dept")
+  @@index([adminDepartmentId])
 }
 
 // ระบบ Log การทำงาน
@@ -203,7 +210,7 @@ model ActivityLogDB {
 }
 
 model SettingDB {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
   name              String
   logo              String?
   logoText          String?
@@ -219,8 +226,33 @@ model SettingDB {
   website           String?
   address           String?
   tel               String?
-  createdAt         DateTime @default(now())
+  createdAt         DateTime  @default(now())
   createdBy         String
-  updatedAt         DateTime @updatedAt
+  updatedAt         DateTime  @updatedAt
   updatedBy         String
+  deleteAt          DateTime?
+  deleteBy          String?
+}
+
+// ระบบประวัติการทำงาน
+model WorkHistoryDB {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tableName String // ชื่อตาราง เช่น "AdminPositionDB", "AdminDepartmentDB"
+  recordId  String?  @db.ObjectId // ID ของข้อมูลที่ถูกดำเนินการ
+  action    String // "CREATE", "UPDATE", "DELETE"
+  oldData   String? // JSON string ของข้อมูลเก่า (สำหรับ UPDATE, DELETE)
+  newData   String? // JSON string ของข้อมูลใหม่ (สำหรับ CREATE, UPDATE)
+  isSuccess Boolean  @default(true) // สถานะการดำเนินการสำเร็จหรือไม่
+  errorMsg  String? // ข้อความ error (ถ้าไม่สำเร็จ)
+  userId    String // ผู้ที่ดำเนินการ
+  userType  String   @default("admin") // ประเภทผู้ใช้ "admin", "user", "system"
+  ipAddress String? // IP Address ของผู้ดำเนินการ
+  userAgent String? // User Agent ของผู้ดำเนินการ
+  createdAt DateTime @default(now())
+
+  @@index([tableName])
+  @@index([recordId])
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
 }

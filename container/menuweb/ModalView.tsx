@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { MenuWebDB } from '@prisma/client';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import Modal from '@/components/form/Modal';
@@ -140,5 +140,4 @@ const MenuWebModalView: React.FC<MenuWebModalViewProps> = ({ data }) => {
 };
 
 export default MenuWebModalView;
-
 

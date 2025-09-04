@@ -30,12 +30,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     // verify menu exists
-    const menu = await prisma.menuWebDB.findFirst({ where: { id: menuPageWebId, isDeleted: false } });
+    const menu = await prisma.menuWebDB.findFirst({ where: { id: menuPageWebId,  } });
     if (!menu) {
       return res.status(404).json({ success: false, error: 'ไม่พบเมนู' });
     }
 
-    const positions = await prisma.adminPositionDB.findMany({ where: { isDeleted: false } });
+    const positions = await prisma.adminPositionDB.findMany({ where: {  } });
     if (!positions.length) {
       return res.status(200).json({ success: true, updatedCount: 0, message: 'ไม่มีตำแหน่งสำหรับอัปเดต' });
     }

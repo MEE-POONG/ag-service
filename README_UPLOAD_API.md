@@ -263,7 +263,6 @@ model ImageList {
   updatedAt DateTime @updatedAt
   updatedBy String
   deleteBy  String?
-  isDeleted Boolean  @default(false)
 }
 ```
 

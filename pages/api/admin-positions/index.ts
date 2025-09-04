@@ -1,54 +1,34 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '@/lib/prisma'
-import { Prisma } from '@prisma/client'
+import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { recordWorkHistory, extractUserInfo } from '@/utils/workHistoryUtils';
 
-interface AdminPositionResponse {
-  success?: boolean;
-  data?: any;
-  departments?: any;
+type PositionRow = {
+  id: string;
+  name: string;
+  description?: string | null;
+  priority: number;
+  adminDepartmentId: string | null;
+  isActive: boolean;
+  isDeleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type ApiResp<T = any> = {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
   pagination?: {
     totalItems: number;
     totalPages: number;
     currentPage: number;
     pageSize: number;
   };
-  position?: any;
-  error?: string;
-  message?: string;
-}
+};
 
-function clampPriority(priority: number, maxAllowed: number): number {
-  return Math.max(1, Math.min(priority, maxAllowed));
-}
-
-async function resequenceDepartment(
-  tx: Prisma.TransactionClient,
-  adminDepartmentId: string
-) {
-  // กันชน: ถ้า priority มี unique constraint ต่อแผนก ให้ดันค่าออกก่อน
-  await tx.adminPositionDB.updateMany({
-    where: { adminDepartmentId, isDeleted: false },
-    data: { priority: { increment: 1000 } },
-  })
-
-  const rows = await tx.adminPositionDB.findMany({
-    where: { adminDepartmentId, isDeleted: false },
-    orderBy: [
-      { priority: 'asc' },       // รักษา order เดิมตาม priority ปัจจุบัน
-      { createdAt: 'asc' },      // tie-breaker
-      { id: 'asc' },             // กันค่าซ้ำ
-    ],
-    select: { id: true },
-  })
-
-  // เซ็ตใหม่ให้เป็น 1..N เรียงตาม order ข้างบน
-  for (let i = 0; i < rows.length; i++) {
-    await tx.adminPositionDB.update({
-      where: { id: rows[i].id },
-      data: { priority: i + 1 },
-    })
-  }
-}
+// ---------- Helpers ----------
 
 // ดัน priority ของทั้งแผนกขึ้นเพื่อกันชน unique([adminDepartmentId, priority])
 async function bumpDepartment(
@@ -56,233 +36,218 @@ async function bumpDepartment(
   adminDepartmentId: string
 ) {
   await tx.adminPositionDB.updateMany({
-    where: { adminDepartmentId, isDeleted: false },
+    where: { adminDepartmentId },
     data: { priority: { increment: 1000 } },
   });
 }
 
-async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminPositionResponse>) {
+
+// จัดลำดับใหม่ให้เป็น 1..N เรียงตาม priority เดิม -> createdAt -> id (กันชนซ้ำ)
+async function resequenceDepartment(
+  tx: Prisma.TransactionClient,
+  adminDepartmentId: string
+) {
+  const rows = await tx.adminPositionDB.findMany({
+    where: { adminDepartmentId },
+    orderBy: [
+      { priority: 'asc' },
+      { createdAt: 'asc' },
+      { id: 'asc' },
+    ],
+    select: { id: true },
+  });
+
+  for (let i = 0; i < rows.length; i++) {
+    await tx.adminPositionDB.update({
+      where: { id: rows[i].id },
+      data: { priority: i + 1 },
+    });
+  }
+}
+
+function clampPriority(desired: number, maxPlusOne: number) {
+  if (!Number.isFinite(desired) || desired <= 0) return 1;
+  if (desired > maxPlusOne) return maxPlusOne;
+  return Math.floor(desired);
+}
+
+// ---------- Handlers ----------
+
+async function handleGet(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
   try {
     const {
       page = '1',
       pageSize = '10',
       keyword = '',
-      search = '',
-      status = '',
-      // ใหม่
-      departmentId = '',
+      adminDepartmentId = '',
       id = '',
     } = req.query;
 
-    // ถ้ามี id ให้ดึงตัวเดียวและข้าม pagination
+    // ดึงตัวเดียวโดย id
     if (id) {
-      const position = await prisma.adminPositionDB.findFirst({
-        where: {
-          id: id as string,
-          isDeleted: false,
-        },
+      const row = await prisma.adminPositionDB.findFirst({
+        where: { id: String(id) },
         include: { adminDepartment: true },
       });
-
-      if (!position) {
-        return res.status(404).json({
-          success: false,
-          error: 'ไม่พบข้อมูลตำแหน่งที่ต้องการ',
-        });
+      if (!row) {
+        return res.status(404).json({ success: false, error: 'ไม่พบตำแหน่ง' });
       }
-
-      return res.status(200).json({
-        success: true,
-        data: position,
-        message: 'ดึงข้อมูลตำแหน่งสำเร็จ',
-      });
+      return res.status(200).json({ success: true, data: row });
     }
 
-    // ใช้ page และ pageSize สำหรับ Pagination
-    const pageNum = parseInt(page as string, 10) || 1;
-    const pageSizeNum = parseInt(pageSize as string, 10) || 10;
+    const pageNum = parseInt(String(page), 10) || 1;
+    const pageSizeNum = parseInt(String(pageSize), 10) || 10;
     const skip = (pageNum - 1) * pageSizeNum;
 
-    // เงื่อนไขการค้นหา
-    const searchKeyword = (keyword || search) as string;
-    const whereClause: Prisma.AdminPositionDBWhereInput = {
-      isDeleted: false,
-      ...(status && status !== 'all' ? { isActive: status === 'active' } : {}),
-      // ใหม่: กรองตามแผนก
-      ...(departmentId ? { adminDepartmentId: departmentId as string } : {}),
-      ...(searchKeyword
+    const where: Prisma.AdminPositionDBWhereInput = {
+      ...(adminDepartmentId ? { adminDepartmentId: String(adminDepartmentId) } : {}),
+      ...(keyword
         ? {
           OR: [
-            { name: { contains: searchKeyword, mode: 'insensitive' } },
-            { adminDepartment: { name: { contains: searchKeyword, mode: 'insensitive' } } },
+            { name: { contains: String(keyword), mode: 'insensitive' } },
+            { adminDepartment: { name: { contains: String(keyword), mode: 'insensitive' } } },
           ],
         }
         : {}),
     };
 
-    // ดึงข้อมูลตำแหน่งพร้อม Pagination
-    const [positions, totalPositions] = await Promise.all([
+    const [items, total] = await Promise.all([
       prisma.adminPositionDB.findMany({
-        where: whereClause,
-        include: { adminDepartment: true },
+        where,
+        orderBy: [{ priority: 'asc' }],
         skip,
         take: pageSizeNum,
-        orderBy: { priority: 'asc' },
+        include: { adminDepartment: true },
       }),
-      prisma.adminPositionDB.count({ where: whereClause }),
+      prisma.adminPositionDB.count({ where }),
     ]);
-
-    // ดึงข้อมูลแผนกสำหรับ dropdown (ไม่ต้อง pagination)
-    const departments = await prisma.adminDepartmentDB.findMany({
-      where: { isDeleted: false, isActive: true },
-      orderBy: { name: 'asc' },
-    });
 
     return res.status(200).json({
       success: true,
-      data: positions,
-      departments,
+      data: items,
       pagination: {
-        totalItems: totalPositions,
-        totalPages: Math.ceil(totalPositions / pageSizeNum),
+        totalItems: total,
+        totalPages: Math.ceil(total / pageSizeNum),
         currentPage: pageNum,
         pageSize: pageSizeNum,
       },
-      message: 'ดึงข้อมูลตำแหน่งสำเร็จ',
     });
   } catch (error) {
-    console.error('Get admin positions error:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'เกิดข้อผิดพลาดในการดึงข้อมูลตำแหน่ง/แผนก',
-    });
+    console.error('GET admin-positions error:', error);
+    return res.status(500).json({ success: false, error: 'เกิดข้อผิดพลาดในการดึงข้อมูล' });
   }
-
 }
 
-// เพิ่ม: รองรับ priorityPositionId และเลื่อนลำดับให้ถูกต้อง
-async function handlePost(req: NextApiRequest, res: NextApiResponse) {
+async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
   try {
-    const { name, adminDepartmentId, priorityPositionId } = req.body as {
-      name: string
-      adminDepartmentId: string
-      priorityPositionId?: string // id ของตำแหน่งอ้างอิง
-    }
+    const { name, adminDepartmentId, priority, createdBy } = req.body as {
+      name: string;
+      adminDepartmentId: string;
+      priority?: number; // แทรกที่ลำดับนี้ (1-based), ถ้าไม่ส่ง = ต่อท้าย
+      createdBy: string;
+    };
 
     if (!name?.trim() || !adminDepartmentId) {
-      return res.status(400).json({
-        success: false,
-        error: 'กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน',
-      })
+      return res.status(400).json({ success: false, error: 'กรุณากรอก name และ adminDepartmentId' });
     }
 
     // กันชื่อซ้ำในแผนกเดียวกัน
     const dup = await prisma.adminPositionDB.findFirst({
-      where: { name: name.trim(), adminDepartmentId, isDeleted: false },
+      where: { name: name.trim(), adminDepartmentId },
       select: { id: true },
-    })
+    });
+    console.log(`name : `, name);
+    console.log(`adminDepartmentId : `, adminDepartmentId);
+    console.log(`dup : `, dup);
+
     if (dup) {
-      return res.status(400).json({
-        success: false,
-        error: 'ตำแหน่งนี้มีอยู่ในแผนกนี้แล้ว',
-      })
+      return res.status(400).json({ success: false, error: 'ชื่อตำแหน่งซ้ำในแผนกนี้' });
     }
 
-    const position = await prisma.$transaction(async (tx) => {
-      let createdId: string
+    const created = await prisma.$transaction(async (tx) => {
+      // กันชน
+      await bumpDepartment(tx, adminDepartmentId);
 
-      if (priorityPositionId) {
-        // เลือกอ้างอิง → newPriority = target.priority - 1 (ขั้นต่ำ 1)
-        const target = await tx.adminPositionDB.findFirst({
-          where: { id: priorityPositionId, adminDepartmentId, isDeleted: false },
-          select: { priority: true },
-        })
-        if (!target) {
-          throw new Error('NOT_FOUND_REF')
-        }
+      // หา max เพื่อตัดสินใจว่าจะต่อท้าย หรือแทรก
+      const maxRow = await tx.adminPositionDB.findFirst({
+        where: { adminDepartmentId },
+        orderBy: { priority: 'desc' },
+        select: { priority: true },
+      });
+      const maxPlusOne = (maxRow?.priority ?? 0) + 1;
 
-        const newPriority = Math.max(1, (target.priority ?? 1) - 1)
+      const insertPriority =
+        typeof priority === 'number'
+          ? clampPriority(priority, maxPlusOne)
+          : maxPlusOne;
 
-        // ขยับของเดิมขึ้น 1 ตั้งแต่ newPriority ขึ้นไป
-        await tx.adminPositionDB.updateMany({
-          where: {
-            adminDepartmentId,
-            isDeleted: false,
-            priority: { gte: newPriority },
-          },
-          data: { priority: { increment: 1 } },
-        })
+      console.log(`insertPriority : `, insertPriority);
 
-        const created = await tx.adminPositionDB.create({
-          data: {
-            name: name.trim(),
-            adminDepartmentId,
-            priority: newPriority,
-            createdBy: 'system',
-            updatedBy: 'system',
-          },
-        })
-        createdId = created.id
-      } else {
-        // ไม่เลือกอ้างอิง → ต่อท้าย (max + 1)
-        const maxRow = await tx.adminPositionDB.findFirst({
-          where: { adminDepartmentId, isDeleted: false },
-          orderBy: { priority: 'desc' },
-          select: { priority: true },
-        })
-        const newPriority = (maxRow?.priority ?? 0) + 1
-
-        const created = await tx.adminPositionDB.create({
-          data: {
-            name: name.trim(),
-            adminDepartmentId,
-            priority: newPriority,
-            createdBy: 'system',
-            updatedBy: 'system',
-          },
-        })
-        createdId = created.id
-      }
-
-      // ❗ สำคัญ: รีซีเคว้นซ์ให้เป็น 1..N แบบติดกันเสมอ
-      await resequenceDepartment(tx, adminDepartmentId)
-
-      // ดึงค่าหลังรีซีเคว้นซ์ เพื่อได้ priority ล่าสุดที่ถูก normalize แล้ว
-      const finalRow = await tx.adminPositionDB.findUnique({
-        where: { id: createdId },
+      // สร้าง
+      const row = await tx.adminPositionDB.create({
+        data: {
+          name: name.trim(),
+          adminDepartmentId,
+          priority: insertPriority,
+          createdBy: createdBy,
+          updatedBy: createdBy,
+        },
         include: { adminDepartment: true },
-      })
+      });
+      console.log(`row : `, row);
 
-      return finalRow!
-    })
+      // จัดลำดับ 1..N
+      await resequenceDepartment(tx, adminDepartmentId);
+
+      // ดึงผลลัพธ์ล่าสุด
+      const finalRow = await tx.adminPositionDB.findUnique({
+        where: { id: row.id },
+        include: { adminDepartment: true },
+      });
+
+      // บันทึกประวัติ
+      const userInfo = extractUserInfo(req);
+      await recordWorkHistory(
+        tx,
+        'AdminPositionDB',
+        row.id,
+        'CREATE',
+        null,
+        finalRow,
+        createdBy,
+        'admin',
+        true,
+        null,
+        userInfo.ipAddress,
+        userInfo.userAgent
+      );
+
+      return finalRow!;
+    });
 
     return res.status(201).json({
       success: true,
-      position,
+      data: created,
       message: 'สร้างตำแหน่งสำเร็จ',
-    })
+    });
   } catch (error: any) {
-    if (error?.message === 'NOT_FOUND_REF') {
-      return res.status(400).json({
-        success: false,
-        error: 'ไม่พบตำแหน่งอ้างอิงในแผนกนี้',
-      })
+    if (error?.code === 'P2002') {
+      // unique key violation
+      return res.status(400).json({ success: false, error: 'ข้อมูลซ้ำ (unique)' });
     }
-    console.error('Create admin position error:', error)
-    return res.status(500).json({
-      success: false,
-      error: 'เกิดข้อผิดพลาดในการสร้างตำแหน่ง',
-    })
+    console.error('POST admin-positions error:', error);
+    return res.status(500).json({ success: false, error: 'เกิดข้อผิดพลาดในการสร้างตำแหน่ง' });
   }
 }
 
 async function handlePut(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { id, name, adminDepartmentId: targetDeptId, priority } = req.body as {
+    const { id, name, adminDepartmentId: targetDeptId, priority, updatedBy = 'system' } = req.body as {
       id: string
       name?: string
       adminDepartmentId: string        // แผนกปลายทาง (อาจเท่าเดิมหรือเปลี่ยนก็ได้)
       priority?: number                // ลำดับที่ต้องการในแผนกปลายทาง (1-based), ไม่ส่ง = ต่อท้าย
+      updatedBy?: string
     }
 
     if (!id || !targetDeptId) {
@@ -290,7 +255,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const current = await prisma.adminPositionDB.findFirst({
-      where: { id, isDeleted: false },
+      where: { id },
       select: { id: true, name: true, priority: true, adminDepartmentId: true },
     })
     if (!current) {
@@ -309,7 +274,6 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
       where: {
         adminDepartmentId: targetDeptId,
         name: nextName,
-        isDeleted: false,
         id: { not: id },
       },
       select: { id: true },
@@ -326,12 +290,13 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
 
         // คำนวณ priority ใหม่ในแผนกปลายทาง (clamp 1..max+1)
         const maxRow = await tx.adminPositionDB.findFirst({
-          where: { adminDepartmentId: targetDeptId, isDeleted: false },
+          where: { adminDepartmentId: targetDeptId },
           orderBy: { priority: 'desc' },
           select: { priority: true },
         })
         const maxPlusOne = (maxRow?.priority ?? 0) + 1
-        const newPriority = typeof priority === 'number' ? clampPriority(priority, maxPlusOne) : maxPlusOne
+        const newPriority =
+          typeof priority === 'number' ? clampPriority(priority, maxPlusOne) : maxPlusOne
 
         // ย้ายแผนก + ตั้งชื่อ/ลำดับใหม่
         await tx.adminPositionDB.update({
@@ -340,7 +305,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
             name: nextName,
             adminDepartmentId: targetDeptId,
             priority: newPriority,
-            updatedBy: 'system',
+            updatedBy,
           },
         })
 
@@ -353,7 +318,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
 
         if (typeof priority === 'number') {
           const maxRow = await tx.adminPositionDB.findFirst({
-            where: { adminDepartmentId: targetDeptId, isDeleted: false },
+            where: { adminDepartmentId: targetDeptId },
             orderBy: { priority: 'desc' },
             select: { priority: true },
           })
@@ -365,7 +330,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
             data: {
               name: nextName,
               priority: newPriority,
-              updatedBy: 'system',
+              updatedBy,
             },
           })
         } else {
@@ -373,7 +338,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
           if (nextName !== current.name) {
             await tx.adminPositionDB.update({
               where: { id },
-              data: { name: nextName, updatedBy: 'system' },
+              data: { name: nextName, updatedBy },
             })
           }
         }
@@ -381,10 +346,29 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
         await resequenceDepartment(tx, targetDeptId)
       }
 
-      return await tx.adminPositionDB.findUnique({
+      const updatedRecord = await tx.adminPositionDB.findUnique({
         where: { id },
         include: { adminDepartment: true },
-      })
+      });
+
+      // บันทึกประวัติ
+      const userInfo = extractUserInfo(req);
+      await recordWorkHistory(
+        tx,
+        'AdminPositionDB',
+        id,
+        'UPDATE',
+        current,
+        updatedRecord,
+        updatedBy,
+        'admin',
+        true,
+        null,
+        userInfo.ipAddress,
+        userInfo.userAgent
+      );
+
+      return updatedRecord;
     })
 
     return res.status(200).json({
@@ -402,13 +386,14 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
 }
 
 
-async function handleDelete(req: NextApiRequest, res: NextApiResponse<AdminPositionResponse>) {
+async function handleDelete(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
   try {
-    const { id } = req.body as { id: string };
+    const { id, deletedBy = 'system' } = req.body as { id: string; deletedBy?: string };
     if (!id) return res.status(400).json({ success: false, error: 'กรุณาระบุ id' });
 
     const existing = await prisma.adminPositionDB.findFirst({
-      where: { id, isDeleted: false },
+      where: { id },
+      include: { adminDepartment: true },
     });
     if (!existing) {
       return res.status(404).json({ success: false, error: 'ไม่พบตำแหน่งที่ต้องการลบ' });
@@ -420,7 +405,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<AdminPosit
 
     // ป้องกันการลบถ้ามีผู้ดูแลระบบใช้งานอยู่ (เอาออกได้ถ้าอยาก force delete)
     const inUse = await prisma.adminDB.findFirst({
-      where: { adminPositionId: id, isDeleted: false },
+      where: { adminPositionId: id },
       select: { id: true },
     });
     if (inUse) {
@@ -428,13 +413,29 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<AdminPosit
     }
 
     await prisma.$transaction(async (tx) => {
-      // ก่อน resequence ต้อง soft delete ก่อนเพื่อให้ unique constraint ไม่ชน
-      await tx.adminPositionDB.update({
+      // บันทึกประวัติก่อนลบ
+      const userInfo = extractUserInfo(req);
+      await recordWorkHistory(
+        tx,
+        'AdminPositionDB',
+        id,
+        'DELETE',
+        existing,
+        null,
+        deletedBy,
+        'admin',
+        true,
+        null,
+        userInfo.ipAddress,
+        userInfo.userAgent
+      );
+
+      // Hard delete - ลบจริงออกจากฐานข้อมูล
+      await tx.adminPositionDB.delete({
         where: { id },
-        data: { isDeleted: true, updatedBy: 'system' },
       });
 
-      // จัดลำดับใหม่ (จะไม่รวม record ที่ isDeleted = true)
+      // จัดลำดับใหม่
       await resequenceDepartment(tx, deptId);
     });
 
@@ -445,28 +446,17 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<AdminPosit
   }
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<AdminPositionResponse>) {
-  try {
-    switch (req.method) {
-      case 'GET':
-        return await handleGet(req, res);
-      case 'POST':
-        return await handlePost(req, res);
-      case 'PUT':
-        return await handlePut(req, res);
-      case 'DELETE':
-        return await handleDelete(req, res);
-      default:
-        return res.status(405).json({
-          success: false,
-          error: 'Method not allowed'
-        });
-    }
-  } catch (error) {
-    console.error('Admin positions API error:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์'
-    });
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
+  switch (req.method) {
+    case 'GET':
+      return handleGet(req, res);
+    case 'POST':
+      return handlePost(req, res);
+    case 'PUT':
+      return handlePut(req, res);
+    case 'DELETE':
+      return handleDelete(req, res);
+    default:
+      return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
-} 
+}

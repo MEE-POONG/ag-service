@@ -1,11 +1,8 @@
 // /pages/api/auth/login.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
-import cookie from 'cookie'
-import { authenticateAdmin, generateToken } from '@/lib/auth'
+import { authenticateAdmin, buildJwtPayload, generateToken, sanitizeAdminForClient } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-
-const ONE_DAY = 60 * 60 * 24
-const SEVEN_DAYS = ONE_DAY * 7
+import { setAuthCookie } from '@/lib/cookieUtils'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -14,8 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { username, password, remember } = req.body ?? {}
-
+    const { username, password } = req.body ?? {}
     if (!username || !password) {
       return res.status(400).json({ error: 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน' })
     }
@@ -25,10 +21,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ error: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' })
     }
 
-    // ออก JWT
-    const token = generateToken(user)
+    // สร้าง JWT payload เล็ก ๆ แล้วเซ็ตเป็น HttpOnly cookie
+    const payload = buildJwtPayload(user)
+    const token = generateToken(payload)
+    setAuthCookie(res, token)
 
-    // Log กิจกรรม
+    // Log กิจกรรม (login)
     await prisma.activityLogDB.create({
       data: {
         userId: user.id,
@@ -41,22 +39,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     })
 
-    // ตั้ง Cookie แบบ HttpOnly
-    const maxAge = remember ? SEVEN_DAYS * 4 : SEVEN_DAYS // ตัวอย่าง: remember 28 วัน
-    res.setHeader(
-      'Set-Cookie',
-      cookie.serialize('auth-token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // ใช้ HTTPS ใน production
-        sameSite: 'lax', // ถ้าข้ามโดเมน/ซับโดเมน ต้องใช้ 'none' + secure:true
-        path: '/',
-        maxAge,
-      })
-    )
-
-    // ไม่ต้องส่ง token กลับ ลดความเสี่ยง XSS
-    const { passwordHash, ...safeUser } = (user as any) || {}
-    return res.status(200).json({ message: 'เข้าสู่ระบบสำเร็จ', user: safeUser })
+    // ส่งกลับเฉพาะข้อมูลที่ปลอดภัย (ไม่ต้องส่ง token ใน body)
+    return res.status(200).json({
+      message: 'เข้าสู่ระบบสำเร็จ',
+      user: sanitizeAdminForClient(user),
+    })
   } catch (error) {
     console.error('Login error:', error)
     return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ' })

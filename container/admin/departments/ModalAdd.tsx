@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import { FaPlus } from 'react-icons/fa';
 import ReactIconComponent from '@/components/ReactIconComponent';
@@ -116,5 +116,4 @@ const DepartmentsModalAdd: React.FC<DepartmentsModalAddProps> = ({ onSuccess }) 
 };
 
 export default DepartmentsModalAdd;
-
 

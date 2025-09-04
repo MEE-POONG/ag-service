@@ -1,13 +1,15 @@
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import { TheLayout } from '@/components/TheLayout'
 import ImageUploader from '@/components/ui/input/ImageUploader'
-import axios from 'axios'
+import axios from '@/lib/axios'
 import { useAuth } from '@/hooks/useAuth'
 import Page404 from '@/components/Page404'
 import { SettingDB } from '@prisma/client'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
 
 export default function SettingPage() {
   const { user, logout } = useAuth();
@@ -19,24 +21,17 @@ export default function SettingPage() {
   // ถ้าไม่มีสิทธิ์เข้าถึง ให้แสดง 404 (อย่าเรียก Hook แบบมีเงื่อนไข)
   const isAllowed = !user || user.username === "admin" || user.username === "superadmin";
 
-  const fetchSetting = async () => {
-    setPageLoading(true)
-    try {
-      const res = await axios.get('/api/settings') // ✅ ใส่ URL ที่หายไป
-      const data = res.data
-
-      if (res.status === 200 && data.setting) {
-        setSettingData(data.setting)
-      } else {
-        setSettingData({})
-      }
-    } catch (error) {
-      console.error('Fetch setting error:', error)
-      toast.error('โหลดข้อมูลการตั้งค่าล้มเหลว')
-    } finally {
-      setPageLoading(false)
-    }
-  }
+  const queryClient = useQueryClient()
+  const { data: serverSetting, refetch } = useQuery({
+    queryKey: qk.settings.root,
+    queryFn: async () => {
+      const res = await axios.get('/api/settings')
+      return res?.data?.setting as SettingDB | undefined
+    },
+    enabled: isAllowed,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -56,60 +51,42 @@ export default function SettingPage() {
   const handleSubmit = async () => {
     setPageLoading(true);
     try {
-      let imageUrlNew = '';
-
+      let imageUrlNew = ''
       if (selectedFile) {
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('modelName', 'SettingDB');
-
-        const uploadRes = await axios.post('/api/upload', formData);
-        if (!uploadRes.data.success) throw new Error('อัปโหลดรูปไม่สำเร็จ');
-
-        imageUrlNew = uploadRes.data.imageUrl;
+        const formData = new FormData()
+        formData.append('file', selectedFile)
+        formData.append('modelName', 'SettingDB')
+        const uploadRes = await axios.post('/api/upload', formData)
+        if (!uploadRes.data.success) throw new Error('อัปโหลดรูปไม่สำเร็จ')
+        imageUrlNew = uploadRes.data.imageUrl
       }
 
-      // สร้าง body แบบไม่ใส่ logo ถ้าไม่ได้อัปโหลดใหม่
-      const body: any = { ...settingData };
-      if (selectedFile) {
-        body.logo = imageUrlNew;
-      }
-
-      const method = settingData?.id ? 'put' : 'post';
-      const res = await axios({ method, url: '/api/settings', data: body });
-
+      const body: any = { ...settingData }
+      if (selectedFile) body.logo = imageUrlNew
+      const method = settingData?.id ? 'put' : 'post'
+      const res = await axios({ method, url: '/api/settings', data: body })
       if (res.status === 200 || res.status === 201) {
-        toast.success(settingData?.id ? 'อัปเดตข้อมูลเรียบร้อยแล้ว' : 'เพิ่มข้อมูลเรียบร้อยแล้ว');
-
-        // ลบรูปเก่าก็ต่อเมื่อมีการอัปโหลดรูปใหม่เท่านั้น
+        toast.success(settingData?.id ? 'อัปเดตข้อมูลเรียบร้อยแล้ว' : 'เพิ่มข้อมูลเรียบร้อยแล้ว')
         if (selectedFile && settingData.logo) {
-          try {
-            await axios.delete('/api/upload/searchDel', { data: { imageUrl: settingData.logo } });
-          } catch (e) {
-            console.warn('ลบรูปเก่าไม่สำเร็จ:', e);
-          }
+          try { await axios.delete('/api/upload/searchDel', { data: { imageUrl: settingData.logo } }) } catch {}
         }
-
-        await fetchSetting();
-        setSelectedFile(null);
+        await queryClient.invalidateQueries({ queryKey: qk.settings.root })
+        await refetch()
+        setSelectedFile(null)
       } else {
-        toast.error('เกิดข้อผิดพลาดในการบันทึก');
+        toast.error('เกิดข้อผิดพลาดในการบันทึก')
       }
     } catch (e) {
-      console.error('Submit error:', e);
-      toast.error('เกิดข้อผิดพลาดในการบันทึก');
+      console.error('Submit error:', e)
+      toast.error('เกิดข้อผิดพลาดในการบันทึก')
     } finally {
-      setPageLoading(false);
+      setPageLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    if (user?.username === "admin" || user?.username === "superadmin" || user === null) {
-      fetchSetting();
-    } else {
-      logout();
-    }
-  }, [user])
+    if (serverSetting) setSettingData(serverSetting)
+  }, [serverSetting])
 
   if (!isAllowed) {
     return (
@@ -286,7 +263,7 @@ export default function SettingPage() {
             <button
               className="inline-flex items-center px-2 py-1 rounded text-base bg-gray-100 text-gray-700 border border-solid border-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => {
-                fetchSetting();         // ดึงข้อมูลใหม่ (reset)
+                refetch();              // ดึงข้อมูลใหม่ (reset)
                 setSelectedFile(null);  // ล้างไฟล์ใหม่
               }}
               disabled={pageLoading}
@@ -299,4 +276,3 @@ export default function SettingPage() {
     </TheLayout>
   )
 } 
-

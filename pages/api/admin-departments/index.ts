@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
+import { requireAuth, hasPermission } from '@/lib/permissions'
+import { recordWorkHistory, extractUserInfo } from '@/utils/workHistoryUtils'
 
 interface DepartmentResponse {
   success?: boolean;
@@ -17,6 +19,18 @@ interface DepartmentResponse {
 }
 
 async function handleGet(req: NextApiRequest, res: NextApiResponse<DepartmentResponse>) {
+  // Check authentication and permissions
+  // const currentAdmin = await requireAuth(req, res)
+  // if (!currentAdmin) return
+
+  // Check if user can view departments
+  // if (!await hasPermission(req, 'department-management', 'canViews')) {
+  //   return res.status(403).json({
+  //     success: false,
+  //     error: 'ไม่มีสิทธิ์ดูข้อมูลแผนก'
+  //   })
+  // }
+
   try {
     const {
       page = '1',
@@ -37,7 +51,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<DepartmentRes
         where: { id: id as string },
         include: {
           adminPositions: {
-            where: { isDeleted: false },
+            where: {  },
             orderBy: [
               { priority: 'asc' },      // เรียงตาม priority
               { createdAt: 'asc' },     // tie-breaker กันค่า priority เท่ากัน
@@ -62,7 +76,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<DepartmentRes
 
     const searchKeyword = (keyword || search) as string;
     const whereClause: Prisma.AdminDepartmentDBWhereInput = {
-      isDeleted: false,
+      
       ...(status && status !== 'all' ? { isActive: status === 'active' } : {}),
       ...(searchKeyword
         ? {
@@ -79,7 +93,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<DepartmentRes
         where: whereClause,
         include: {
           adminPositions: {
-            where: { isDeleted: false },
+            where: {  },
             orderBy: [{ priority: 'asc' }],
           },
         },
@@ -111,28 +125,61 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<DepartmentRes
 }
 
 async function handlePost(req: NextApiRequest, res: NextApiResponse<DepartmentResponse>) {
+  // Check authentication and permissions
+  // const currentAdmin = await requireAuth(req, res)
+  // if (!currentAdmin) return
+
+  // Check if user can create departments
+  // if (!await hasPermission(req, 'department-management', 'canCreate')) {
+  //   return res.status(403).json({
+  //     success: false,
+  //     error: 'ไม่มีสิทธิ์สร้างแผนกใหม่'
+  //   })
+  // }
+
   try {
-    const { name, description, isActive } = req.body;
+    const { name, description, isActive, createdBy, updatedBy } = req.body;
 
     if (!name) {
       return res.status(400).json({ success: false, error: 'กรุณากรอกชื่อแผนก' });
     }
 
     const exists = await prisma.adminDepartmentDB.findFirst({
-      where: { name, isDeleted: false },
+      where: { name,  },
     });
     if (exists) {
       return res.status(400).json({ success: false, error: 'มีชื่อแผนกนี้อยู่แล้ว' });
     }
 
-    const department = await prisma.adminDepartmentDB.create({
-      data: {
-        name,
-        description,
-        isActive: typeof isActive === 'boolean' ? isActive : true,
-        createdBy: 'system',
-        updatedBy: 'system',
-      },
+    const department = await prisma.$transaction(async (tx) => {
+      const newDept = await tx.adminDepartmentDB.create({
+        data: {
+          name,
+          description,
+          isActive: typeof isActive === 'boolean' ? isActive : true,
+          createdBy: createdBy || 'system',
+          updatedBy: updatedBy || 'system',
+        },
+      });
+
+      // บันทึกประวัติ
+      const userInfo = extractUserInfo(req);
+      await recordWorkHistory(
+        tx,
+        'AdminDepartmentDB',
+        newDept.id,
+        'CREATE',
+        null,
+        newDept,
+        createdBy || 'system',
+        'admin',
+        true,
+        null,
+        userInfo.ipAddress,
+        userInfo.userAgent
+      );
+
+      return newDept;
     });
 
     return res.status(201).json({ success: true, department, message: 'สร้างแผนกสำเร็จ' });
@@ -143,11 +190,23 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<DepartmentRe
 }
 
 async function handlePut(req: NextApiRequest, res: NextApiResponse<DepartmentResponse>) {
+  // Check authentication and permissions
+  // const currentAdmin = await requireAuth(req, res)
+  // if (!currentAdmin) return
+
+  // Check if user can update departments
+  // if (!await hasPermission(req, 'department-management', 'canUpdate')) {
+  //   return res.status(403).json({
+  //     success: false,
+  //     error: 'ไม่มีสิทธิ์แก้ไขข้อมูลแผนก'
+  //   })
+  // }
+
   try {
-    const { id, name, description, isActive } = req.body;
+    const { id, name, description, isActive, updatedBy } = req.body;
     if (!id) return res.status(400).json({ success: false, error: 'ไม่พบ ID' });
 
-    const existing = await prisma.adminDepartmentDB.findFirst({ where: { id, isDeleted: false } });
+    const existing = await prisma.adminDepartmentDB.findFirst({ where: { id,  } });
     if (!existing) {
       return res.status(404).json({ success: false, error: 'ไม่พบแผนกที่ต้องการแก้ไข' });
     }
@@ -155,21 +214,42 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<DepartmentRes
     // unique name check if provided and changed
     if (name && name !== existing.name) {
       const duplicate = await prisma.adminDepartmentDB.findFirst({
-        where: { name, isDeleted: false },
+        where: { name,  },
       });
       if (duplicate) {
         return res.status(400).json({ success: false, error: 'มีชื่อแผนกนี้อยู่แล้ว' });
       }
     }
 
-    const department = await prisma.adminDepartmentDB.update({
-      where: { id },
-      data: {
-        name,
-        description,
-        isActive,
-        updatedBy: 'system',
-      },
+    const department = await prisma.$transaction(async (tx) => {
+      const updatedDept = await tx.adminDepartmentDB.update({
+        where: { id },
+        data: {
+          name,
+          description,
+          isActive,
+          updatedBy: updatedBy || 'system',
+        },
+      });
+
+      // บันทึกประวัติ
+      const userInfo = extractUserInfo(req);
+      await recordWorkHistory(
+        tx,
+        'AdminDepartmentDB',
+        id,
+        'UPDATE',
+        existing,
+        updatedDept,
+        updatedBy || 'system',
+        'admin',
+        true,
+        null,
+        userInfo.ipAddress,
+        userInfo.userAgent
+      );
+
+      return updatedDept;
     });
 
     return res.status(200).json({ success: true, department, message: 'อัปเดตแผนกสำเร็จ' });
@@ -180,26 +260,60 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<DepartmentRes
 }
 
 async function handleDelete(req: NextApiRequest, res: NextApiResponse<DepartmentResponse>) {
+  // Check authentication and permissions
+  // const currentAdmin = await requireAuth(req, res)
+  // if (!currentAdmin) return
+
+  // Check if user can delete departments
+  // if (!await hasPermission(req, 'department-management', 'canDelete')) {
+  //   return res.status(403).json({
+  //     success: false,
+  //     error: 'ไม่มีสิทธิ์ลบแผนก'
+  //   })
+  // }
+
   try {
-    const { id } = req.body;
+    const { id, deletedBy } = req.body;
     if (!id) return res.status(400).json({ success: false, error: 'ไม่พบ ID' });
 
-    const existing = await prisma.adminDepartmentDB.findFirst({ where: { id, isDeleted: false } });
+    const existing = await prisma.adminDepartmentDB.findFirst({ 
+      where: { id },
+      include: { adminPositions: true }
+    });
     if (!existing) {
       return res.status(404).json({ success: false, error: 'ไม่พบแผนกที่ต้องการลบ' });
     }
 
     // Prevent delete if has positions (optional)
     const hasPositions = await prisma.adminPositionDB.findFirst({
-      where: { adminDepartmentId: id, isDeleted: false },
+      where: { adminDepartmentId: id },
     });
     if (hasPositions) {
       return res.status(400).json({ success: false, error: 'ไม่สามารถลบแผนกที่มีตำแหน่งใช้งานอยู่ได้' });
     }
 
-    await prisma.adminDepartmentDB.update({
-      where: { id },
-      data: { isDeleted: true, updatedBy: 'system' },
+    await prisma.$transaction(async (tx) => {
+      // บันทึกประวัติก่อนลบ
+      const userInfo = extractUserInfo(req);
+      await recordWorkHistory(
+        tx,
+        'AdminDepartmentDB',
+        id,
+        'DELETE',
+        existing,
+        null,
+        deletedBy || 'system',
+        'admin',
+        true,
+        null,
+        userInfo.ipAddress,
+        userInfo.userAgent
+      );
+
+      // Hard delete - ลบจริงออกจากฐานข้อมูล
+      await tx.adminDepartmentDB.delete({
+        where: { id },
+      });
     });
 
     return res.status(200).json({ success: true, message: 'ลบแผนกสำเร็จ' });

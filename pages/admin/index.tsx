@@ -3,19 +3,19 @@ import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import { TheLayout } from '@/components/TheLayout'
 //import { sampleUser } from '@/data/sampleUser'
-import { Dialog, Transition } from '@headlessui/react'
-import axios from 'axios'
+import axios from '@/lib/axios'
 import Link from 'next/link'
 import { FaPlus } from 'react-icons/fa'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import ImgIndex from '@/components/ui/img'
-import ImageModalView from '@/container/image-list/ModalView'
 import PaginationSelect from '@/components/PaginationSelect'
 import { Params } from '@/data/interfaceDefault'
 import { ExtendedAdminDB } from '@/data/interface'
 import AdminModalDelete from '@/container/admin/ModalDelete'
 import AdminModalNewPassword from '@/container/admin/ModalNewPassword'
 import { usePermissions } from '@/hooks/usePermissions'
+import { useQuery } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
+import { useAuth } from '@/hooks/useAuth'
 
 
 const positionColorByPriority = (p?: number) => {
@@ -32,8 +32,8 @@ const positionColorByPriority = (p?: number) => {
 }
 
 export default function AdminPage() {
-  const { checkPermission, hasMenuAccess, isSuperAdmin } = usePermissions()
-  
+  const { checkPermission, hasMenuAccess, isSuperAdmin, userLoading } = usePermissions()
+  const { user } = useAuth()
   const [params, setParams] = useState<Params>({
     page: 1,
     pageSize: 10,
@@ -51,28 +51,31 @@ export default function AdminPage() {
   const adminPermissions = checkPermission('ระบบผู้ดูแล')
 
   // ตรวจสอบสิทธิ์เข้าถึงหน้า
-  useEffect(() => {
-    if (!hasMenuAccess('ระบบผู้ดูแล')) {
-      toast.error('คุณไม่มีสิทธิ์เข้าถึงหน้านี้')
-      router.push('/')
-    }
-  }, [hasMenuAccess, router])
+  // useEffect(() => {
+  //   // เช็คเฉพาะเมื่อ router พร้อม และ user data โหลดเสร็จแล้ว
+  //   if (router.isReady && !userLoading && typeof hasMenuAccess === 'function') {
+  //     if (!hasMenuAccess('ระบบผู้ดูแล') && !isSuperAdmin) {
+  //       console.log(`Permission denied - isSuperAdmin:`, isSuperAdmin);
+  //       toast.error('คุณไม่มีสิทธิ์เข้าถึงหน้านี้')
+  //       router.push('/')
+  //     }
+  //   }
+  // }, [router.isReady, userLoading, hasMenuAccess, isSuperAdmin])
+
+  // Move to React Query
+  const { data, refetch } = useQuery({
+    queryKey: qk.admins.list,
+    queryFn: async () => {
+      const response = await axios.get('/api/admin')
+      if (!response.data?.success) throw new Error(response.data?.error || 'โหลดข้อมูลผู้ดูแลล้มเหลว')
+      return response.data.data as ExtendedAdminDB[]
+    },
+    refetchOnWindowFocus: true,
+    staleTime: 60 * 1000,
+  })
 
   const fetchAdmins = async () => {
-    try {
-      const response = await axios.get('/api/admin')
 
-      if (response.data.success) {
-        console.log(response.data.data);
-
-        setAdmins(response.data.data)
-      } else {
-        setError(response.data.error || 'เกิดข้อผิดพลาดในการดึงข้อมูล')
-      }
-    } catch (error) {
-      console.error('Fetch admins failed:', error)
-      setError('เกิดข้อผิดพลาดในการเชื่อมต่อ')
-    }
   }
 
   const handleDelete = async () => {
@@ -82,7 +85,7 @@ export default function AdminPage() {
       const res = await axios.delete(`/api/AdminDB/${deleteId}`)
       if (res.data.success) {
         toast.success('ลบผู้ดูแลระบบสำเร็จ')
-        setAdmins(admins.filter(a => a.id !== deleteId))
+        await refetch()
       } else {
         toast.error(res.data.error || 'เกิดข้อผิดพลาด')
       }
@@ -96,7 +99,7 @@ export default function AdminPage() {
   }
 
   useEffect(() => {
-    fetchAdmins()
+    if (data) setAdmins(data)
     setLoading(false)
     // const checkAuth = async () => {
     //   try {
@@ -120,26 +123,17 @@ export default function AdminPage() {
     // checkAuth()
   }, [router])
 
-  // Refresh data when component becomes visible again
+  // Keep explicit focus/visibility refresh for extra safety
   useEffect(() => {
-    const handleFocus = () => {
-      fetchAdmins()
-    }
-
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        fetchAdmins()
-      }
-    }
-
+    const handleFocus = () => { refetch() }
+    const handleVisibilityChange = () => { if (!document.hidden) refetch() }
     window.addEventListener('focus', handleFocus)
     document.addEventListener('visibilitychange', handleVisibilityChange)
-
     return () => {
       window.removeEventListener('focus', handleFocus)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [])
+  }, [refetch])
 
   return (
     <TheLayout>
@@ -155,7 +149,7 @@ export default function AdminPage() {
               </p>
             )}
           </div>
-          {adminPermissions.canCreate && (
+          {adminPermissions.canCreate || user?.username === 'superadmin' || user?.username === 'admin' && (
             <Link
               href="/admin/add"
               className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
@@ -208,21 +202,21 @@ export default function AdminPage() {
                     <TableCell className="text-right space-x-1">
                       {/* ปุ่มรีเซ็ตรหัสผ่าน - ต้องมีสิทธิ์ update */}
                       {adminPermissions.canUpdate && (
-                        <AdminModalNewPassword data={item} onSuccess={() => fetchAdmins()} />
+                        <AdminModalNewPassword data={item} />
                       )}
-                      
+
                       {/* ปุ่มดูข้อมูล - ต้องมีสิทธิ์ view */}
                       {adminPermissions.canView && (
                         <Link href={`/admin/view/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-green-100 text-green-700 border border-solid border-green-700 hover:bg-green-200 disabled:opacity-50 disabled:cursor-not-allowed">ดู</Link>
                       )}
-                      
+
                       {/* ปุ่มแก้ไข - ต้องมีสิทธิ์ update */}
                       {adminPermissions.canUpdate && (
                         <Link
                           href={`/admin/edit/${item.id}`}
                           className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed">แก้ไข</Link>
                       )}
-                      
+
                       {/* ปุ่มลบ - ต้องมีสิทธิ์ delete */}
                       {adminPermissions.canDelete && (
                         <AdminModalDelete data={item} onSuccess={() => fetchAdmins()} />
@@ -245,4 +239,3 @@ export default function AdminPage() {
     </TheLayout>
   )
 }
-

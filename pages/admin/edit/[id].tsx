@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { TheLayout } from '@/components/TheLayout'
-import axios from 'axios'
+import axios from '@/lib/axios'
 import { ExtendedAdminDB } from '@/data/interface'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
 
 interface Position {
   id: string
@@ -18,6 +20,7 @@ interface Department {
 export default function EditAdminPage() {
   const router = useRouter()
   const { id } = router.query
+  const queryClient = useQueryClient()
   
   const [positions, setPositions] = useState<Position[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
@@ -34,66 +37,54 @@ export default function EditAdminPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
-  // โหลดข้อมูล Admin ที่ต้องการแก้ไข
-  const fetchAdmin = async (adminId: string) => {
-    try {
-      const response = await axios.get(`/api/admin?id=${adminId}`)
-      if (response.data.success && response.data.data) {
-        const adminData = response.data.data
-        setAdmin(adminData)
-        setForm({
-          username: adminData.username || '',
-          name: adminData.name || '',
-          email: adminData.email || '',
-          tel: adminData.tel || '',
-          adminPositionId: adminData.adminPositionId || '',
-          isActive: adminData.isActive ?? true,
-        })
-        // ตั้งแผนกจากตำแหน่งปัจจุบัน
-        const deptId = adminData.adminPosition?.adminDepartmentId || adminData.adminPosition?.adminDepartment?.id
-        if (deptId) {
-          setSelectedDeptId(deptId)
-        }
-      } else {
-        console.error('API response error:', response.data)
-        alert('ไม่พบข้อมูล Admin ที่ต้องการแก้ไข')
-        router.push('/admin')
+  // ตำแหน่งและแผนก
+  const { data: posDep } = useQuery({
+    queryKey: qk.positions.list,
+    queryFn: async () => {
+      const response = await axios.get('/api/admin-positions')
+      if (!response.data?.success) throw new Error(response.data?.error || 'โหลดข้อมูลตำแหน่งล้มเหลว')
+      return {
+        positions: (response.data.data || []) as Position[],
+        departments: (response.data.departments || []) as Department[],
       }
-    } catch (error) {
-      console.error('Error fetching admin:', error)
-      alert('เกิดข้อผิดพลาดในการโหลดข้อมูล')
-      router.push('/admin')
-    }
-  }
+    },
+    staleTime: 5 * 60 * 1000,
+  })
 
-  // โหลดข้อมูลตำแหน่งและแผนก
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // ดึงข้อมูล positions และ departments จาก API
-        const response = await axios.get('/api/admin-positions')
-        if (response.data.success) {
-          const positions: Position[] = response.data.data || []
-          const departments: Department[] = response.data.departments || []
-          setPositions(positions)
-          setDepartments(departments)
-        } else {
-          console.error('Failed to fetch positions/departments:', response.data.error)
-        }
-      } catch (error) {
-        console.error('Error fetching admin positions:', error)
-      }
+    if (posDep) {
+      setPositions(posDep.positions)
+      setDepartments(posDep.departments)
     }
-    
-    fetchData()
-  }, [])
+  }, [posDep])
 
-  // โหลดข้อมูล Admin เมื่อมี ID
+  // ข้อมูล Admin
+  const { data: adminData } = useQuery({
+    queryKey: id && typeof id === 'string' ? qk.admins.detail(id) : ['admins','detail','idle'],
+    queryFn: async () => {
+      const response = await axios.get(`/api/admin?id=${id}`)
+      if (!response.data?.success) throw new Error(response.data?.error || 'ไม่พบข้อมูล Admin')
+      return response.data.data as ExtendedAdminDB
+    },
+    enabled: !!id && typeof id === 'string',
+    staleTime: 60 * 1000,
+  })
+
   useEffect(() => {
-    if (id && typeof id === 'string') {
-      fetchAdmin(id)
+    if (adminData) {
+      setAdmin(adminData)
+      setForm({
+        username: adminData.username || '',
+        name: adminData.name || '',
+        email: adminData.email || '',
+        tel: adminData.tel || '',
+        adminPositionId: adminData.adminPositionId || '',
+        isActive: adminData.isActive ?? true,
+      })
+      const deptId = adminData.adminPosition?.adminDepartmentId || adminData.adminPosition?.adminDepartment?.id
+      if (deptId) setSelectedDeptId(deptId)
     }
-  }, [id])
+  }, [adminData])
 
   useEffect(() => {
     if (admin && positions.length > 0 && departments.length > 0) {
@@ -145,7 +136,6 @@ export default function EditAdminPage() {
 
     try {
       setSaving(true)
-      
       const updateData = {
         id,
         username: form.username,
@@ -154,34 +144,25 @@ export default function EditAdminPage() {
         tel: form.tel,
         adminPositionId: form.adminPositionId,
         isActive: form.isActive,
-        updatedBy: 'admin' // TODO: get from auth context
+        updatedBy: 'admin',
       }
-      
-
-      
       const response = await axios.put('/api/admin', updateData)
-
       const result = response.data
       if (result.success) {
         alert('แก้ไขข้อมูล Admin สำเร็จ')
-        // รีเฟรชข้อมูลก่อนไปหน้าหลัก
-        if (result.data) {
-          setAdmin(result.data)
-        }
-        // เลื่อนเวลาเล็กน้อยก่อนไปหน้าหลักเพื่อให้เห็นการเปลี่ยนแปลง
-        setTimeout(() => {
-          router.push('/admin')
-        }, 1000)
+        // Invalidate cached lists and detail
+        try {
+          await queryClient.invalidateQueries({ queryKey: qk.admins.list })
+          if (typeof id === 'string') await queryClient.invalidateQueries({ queryKey: qk.admins.detail(id) })
+        } catch {}
+        setTimeout(() => { router.push('/admin') }, 800)
       } else {
         alert(result.error || 'เกิดข้อผิดพลาดในการแก้ไข')
       }
     } catch (error: any) {
       console.error('Update admin failed:', error)
-      if (error.response?.data?.error) {
-        alert(error.response.data.error)
-      } else {
-        alert('เกิดข้อผิดพลาดในการเชื่อมต่อ')
-      }
+      if (error.response?.data?.error) alert(error.response.data.error)
+      else alert('เกิดข้อผิดพลาดในการเชื่อมต่อ')
     } finally {
       setSaving(false)
     }

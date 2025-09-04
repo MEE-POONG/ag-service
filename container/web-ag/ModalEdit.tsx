@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import Modal from '@/components/form/Modal';
 import { ExtendedWebBaseDB } from '@/data/interface';
 import { WebBaseDB } from '@prisma/client';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import React, { useState } from 'react';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 
@@ -34,7 +34,7 @@ const WebBaseModalEdit: React.FC<WebBaseModalEditProps> = ({
     createdBy: data.createdBy,
     updatedAt: new Date(),
     updatedBy: data.updatedBy,
-    isDeleted: false,
+    
     name: data.name,
     passS: data.passS,
     passM: data.passM,
@@ -188,5 +188,4 @@ const WebBaseModalEdit: React.FC<WebBaseModalEditProps> = ({
 };
 
 export default WebBaseModalEdit;
-
 

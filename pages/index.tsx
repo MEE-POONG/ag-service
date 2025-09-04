@@ -1,57 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
-import toast from 'react-hot-toast'
-//import { sampleUser } from '@/data/sampleUser'
-import { ExtendedAdminDB } from '@/data/interface'
-import axios from '@/lib/axios'
 import { TheLayout } from '@/components/TheLayout'
-
-// Use ExtendedAdminDB for admin-only system
-type User = ExtendedAdminDB;
+import { useAuth } from '@/hooks/useAuth'
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const { user, userLoading, logout } = useAuth()
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await axios.get('/api/auth/me')
-        const data = response.data
+  // ✅ ต้องอยู่ก่อนเงื่อนไข return ใดๆ
+  // useEffect(() => {
+  //   console.log('user in dashboard')
+  // }, [])
 
-        // เช็คว่ามี user data หรือไม่ (API ส่งกลับ { user, message })
-        if (response.status === 200 && data.user) {
-          setUser(data.user)
-        } else {
-          localStorage.removeItem('auth-token')
-          router.push('/auth/login')
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error)
-        localStorage.removeItem('auth-token')
-        router.push('/auth/login')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    checkAuth()
-  }, [router])
-
-  const handleLogout = async () => {
-    try {
-      await axios.post('/api/auth/logout')
-      router.push('/auth/login')
-    } catch (error) {
-      console.error('Logout failed:', error)
-      // Still redirect to login even if logout request fails
-      router.push('/auth/login')
-    }
-  }
-
-  if (loading) {
+  if (userLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -63,8 +23,9 @@ export default function DashboardPage() {
   }
 
   if (!user) {
-    return null
+    return null // หรือ redirect ไปหน้า login ก็ได้
   }
+
 
   return (
     <TheLayout >
@@ -78,7 +39,7 @@ export default function DashboardPage() {
             </p>
           </div>
           <button
-            onClick={handleLogout}
+            onClick={logout}
             className="inline-flex items-center px-2 py-1 rounded text-base bg-red-100 text-red-700 border border-solid border-red-700 hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             ออกจากระบบ
@@ -169,4 +130,3 @@ export default function DashboardPage() {
     </TheLayout>
   )
 } 
-

@@ -26,8 +26,9 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false,
+
     children: []
   },
   {
@@ -50,8 +51,9 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false,
+
     children: [
       {
         id: "analytics-sales",
@@ -73,8 +75,9 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
+        deleteAt: new Date(),
         deleteBy: null,
-        isDeleted: false,
+
       },
       {
         id: "analytics-performance",
@@ -96,8 +99,9 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
+        deleteAt: new Date(),
         deleteBy: null,
-        isDeleted: false,
+
       },
       {
         id: "analytics-charts",
@@ -119,8 +123,9 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
+        deleteAt: new Date(),
         deleteBy: null,
-        isDeleted: false,
+
       }
     ]
   },
@@ -145,8 +150,9 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false,
+
     children: [
       {
         id: "users-list",
@@ -168,8 +174,9 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
+        deleteAt: new Date(),
         deleteBy: null,
-        isDeleted: false,
+
       },
       {
         id: "users-roles",
@@ -191,8 +198,9 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
+        deleteAt: new Date(),
         deleteBy: null,
-        isDeleted: false,
+
       },
       {
         id: "users-permissions",
@@ -214,8 +222,9 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
+        deleteAt: new Date(),
         deleteBy: null,
-        isDeleted: false,
+
       }
     ]
   },
@@ -244,8 +253,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "reports",
@@ -267,8 +277,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   // เมนูย่อยของ reports
   {
@@ -291,8 +302,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "bot-management",
@@ -314,8 +326,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   // เมนูพันธมิตร
   {
@@ -338,8 +351,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "ag-user",
@@ -361,8 +375,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "members",
@@ -384,8 +399,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   // เมนูจัดการผู้ดูแล
   {
@@ -408,8 +424,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "admin-admins",
@@ -432,8 +449,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "admin-departments",
@@ -455,8 +473,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   // เมนูระบบผู้ดูแล
   {
@@ -479,8 +498,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "admin-users",
@@ -502,8 +522,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "admin-permissions",
@@ -525,8 +546,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "admin-system-departments",
@@ -548,8 +570,9 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
 
 ];
@@ -575,8 +598,9 @@ export const menuDev: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "setting-index",
@@ -598,8 +622,9 @@ export const menuDev: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "image-list",
@@ -621,8 +646,9 @@ export const menuDev: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "web-ag",
@@ -644,8 +670,9 @@ export const menuDev: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "menuweb",
@@ -667,8 +694,9 @@ export const menuDev: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
 ];
 
@@ -693,8 +721,9 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false,
+
   },
   {
     id: "web-ag",
@@ -716,8 +745,9 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "menuweb",
@@ -739,8 +769,9 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
 
   {
@@ -763,8 +794,9 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "setting-security",
@@ -786,8 +818,9 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
   {
     id: "setting-notifications",
@@ -809,7 +842,8 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
+    deleteAt: new Date(),
     deleteBy: null,
-    isDeleted: false
+
   },
 ];

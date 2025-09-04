@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import axios from '@/lib/axios'
 import { ExtendedAdminDB } from '@/data/interface'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
 
 interface UseAuthReturn {
   user: ExtendedAdminDB | null
@@ -11,47 +13,62 @@ interface UseAuthReturn {
 }
 
 export function useAuth(): UseAuthReturn {
-  const [user, setUser] = useState<ExtendedAdminDB | null>(null)
-  const [userLoading, setUserLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const queryClient = useQueryClient()
 
+  const {
+    data: meData,
+    isFetching,
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: qk.auth.me,
+    queryFn: async () => {
+      const res = await axios.get('/api/auth/me')
+      return res.data?.user ?? null
+    },
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  })
+
+  // Redirect to login when unauthenticated (client-side safeguard)
   useEffect(() => {
-    let mounted = true
-    const run = async () => {
-      try {
-        const res = await axios.get('/api/auth/me', { withCredentials: true })
-        if (!mounted) return
-        const u = res.data?.user ?? null
-        setUser(u)
-        if (!u && router.pathname !== '/auth/login') {
-          router.replace(`/auth/login?redirect=${encodeURIComponent(router.asPath)}`)
-        }
-      } catch (e) {
-        if (!mounted) return
-        setUser(null)
-        setError('การตรวจสอบสิทธิ์ล้มเหลว')
-        if (router.pathname !== '/auth/login') {
-          router.replace(`/auth/login?redirect=${encodeURIComponent(router.asPath)}`)
-        }
-      } finally {
-        if (mounted) setUserLoading(false)
-      }
+    if (!router.isReady) return
+    if (router.pathname === '/auth/login') return
+    if (meData === null) {
+      router.push('/auth/login')
     }
-    run()
-    return () => { mounted = false }
-  }, [router])
+  }, [router.isReady, router.pathname, meData, router])
+
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await axios.post('/api/auth/logout')
+    },
+    onSuccess: () => {
+      // Clear any legacy tokens
+      try { localStorage.removeItem('auth-token') } catch {}
+      // Clear cached user
+      queryClient.setQueryData(qk.auth.me, null)
+    },
+  })
 
   const logout = async () => {
     try {
-      await axios.post('/api/auth/logout', {}, { withCredentials: true })
-    } finally {
-      // สำหรับ session เก่าที่เคยใช้ localStorage
+      await logoutMutation.mutateAsync()
+      router.push('/auth/login')
+    } catch (err) {
+      // Even on failure, ensure redirect and cache clear
+      queryClient.setQueryData(qk.auth.me, null)
       try { localStorage.removeItem('auth-token') } catch {}
-      setUser(null)
-      router.replace('/auth/login')
+      router.push('/auth/login')
     }
   }
 
-  return { user, userLoading, error, logout }
+  return {
+    user: meData ?? null,
+    userLoading: isPending || isFetching,
+    error: error ? (error as any)?.message ?? 'การตรวจสอบสิทธิ์ล้มเหลว' : null,
+    logout,
+  }
 }

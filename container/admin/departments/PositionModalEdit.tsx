@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { AdminPositionDB } from '@prisma/client';
@@ -32,8 +32,8 @@ const PositionModalEdit: React.FC<PositionModalEditProps> = ({ list, position, o
   // Load departments data
   const loadDepartments = async () => {
     try {
-      const res = await axios.get('/api/admin-positions', { params: { pageSize: 1 } });
-      const depts: SimpleDepartment[] = (res.data?.departments || []).map((d: any) => ({ id: d.id, name: d.name }));
+      const res = await axios.get('/api/admin-departments');
+      const depts: SimpleDepartment[] = (res.data?.data || []).map((d: any) => ({ id: d.id, name: d.name }));
       setDepartments(depts);
     } catch (e) {
       console.error('fetch departments failed', e);
@@ -45,10 +45,10 @@ const PositionModalEdit: React.FC<PositionModalEditProps> = ({ list, position, o
     if (!departmentId) return;
     try {
       setIsLoadingPositions(true);
-      const response = await axios.get(`/api/admin-positions?departmentId=${departmentId}`);
+      const response = await axios.get(`/api/admin-positions?adminDepartmentId=${departmentId}`);
       const allPositions = response.data.data || [];
       // Filter out current position from the list
-      const filteredPositions = allPositions.filter((pos: any) => pos.id !== list.id);
+      const filteredPositions = allPositions.filter((pos: any) => pos.id !== position.id);
       setPositions(filteredPositions);
     } catch (error) {
       console.error("Error fetching positions:", error);
@@ -75,14 +75,18 @@ const PositionModalEdit: React.FC<PositionModalEditProps> = ({ list, position, o
 
     try {
       const payload: any = {
-        id: list.id,
+        id: position.id,
         name: name.trim(),
         adminDepartmentId: selectedDeptId,
+        updatedBy: 'admin', // TODO: ใช้ข้อมูลผู้ใช้จริง
       };
 
-      // Add priority position if selected
+      // แปลง priorityPositionId เป็น priority number
       if (priorityPositionId) {
-        payload.priorityPositionId = priorityPositionId;
+        const targetPosition = positions.find(pos => pos.id === priorityPositionId);
+        if (targetPosition) {
+          payload.priority = targetPosition.priority;
+        }
       }
 
       const res = await axios.put('/api/admin-positions', payload);
@@ -119,8 +123,8 @@ const PositionModalEdit: React.FC<PositionModalEditProps> = ({ list, position, o
     setError('');
 
     // Initialize form with current values
-    setName(list.name || '');
-    setSelectedDeptId(list.id || '');
+    setName(position.name || '');
+    setSelectedDeptId(position.adminDepartmentId || '');
     setPriorityPositionId('');
 
     // Load departments if not loaded
@@ -129,8 +133,8 @@ const PositionModalEdit: React.FC<PositionModalEditProps> = ({ list, position, o
     }
 
     // Load positions for current department
-    if (list.id) {
-      await fetchPositions(list.id);
+    if (position.adminDepartmentId) {
+      await fetchPositions(position.adminDepartmentId);
     }
   };
 
@@ -301,7 +305,6 @@ const PositionModalEdit: React.FC<PositionModalEditProps> = ({ list, position, o
 };
 
 export default PositionModalEdit;
-
 
 
 

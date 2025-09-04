@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { FaTimes, FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { ImageList } from "@prisma/client";
@@ -67,5 +67,4 @@ const ImageModalDelete: React.FC<{ list: ImageList, onSuccess: () => void; }> = 
 };
 
 export default ImageModalDelete;
-
 

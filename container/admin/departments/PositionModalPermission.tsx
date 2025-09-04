@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { AdminPositionDB, MenuWebDB } from '@prisma/client';
@@ -467,5 +467,4 @@ const PositionModalPermission: React.FC<PositionModalPermissionProps> = ({ onSuc
 };
 
 export default PositionModalPermission;
-
 

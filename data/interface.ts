@@ -35,6 +35,7 @@ export interface ExtendedAdminDB extends AdminDB {
     } | null;
     permissions?: string[];
     role?: 'admin' | 'superadmin'; // Add role property for admin system
+    isSuperAdmin?: boolean; // Add isSuperAdmin flag
 }
 
 export interface ExtendedWebBaseDB extends WebBaseDB {

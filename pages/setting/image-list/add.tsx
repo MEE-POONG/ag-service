@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useRouter } from "next/router";
 import { FaArrowLeft, FaPlus, FaUpload } from "react-icons/fa";
 import { TheLayout } from "@/components/TheLayout";
@@ -122,4 +122,3 @@ const ImageAdd: React.FC = () => {
 };
 
 export default ImageAdd;
-

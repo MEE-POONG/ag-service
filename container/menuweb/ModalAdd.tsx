@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { MenuWebDB } from '@prisma/client';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
@@ -36,7 +36,6 @@ const MenuWebModalAdd: React.FC<MenuWebModalAddProps> = ({
     canDelete: false,
     createdBy: '',
     updatedBy: '',
-    isDeleted: false,
   });
 
   // Check if this is a parent menu (no parentId selected)
@@ -91,7 +90,6 @@ const MenuWebModalAdd: React.FC<MenuWebModalAddProps> = ({
       canDelete: false,
       createdBy: '',
       updatedBy: '',
-      isDeleted: false,
     });
   };
   const handleSave = async () => {
@@ -153,7 +151,7 @@ const MenuWebModalAdd: React.FC<MenuWebModalAddProps> = ({
           canDelete: false,
           createdBy: '',
           updatedBy: '',
-          isDeleted: false,
+          
         });
       } else {
         alert(`❌ ${result.error || 'เกิดข้อผิดพลาด'}`);
@@ -373,5 +371,4 @@ const MenuWebModalAdd: React.FC<MenuWebModalAddProps> = ({
 };
 
 export default MenuWebModalAdd;
-
 

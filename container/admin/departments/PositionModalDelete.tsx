@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { AdminPositionDB } from '@prisma/client';
@@ -22,9 +22,13 @@ const PositionModalDelete: React.FC<PositionModalDeleteProps> = ({ position, lis
     try {
       setIsDeleting(true);
       setError('');
+      console.log(`ลบตำแหน่ง list.id `, position.id);
 
       const res = await axios.delete('/api/admin-positions', {
-        data: { id: position.id }
+        data: { 
+          id: position.id,
+          deletedBy: 'admin' // TODO: ใช้ข้อมูลผู้ใช้จริง
+        }
       });
 
       if (res.data?.success) {
@@ -144,7 +148,6 @@ const PositionModalDelete: React.FC<PositionModalDeleteProps> = ({ position, lis
 };
 
 export default PositionModalDelete;
-
 
 
 

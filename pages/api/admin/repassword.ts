@@ -50,7 +50,7 @@ export default async function handler(
     const existingAdmin = await prisma.adminDB.findFirst({
       where: { 
         id, 
-        isDeleted: false 
+         
       },
       select: {
         id: true,

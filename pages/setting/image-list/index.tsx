@@ -1,6 +1,6 @@
 import { TheLayout } from '@/components/TheLayout';
-import { useCallback, useEffect, useState } from 'react';
-import axios from 'axios';
+import { useMemo, useState } from 'react';
+import axios from '@/lib/axios';
 import Link from 'next/link';
 import { FcAddImage } from 'react-icons/fc';
 import { FaEdit, FaEllipsisH, FaEye, FaPlus, FaTrash, FaUserCog } from 'react-icons/fa';
@@ -12,7 +12,14 @@ import Tooltip from '@/components/ui/tooltip';
 import ImageModalView from '@/container/image-list/ModalView';
 import { ImageList } from '@prisma/client';
 import ImageModalDelete from '@/container/image-list/ModalDelete';
+import { useQuery } from '@tanstack/react-query';
+import { qk } from '@/lib/queryKeys';
 
+type ImageResp = {
+    success: boolean;
+    images: ImageList[];
+    pagination: { totalPages: number };
+};
 
 export default function ImagePage() {
     const [params, setParams] = useState({
@@ -22,28 +29,32 @@ export default function ImagePage() {
         totalPages: 1,
     });
 
-    const [images, setImages] = useState<ImageList[]>([]);
-
-    const fetchData = useCallback(async () => {
-        try {
-            const res = await axios.get(`/api/imagelist?page=${params.page}&pageSize=${params.pageSize}&keyword=${params.keyword}`);
-            if (res?.data?.success) {
-                setImages(res.data.images);
-                setParams((prev) => ({ ...prev, totalPages: res.data.pagination.totalPages }));
-            }
-        } catch (error) {
-            console.error('Error fetching image data:', error);
-        }
+    // ใช้ useMemo ให้ query string เสถียร
+    const search = useMemo(() => {
+        const p = new URLSearchParams({
+            page: String(params.page),
+            pageSize: String(params.pageSize),
+            keyword: params.keyword ?? '',
+        });
+        return p.toString();
     }, [params.page, params.pageSize, params.keyword]);
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+    // ✅ ใส่ generic + ใช้ placeholderData แทน keepPreviousData (v5)
+    const { data: imageResp, isLoading, isFetching, refetch } = useQuery<ImageResp>({
+        queryKey: qk.images.list(params.page, params.pageSize, params.keyword),
+        queryFn: async () => {
+            const res = await axios.get(`/api/imagelist?${search}`);
+            return res.data as ImageResp;
+        },
+        placeholderData: (prev) => prev, // แทน keepPreviousData
+        staleTime: 30 * 1000,
+        refetchOnWindowFocus: false,
+    });
 
     const handleChange = (field: keyof typeof params, value: string | number) => {
         setParams((prev) => ({
             ...prev,
-            page: field === 'keyword' ? 1 : prev.page,
+            page: field === 'keyword' ? 1 : prev.page, // ค้นหาแล้วรีเซ็ตหน้า
             [field]: value,
         }));
     };
@@ -77,7 +88,7 @@ export default function ImagePage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {images.map((item, index) => (
+                                {(imageResp?.images ?? []).map((item, index) => (
                                     <TableRow key={item.id}>
                                         <TableCell>{(params.page - 1) * params.pageSize + index + 1}</TableCell>
                                         <TableCell>
@@ -96,7 +107,7 @@ export default function ImagePage() {
                                                 </Button>
                                             </Tooltip> */}
                                             <Tooltip content="ลบรูปภาพ">
-                                                <ImageModalDelete list={item} onSuccess={fetchData} />
+                                                <ImageModalDelete list={item} onSuccess={() => refetch()} />
                                                 {/* <Button className="bg-red-100 text-red-700 rounded hover:bg-red-300" variant="ghost" size="sm">
                                                     <FaTrash className="h-4 w-4" />
                                                 </Button> */}
@@ -109,14 +120,13 @@ export default function ImagePage() {
                     </div>
 
                     <div className="mt-4 sm:mt-6">
-   <PaginationSelect
-              params={params}
-              setParams={setParams}
-            />
+                        <PaginationSelect
+                            params={params}
+                            setParams={setParams}
+                        />
                     </div>
                 </div>
             </div>
         </TheLayout>
     );
 }
-

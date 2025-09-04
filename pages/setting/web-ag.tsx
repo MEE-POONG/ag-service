@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { TheLayout } from '@/components/TheLayout'
 import PaginationSelect from '@/components/PaginationSelect'
-import axios from 'axios'
+import axios from '@/lib/axios'
+import { useQuery } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
 import WebBaseModalAdd from '@/container/web-ag/ModalAdd'
 import WebBaseModalEdit from '@/container/web-ag/ModalEdit'
 import { ExtendedWebBaseDB } from '@/data/interface'
 import WebBaseModalDelete from '@/container/web-ag/ModalDelete'
 import WebBaseModalView from '@/container/web-ag/ModalView'
+
+type WebBaseResp = {
+  success: boolean;
+  data: ExtendedWebBaseDB[];
+  total?: number;
+};
 
 export default function WebAgPage() {
   const [params, setParams] = useState({
@@ -23,33 +31,46 @@ export default function WebAgPage() {
   const [pageSize, setPageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
 
-  // ดึงข้อมูล WebBase
-  const fetchWebBases = async () => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams();
-      if (searchTerm) params.append('search', searchTerm);
-      if (statusFilter) params.append('status', statusFilter);
-
-      const response = await axios.get(`/api/web-base?${params}`);
-      const result = response.data;
-
-      if (result.success) {
-        setWebBases(result.data);
-        setTotalItems(result.total || result.data.length);
-      } else {
-        alert('เกิดข้อผิดพลาดในการดึงข้อมูล');
-      }
-    } catch (error) {
-      alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchWebBases();
+  // ✅ สร้าง query string จาก state (รวม page & pageSize ด้วย)
+  const qs = React.useMemo(() => {
+    const p = new URLSearchParams();
+    if (searchTerm) p.append('search', searchTerm);
+    if (statusFilter) p.append('status', statusFilter);
+    p.append('page', String(currentPage));
+    p.append('pageSize', String(pageSize));
+    return p.toString();
   }, [searchTerm, statusFilter, currentPage, pageSize]);
+
+  // ✅ ใส่ generic, ใช้ placeholderData แทน keepPreviousData (v5)
+  const {
+    data: webResp,
+    isFetching,
+    isLoading,
+    refetch,
+  } = useQuery<WebBaseResp>({
+    queryKey: qk.webBase.list(searchTerm, statusFilter, currentPage, pageSize),
+    queryFn: async () => {
+      const res = await axios.get(`/api/web-base?${qs}`);
+      return res.data as WebBaseResp;
+    },
+    placeholderData: (prev) => prev, // ⬅️ แทน keepPreviousData
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  // ✅ ใช้ isLoading จาก query และผูกชนิด webResp ถูกต้องแล้ว
+  useEffect(() => {
+    if (!webResp) return;
+    setLoading(false);
+    if (webResp.success) {
+      setWebBases(webResp.data);
+      setTotalItems(webResp.total ?? webResp.data.length);
+    } else {
+      setWebBases([]);
+      setTotalItems(0);
+    }
+  }, [webResp]);
+
 
   return (
     <TheLayout>
@@ -58,11 +79,7 @@ export default function WebAgPage() {
           <h1 className="flex items-center text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900">
             📋 Web Base Management
           </h1>
-          <WebBaseModalAdd
-            onSuccess={() => {
-              fetchWebBases();
-            }}
-          />
+          <WebBaseModalAdd onSuccess={() => refetch()} />
         </div>
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
           <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
@@ -151,8 +168,8 @@ export default function WebAgPage() {
                         <td className="px-2 sm:px-4 py-3">
                           <div className='w-max ml-auto flex flex-row gap-1'>
                             <WebBaseModalView data={webBase} />
-                            <WebBaseModalEdit data={webBase} onSuccess={fetchWebBases} />
-                            <WebBaseModalDelete data={webBase} onSuccess={fetchWebBases} />
+                            <WebBaseModalEdit data={webBase} onSuccess={() => refetch()} />
+                            <WebBaseModalDelete data={webBase} onSuccess={() => refetch()} />
                           </div>
                         </td>
                       </tr>
@@ -177,4 +194,3 @@ export default function WebAgPage() {
     </TheLayout>
   );
 }
-

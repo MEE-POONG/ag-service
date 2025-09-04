@@ -5,7 +5,9 @@ import { TheLayout } from '@/components/TheLayout'
 //import { sampleUser } from '@/data/sampleUser'
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import axios from 'axios'
+import axios from '@/lib/axios'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
 
 interface Permission {
   id: string
@@ -76,22 +78,19 @@ export default function PermissionsPage() {
   //   checkAuth()
   // }, [router])
 
-  const fetchPermissions = async () => {
-    setLoading(true)
-    try {
+  const queryClient = useQueryClient()
+  const { data: permResp, isFetching, refetch } = useQuery({
+    queryKey: qk.menus.all,
+    queryFn: async () => {
       const res = await axios.get('/api/menu-web')
-      const data = res.data
-      if (data.success) {
-        setPermissions(data.data || [])
-      } else {
-        toast.error(data.error || 'โหลดข้อมูลสิทธิ์ล้มเหลว')
-      }
-    } catch (error) {
-      toast.error('โหลดข้อมูลสิทธิ์ล้มเหลว')
-    } finally {
-      setLoading(false)
-    }
-  }
+      return res.data as { success: boolean; data: Permission[] }
+    },
+    staleTime: 60 * 1000,
+  })
+  useEffect(() => {
+    if (permResp?.success) setPermissions(permResp.data || [])
+    setLoading(false)
+  }, [permResp])
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -112,10 +111,14 @@ export default function PermissionsPage() {
     e.preventDefault()
     try {
       const method = editId ? 'PUT' : 'POST'
-      const res = await axios.post('/api/menu-web', {
-        id: editId,
-        ...form,
-        updatedBy: authUser?.username || 'admin'
+      const res = await axios({
+        method,
+        url: '/api/menu-web',
+        data: {
+          id: editId,
+          ...form,
+          updatedBy: authUser?.username || 'admin',
+        },
       })
       const data = res.data
       if (data.success) {
@@ -123,7 +126,8 @@ export default function PermissionsPage() {
         setShowForm(false)
         setForm(defaultForm)
         setEditId(null)
-        fetchPermissions()
+        await queryClient.invalidateQueries({ queryKey: qk.menus.all })
+        refetch()
       } else {
         toast.error(data.error || 'เกิดข้อผิดพลาด')
       }
@@ -148,7 +152,8 @@ export default function PermissionsPage() {
       const data = res.data
       if (data.success) {
         toast.success('ลบสิทธิ์สำเร็จ')
-        fetchPermissions()
+        await queryClient.invalidateQueries({ queryKey: qk.menus.all })
+        refetch()
       } else {
         toast.error(data.error || 'เกิดข้อผิดพลาด')
       }
@@ -322,4 +327,3 @@ export default function PermissionsPage() {
     </TheLayout>
   )
 } 
-

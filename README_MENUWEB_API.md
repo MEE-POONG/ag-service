@@ -207,7 +207,6 @@ interface MenuWebDB {
   updatedAt: Date
   createdBy: string
   updatedBy: string
-  isDeleted: boolean
   deleteBy?: string
 }
 ```

@@ -29,7 +29,10 @@ axiosInstance.interceptors.response.use(
     // ถ้า token หมดอายุหรือไม่ valid
     if (error.response?.status === 401) {
       localStorage.removeItem('auth-token')
-      // redirect ไป login จะถูกจัดการโดย useAuth hook
+      // Only redirect if not already on login page to prevent loops
+      if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/login')) {
+        window.location.href = '/auth/login'
+      }
     }
     return Promise.reject(error)
   }

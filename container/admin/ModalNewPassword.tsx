@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import { AdminDB } from '@prisma/client';
 import ReactIconComponent from '@/components/ReactIconComponent';
@@ -7,10 +7,9 @@ import Modal from '@/components/form/Modal';
 
 interface AdminModalRepasswordProps {
   data: AdminDB;
-  onSuccess: () => void;
 }
 
-const AdminModalRepassword: React.FC<AdminModalRepasswordProps> = ({ data, onSuccess }) => {
+const AdminModalRepassword: React.FC<AdminModalRepasswordProps> = ({ data }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -43,7 +42,6 @@ const AdminModalRepassword: React.FC<AdminModalRepasswordProps> = ({ data, onSuc
 
       if (res.data.success) {
         alert(res.data.message || '✅ ตั้งรหัสใหม่สำเร็จ');
-        onSuccess();
         setIsOpen(false);
         setNewPassword('');
         setConfirmPassword('');

@@ -1,10 +1,11 @@
 // PositionModalAdd.tsx
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { ExtendedAdminDepartment } from '@/data/interface';
 import { Button } from '@/components/ui/button';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
+import { useAuth } from '@/hooks/useAuth';
 
 interface PositionModalAddProps {
   onSuccess: () => void;
@@ -12,6 +13,7 @@ interface PositionModalAddProps {
 }
 
 const PositionModalAdd: React.FC<PositionModalAddProps> = ({ list, onSuccess }) => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [positions, setPositions] = useState<{ id: string; name: string; priority: number }[]>([]);
@@ -21,7 +23,7 @@ const PositionModalAdd: React.FC<PositionModalAddProps> = ({ list, onSuccess }) 
   // โหลดตำแหน่งในแผนกนี้
   const fetchPositions = async (departmentId: string) => {
     try {
-      const res = await axios.get('/api/admin-positions', { params: { departmentId } });
+      const res = await axios.get('/api/admin-positions', { params: { adminDepartmentId: departmentId } });
       setPositions(res.data?.data || []);
     } catch (error) {
       console.error('Error fetching positions:', error);
@@ -38,22 +40,32 @@ const PositionModalAdd: React.FC<PositionModalAddProps> = ({ list, onSuccess }) 
     try {
       const payload: any = {
         name: name.trim(),
-        adminDepartmentId: list.id, // 🔒 ล็อคแผนก
+        adminDepartmentId: list.id,
+        createdBy: user?.id,
       };
-      if (priorityPositionId) payload.priorityPositionId = priorityPositionId;
+      
+      // แปลง priorityPositionId เป็น priority number
+      if (priorityPositionId) {
+        const targetPosition = positions.find(pos => pos.id === priorityPositionId);
+        if (targetPosition) {
+          payload.priority = targetPosition.priority;
+        }
+      }
 
       const res = await axios.post('/api/admin-positions', payload);
-      if (res.status === 201) {
+      if (res.data?.success) {
         alert('✅ เพิ่มตำแหน่งสำเร็จ');
         onSuccess();
         setIsOpen(false);
         setName('');
         setPriorityPositionId('');
       } else {
-        alert('เกิดข้อผิดพลาดในการบันทึก');
+        throw new Error(res.data?.error || 'เกิดข้อผิดพลาดในการบันทึก');
       }
     } catch (err: any) {
-      alert(err?.response?.data?.error || 'เกิดข้อผิดพลาดในการบันทึก');
+      const errorMessage = err?.response?.data?.error || err?.message || 'เกิดข้อผิดพลาดในการบันทึก';
+      alert(errorMessage);
+      console.error('Create position error:', err);
     } finally {
       setIsSaving(false);
     }
@@ -154,4 +166,3 @@ const PositionModalAdd: React.FC<PositionModalAddProps> = ({ list, onSuccess }) 
 };
 
 export default PositionModalAdd;
-

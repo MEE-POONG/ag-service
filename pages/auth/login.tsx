@@ -1,93 +1,75 @@
+// /pages/auth/login.tsx
 'use client'
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
-import axios from 'axios'
-import axiosAuth from '@/lib/axios'
+import axios from '@/lib/axios'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
 
 export default function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [checking, setChecking] = useState(true)
+  const queryClient = useQueryClient()
   const router = useRouter()
 
-  // เช็คว่าได้ login อยู่แล้วหรือไม่
+  // ดึง redirect target ถ้ามี ?redirect=/path
+  const redirectTo = typeof router.query?.redirect === 'string' ? router.query.redirect : '/'
+
+  const { data: me, isFetching: checking } = useQuery({
+    queryKey: qk.auth.me,
+    queryFn: async () => {
+      const res = await axios.get('/api/auth/me')
+      return res.data?.user ?? null
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  })
+
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('auth-token')
-
-        if (token) {
-          // ตรวจสอบว่า token ยังใช้งานได้หรือไม่ - ใช้ axiosAuth ที่มี interceptor
-          const response = await axiosAuth.get('/api/auth/me')
-          if (response.status === 200 && response.data.user) {
-            // ถ้า token ยังใช้งานได้ให้ redirect ไป dashboard
-            router.push('/')
-            return
-          }
-        }
-      } catch (error) {
-        // ถ้า token หมดอายุหรือไม่ valid ให้ลบออก
-        localStorage.removeItem('auth-token')
-      } finally {
-        setChecking(false)
-      }
+    if (!router.isReady) return
+    if (me) {
+      router.replace(typeof redirectTo === 'string' && redirectTo.startsWith('/') ? redirectTo : '/')
     }
+  }, [me, router.isReady, redirectTo, router])
 
-    checkAuth()
-  }, [router])
+  const loginMutation = useMutation({
+    mutationFn: async (payload: { username: string; password: string }) => {
+      const response = await axios.post('/api/auth/login', payload)
+      return response.data
+    },
+    onSuccess: (data) => {
+      // Prime the cache with returned user
+      queryClient.setQueryData(qk.auth.me, data?.user ?? null)
+      toast.success(data?.message || 'เข้าสู่ระบบสำเร็จ')
+      router.replace(typeof redirectTo === 'string' && redirectTo.startsWith('/') ? redirectTo : '/')
+    },
+    onError: (error: any) => {
+      const msg =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        error?.message ||
+        'เกิดข้อผิดพลาดในการเชื่อมต่อ'
+      toast.error(msg)
+    }
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
     try {
-      const response = await axios.post('/api/auth/login', {
-        username,
-        password
-      })
-
-      // Check for successful login based on actual API response format
-      if (response?.status === 200) {
-        const { message, user, token } = response.data
-
-        if (user && token) {
-          toast.success(message || 'เข้าสู่ระบบสำเร็จ')
-
-          // Store token if needed for API authentication
-          localStorage.setItem('auth-token', token)
-
-          // Use window.location for more reliable redirect
-          window.location.href = '/'
-        } else {
-          console.error('Missing user or token in response:', { user, token })
-          throw new Error('ข้อมูลการเข้าสู่ระบบไม่สมบูรณ์')
-        }
-      } else {
-        throw new Error(response.data.error || 'การเข้าสู่ระบบล้มเหลว')
-      }
-    } catch (error) {
-      console.error('Login error:', error)
-
-      let errorMessage = 'เกิดข้อผิดพลาดในการเชื่อมต่อ'
-
-      if (axios.isAxiosError(error) && error.response) {
-        errorMessage = error.response.data.error || error.response.data.message || errorMessage
-        console.error('API Error:', error.response.data)
-      } else if (error instanceof Error) {
-        errorMessage = error.message
-      }
-
-      toast.error(errorMessage)
+      await loginMutation.mutateAsync({ username, password })
+    } catch (err) {
+      // Error is handled by onError toast; prevent unhandled rejection overlay
+      // No-op
     } finally {
       setLoading(false)
     }
   }
 
-  // แสดง loading ขณะเช็ค authentication
   if (checking) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center">
@@ -116,9 +98,7 @@ export default function LoginPage() {
         <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="username" className="sr-only">
-                ชื่อผู้ใช้
-              </label>
+              <label htmlFor="username" className="sr-only">ชื่อผู้ใช้</label>
               <input
                 id="username"
                 name="username"
@@ -132,9 +112,7 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">
-                รหัสผ่าน
-              </label>
+              <label htmlFor="password" className="sr-only">รหัสผ่าน</label>
               <input
                 id="password"
                 name="password"
@@ -166,5 +144,4 @@ export default function LoginPage() {
       </div>
     </div>
   )
-} 
-
+}

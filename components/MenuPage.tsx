@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import ReactIconComponent from './ReactIconComponent'
-import { useAuth } from '@/hooks/useAuth'
 
 import { MenuWebDB } from '@prisma/client'
 import { MenuWebDBWithChildren } from '@/data'
@@ -12,10 +11,9 @@ import Link from 'next/link'
 interface EnhancedMenuProps {
     dataList?: MenuWebDB[]; // รับ flat array ธรรมดา
     collapsed?: boolean;
-    currentUser?: string; // username ปัจจุบัน
 }
 
-export default function MenuPage({ dataList, collapsed, currentUser = "" }: EnhancedMenuProps) {
+export default function MenuPage({ dataList, collapsed, }: EnhancedMenuProps) {
     const router = useRouter();
     const [hierarchicalMenus, setHierarchicalMenus] = useState<MenuWebDBWithChildren[]>([]);
     const [openGroups, setOpenGroups] = useState<string[]>([]);
@@ -23,20 +21,20 @@ export default function MenuPage({ dataList, collapsed, currentUser = "" }: Enha
     const currentPath = useCallback(() => {
         const path = router.asPath.split("?")[0];
         const segments = path.split("/").filter(Boolean);
-        
+
         // ถ้าไม่มี segments หรือเป็น root, return "/"
         if (segments.length === 0) return "/";
-        
+
         // สำหรับ dynamic routes เช่น /admin/edit/[id], /admin/view/[id]
         // ตรวจสอบ segment สุดท้ายว่าเป็น ObjectId หรือไม่
         const last = segments[segments.length - 1];
         const isProbablyId = /^[a-f\d]{24}$/i.test(last);
-        
+
         if (isProbablyId && segments.length >= 2) {
             // ถ้าเป็น ID และมี segments มากกว่า 1, ตัด ID ออก
             return `/${segments.slice(0, -1).join("/")}`;
         }
-        
+
         return `/${segments.join("/")}`;
     }, [router.asPath]);
 
@@ -61,7 +59,7 @@ export default function MenuPage({ dataList, collapsed, currentUser = "" }: Enha
     const isParentActive = useCallback((item: MenuWebDBWithChildren) => {
         // เช็คว่าตัวเองหรือลูกๆ active หรือไม่
         if (isActive(item.link, item)) return true;
-        
+
         // เช็คลูกๆ
         return item.children?.some(sub => isActive(item.link + sub.link, sub)) || false;
     }, [isActive]);
@@ -138,7 +136,7 @@ export default function MenuPage({ dataList, collapsed, currentUser = "" }: Enha
 
         const combinedMenus = combineMenus();
         setHierarchicalMenus(combinedMenus);
-    }, [dataList, currentUser])
+    }, [dataList])
 
     useEffect(() => {
         if (!hierarchicalMenus) return;

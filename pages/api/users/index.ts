@@ -15,7 +15,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
     // เงื่อนไขการค้นหา
     const searchKeyword = (keyword || search) as string;
     const whereClause: Prisma.UserDBWhereInput = {
-      isDeleted: false,
+      
       ...(status && status !== 'all' ? { isActive: status === 'active' } : {}),
       ...(searchKeyword ? {
         OR: [
@@ -78,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const existingUser = await prisma.userDB.findFirst({
         where: {
           OR: [ { username }, { email } ],
-          isDeleted: false,
+          
         },
       })
       if (existingUser) {

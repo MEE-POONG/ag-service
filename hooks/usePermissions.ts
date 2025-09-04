@@ -10,37 +10,37 @@ export interface PermissionCheck {
 }
 
 export function usePermissions() {
-  const { user } = useAuth()
-  
-  // ตรวจสอบว่าเป็น superadmin หรือไม่
-  const isSuperAdminUser = useMemo(
-    () => user?.username === 'superadmin',
-    [user?.username]
-  )
+  const { user, userLoading } = useAuth()
 
-  const rootAllTrue: PermissionCheck = {
-    canView: true,
-    canCreate: true,
-    canUpdate: true,
-    canDelete: true,
-    canAdvance: true,
-  }
-
+  // สร้าง map ของสิทธิ์จาก user data
   const permissionsMap = useMemo(() => {
     const map = new Map<string, any>()
+    
     if (user?.adminPosition?.AdminDefaultPermissionDB) {
       user.adminPosition.AdminDefaultPermissionDB.forEach((permission: any) => {
         map.set(permission.menuPage.name, permission)
       })
     }
+    
     return map
   }, [user])
 
+  // ฟังก์ชันตรวจสอบสิทธิ์สำหรับเมนูเฉพาะ
   const checkPermission = (menuName: string): PermissionCheck => {
-    // ถ้าเป็น superadmin ให้สิทธิ์ทั้งหมด
-    if (isSuperAdminUser) return rootAllTrue
+    // Superadmin has all permissions
+    if (isSuperAdmin) {
+      return {
+        canView: true,
+        canCreate: true,
+        canUpdate: true,
+        canDelete: true,
+        canAdvance: true
+      }
+    }
 
     const permission = permissionsMap.get(menuName)
+    
+    // ถ้าไม่มีข้อมูลสิทธิ์ ให้ตรวจจาก basic permissions
     if (!permission) {
       const hasBasicPermission = user?.permissions?.includes(menuName) || false
       return {
@@ -48,38 +48,56 @@ export function usePermissions() {
         canCreate: false,
         canUpdate: false,
         canDelete: false,
-        canAdvance: false,
+        canAdvance: false
       }
     }
+
     return {
       canView: permission.canViews || false,
       canCreate: permission.canCreate || false,
       canUpdate: permission.canUpdate || false,
       canDelete: permission.canDelete || false,
-      canAdvance: permission.canAdvance || false,
+      canAdvance: permission.canAdvance || false
     }
   }
 
+  // ฟังก์ชันตรวจสอบว่ามีสิทธิ์เข้าถึงเมนูหรือไม่
   const hasMenuAccess = (menuName: string): boolean => {
-    // superadmin ผ่านเสมอ
-    if (isSuperAdminUser) return true
-    return checkPermission(menuName).canView
+    const permission = checkPermission(menuName)
+    return permission.canView
   }
 
+  // ฟังก์ชันตรวจสอบสิทธิ์หลายเมนูพร้อมกัน
+  const checkMultiplePermissions = (menuNames: string[]): Record<string, PermissionCheck> => {
+    const result: Record<string, PermissionCheck> = {}
+    
+    menuNames.forEach(menuName => {
+      result[menuName] = checkPermission(menuName)
+    })
+    
+    return result
+  }
+
+  // ตรวจสอบว่าเป็น super admin หรือไม่ (มีสิทธิ์ทุกอย่าง)
   const isSuperAdmin = useMemo(() => {
-    // รวม superadmin ด้วย
-    if (isSuperAdminUser) return true
-    const adminPermission = permissionsMap.get('ระบบผู้ดูแล')
-    return adminPermission?.canAdvance || false
-  }, [isSuperAdminUser, permissionsMap])
+    // Wait for user data to load before checking
+    if (userLoading || !user) {
+      return false
+    }
+    
+    // Check if user is the superadmin username or has superadmin role
+    console.log(84,`admin check user : user?.username: ${user?.username} : `,user?.username === 'superadmin' || user?.role === 'superadmin' || user?.isSuperAdmin || false);
+    
+    return user?.username === 'superadmin' || user?.role === 'superadmin' || user?.isSuperAdmin || false
+  }, [user, userLoading])
 
   return {
     user,
+    userLoading,
     checkPermission,
     hasMenuAccess,
-    checkMultiplePermissions: (menuNames: string[]) =>
-      Object.fromEntries(menuNames.map((m) => [m, checkPermission(m)])),
+    checkMultiplePermissions,
     isSuperAdmin,
-    allPermissions: permissionsMap,
+    allPermissions: permissionsMap
   }
 }

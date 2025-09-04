@@ -119,7 +119,7 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     const whereClause: any = {
-      isDeleted: false,
+      
       name: {
         contains: keyword as string,
         mode: Prisma.QueryMode.insensitive,
@@ -209,7 +209,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
   const existingMenuByName = await prisma.menuWebDB.findFirst({
     where: {
       name: name.trim(),
-      isDeleted: false
+      
     }
   });
 
@@ -225,7 +225,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
     where: {
       link: link.trim(),
       parentId: parentId || null,
-      isDeleted: false
+      
     }
   });
 
@@ -241,8 +241,8 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
   if (typeof nextShowOrder !== 'number' || nextShowOrder <= 0) {
     // หาลำดับสูงสุดในกลุ่มเดียวกัน (ทั้งกลุ่มไม่มีแม่และกลุ่มแม่คนเดียวกัน)
     const whereCondition = parentId && typeof parentId === 'string' 
-      ? { parentId: parentId, isDeleted: false } // กลุ่มแม่คนเดียวกัน
-      : { parentId: null, isDeleted: false };   // กลุ่มไม่มีแม่
+      ? { parentId: parentId,  } // กลุ่มแม่คนเดียวกัน
+      : { parentId: null,  };   // กลุ่มไม่มีแม่
 
     const lastMenu = await prisma.menuWebDB.findFirst({
       where: whereCondition,

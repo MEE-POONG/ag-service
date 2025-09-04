@@ -1,43 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { TheLayout } from '@/components/TheLayout'
-import axios from 'axios'
+import axios from '@/lib/axios'
 import { ExtendedAdminDB } from '@/data/interface'
 import Link from 'next/link'
 import { FaEdit, FaArrowLeft, FaUser, FaEnvelope, FaPhone, FaBuilding, FaUserTag, FaCalendarAlt, FaToggleOn, FaToggleOff } from 'react-icons/fa'
+import { useQuery } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
 
 export default function ViewAdminPage() {
   const router = useRouter()
   const { id } = router.query
   
-  const [admin, setAdmin] = useState<ExtendedAdminDB | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  // โหลดข้อมูล Admin
-  const fetchAdmin = async (adminId: string) => {
-    try {
-      const response = await axios.get(`/api/admin?id=${adminId}`)
-      if (response.data.success && response.data.data) {
-        setAdmin(response.data.data)
-        setError(null)
-      } else {
-        console.error('API response error:', response.data)
-        setError('ไม่พบข้อมูล Admin ที่ต้องการดู')
-      }
-    } catch (error) {
-      console.error('Error fetching admin:', error)
-      setError('เกิดข้อผิดพลาดในการโหลดข้อมูล')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    if (id && typeof id === 'string') {
-      fetchAdmin(id)
-    }
-  }, [id])
+  const { data: admin, isLoading: loading, error } = useQuery({
+    queryKey: id && typeof id === 'string' ? qk.admins.detail(id) : ['admins','detail','idle'],
+    queryFn: async () => {
+      const response = await axios.get(`/api/admin?id=${id}`)
+      if (!response.data?.success) throw new Error(response.data?.error || 'ไม่พบข้อมูล Admin')
+      return response.data.data as ExtendedAdminDB
+    },
+    enabled: !!id && typeof id === 'string',
+    staleTime: 60 * 1000,
+  })
 
   const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleDateString('th-TH', {
@@ -90,7 +74,7 @@ export default function ViewAdminPage() {
     return (
       <TheLayout>
         <div className="flex flex-col justify-center items-center min-h-screen">
-          <div className="text-lg text-red-600 mb-4">{error || 'ไม่พบข้อมูล Admin'}</div>
+          <div className="text-lg text-red-600 mb-4">{(error as any)?.message || 'ไม่พบข้อมูล Admin'}</div>
           <Link 
             href="/admin" 
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"

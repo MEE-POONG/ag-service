@@ -4,7 +4,9 @@ import toast from 'react-hot-toast'
 import { TheLayout } from '@/components/TheLayout'
 //import { sampleUser } from '@/data/sampleUser'
 import { Dialog, Transition } from '@headlessui/react'
-import axios from 'axios'
+import axios from '@/lib/axios'
+import { useQuery } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
 
 interface Admin {
   id: string
@@ -39,45 +41,20 @@ export default function AdminPage() {
   const [deleteLoading, setDeleteLoading] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    fetchAdmins()
-    // const checkAuth = async () => {
-    //   try {
-    //     const response = await axios.get('/api/auth/me')
-    //     const data = response.data
-        
-    //     if (data.isAuthenticated && data.user?.role === 'admin') {
-    //       setAuthUser(data.user)
-    //       fetchAdmins()
-    //     } else {
-    //       router.push('/auth/login')
-    //     }
-    //   } catch (error) {
-    //     console.error('Auth check failed:', error)
-    //     router.push('/auth/login')
-    //   } finally {
-    //     setLoading(false)
-    //   }
-    // }
-
-    // checkAuth()
-  }, [router])
-
-  const fetchAdmins = async () => {
-    try {
+  const { data, refetch } = useQuery({
+    queryKey: qk.admins.list,
+    queryFn: async () => {
       const response = await axios.get('/api/admin')
-      const data = response.data
-      
-      if (data.success) {
-        setAdmins(data.data)
-      } else {
-        setError(data.error || 'เกิดข้อผิดพลาดในการดึงข้อมูล')
-      }
-    } catch (error) {
-      console.error('Fetch admins failed:', error)
-      setError('เกิดข้อผิดพลาดในการเชื่อมต่อ')
-    }
-  }
+      if (!response.data?.success) throw new Error(response.data?.error || 'โหลดข้อมูลล้มเหลว')
+      return response.data.data as Admin[]
+    },
+    staleTime: 60 * 1000,
+  })
+
+  useEffect(() => {
+    if (data) setAdmins(data)
+    setLoading(false)
+  }, [data])
 
   const handleDelete = async () => {
     if (!deleteId) return
@@ -86,7 +63,7 @@ export default function AdminPage() {
       const res = await axios.delete(`/api/AdminDB/${deleteId}`)
       if (res.data.success) {
         toast.success('ลบผู้ดูแลระบบสำเร็จ')
-        setAdmins(admins.filter(a => a.id !== deleteId))
+        await refetch()
       } else {
         toast.error(res.data.error || 'เกิดข้อผิดพลาด')
       }
@@ -188,4 +165,3 @@ export default function AdminPage() {
     </TheLayout>
   )
 } 
-

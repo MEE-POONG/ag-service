@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         return res.status(400).json({ success: false, error: 'ต้องระบุค่า isActive เป็น boolean' });
       }
 
-      const exists = await prisma.adminPositionDB.findFirst({ where: { id, isDeleted: false } });
+      const exists = await prisma.adminPositionDB.findFirst({ where: { id,  } });
       if (!exists) {
         return res.status(404).json({ success: false, error: 'ไม่พบตำแหน่ง' });
       }

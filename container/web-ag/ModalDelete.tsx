@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import Modal from '@/components/form/Modal';
 import { ExtendedWebBaseDB } from '@/data/interface';
@@ -87,5 +87,4 @@ const WebBaseModalDelete: React.FC<WebBaseModalDeleteProps> = ({
 };
 
 export default WebBaseModalDelete;
-
 

@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { MenuWebDB } from '@prisma/client';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
@@ -32,7 +32,7 @@ const MenuWebModalEdit: React.FC<MenuWebModalEditProps> = ({ onSuccess, data }) 
     canDelete: false,
     createdBy: '',
     updatedBy: '',
-    isDeleted: false,
+    
   });
 
   const loadParentMenus = async () => {
@@ -124,7 +124,7 @@ const MenuWebModalEdit: React.FC<MenuWebModalEditProps> = ({ onSuccess, data }) 
           canDelete: false,
           createdBy: '',
           updatedBy: '',
-          isDeleted: false,
+          
         });
       } else {
         alert(`❌ ${result.error || 'เกิดข้อผิดพลาด'}`);
@@ -339,5 +339,4 @@ const MenuWebModalEdit: React.FC<MenuWebModalEditProps> = ({ onSuccess, data }) 
 };
 
 export default MenuWebModalEdit;
-
 

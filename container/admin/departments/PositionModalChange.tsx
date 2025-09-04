@@ -1,6 +1,6 @@
 // PositionModalChange.tsx
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { ExtendedAdminDepartment } from '@/data/interface';
 import { Button } from '@/components/ui/button';
 import Modal from '@/components/form/Modal';
@@ -153,5 +153,4 @@ const PositionModalChange: React.FC<PositionModalChangeProps> = ({ list, onSucce
 };
 
 export default PositionModalChange;
-
 

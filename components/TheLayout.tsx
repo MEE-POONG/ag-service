@@ -4,6 +4,8 @@ import { ReactNode, useEffect, useState } from 'react'
 import { ExtendedAdminDB } from '@/data/interface'
 import { TheSidebar } from './TheSidebar'
 import { TheHeader } from './TheHeader'
+import { useRouter } from 'next/router'
+import { useAuth } from '@/hooks/useAuth'
 
 interface LayoutProps {
   children: ReactNode
@@ -12,6 +14,9 @@ interface LayoutProps {
 }
 
 export function TheLayout({ children }: LayoutProps) {
+  const { user, userLoading, logout } = useAuth()
+  const router = useRouter()
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -20,6 +25,16 @@ export function TheLayout({ children }: LayoutProps) {
   const toggleTheme = () => {
     setDarkMode(!darkMode);
   };
+
+  useEffect(() => {
+    console.log('user in dashboard : ', user);
+    console.log(`router : `, router);
+    if (user?.username === 'admin' || user?.username === 'superadmin') {
+      console.log('yes');
+    } else {
+      console.log('no');
+    }
+  }, [user])
 
   return (
     <div className="min-h-screen bg-background font-sans antialiased">

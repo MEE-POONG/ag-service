@@ -1,44 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import toast from 'react-hot-toast'
+import React from 'react'
 import { TheLayout } from '@/components/TheLayout'
-//import { sampleUser } from '@/data/sampleUser'
-import axios from 'axios'
-
-interface AuthUser {
-  id: string
-  username: string
-  email: string
-  role: 'admin' | 'user' | 'aguser'
-  permissions?: string[]
-}
+import { useAuth } from '@/hooks/useAuth'
 
 export default function ReportsPage() {
-  const [authUser, setAuthUser] = useState<AuthUser | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await axios.get('/api/auth/me')
-        const data = response.data
-        
-        if (data.isAuthenticated) {
-          setAuthUser(data.user)
-        } else {
-          router.push('/auth/login')
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error)
-        router.push('/auth/login')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    checkAuth()
-  }, [router])
+  const { user: authUser, userLoading: loading } = useAuth()
 
   if (loading) {
     return (
@@ -89,4 +54,3 @@ export default function ReportsPage() {
     </TheLayout>
   )
 } 
-

@@ -191,7 +191,7 @@ export async function deleteOldImagesForModel(
     const images = await prisma.imageList.findMany({
       where: {
         modelName: modelName,
-        isDeleted: false
+        
       },
       orderBy: {
         createdAt: 'desc'
@@ -237,7 +237,7 @@ export async function softDeleteOldImagesForModel(
     const images = await prisma.imageList.findMany({
       where: {
         modelName: modelName,
-        isDeleted: false
+        
       },
       orderBy: {
         createdAt: 'desc'

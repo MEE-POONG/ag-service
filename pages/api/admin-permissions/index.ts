@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     if (req.method === 'GET') {
       const { adminPositionDBId } = req.query
-      const where: any = { isDeleted: false }
+      const where: any = {  }
       if (typeof adminPositionDBId === 'string' && adminPositionDBId) {
         where.adminPositionDBId = adminPositionDBId
       }

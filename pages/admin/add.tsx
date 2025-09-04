@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { TheLayout } from '@/components/TheLayout'
-import axios from 'axios'
+import axios from '@/lib/axios'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { qk } from '@/lib/queryKeys'
 
 interface Position {
   id: string
@@ -29,24 +31,28 @@ export default function AddAdminPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    axios.get('/api/admin-positions')
-      .then(res => {
-        // รองรับทั้งรูปแบบ res.data.positions และ res.data.data (ตาม JSON ที่ให้มา)
-        const pos: Position[] = res.data?.positions ?? res.data?.data ?? []
-        const deps: Department[] = res.data?.departments ?? []
-        setPositions(pos)
-        setDepartments(deps)
+  const queryClient = useQueryClient()
+  const { data: posDep } = useQuery({
+    queryKey: qk.positions.list,
+    queryFn: async () => {
+      const res = await axios.get('/api/admin-positions')
+      return {
+        positions: (res.data?.positions ?? res.data?.data ?? []) as Position[],
+        departments: (res.data?.departments ?? []) as Department[],
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+  })
 
-        // auto เลือกแผนก ถ้ามีแค่แผนกเดียว
-        if (deps.length === 1) {
-          setSelectedDeptId(deps[0].id)
-        }
-      })
-      .catch(err => {
-        console.error('Error fetching admin positions:', err)
-      })
-  }, [])
+  useEffect(() => {
+    console.log(posDep);
+    
+    if (posDep) {
+      setPositions(posDep.positions)
+      setDepartments(posDep.departments)
+      if (posDep.departments.length === 1) setSelectedDeptId(posDep.departments[0].id)
+    }
+  }, [posDep])
 
   // กรองตำแหน่งตามแผนกที่เลือก
   const filteredPositions = useMemo(() => {
@@ -87,16 +93,14 @@ export default function AddAdminPage() {
 
     try {
       setLoading(true)
-
-      // ส่งทั้ง adminPositionId และ adminDepartmentId ไปที่ API
       const response = await axios.post('/api/admin', {
         ...form,
         adminDepartmentId: selectedDeptId,
-        createdBy: 'admin', // TODO: ดึงจาก auth จริง
+        createdBy: 'admin',
       })
-
       const result = response.data
       if (result.success) {
+        await queryClient.invalidateQueries({ queryKey: qk.admins.list })
         alert('สร้าง Admin สำเร็จ')
         router.push('/admin')
       } else {
@@ -183,4 +187,3 @@ export default function AddAdminPage() {
     </TheLayout>
   )
 }
-

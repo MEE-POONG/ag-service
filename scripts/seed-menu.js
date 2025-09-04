@@ -23,7 +23,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "reports",
@@ -44,7 +44,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   // เมนูย่อยของ reports
   {
@@ -66,7 +66,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "bot-management",
@@ -87,7 +87,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   // เมนูพันธมิตร
   {
@@ -109,7 +109,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "ag-user",
@@ -130,7 +130,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "members",
@@ -151,7 +151,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   // เมนูจัดการผู้ดูแล
   {
@@ -173,7 +173,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "admin-admins",
@@ -194,7 +194,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "admin-departments",
@@ -215,7 +215,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   // เมนูระบบผู้ดูแล
   {
@@ -237,7 +237,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "admin-users",
@@ -258,7 +258,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "admin-permissions",
@@ -279,7 +279,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "admin-system-departments",
@@ -300,7 +300,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   // เมนูตั้งค่า
   {
@@ -322,7 +322,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "setting-index",
@@ -343,7 +343,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "web-ag",
@@ -364,7 +364,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   },
   {
     id: "menuweb",
@@ -385,7 +385,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    isDeleted: false
+    
   }
 ]
 
@@ -467,7 +467,7 @@ async function seedMenuItems() {
         { showOrder: 'asc' },
         { name: 'asc' }
       ],
-      where: { isDeleted: false }
+      where: {  }
     })
 
     console.log(`\n🎉 Successfully processed ${menuItems.length} menu items`)

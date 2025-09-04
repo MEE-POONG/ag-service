@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { MenuWebDB } from '@prisma/client';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
@@ -101,5 +101,4 @@ const MenuWebModalDelete: React.FC<MenuWebModalDeleteProps> = ({ data, onSuccess
 };
 
 export default MenuWebModalDelete;
-
 

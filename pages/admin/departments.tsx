@@ -6,8 +6,10 @@ import DepartmentsModalEdit from '@/container/admin/departments/ModalEdit';
 import DepartmentsModalDelete from '@/container/admin/departments/ModalDelete';
 import DepartmentsModalView from '@/container/admin/departments/ModalView';
 import PositionModalAdd from '@/container/admin/departments/PositionModalAdd';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import axios from '@/lib/axios';
+import { use, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { qk } from '@/lib/queryKeys';
 import { AdminPositionDB } from '@prisma/client';
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { ExtendedAdminDepartment } from '@/data/interface';
@@ -42,24 +44,25 @@ export default function DepartmentsPage() {
   const [error, setError] = useState<string | null>(null);
 
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get('/api/admin-departments');
-      const items: ExtendedAdminDepartment[] = res.data.data || [];
-      console.log("items : ", items);
-      setDepartments(items);
-    } catch (e) {
-      console.error('Error fetching departments:', e);
-    }
-    setLoading(false);
-  };
-
+  const { data: depResp, refetch } = useQuery({
+    queryKey: qk.departments.list,
+    queryFn: async () => {
+      const res = await axios.get('/api/admin-departments')
+      return res.data as { success: boolean; data: ExtendedAdminDepartment[] }
+    },
+    staleTime: 60 * 1000,
+  })
 
   useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params.page, params.pageSize, params.keyword]);
+    if (depResp?.success) {
+      setDepartments(depResp.data || [])
+    }
+    setLoading(false)
+  }, [depResp])
+
+  useEffect(() => {
+    console.log('departments', departments);
+  }, [depResp])
 
   return (
     <TheLayout>
@@ -74,9 +77,7 @@ export default function DepartmentsPage() {
             </div>
             แผนกงาน
           </h1>
-          <DepartmentsModalAdd onSuccess={() => {
-            fetchData();
-          }} />
+          <DepartmentsModalAdd onSuccess={() => { refetch() }} />
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4">
@@ -107,8 +108,8 @@ export default function DepartmentsPage() {
                   <TableCell>
                     <div className="space-y-2">
                       <div className='flex flex-row gap-1'>
-                        <PositionModalAdd list={list} onSuccess={fetchData} />
-                        <PositionModalChange list={list} onSuccess={fetchData} />
+                        <PositionModalAdd list={list} onSuccess={() => refetch()} />
+                        <PositionModalChange list={list} onSuccess={() => refetch()} />
                       </div>
                       {Array.isArray(list.adminPositions) &&
                         // ถ้าอยากให้ชัวร์ว่าเรียงตาม priority
@@ -127,10 +128,10 @@ export default function DepartmentsPage() {
                             </div>
 
                             <div className="flex items-center gap-2">
-                              <PositionModalActive list={list} position={pos} onSuccess={fetchData} />
-                              <PositionModalPermission list={list} position={pos} onSuccess={fetchData} />
-                              <PositionModalEdit list={list} position={pos} onSuccess={fetchData} />
-                              <PositionModalDelete list={list} position={pos} onSuccess={fetchData} />
+                              <PositionModalActive list={list} position={pos} onSuccess={() => refetch()} />
+                              <PositionModalPermission list={list} position={pos} onSuccess={() => refetch()} />
+                              <PositionModalEdit list={list} position={pos} onSuccess={() => refetch()} />
+                              <PositionModalDelete list={list} position={pos} onSuccess={() => refetch()} />
                             </div>
                           </div>
                         ))
@@ -141,8 +142,8 @@ export default function DepartmentsPage() {
                     <div className='w-max ml-auto flex flex-row gap-1'>
                       {/* สร้าง modal เพิ่ม position */}
                       <DepartmentsModalView data={list} />
-                      <DepartmentsModalEdit data={list} onSuccess={fetchData} />
-                      <DepartmentsModalDelete data={list} onSuccess={fetchData} />
+                      <DepartmentsModalEdit data={list} onSuccess={() => refetch()} />
+                      <DepartmentsModalDelete data={list} onSuccess={() => refetch()} />
                     </div>
                   </TableCell>
                 </TableRow>
@@ -161,4 +162,3 @@ export default function DepartmentsPage() {
     </TheLayout>
   )
 } 
-

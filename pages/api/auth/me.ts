@@ -1,30 +1,42 @@
+// /pages/api/auth/me.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { verifyToken } from '@/lib/auth'
+import { verifyToken, sanitizeAdminForClient } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
+import { getAuthToken } from '@/lib/cookieUtils'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' })
+  const token = getAuthToken(req) // ✅ ใช้ helper จาก cookieUtils.ts
+  if (!token) return res.status(200).json({ user: null })
+
+  const payload = verifyToken(token)
+  if (!payload) return res.status(200).json({ user: null })
+
+  // เพื่อความถูกต้อง ดึงข้อมูลสดจาก DB
+  const user = await prisma.adminDB.findUnique({
+    where: { id: payload.sub },
+    include: {
+      adminPosition: {
+        include: {
+          adminDepartment: true,
+          AdminDefaultPermissionDB: { include: { menuPage: true } },
+        },
+      },
+      webBase: true,
+    },
+  })
+
+  if (!user || user.isDeleted || user.isActive === false) {
+    return res.status(200).json({ user: null })
   }
 
-  // รองรับทั้ง cookie และ Authorization header
-  let token = req.cookies['auth-token']
-  
-  // ถ้าไม่มี token ใน cookie ให้เช็คจาก Authorization header
-  if (!token) {
-    const authHeader = req.headers.authorization
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      token = authHeader.substring(7) // ตัด "Bearer " ออก
-    }
+  const merged = {
+    ...user,
+    role: payload.role,
+    permissions: (user.adminPosition?.AdminDefaultPermissionDB ?? [])
+      .map((p: any) => p?.menuPage?.name)
+      .filter(Boolean),
+    tokenVersion: payload.tokenVersion ?? 0,
   }
 
-  if (!token) {
-    return res.status(401).json({ error: 'ไม่พบ token การเข้าสู่ระบบ' })
-  }
-
-  const user = verifyToken(token)
-  if (!user) {
-    return res.status(401).json({ error: 'Token ไม่ถูกต้องหรือหมดอายุ' })
-  }
-
-  return res.status(200).json({ user, message: 'ตรวจสอบสถานะการเข้าสู่ระบบสำเร็จ' })
-} 
+  return res.status(200).json({ user: sanitizeAdminForClient(merged) })
+}

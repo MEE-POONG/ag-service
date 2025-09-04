@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import { AdminDB, AdminDepartmentDB } from '@prisma/client';
 import ReactIconComponent from '@/components/ReactIconComponent';
@@ -73,7 +73,6 @@ const AdminModalDelete: React.FC<AdminModalDeleteProps> = ({ data, onSuccess }) 
 };
 
 export default AdminModalDelete;
-
 
 
 

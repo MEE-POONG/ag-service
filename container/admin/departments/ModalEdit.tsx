@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import { AdminDepartmentDB } from '@prisma/client';
 import ReactIconComponent from '@/components/ReactIconComponent';
@@ -105,7 +105,6 @@ const DepartmentsModalEdit: React.FC<DepartmentsModalEditProps> = ({ data, onSuc
 };
 
 export default DepartmentsModalEdit;
-
 
 
 

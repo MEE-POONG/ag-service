@@ -1,10 +1,12 @@
-import { menuDev, menuItems, user_dev } from "@/data";
+import { menuDev, menuItems as seedMenuItems, user_dev } from "@/data"; // 👈 กันชื่อชน
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { MdDashboard as LayoutDashboard } from "react-icons/md";
 import MenuPage from "./MenuPage";
 import UserInfo from "@/components/UserInfo";
 import { useAuth } from "@/hooks/useAuth";
-import axios from "axios";
+import axios from "@/lib/axios";
+import { useQuery } from "@tanstack/react-query";
+import { qk } from "@/lib/queryKeys";
 
 interface TheSidebarProps {
   collapsed: boolean;
@@ -13,111 +15,93 @@ interface TheSidebarProps {
 
 export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   const { user } = useAuth();
-  const [menuItems, setMenuItems] = useState<any[]>([]);
-  const [filteredMenus, setFilteredMenus] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
+  // ✅ เปลี่ยนชื่อ state ไม่ให้ชนกับตัวที่ import
+  const [menus, setMenus] = useState<any[]>([]);
+  const [filteredMenus, setFilteredMenus] = useState<any[]>([]);
+
+  const { data: menusData, isLoading: loading } = useQuery({
+    queryKey: qk.menus.showOrder,
+    queryFn: async () => {
       const res = await axios.get(`/api/menu-web/showorder`);
-      if (res.data.success) {
-        setMenuItems(res.data.data);
-        setLoading(false);
-      }
-    } catch (err) {
-      console.error('Error loading menus:', err);
-      setLoading(false);
-    }
-  }, []);
+      return res?.data?.data ?? [];
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 
   // กรองเมนูตามสิทธิ์ของ user
-  const filterMenusByPermissions = useCallback((menus: any[], user: any) => {
-    // ถ้าเป็น superadmin ให้เห็นเมนูทั้งหมด
-    if (user?.username === 'superadmin') {
-      return menus;
-    }
-
-    if (!user || !user.permissions || user.permissions.length === 0) {
+  const filterMenusByPermissions = useCallback((menus: any[], currentUser: any) => {
+    if (!currentUser || !currentUser.permissions || currentUser.permissions.length === 0) {
       return [];
     }
 
-    // สร้าง map ของสิทธิ์ user จาก AdminDefaultPermissionDB
+    // map ของสิทธิ์ user จาก AdminDefaultPermissionDB
     const userPermissionsMap = new Map();
-    if (user.adminPosition?.AdminDefaultPermissionDB) {
-      user.adminPosition.AdminDefaultPermissionDB.forEach((permission: any) => {
+    if (currentUser.adminPosition?.AdminDefaultPermissionDB) {
+      currentUser.adminPosition.AdminDefaultPermissionDB.forEach((permission: any) => {
         userPermissionsMap.set(permission.menuPage.name, permission);
       });
     }
 
     const filterMenu = (menu: any): any | null => {
-      // ตรวจสอบว่า user มีสิทธิ์เข้าถึงเมนูนี้หรือไม่
       const userPermission = userPermissionsMap.get(menu.name);
-
-      // ถ้าไม่มีในระบบสิทธิ์เลย ให้ตรวจจาก permissions array (backward compatibility)
-      const hasBasicPermission = user.permissions.includes(menu.name);
+      const hasBasicPermission = currentUser.permissions.includes(menu.name);
 
       if (!userPermission && !hasBasicPermission) {
-        // ตรวจสอบเมนูย่อยว่ามีสิทธิ์หรือไม่
         if (menu.children?.length > 0) {
-          const filteredChildren = menu.children
-            .map(filterMenu)
-            .filter(Boolean);
-
+          const filteredChildren = menu.children.map(filterMenu).filter(Boolean);
           if (filteredChildren.length > 0) {
-            return {
-              ...menu,
-              children: filteredChildren
-            };
+            return { ...menu, children: filteredChildren };
           }
         }
         return null;
       }
 
-      // ตรวจสอบสิทธิ์การดู (canViews)
       if (userPermission && !userPermission.canViews) {
         return null;
       }
 
-      // ถ้าผ่านการตรวจสอบ ให้กรองเมนูย่อยด้วย
       if (menu.children?.length > 0) {
-        const filteredChildren = menu.children
-          .map(filterMenu)
-          .filter(Boolean);
-
-        return {
-          ...menu,
-          children: filteredChildren,
-          // เพิ่มข้อมูลสิทธิ์เพื่อใช้งานต่อ
-          userPermission: userPermission
-        };
+        const filteredChildren = menu.children.map(filterMenu).filter(Boolean);
+        return { ...menu, children: filteredChildren, userPermission };
       }
 
-      return {
-        ...menu,
-        userPermission: userPermission
-      };
+      return { ...menu, userPermission };
     };
 
     return menus.map(filterMenu).filter(Boolean);
   }, []);
 
+  // โหลดเมนูจาก API -> เก็บใน state
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (menusData && Array.isArray(menusData)) {
+      setMenus(menusData);
+    } else {
+      setMenus([]);
+    }
+  }, [menusData]);
 
+  // ✅ ถ้าเป็น admin/superadmin ให้เห็นทุกเมนู ไม่ต้องกรอง
   useEffect(() => {
-    if (user && menuItems.length > 0) {
-      const filtered = filterMenusByPermissions(menuItems, user);
-      setFilteredMenus(filtered);
+    const isAdmin =
+      typeof user?.username === "string" &&
+      ["admin", "superadmin"].includes(user.username.toLowerCase());
+
+    if (user && menus.length > 0) {
+      if (isAdmin) {
+        setFilteredMenus(menus);
+      } else {
+        const filtered = filterMenusByPermissions(menus, user);
+        setFilteredMenus(filtered);
+      }
     } else {
       setFilteredMenus([]);
     }
-  }, [user, menuItems, filterMenusByPermissions]);
+  }, [user, menus, filterMenusByPermissions]); // ✅ เพิ่ม deps ให้ครบ
 
   return (
-    <div className={`h-screen bg-white border-r border-gray-200 transition-all duration-300 ${collapsed ? "w-16" : "w-56"
-      }`}>
+    <div className={`h-screen bg-white border-r border-gray-200 transition-all duration-300 ${collapsed ? "w-16" : "w-56"}`}>
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="p-4 border-b border-gray-200">
@@ -136,17 +120,6 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
                 <LayoutDashboard className="h-4 w-4 text-white" />
               </div>
             )}
-            {/* ปุ่มย่อเมนูขวามือ */}
-            {/* <button
-              onClick={() => setCollapsed(!collapsed)}
-              className="p-1 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              {collapsed ? (
-                <ReactIconComponent icon="FaChevronRight" setClass="h-4 w-4" />
-              ) : (
-                <ReactIconComponent icon="FaChevronDown" setClass="h-4 w-4" />
-              )}
-            </button> */}
           </div>
         </div>
 
@@ -160,32 +133,23 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
                 </li>
               ) : (
                 filteredMenus.length > 0 && (
-                  <MenuPage
-                    dataList={filteredMenus}
-                    collapsed={collapsed}
-                    currentUser={user?.username}
-                  />
+                  <MenuPage dataList={filteredMenus} collapsed={collapsed} />
                 )
               )}
 
-              {/* ส่วนของเมนูสำหรับผู้พัฒนา */}
-              {user_dev.includes(user?.username || "") && (
-                <MenuPage
-                  dataList={menuDev}
-                  collapsed={collapsed}
-                  currentUser={user?.username}
-                />
+              {/* เมนูสำหรับผู้พัฒนา */}
+              {user?.username === 'superadmin' || user?.username === 'admin' && (
+                <MenuPage dataList={menuDev} collapsed={collapsed} />
               )}
-
             </ul>
           </nav>
         </div>
 
-        {/* ส่วนล่างของเมนูที่จะมีการกำหนดสิทธิ์การเข้าถึงตามสิทธิ์ของ user ปัจจุบัน */}
+        {/* Bottom */}
         <div className="border-t border-gray-200">
           <UserInfo />
         </div>
       </div>
     </div>
   );
-} 
+}

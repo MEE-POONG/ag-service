@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '@/lib/axios';
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { AdminPositionDB } from '@prisma/client';
 import { Button } from '@/components/ui/button';
@@ -166,7 +166,6 @@ const PositionModalActive: React.FC<PositionModalActiveProps> = ({ list, positio
 };
 
 export default PositionModalActive;
-
 
 
 

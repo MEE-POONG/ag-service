@@ -90,7 +90,7 @@ class MenuWebModel {
 
     // สร้าง where clause
     const whereClause: Prisma.MenuWebDBWhereInput = {
-      isDeleted: false,
+      
       // Filter by parentId
       ...(parentId !== undefined ? { 
         parentId: parentId === 'null' ? null : parentId 
@@ -130,7 +130,7 @@ class MenuWebModel {
             }
           },
           children: {
-            where: { isDeleted: false },
+            where: {  },
             select: {
               id: true,
               name: true,
@@ -162,7 +162,7 @@ class MenuWebModel {
     return await prisma.menuWebDB.findFirst({
       where: {
         id,
-        isDeleted: false
+        
       },
       include: {
         parent: {
@@ -173,7 +173,7 @@ class MenuWebModel {
           }
         },
         children: {
-          where: { isDeleted: false },
+          where: {  },
           select: {
             id: true,
             name: true,
@@ -193,7 +193,7 @@ class MenuWebModel {
     const existingName = await prisma.menuWebDB.findFirst({
       where: {
         name: data.name.trim(),
-        isDeleted: false
+        
       }
     })
 
@@ -205,7 +205,7 @@ class MenuWebModel {
     const existingLink = await prisma.menuWebDB.findFirst({
       where: {
         link: data.link.trim(),
-        isDeleted: false
+        
       }
     })
 
@@ -218,7 +218,7 @@ class MenuWebModel {
       const parentExists = await prisma.menuWebDB.findFirst({
         where: {
           id: data.parentId,
-          isDeleted: false
+          
         }
       })
 
@@ -233,7 +233,7 @@ class MenuWebModel {
       const lastMenu = await prisma.menuWebDB.findFirst({
         where: {
           parentId: data.parentId || null,
-          isDeleted: false
+          
         },
         orderBy: { showOrder: 'desc' }
       })
@@ -276,7 +276,7 @@ class MenuWebModel {
     const existingMenu = await prisma.menuWebDB.findFirst({
       where: {
         id,
-        isDeleted: false
+        
       }
     })
 
@@ -290,7 +290,7 @@ class MenuWebModel {
         where: {
           name: data.name.trim(),
           id: { not: id },
-          isDeleted: false
+          
         }
       })
 
@@ -305,7 +305,7 @@ class MenuWebModel {
         where: {
           link: data.link.trim(),
           id: { not: id },
-          isDeleted: false
+          
         }
       })
 
@@ -324,7 +324,7 @@ class MenuWebModel {
       const parentExists = await prisma.menuWebDB.findFirst({
         where: {
           id: data.parentId,
-          isDeleted: false
+          
         }
       })
 
@@ -370,7 +370,7 @@ class MenuWebModel {
     const existingMenu = await prisma.menuWebDB.findFirst({
       where: {
         id,
-        isDeleted: false
+        
       }
     })
 
@@ -382,7 +382,7 @@ class MenuWebModel {
     const hasChildren = await prisma.menuWebDB.findFirst({
       where: {
         parentId: id,
-        isDeleted: false
+        
       }
     })
 
@@ -421,7 +421,7 @@ class MenuWebModel {
   static async getAllMenusOrderedByShowOrder(): Promise<MenuWebDB[]> {
     return await prisma.menuWebDB.findMany({
       where: {
-        isDeleted: false
+        
       },
       orderBy: [
         { showOrder: 'asc' },
@@ -435,7 +435,7 @@ class MenuWebModel {
           }
         },
         children: {
-          where: { isDeleted: false },
+          where: {  },
           select: {
             id: true,
             name: true,
@@ -452,7 +452,7 @@ class MenuWebModel {
     const menu = await prisma.menuWebDB.findFirst({
       where: {
         id: menuId,
-        isDeleted: false
+        
       }
     })
 
