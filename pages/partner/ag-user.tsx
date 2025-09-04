@@ -30,6 +30,7 @@ export default function AgUserAccountPage() {
   const queryClient = useQueryClient()
   const { items, add, update, remove, setItems } = useAgUserAccounts()
   const [keyword, setKeyword] = useState('')
+  const debouncedKeyword = useDebouncedValue(keyword, 300)
   const [openAdd, setOpenAdd] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
@@ -37,9 +38,9 @@ export default function AgUserAccountPage() {
 
   // Fetch list via react-query (server-side filter by keyword)
   const { data, isFetching } = useQuery({
-    queryKey: ['aguseraccounts', 'list', { keyword }],
+    queryKey: ['aguseraccounts', 'list', { keyword: debouncedKeyword }],
     queryFn: async () => {
-      const res = await axios.get('/api/aguseraccounts', { params: { keyword } })
+      const res = await axios.get('/api/aguseraccounts', { params: { keyword: debouncedKeyword } })
       if (!res.data?.success) throw new Error(res.data?.error || 'โหลดข้อมูลล้มเหลว')
       return (res.data.data || []) as AgUserAccountItem[]
     },
@@ -427,4 +428,12 @@ function AgUserAccountFormModal({
       </ModalFooter>
     </Modal>
   )
+function useDebouncedValue<T>(value: T, delay = 300) {
+  const [debounced, setDebounced] = useState<T>(value)
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), delay)
+    return () => clearTimeout(id)
+  }, [value, delay])
+  return debounced
+}
 }
