@@ -2,6 +2,7 @@ import type { AppProps } from 'next/app'
 import '@/styles/globals.scss'
 import { Kanit } from 'next/font/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Toaster } from 'react-hot-toast'
 import { useState } from 'react'
 
 const kanit = Kanit({
@@ -19,6 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
         {/* Portal target so modals inherit Kanit and theme */}
         <div id="modal-root" />
+        <Toaster position="top-right" />
       </div>
     </QueryClientProvider>
   )

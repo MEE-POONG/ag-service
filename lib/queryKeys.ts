@@ -17,6 +17,8 @@ export const qk = {
   agUsers: {
     base: ['aguseraccounts', 'list'] as const,
     list: (keyword: string) => ['aguseraccounts', 'list', { keyword }] as const,
+    listPaged: (keyword: string, page: number, pageSize: number) =>
+      ['aguseraccounts', 'list', { keyword, page, pageSize }] as const,
     detail: (id: string) => ['aguseraccounts', 'detail', id] as const,
   },
   settings: {

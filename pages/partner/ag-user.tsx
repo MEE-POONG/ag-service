@@ -32,6 +32,10 @@ export default function AgUserAccountPage() {
   const { items, add, update, remove, setItems } = useAgUserAccounts()
   const [keyword, setKeyword] = useState('')
   const debouncedKeyword = useDebouncedValue(keyword, 300)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
   const [openAdd, setOpenAdd] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
   const [openDelete, setOpenDelete] = useState(false)
@@ -39,70 +43,129 @@ export default function AgUserAccountPage() {
 
   // Fetch list via react-query (server-side filter by keyword)
   const { data, isFetching } = useQuery({
-    queryKey: qk.agUsers.list(debouncedKeyword),
+    queryKey: qk.agUsers.listPaged(debouncedKeyword, page, pageSize),
     queryFn: async () => {
-      const res = await axios.get('/api/aguseraccounts', { params: { keyword: debouncedKeyword } })
+      const res = await axios.get('/api/aguseraccounts', { params: { keyword: debouncedKeyword, page, pageSize } })
       if (!res.data?.success) throw new Error(res.data?.error || 'โหลดข้อมูลล้มเหลว')
-      return (res.data.data || []) as AgUserAccountItem[]
+      return {
+        items: (res.data.data || []) as AgUserAccountItem[],
+        pagination: res.data.pagination as { totalItems: number; totalPages: number; currentPage: number; pageSize: number } | undefined,
+      }
     },
     staleTime: 30 * 1000,
     keepPreviousData: true,
   })
 
   useEffect(() => {
-    if (data) setItems(data)
+    if (data) {
+      setItems(data.items || [])
+      if (data.pagination) {
+        setTotalPages(data.pagination.totalPages || 1)
+        setTotalItems(data.pagination.totalItems || 0)
+      }
+    }
   }, [data, setItems])
 
-  // Mutations: create, update, delete
+  // Reset to first page when keyword changes
+  useEffect(() => {
+    setPage(1)
+  }, [debouncedKeyword])
+
+  const listKey = qk.agUsers.listPaged(debouncedKeyword, page, pageSize)
+
+  // Mutations: create, update, delete (with optimistic updates on current page)
   const createMutation = useMutation({
+    onMutate: async (val: AgUserAccountItem) => {
+      await queryClient.cancelQueries({ queryKey: listKey })
+      const prev = queryClient.getQueryData<any>(listKey)
+      const tempId = `temp-${Date.now()}`
+      queryClient.setQueryData(listKey, (old: any) => {
+        const items = old?.items ?? []
+        const pagination = old?.pagination
+        return {
+          items: [{ ...val, id: tempId }, ...items].slice(0, pageSize),
+          pagination,
+        }
+      })
+      return { prev }
+    },
     mutationFn: async (val: AgUserAccountItem) => {
       const res = await axios.post('/api/aguseraccounts', val)
       if (!res.data?.success) throw new Error(res.data?.error || 'บันทึกไม่สำเร็จ')
       return res.data.data as AgUserAccountItem
     },
-    onSuccess: async () => {
+    onError: (e: any, _vars, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
+      toast.error(e?.message || 'เกิดข้อผิดพลาด')
+    },
+    onSuccess: async (created) => {
+      // Replace temp with real if present
+      queryClient.setQueryData(listKey, (old: any) => {
+        const items = old?.items ?? []
+        const idx = items.findIndex((x: any) => String(x.id || '').startsWith('temp-'))
+        if (idx >= 0) {
+          items[idx] = created
+        } else {
+          items.unshift(created)
+        }
+        return { ...old, items }
+      })
       await queryClient.invalidateQueries({ queryKey: qk.agUsers.base })
       toast.success('เพิ่ม AG User สำเร็จ')
     },
-    onError: (e: any) => toast.error(e?.message || 'เกิดข้อผิดพลาด')
   })
 
   const updateMutation = useMutation({
+    onMutate: async (payload: AgUserAccountItem & { id: string }) => {
+      await queryClient.cancelQueries({ queryKey: listKey })
+      const prev = queryClient.getQueryData<any>(listKey)
+      queryClient.setQueryData(listKey, (old: any) => {
+        const items = (old?.items ?? []).map((x: any) => (x.id === payload.id ? { ...x, ...payload } : x))
+        return { ...old, items }
+      })
+      return { prev }
+    },
     mutationFn: async (payload: AgUserAccountItem & { id: string }) => {
       const res = await axios.put('/api/aguseraccounts', payload)
       if (!res.data?.success) throw new Error(res.data?.error || 'อัปเดตไม่สำเร็จ')
       return res.data.data as AgUserAccountItem
     },
+    onError: (e: any, _vars, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
+      toast.error(e?.message || 'เกิดข้อผิดพลาด')
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: qk.agUsers.base })
       toast.success('แก้ไข AG User สำเร็จ')
     },
-    onError: (e: any) => toast.error(e?.message || 'เกิดข้อผิดพลาด')
   })
 
   const deleteMutation = useMutation({
+    onMutate: async (id: string) => {
+      await queryClient.cancelQueries({ queryKey: listKey })
+      const prev = queryClient.getQueryData<any>(listKey)
+      queryClient.setQueryData(listKey, (old: any) => {
+        const items = (old?.items ?? []).filter((x: any) => x.id !== id)
+        return { ...old, items }
+      })
+      return { prev }
+    },
     mutationFn: async (id: string) => {
       const res = await axios.delete('/api/aguseraccounts', { data: { id } })
       if (!res.data?.success) throw new Error(res.data?.error || 'ลบไม่สำเร็จ')
       return true
     },
+    onError: (e: any, _vars, ctx) => {
+      if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
+      toast.error(e?.message || 'เกิดข้อผิดพลาด')
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: qk.agUsers.base })
       toast.success('ลบ AG User สำเร็จ')
     },
-    onError: (e: any) => toast.error(e?.message || 'เกิดข้อผิดพลาด')
   })
 
-  const filtered = useMemo(() => {
-    const kw = keyword.trim().toLowerCase()
-    if (!kw) return items
-    return items.filter(u =>
-      [u.username, u.reserve, u.userLogin, u.origin, u.position, u.gaSecretEnc]
-        .join(' ')
-        .toLowerCase()
-        .includes(kw)
-    )
-  }, [items, keyword])
+  const list = items
 
   const startAdd = () => {
     setSelectedIndex(null)
@@ -151,6 +214,20 @@ export default function AgUserAccountPage() {
                 placeholder="ค้นหา (รหัส/ล็อกอิน/ตำแหน่ง/ต้นทาง/สำรอง/Secret)"
                 className="px-4 py-2 w-full text-sm sm:text-base rounded-xl bg-white/90 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#A78BFA] focus:border-transparent shadow-sm"
               />
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">แสดง</span>
+                <select
+                  value={pageSize}
+                  onChange={e => setPageSize(parseInt(e.target.value, 10) || 10)}
+                  className="px-3 py-2 rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
+                  disabled={isFetching}
+                >
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+                <span className="text-sm text-gray-600">ต่อหน้า</span>
+              </div>
             </div>
 
             <div className="overflow-hidden overflow-x-auto rounded-xl ring-1 ring-gray-200">
@@ -167,7 +244,7 @@ export default function AgUserAccountPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filtered.map((u, idx) => (
+                  {list.map((u, idx) => (
                     <tr key={u.id ?? `${u.username}-${idx}`} className="hover:bg-[#A78BFA]/5 transition-colors">
                       <td className="px-3 py-2 font-semibold text-gray-900">{u.username}</td>
                       <td className="px-3 py-2">{u.userLogin}</td>
@@ -201,7 +278,7 @@ export default function AgUserAccountPage() {
                       </td>
                     </tr>
                   ))}
-                  {filtered.length === 0 && (
+                  {list.length === 0 && (
                     <tr>
                       <td className="px-3 py-6 text-center text-gray-500" colSpan={7}>
                         ไม่พบข้อมูล
@@ -211,12 +288,35 @@ export default function AgUserAccountPage() {
                 </tbody>
               </table>
             </div>
+            <div className="flex items-center justify-between mt-4">
+              <div className="text-sm text-gray-600">ทั้งหมด {totalItems} รายการ</div>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
+                  disabled={isFetching || page <= 1}
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                >
+                  ก่อนหน้า
+                </Button>
+                <span className="text-sm text-gray-700">หน้า {page} / {Math.max(1, totalPages)}</span>
+                <Button
+                  size="sm"
+                  className="btn-theme hover:!brightness-95 rounded-full px-3"
+                  disabled={isFetching || page >= totalPages}
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                >
+                  ถัดไป
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Modal: Add */}
       <AgUserAccountFormModal
+        key={`add-${openAdd}`}
         title="เพิ่ม AG User"
         open={openAdd}
         onOpenChange={setOpenAdd}
@@ -481,6 +581,8 @@ function AgUserAccountFormModal({
       </ModalFooter>
     </Modal>
   )
+}
+
 function useDebouncedValue<T>(value: T, delay = 300) {
   const [debounced, setDebounced] = useState<T>(value)
   useEffect(() => {
@@ -488,5 +590,4 @@ function useDebouncedValue<T>(value: T, delay = 300) {
     return () => clearTimeout(id)
   }, [value, delay])
   return debounced
-}
 }
