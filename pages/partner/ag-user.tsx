@@ -16,7 +16,10 @@ type AgUserAccountItem = {
   origin: string
   position: string
   gaSecretEnc: string
+  meta?: string
+  webname?: string
 }
+const WEBNAME_OPTIONS = ['psd99', 'ufa66'] as const
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountItem[]>([])
   const add = (item: AgUserAccountItem) => setItems(prev => [...prev, item])
@@ -56,7 +59,15 @@ export default function AgUserAccountPage() {
 
   useEffect(() => {
     if (data) {
-      setItems(data.items || [])
+      const mapped = (data.items || []).map((it: any) => {
+        try {
+          const m = it?.meta ? JSON.parse(it.meta) : null
+          return { ...it, webname: m?.webname }
+        } catch {
+          return it
+        }
+      })
+      setItems(mapped)
       if (data.pagination) {
         setTotalPages(data.pagination.totalPages || 1)
         setTotalItems(data.pagination.totalItems || 0)
@@ -100,11 +111,19 @@ export default function AgUserAccountPage() {
       // Replace temp with real if present
       queryClient.setQueryData(listKey, (old: any) => {
         const items = old?.items ?? []
+        const withWeb = (() => {
+          try {
+            const m = created?.meta ? JSON.parse((created as any).meta) : null
+            return { ...created, webname: m?.webname }
+          } catch {
+            return created
+          }
+        })()
         const idx = items.findIndex((x: any) => String(x.id || '').startsWith('temp-'))
         if (idx >= 0) {
-          items[idx] = created
+          items[idx] = withWeb
         } else {
-          items.unshift(created)
+          items.unshift(withWeb)
         }
         return { ...old, items }
       })
@@ -235,6 +254,7 @@ export default function AgUserAccountPage() {
                     <th className="px-3 py-2 font-semibold text-left">Username</th>
                     <th className="px-3 py-2 font-semibold text-left">userLogin</th>
                     <th className="px-3 py-2 font-semibold text-left">Reserve</th>
+                    <th className="px-3 py-2 font-semibold text-left">webname</th>
                     <th className="px-3 py-2 font-semibold text-left">origin</th>
                     <th className="px-3 py-2 font-semibold text-left">position</th>
                     <th className="px-3 py-2 font-semibold text-left">gaSecretEnc</th>
@@ -247,6 +267,7 @@ export default function AgUserAccountPage() {
                       <td className="px-3 py-2 font-semibold text-gray-900">{u.username}</td>
                       <td className="px-3 py-2">{u.userLogin}</td>
                       <td className="px-3 py-2">{u.reserve}</td>
+                      <td className="px-3 py-2">{u.webname || '-'}</td>
                       <td className="px-3 py-2">{u.origin || '-'}</td>
                       <td className="px-3 py-2 capitalize">{u.position}</td>
                       <td className="px-3 py-2 truncate max-w-[12rem]" title={u.gaSecretEnc}>{u.gaSecretEnc}</td>
@@ -446,6 +467,7 @@ function AgUserAccountFormModal({
       origin: '',
       position: 'agent',
       gaSecretEnc: '',
+      webname: '',
     }
   )
   const [error, setError] = useState('')
@@ -458,6 +480,7 @@ function AgUserAccountFormModal({
       origin: '',
       position: 'agent',
       gaSecretEnc: '',
+      webname: '',
     })
     setError('')
   }
@@ -473,7 +496,13 @@ function AgUserAccountFormModal({
       return
     }
     setError('')
-    onSubmit(form, { setError, reset: resetForm })
+    // Preserve existing meta and set webname
+    let existingMeta: any = {}
+    try {
+      existingMeta = initialValue?.meta ? JSON.parse(initialValue.meta) : {}
+    } catch {}
+    const payload = { ...form, meta: JSON.stringify({ ...existingMeta, webname: form.webname || '' }) }
+    onSubmit(payload, { setError, reset: resetForm })
   }
 
   return (
@@ -508,7 +537,7 @@ function AgUserAccountFormModal({
               placeholder="ล็อกอินสำหรับเข้าระบบ AG"
             />
           </div>
-          <div>
+        <div>
             <label className="block mb-1 text-sm font-medium">reserve</label>
             <input
               value={form.reserve}
@@ -516,6 +545,19 @@ function AgUserAccountFormModal({
               className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
               placeholder="reserve"
             />
+          </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium">webname</label>
+            <select
+              value={form.webname || ''}
+              onChange={e => updateField('webname', e.target.value)}
+              className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
+            >
+              <option value="">เลือกเว็บ</option>
+              {WEBNAME_OPTIONS.map((w) => (
+                <option key={w} value={w}>{w}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block mb-1 text-sm font-medium">origin</label>
