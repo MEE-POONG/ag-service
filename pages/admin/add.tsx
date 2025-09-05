@@ -112,7 +112,7 @@ export default function AdminAddPage() {
       if (res.data?.success) {
         await queryClient.invalidateQueries({ queryKey: qk.admins.list, exact: false })
         alert('สร้าง Admin สำเร็จ')
-        router.push('/admin/admins')
+        router.push('/admin')
       } else {
         alert(res.data?.error || 'เกิดข้อผิดพลาดในการสร้าง Admin')
       }

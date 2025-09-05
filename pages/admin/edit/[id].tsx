@@ -181,10 +181,6 @@ export default function AdminEditPage() {
             <input name="username" value={form.username} onChange={handleChange} required className="input-field text-sm" />
           </div>
           <div>
-            <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">รหัสผ่าน *</label>
-            <input name="password" type="password" value={form.password} onChange={handleChange} required className="input-field text-sm" />
-          </div>
-          <div>
             <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">ชื่อ-นามสกุล *</label>
             <input name="name" value={form.name} onChange={handleChange} required className="input-field text-sm" />
           </div>
