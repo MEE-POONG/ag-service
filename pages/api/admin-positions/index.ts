@@ -111,7 +111,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
         : {}),
     };
 
-    const [items, total] = await Promise.all([
+    const [positions, total] = await Promise.all([
       prisma.adminPositionDB.findMany({
         where,
         orderBy: [{ priority: 'asc' }],
@@ -121,10 +121,21 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
       }),
       prisma.adminPositionDB.count({ where }),
     ]);
+    const depMap = new Map<string, { id: string; name: string }>();
+    for (const it of positions) {
+      const dep = it.adminDepartment;
+      if (dep?.id) {
+        depMap.set(dep.id, { id: dep.id, name: dep.name });
+      }
+    }
+    const departments = Array.from(depMap.values());
 
     return res.status(200).json({
       success: true,
-      data: items,
+      data: {
+        positions,
+        departments,
+      },
       pagination: {
         totalItems: total,
         totalPages: Math.ceil(total / pageSizeNum),

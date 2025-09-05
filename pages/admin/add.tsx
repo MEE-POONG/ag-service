@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react'
+// pages/admin/add.tsx
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { TheLayout } from '@/components/TheLayout'
-import axios from '@/lib/axios'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import axios from '@/lib/axios'
+import { TheLayout } from '@/components/TheLayout'
 import { qk } from '@/lib/queryKeys'
 
 interface Position {
   id: string
   name: string
+  priority?: number
   adminDepartmentId?: string
   adminDepartment?: { id: string; name: string } | null
 }
@@ -15,11 +17,13 @@ interface Department {
   id: string
   name: string
 }
+type PosDepResp = { positions: Position[]; departments: Department[] }
 
-export default function AddAdminPage() {
+export default function AdminAddPage() {
   const [positions, setPositions] = useState<Position[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
-  const [selectedDeptId, setSelectedDeptId] = useState('') // แผนกที่เลือก
+  const [selectedDeptId, setSelectedDeptId] = useState('')
+
   const [form, setForm] = useState({
     username: '',
     password: '',
@@ -29,85 +33,91 @@ export default function AddAdminPage() {
     adminPositionId: '',
   })
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
 
+  const router = useRouter()
   const queryClient = useQueryClient()
-  const { data: posDep } = useQuery({
+
+  const { data: posDep } = useQuery<PosDepResp>({
     queryKey: qk.positions.list,
     queryFn: async () => {
-      const res = await axios.get('/api/admin-positions')
-      return {
-        positions: (res.data?.positions ?? res.data?.data ?? []) as Position[],
-        departments: (res.data?.departments ?? []) as Department[],
+      const res = await axios.get('/api/admin-positions', { params: { pageSize: 999 } })
+      const positions = (res.data?.data?.positions ?? res.data?.data ?? []) as Position[]
+      const apiDeps = (res.data?.data?.departments ?? []) as Department[]
+
+      const derivedDepsMap = new Map<string, Department>()
+      for (const p of positions) {
+        const depId = p.adminDepartment?.id ?? p.adminDepartmentId ?? ''
+        const depName = p.adminDepartment?.name ?? ''
+        if (depId) derivedDepsMap.set(depId, { id: depId, name: depName || '(ไม่ระบุชื่อแผนก)' })
       }
+      const derivedDeps = Array.from(derivedDepsMap.values())
+        .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'th'))
+
+      return { positions, departments: apiDeps.length ? apiDeps : derivedDeps }
     },
     staleTime: 5 * 60 * 1000,
+    placeholderData: (prev) => prev,
   })
 
   useEffect(() => {
-    console.log(posDep);
-    
-    if (posDep) {
-      setPositions(posDep.positions)
-      setDepartments(posDep.departments)
-      if (posDep.departments.length === 1) setSelectedDeptId(posDep.departments[0].id)
+    console.log(`posDep: `, posDep);
+
+    if (!posDep) return
+
+    setPositions(posDep.positions)
+    setDepartments(posDep.departments)
+
+    if (!selectedDeptId && posDep.departments.length === 1) {
+      setSelectedDeptId(posDep.departments[0].id)
+    } else if (selectedDeptId) {
+      const stillExists = posDep.departments.some(d => d.id === selectedDeptId)
+      if (!stillExists) setSelectedDeptId('')
     }
   }, [posDep])
 
-  // กรองตำแหน่งตามแผนกที่เลือก
   const filteredPositions = useMemo(() => {
     if (!selectedDeptId) return []
-    return positions.filter(p =>
-      (p.adminDepartmentId ?? p.adminDepartment?.id) === selectedDeptId
-    )
+    return positions.filter(p => (p.adminDepartmentId ?? p.adminDepartment?.id) === selectedDeptId)
   }, [positions, selectedDeptId])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setForm(prev => ({ ...prev, [name]: value }))
-
-    // ถ้าเปลี่ยนตำแหน่ง ให้ sync แผนกอัตโนมัติ (กันเลือกข้ามแผนก)
     if (name === 'adminPositionId') {
       const pos = positions.find(p => p.id === value)
-      const deptId = pos?.adminDepartmentId ?? pos?.adminDepartment?.id ?? ''
-      if (deptId && deptId !== selectedDeptId) {
-        setSelectedDeptId(deptId)
-      }
+      const depId = pos?.adminDepartmentId ?? pos?.adminDepartment?.id ?? ''
+      if (depId && depId !== selectedDeptId) setSelectedDeptId(depId)
     }
   }
 
   const handleDeptChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const depId = e.target.value
     setSelectedDeptId(depId)
-    // รีเซ็ตตำแหน่งเมื่อเปลี่ยนแผนก
     setForm(prev => ({ ...prev, adminPositionId: '' }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     if (!form.username || !form.email || !form.password || !selectedDeptId || !form.adminPositionId) {
       alert('กรุณากรอกข้อมูลให้ครบถ้วน')
       return
     }
-
     try {
       setLoading(true)
-      const response = await axios.post('/api/admin', {
+      const res = await axios.post('/api/admin', {
         ...form,
         adminDepartmentId: selectedDeptId,
         createdBy: 'admin',
       })
-      const result = response.data
-      if (result.success) {
-        await queryClient.invalidateQueries({ queryKey: qk.admins.list })
+      if (res.data?.success) {
+        await queryClient.invalidateQueries({ queryKey: qk.admins.list, exact: false })
         alert('สร้าง Admin สำเร็จ')
-        router.push('/admin')
+        router.push('/admin/admins')
       } else {
-        alert(result.error || 'เกิดข้อผิดพลาดในการสร้าง Admin')
+        alert(res.data?.error || 'เกิดข้อผิดพลาดในการสร้าง Admin')
       }
-    } catch (error) {
-      console.error('Create admin failed:', error)
+    } catch (e) {
+      console.error('Create admin failed:', e)
       alert('เกิดข้อผิดพลาดในการเชื่อมต่อ')
     } finally {
       setLoading(false)
@@ -140,23 +150,25 @@ export default function AddAdminPage() {
             <input name="tel" value={form.tel} onChange={handleChange} className="input-field text-sm" />
           </div>
 
-          {/* เลือกแผนกก่อน */}
+          {/* เลือกแผนก */}
           <div>
             <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">แผนก *</label>
             <select
               value={selectedDeptId}
               onChange={handleDeptChange}
               required
-              className="input-field text-sm"
+              disabled={departments.length === 0}
+              className={`input-field text-sm ${departments.length === 0 ? 'bg-gray-100 cursor-not-allowed' : ''}`}
             >
-              <option value="" disabled>-- เลือกแผนก --</option>
-              {departments.map(dep => (
-                <option key={dep.id} value={dep.id}>{dep.name}</option>
-              ))}
+              <option value="" disabled>{departments.length === 0 ? 'ไม่มีข้อมูลแผนก' : '-- เลือกแผนก --'}</option>
+              {departments.map(dep => <option key={dep.id} value={dep.id}>{dep.name}</option>)}
             </select>
+            {departments.length === 0 && (
+              <p className="mt-1 text-xs text-red-500">ไม่พบข้อมูลแผนกจาก API — ระบบจะดึงจากตำแหน่งให้อัตโนมัติเมื่อมีข้อมูล</p>
+            )}
           </div>
 
-          {/* ตำแหน่ง: แสดงเฉพาะของแผนกที่เลือก */}
+          {/* ตำแหน่ง */}
           <div>
             <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">ตำแหน่ง *</label>
             <select
@@ -176,11 +188,9 @@ export default function AddAdminPage() {
             </select>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 mt-4 sm:mt-6">
-            <button type="submit" className="btn-primary text-sm sm:text-base" disabled={loading}>
-              {loading ? 'กำลังบันทึก...' : 'เพิ่มผู้ดูแลระบบ'}
-            </button>
-            <button type="button" className="btn-secondary text-sm sm:text-base" onClick={() => router.push('/admin/admins')}>ยกเลิก</button>
+          <div className="flex gap-2 mt-4">
+            <button type="submit" className="btn-primary text-sm" disabled={loading}>{loading ? 'กำลังบันทึก...' : 'เพิ่มผู้ดูแลระบบ'}</button>
+            <button type="button" className="btn-secondary text-sm" onClick={() => router.push('/admin/admins')}>ยกเลิก</button>
           </div>
         </form>
       </div>

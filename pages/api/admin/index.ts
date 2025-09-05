@@ -37,32 +37,49 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminResponse
 
     // ถ้ามี id ให้ดึงข้อมูลรายบุคคล
     if (id) {
-      const admin = await prisma.adminDB.findFirst({
-        where: {
-          id: id as string,
-          
-        },
-        include: {
+      // 1) กันเคส id ไม่ใช่ ObjectId (ถ้าใช้ Mongo)
+      if (!/^[0-9a-fA-F]{24}$/.test(String(id))) {
+        return res.status(400).json({ success: false, error: 'รูปแบบ id ไม่ถูกต้อง' })
+      }
+
+      // 2) ใช้ findUnique + SELECT เฉพาะฟิลด์ที่ฟอร์มต้องใช้
+      const admin = await prisma.adminDB.findUnique({
+        where: { id: String(id) },
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          email: true,
+          tel: true,
+          isActive: true,
+          adminPositionId: true,      // ให้ฟอร์มรู้ตำแหน่งเดิม
+          // ❌ ไม่ select password/passwordHash เพื่อความปลอดภัย + ลด payload
           adminPosition: {
-            include: {
-              adminDepartment: true,
+            select: {
+              id: true,
+              name: true,
+              priority: true,
+              adminDepartmentId: true,
+              adminDepartment: {
+                select: { id: true, name: true }, // ดึงเฉพาะที่ใช้โชว์/derive
+              },
             },
           },
         },
-      });
+      })
 
       if (!admin) {
-        return res.status(404).json({
-          success: false,
-          error: 'ไม่พบข้อมูล Admin ที่ต้องการ',
-        });
+        return res.status(404).json({ success: false, error: 'ไม่พบข้อมูล Admin ที่ต้องการ' })
       }
+
+      // 3) (ออปชัน) ตั้ง cache header เล็กน้อยให้หน้าแก้ไขลื่นขึ้น (เฉพาะฝั่ง browser)
+      res.setHeader('Cache-Control', 'private, max-age=30') // เบา ๆ 30 วินาที
 
       return res.status(200).json({
         success: true,
         data: admin,
         message: 'ดึงข้อมูล Admin สำเร็จ',
-      });
+      })
     }
 
     // ใช้ `page` และ `pageSize` สำหรับ Pagination
@@ -73,7 +90,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminResponse
     // เงื่อนไขการค้นหา
     const searchKeyword = (keyword || search) as string;
     const whereClause: Prisma.AdminDBWhereInput = {
-      
+
       ...(status && status !== 'all' ? { isActive: status === 'active' } : {}),
       ...(searchKeyword ? {
         OR: [
@@ -152,7 +169,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
     const existing = await prisma.adminDB.findFirst({
       where: {
         OR: [{ username }, { email }],
-        
+
       },
     });
 
@@ -259,7 +276,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
 
     // Check if admin exists
     const existingAdmin = await prisma.adminDB.findFirst({
-      where: { id,  }
+      where: { id, }
     });
 
     if (!existingAdmin) {
@@ -274,7 +291,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
       const duplicateUsername = await prisma.adminDB.findFirst({
         where: {
           username,
-          
+
           id: { not: id }
         }
       });
@@ -291,7 +308,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
       const duplicateEmail = await prisma.adminDB.findFirst({
         where: {
           email,
-          
+
           id: { not: id }
         }
       });

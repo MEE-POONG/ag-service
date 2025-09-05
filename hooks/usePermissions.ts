@@ -86,7 +86,7 @@ export function usePermissions() {
     }
     
     // Check if user is the superadmin username or has superadmin role
-    console.log(84,`admin check user : user?.username: ${user?.username} : `,user?.username === 'superadmin' || user?.role === 'superadmin' || user?.isSuperAdmin || false);
+    // console.log(84,`admin check user : user?.username: ${user?.username} : `,user?.username === 'superadmin' || user?.role === 'superadmin' || user?.isSuperAdmin || false);
     
     return user?.username === 'superadmin' || user?.role === 'superadmin' || user?.isSuperAdmin || false
   }, [user, userLoading])

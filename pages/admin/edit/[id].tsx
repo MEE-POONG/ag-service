@@ -1,14 +1,26 @@
-import React, { useState, useEffect, useMemo } from 'react'
+// pages/admin/add.tsx
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
-import { TheLayout } from '@/components/TheLayout'
-import axios from '@/lib/axios'
-import { ExtendedAdminDB } from '@/data/interface'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import axios from '@/lib/axios'
+import { TheLayout } from '@/components/TheLayout'
 import { qk } from '@/lib/queryKeys'
 
+interface AdminDetail {
+  id: string
+  username: string
+  name: string
+  email: string
+  tel?: string | null
+  isActive: boolean
+  adminPositionId?: string | null
+  adminPosition?: Position | null
+}
+type AdminResp = { success: boolean; data: AdminDetail; error?: string }
 interface Position {
   id: string
   name: string
+  priority?: number
   adminDepartmentId?: string
   adminDepartment?: { id: string; name: string } | null
 }
@@ -16,255 +28,194 @@ interface Department {
   id: string
   name: string
 }
+type PosDepResp = { positions: Position[]; departments: Department[] }
 
-export default function EditAdminPage() {
+export default function AdminEditPage() {
   const router = useRouter()
-  const { id } = router.query
-  const queryClient = useQueryClient()
-  
+  const id = typeof router.query.id === 'string' ? router.query.id : ''
   const [positions, setPositions] = useState<Position[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
-  const [selectedDeptId, setSelectedDeptId] = useState('') // แผนกที่เลือก
-  const [admin, setAdmin] = useState<ExtendedAdminDB | null>(null)
+  const [selectedDeptId, setSelectedDeptId] = useState('')
+
   const [form, setForm] = useState({
     username: '',
+    password: '',
     name: '',
     email: '',
     tel: '',
     adminPositionId: '',
-    isActive: true,
   })
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  // ตำแหน่งและแผนก
-  const { data: posDep } = useQuery({
+  const queryClient = useQueryClient()
+
+  const {
+    data: adminRes,
+    isPending: adminPending,  // ✅ v5
+    isError: adminError,
+  } = useQuery<AdminResp>({
+    queryKey: qk.admins.detail(id),
+    enabled: !!id,
+    queryFn: async () => {
+      const res = await axios.get<AdminResp>('/api/admin', { params: { id } })
+      if (!res.data?.success) throw new Error(res.data?.error || 'ไม่พบข้อมูลผู้ดูแล')
+      return res.data
+    },
+    placeholderData: (prev) => prev,
+    staleTime: 60_000,
+  })
+
+  const { data: posDep } = useQuery<PosDepResp>({
     queryKey: qk.positions.list,
     queryFn: async () => {
-      const response = await axios.get('/api/admin-positions')
-      if (!response.data?.success) throw new Error(response.data?.error || 'โหลดข้อมูลตำแหน่งล้มเหลว')
-      return {
-        positions: (response.data.data || []) as Position[],
-        departments: (response.data.departments || []) as Department[],
+      const res = await axios.get('/api/admin-positions', { params: { pageSize: 999 } })
+      const positions = (res.data?.data?.positions ?? res.data?.data ?? []) as Position[]
+      const apiDeps = (res.data?.data?.departments ?? []) as Department[]
+
+      const derivedDepsMap = new Map<string, Department>()
+      for (const p of positions) {
+        const depId = p.adminDepartment?.id ?? p.adminDepartmentId ?? ''
+        const depName = p.adminDepartment?.name ?? ''
+        if (depId) derivedDepsMap.set(depId, { id: depId, name: depName || '(ไม่ระบุชื่อแผนก)' })
       }
+      const derivedDeps = Array.from(derivedDepsMap.values())
+        .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'th'))
+
+      return { positions, departments: apiDeps.length ? apiDeps : derivedDeps }
     },
     staleTime: 5 * 60 * 1000,
+    placeholderData: (prev) => prev,
   })
 
   useEffect(() => {
-    if (posDep) {
-      setPositions(posDep.positions)
-      setDepartments(posDep.departments)
+    if (!posDep) return
+    setPositions(posDep.positions)
+    setDepartments(posDep.departments)
+
+    if (!selectedDeptId && posDep.departments.length === 1) {
+      setSelectedDeptId(posDep.departments[0].id)
+    } else if (selectedDeptId) {
+      const stillExists = posDep.departments.some(d => d.id === selectedDeptId)
+      if (!stillExists) setSelectedDeptId('')
     }
   }, [posDep])
 
-  // ข้อมูล Admin
-  const { data: adminData } = useQuery({
-    queryKey: id && typeof id === 'string' ? qk.admins.detail(id) : ['admins','detail','idle'],
-    queryFn: async () => {
-      const response = await axios.get(`/api/admin?id=${id}`)
-      if (!response.data?.success) throw new Error(response.data?.error || 'ไม่พบข้อมูล Admin')
-      return response.data.data as ExtendedAdminDB
-    },
-    enabled: !!id && typeof id === 'string',
-    staleTime: 60 * 1000,
-  })
-
   useEffect(() => {
-    if (adminData) {
-      setAdmin(adminData)
-      setForm({
-        username: adminData.username || '',
-        name: adminData.name || '',
-        email: adminData.email || '',
-        tel: adminData.tel || '',
-        adminPositionId: adminData.adminPositionId || '',
-        isActive: adminData.isActive ?? true,
-      })
-      const deptId = adminData.adminPosition?.adminDepartmentId || adminData.adminPosition?.adminDepartment?.id
-      if (deptId) setSelectedDeptId(deptId)
-    }
-  }, [adminData])
+    if (!adminRes?.data) return
+    const a = adminRes.data
 
-  useEffect(() => {
-    if (admin && positions.length > 0 && departments.length > 0) {
-      setLoading(false)
-    }
-  }, [admin, positions, departments])
+    // เซ็ตค่าที่ช่อง input ต้องใช้
+    setForm({
+      username: a.username ?? '',
+      password: '',                 // เว้นว่างไว้ (หน้าแก้ไขจะไม่เปลี่ยนถ้าไม่กรอก)
+      name: a.name ?? '',
+      email: a.email ?? '',
+      tel: a.tel ?? '',
+      adminPositionId: a.adminPositionId || a.adminPosition?.id || '',
+    })
 
-  // กรองตำแหน่งตามแผนกที่เลือก
+    // ถ้าคุณมี select แผนก ให้เติมค่าไว้ด้วย (ถ้าไม่ได้ใช้ก็ลบทิ้งได้)
+    setSelectedDeptId(
+      a.adminPosition?.adminDepartment?.id ||
+      a.adminPosition?.adminDepartmentId ||
+      ''
+    )
+  }, [adminRes])
+
   const filteredPositions = useMemo(() => {
     if (!selectedDeptId) return []
-    return positions.filter(p =>
-      (p.adminDepartmentId ?? p.adminDepartment?.id) === selectedDeptId
-    )
+    return positions.filter(p => (p.adminDepartmentId ?? p.adminDepartment?.id) === selectedDeptId)
   }, [positions, selectedDeptId])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target
-    const checked = (e.target as HTMLInputElement).checked
-    
-    setForm(prev => ({ 
-      ...prev, 
-      [name]: type === 'checkbox' ? checked : value 
-    }))
-
-    // ถ้าเปลี่ยนตำแหน่ง ให้ sync แผนกอัตโนมัติ
+    const { name, value } = e.target
+    setForm(prev => ({ ...prev, [name]: value }))
     if (name === 'adminPositionId') {
       const pos = positions.find(p => p.id === value)
-      const deptId = pos?.adminDepartmentId ?? pos?.adminDepartment?.id ?? ''
-      if (deptId && deptId !== selectedDeptId) {
-        setSelectedDeptId(deptId)
-      }
+      const depId = pos?.adminDepartmentId ?? pos?.adminDepartment?.id ?? ''
+      if (depId && depId !== selectedDeptId) setSelectedDeptId(depId)
     }
   }
 
   const handleDeptChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const depId = e.target.value
     setSelectedDeptId(depId)
-    // รีเซ็ตตำแหน่งเมื่อเปลี่ยนแผนก
     setForm(prev => ({ ...prev, adminPositionId: '' }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (!form.username || !form.email || !selectedDeptId || !form.adminPositionId) {
+    if (!form.username || !form.email || !form.password || !selectedDeptId || !form.adminPositionId) {
       alert('กรุณากรอกข้อมูลให้ครบถ้วน')
       return
     }
-
     try {
-      setSaving(true)
-      const updateData = {
-        id,
-        username: form.username,
-        name: form.name,
-        email: form.email,
-        tel: form.tel,
-        adminPositionId: form.adminPositionId,
-        isActive: form.isActive,
-        updatedBy: 'admin',
-      }
-      const response = await axios.put('/api/admin', updateData)
-      const result = response.data
-      if (result.success) {
-        alert('แก้ไขข้อมูล Admin สำเร็จ')
-        // Invalidate cached lists and detail
-        try {
-          await queryClient.invalidateQueries({ queryKey: qk.admins.list })
-          if (typeof id === 'string') await queryClient.invalidateQueries({ queryKey: qk.admins.detail(id) })
-        } catch {}
-        setTimeout(() => { router.push('/admin') }, 800)
+      setLoading(true)
+      const res = await axios.post('/api/admin', {
+        ...form,
+        adminDepartmentId: selectedDeptId,
+        createdBy: 'admin',
+      })
+      if (res.data?.success) {
+        await queryClient.invalidateQueries({ queryKey: qk.admins.list, exact: false })
+        alert('สร้าง Admin สำเร็จ')
+        router.push('/admin/admins')
       } else {
-        alert(result.error || 'เกิดข้อผิดพลาดในการแก้ไข')
+        alert(res.data?.error || 'เกิดข้อผิดพลาดในการสร้าง Admin')
       }
-    } catch (error: any) {
-      console.error('Update admin failed:', error)
-      if (error.response?.data?.error) alert(error.response.data.error)
-      else alert('เกิดข้อผิดพลาดในการเชื่อมต่อ')
+    } catch (e) {
+      console.error('Create admin failed:', e)
+      alert('เกิดข้อผิดพลาดในการเชื่อมต่อ')
     } finally {
-      setSaving(false)
+      setLoading(false)
     }
-  }
-
-  if (loading) {
-    return (
-      <TheLayout>
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="text-lg">กำลังโหลดข้อมูล...</div>
-        </div>
-      </TheLayout>
-    )
-  }
-
-  if (!admin) {
-    return (
-      <TheLayout>
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="text-lg text-red-600">ไม่พบข้อมูล Admin</div>
-        </div>
-      </TheLayout>
-    )
   }
 
   return (
     <TheLayout>
       <div className="max-w-sm sm:max-w-xl mx-auto bg-white shadow rounded-lg p-4 sm:p-8 mt-4 sm:mt-8">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">แก้ไขผู้ดูแลระบบ</h1>
-          <div className="text-sm text-gray-500">
-            ID: {admin.id}
-          </div>
-        </div>
-        
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6">แก้ไขผู้ดูแลระบบ</h1>
         <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
           <div>
             <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">ชื่อผู้ใช้ *</label>
-            <input 
-              name="username" 
-              value={form.username} 
-              onChange={handleChange} 
-              required 
-              className="input-field text-sm"
-              disabled={saving}
-            />
+            <input name="username" value={form.username} onChange={handleChange} required className="input-field text-sm" />
           </div>
-          
+          <div>
+            <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">รหัสผ่าน *</label>
+            <input name="password" type="password" value={form.password} onChange={handleChange} required className="input-field text-sm" />
+          </div>
           <div>
             <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">ชื่อ-นามสกุล *</label>
-            <input 
-              name="name" 
-              value={form.name} 
-              onChange={handleChange} 
-              required 
-              className="input-field text-sm"
-              disabled={saving}
-            />
+            <input name="name" value={form.name} onChange={handleChange} required className="input-field text-sm" />
           </div>
-          
           <div>
             <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">อีเมล *</label>
-            <input 
-              name="email" 
-              type="email" 
-              value={form.email} 
-              onChange={handleChange} 
-              required 
-              className="input-field text-sm"
-              disabled={saving}
-            />
+            <input name="email" type="email" value={form.email} onChange={handleChange} required className="input-field text-sm" />
           </div>
-          
           <div>
             <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">เบอร์โทร</label>
-            <input 
-              name="tel" 
-              value={form.tel} 
-              onChange={handleChange} 
-              className="input-field text-sm"
-              disabled={saving}
-            />
+            <input name="tel" value={form.tel} onChange={handleChange} className="input-field text-sm" />
           </div>
 
-          {/* เลือกแผนกก่อน */}
+          {/* เลือกแผนก */}
           <div>
             <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">แผนก *</label>
             <select
               value={selectedDeptId}
               onChange={handleDeptChange}
               required
-              className="input-field text-sm"
-              disabled={saving}
+              disabled={departments.length === 0}
+              className={`input-field text-sm ${departments.length === 0 ? 'bg-gray-100 cursor-not-allowed' : ''}`}
             >
-              <option value="" disabled>-- เลือกแผนก --</option>
-              {departments.map(dep => (
-                <option key={dep.id} value={dep.id}>{dep.name}</option>
-              ))}
+              <option value="" disabled>{departments.length === 0 ? 'ไม่มีข้อมูลแผนก' : '-- เลือกแผนก --'}</option>
+              {departments.map(dep => <option key={dep.id} value={dep.id}>{dep.name}</option>)}
             </select>
+            {departments.length === 0 && (
+              <p className="mt-1 text-xs text-red-500">ไม่พบข้อมูลแผนกจาก API — ระบบจะดึงจากตำแหน่งให้อัตโนมัติเมื่อมีข้อมูล</p>
+            )}
           </div>
 
-          {/* ตำแหน่ง: แสดงเฉพาะของแผนกที่เลือก */}
+          {/* ตำแหน่ง */}
           <div>
             <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">ตำแหน่ง *</label>
             <select
@@ -272,7 +223,7 @@ export default function EditAdminPage() {
               value={form.adminPositionId}
               onChange={handleChange}
               required
-              disabled={!selectedDeptId || saving}
+              disabled={!selectedDeptId}
               className={`input-field text-sm ${!selectedDeptId ? 'bg-gray-100 cursor-not-allowed' : ''}`}
             >
               <option value="" disabled>{selectedDeptId ? '-- เลือกตำแหน่ง --' : 'เลือกแผนกก่อน'}</option>
@@ -284,37 +235,9 @@ export default function EditAdminPage() {
             </select>
           </div>
 
-          {/* สถานะการใช้งาน */}
-          <div>
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                name="isActive"
-                checked={form.isActive}
-                onChange={handleChange}
-                disabled={saving}
-                className="rounded"
-              />
-              <span className="text-xs sm:text-sm font-medium">เปิดใช้งาน</span>
-            </label>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 mt-4 sm:mt-6">
-            <button 
-              type="submit" 
-              className="btn-primary text-sm sm:text-base" 
-              disabled={saving}
-            >
-              {saving ? 'กำลังบันทึก...' : 'บันทึกการแก้ไข'}
-            </button>
-            <button 
-              type="button" 
-              className="btn-secondary text-sm sm:text-base" 
-              onClick={() => router.push('/admin')}
-              disabled={saving}
-            >
-              ยกเลิก
-            </button>
+          <div className="flex gap-2 mt-4">
+            <button type="submit" className="btn-primary text-sm" disabled={loading}>{loading ? 'กำลังบันทึก...' : 'เพิ่มผู้ดูแลระบบ'}</button>
+            <button type="button" className="btn-secondary text-sm" onClick={() => router.push('/admin/admins')}>ยกเลิก</button>
           </div>
         </form>
       </div>

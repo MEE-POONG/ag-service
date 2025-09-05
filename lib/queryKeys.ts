@@ -1,3 +1,4 @@
+// lib/queryKeys.ts
 // Centralized React Query keys to avoid typos
 
 export const qk = {
@@ -12,6 +13,9 @@ export const qk = {
   },
   admins: {
     list: ['admins', 'list'] as const,
+    // ✅ แนะนำเพิ่ม listPaged เพื่อแยก cache ตามหน้า/คีย์เวิร์ด
+    listPaged: (page: number, pageSize: number, keyword: string) =>
+      ['admins', 'list', { page, pageSize, keyword }] as const,
     detail: (id: string) => ['admins', 'detail', id] as const,
   },
   agUsers: {

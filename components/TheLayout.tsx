@@ -26,15 +26,15 @@ export function TheLayout({ children }: LayoutProps) {
     setDarkMode(!darkMode);
   };
 
-  useEffect(() => {
-    console.log('user in dashboard : ', user);
-    console.log(`router : `, router);
-    if (user?.username === 'admin' || user?.username === 'superadmin') {
-      console.log('yes');
-    } else {
-      console.log('no');
-    }
-  }, [user])
+  // useEffect(() => {
+  //   console.log('user in dashboard : ', user);
+  //   console.log(`router : `, router);
+  //   if (user?.username === 'admin' || user?.username === 'superadmin') {
+  //     console.log('yes');
+  //   } else {
+  //     console.log('no');
+  //   }
+  // }, [user])
 
   return (
     <div className="min-h-screen bg-background antialiased">

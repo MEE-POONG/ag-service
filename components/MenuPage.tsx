@@ -170,7 +170,7 @@ export default function MenuPage({ dataList, collapsed, }: EnhancedMenuProps) {
                 <li className="mb-2">
                     <Link
                         href={item.link}
-                        className={`flex items-center ${collapsed ? 'justify-center w-10 h-10 mx-auto px-0 py-0 rounded-full' : 'w-full px-4 py-2 rounded-full'} transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${isActive(item.link, item)
+                        className={`flex items-center rounded-md ${collapsed ? 'justify-center w-10 h-10 mx-auto px-0 py-0' : 'w-full p-2'} transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${isActive(item.link, item)
                             ? "scale-105 from-[#A78BFA] to-[#34D399] text-white shadow-lg"
                             : "from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-700 shadow-md"
                             }`}
@@ -186,7 +186,7 @@ export default function MenuPage({ dataList, collapsed, }: EnhancedMenuProps) {
             <li className="mb-2">
                 <button
                     onClick={() => toggleGroup(item.name)}
-                    className={`flex items-center ${collapsed ? 'justify-center w-10 h-10 mx-auto px-0 py-0 rounded-full' : 'w-full px-4 py-2 rounded-full'} transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${parentActive
+                    className={`flex items-center rounded-md ${collapsed ? 'justify-center w-10 h-10 mx-auto px-0 py-0' : 'w-full p-2'} transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${parentActive
                         ? "scale-105 from-[#A78BFA] to-[#34D399] text-white shadow-lg"
                         : " from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-700 shadow-md hover:bg-gradient-to-r"
                         }`}
@@ -212,7 +212,7 @@ export default function MenuPage({ dataList, collapsed, }: EnhancedMenuProps) {
                                 <li key={subItem.link} className={`transition-all duration-300 ease-in-out ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`} style={{ transitionDelay: `${index * 50}ms` }}>
                                     <Link
                                         href={item.link + subItem.link}
-                                        className={`flex items-center w-full px-4 py-2 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md bg-gradient-to-r ${isActive(item.link + subItem.link, subItem)
+                                        className={`flex items-center w-full p-2 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md bg-gradient-to-r ${isActive(item.link + subItem.link, subItem)
                                             ? "scale-105 from-[#A78BFA] to-[#34D399] text-white"
                                             : "from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-600 hover:text-gray-900"
                                             }`}

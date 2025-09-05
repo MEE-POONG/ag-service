@@ -206,7 +206,7 @@ export default function AgUserAccountPage() {
   return (
     <TheLayout>
       <div className={`p-4 sm:p-6`}>
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto ">
           <div className="relative overflow-hidden rounded-[1.5rem] p-5 sm:p-8 mb-6 sm:mb-8 bg-gradient-to-r from-[#A78BFA] via-[#A78BFA] to-[#34D399] shadow-lg shadow-gray-900/10">
             <div className="flex relative z-10 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 drop-shadow-sm sm:text-3xl md:text-4xl">
