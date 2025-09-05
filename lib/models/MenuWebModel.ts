@@ -393,7 +393,6 @@ class MenuWebModel {
     return await prisma.menuWebDB.update({
       where: { id },
       data: {
-        isDeleted: true,
         deleteBy: deleteBy,
         updatedAt: new Date(),
         updatedBy: deleteBy

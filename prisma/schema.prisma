@@ -49,21 +49,20 @@ model UserDB {
   deleteBy  String?
 }
 
-
 // ระบบฐานข้อมูลเว็บ
 model WebBaseDB {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  name      String     @unique
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String    @unique
   passS     String? // Password สำหรับ Super Admin
   passM     String? // Password สำหรับ Manager
   passA     String? // Password สำหรับ Admin
   otpS      String? // OTP สำหรับ Super Admin
   otpM      String? // OTP สำหรับ Manager
   otpA      String? // OTP สำหรับ Admin
-  isActive  Boolean    @default(true)
-  createdAt DateTime   @default(now())
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
   createdBy String
-  updatedAt DateTime   @updatedAt
+  updatedAt DateTime  @updatedAt
   updatedBy String
   deleteAt  DateTime?
   deleteBy  String?

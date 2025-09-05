@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     },
   })
 
-  if (!user || user.isDeleted || user.isActive === false) {
+  if (!user || user.isActive === false) {
     return res.status(200).json({ user: null })
   }
 

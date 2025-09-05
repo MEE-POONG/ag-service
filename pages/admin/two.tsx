@@ -30,7 +30,6 @@ export default function ImagePage() {
             const res = await axios.get(`/api/imagelist?page=${params.page}&pageSize=${params.pageSize}&keyword=${params.keyword}`)
             return res.data as { success: boolean; images: ImageList[]; pagination: { totalPages: number } }
         },
-        keepPreviousData: true,
         staleTime: 30 * 1000,
     })
 

@@ -42,15 +42,6 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
               isActive: true,
             }
           },
-          AGUserDB: {
-            select: {
-              id: true,
-              userAg: true,
-              userLogin: true,
-              adviser: true,
-              isActive: true,
-            }
-          }
         }
       });
 
@@ -88,7 +79,6 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
         _count: {
           select: {
             AdminDB: true,
-            AGUserDB: true
           }
         }
       },
@@ -240,7 +230,6 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
     const deleteWebBase = await prisma.webBaseDB.update({
       where: { id },
       data: {
-        isDeleted: true,
         deleteBy,
         updatedBy: deleteBy
       }

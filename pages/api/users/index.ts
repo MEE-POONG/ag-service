@@ -15,7 +15,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
     // เงื่อนไขการค้นหา
     const searchKeyword = (keyword || search) as string;
     const whereClause: Prisma.UserDBWhereInput = {
-      
+
       ...(status && status !== 'all' ? { isActive: status === 'active' } : {}),
       ...(searchKeyword ? {
         OR: [
@@ -77,8 +77,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       const existingUser = await prisma.userDB.findFirst({
         where: {
-          OR: [ { username }, { email } ],
-          
+          OR: [{ username }, { email }],
+
         },
       })
       if (existingUser) {
@@ -152,7 +152,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!id) return res.status(400).json({ error: 'ไม่พบ id' })
       await prisma.userDB.update({
         where: { id },
-        data: { isDeleted: true, updatedBy: 'system' },
+        data: { updatedBy: 'system' },
       })
       return res.status(200).json({ message: 'ลบผู้ใช้สำเร็จ' })
     } catch (error) {

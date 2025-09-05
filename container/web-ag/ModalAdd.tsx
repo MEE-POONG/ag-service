@@ -26,23 +26,26 @@ const WebBaseModalAdd: React.FC<WebBaseModalAddProps> = ({
       [field]: !prev[field]
     }));
   };
+
   const [formData, setFormData] = useState<WebBaseDB>({
     id: '',
-    createdAt: new Date(),
-    createdBy: '',
-    updatedAt: new Date(),
-    updatedBy: '',
-    
     name: '',
-    passS: '',
+    isActive: true,
+    passS: '',   // ok เพราะ type คือ string | null (string ใส่ได้)
     passM: '',
     passA: '',
     otpS: '',
     otpM: '',
     otpA: '',
-    isActive: true,
-    deleteBy: '',
-  });
+    createdAt: new Date(),
+    createdBy: '',
+    updatedAt: new Date(),
+    updatedBy: '',
+    deleteAt: null,          // ✅ ต้องมี
+    deleteBy: null,          // ✅ ต้องมี
+    // ถ้า type ของคุณมี field อื่นอีก เช่นความสัมพันธ์ AdminDB[] แต่ใน error ไม่บอกว่าขาด ก็ยังไม่ต้องใส่
+  })
+
   const handleSave = async () => {
     try {
       if (!formData.name.trim()) {
@@ -90,79 +93,79 @@ const WebBaseModalAdd: React.FC<WebBaseModalAddProps> = ({
           <Modal.Close onClick={() => setIsOpen(false)} />
         </Modal.Header>
         <Modal.Body>
-            <div className="space-y-3 sm:space-y-4">
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                  ชื่อ Web Base *
-                </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="กรอกชื่อ Web Base"
-                />
-              </div>
+          <div className="space-y-3 sm:space-y-4">
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                ชื่อ Web Base *
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="กรอกชื่อ Web Base"
+              />
+            </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* คอลัมน์ซ้าย: Passwords */}
-                <div className="space-y-4">
-                  {["passS", "passM", "passA"].map((field) => (
-                    <div key={field}>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                        Password {field === "passS" ? "Super Admin" : field === "passM" ? "Master Admin" : "Admin"}
-                      </label>
-                      <div className="relative">
-                        <input
-                          type={showPasswords[field as 'passS' | 'passM' | 'passA'] ? "text" : "password"}
-                          value={formData[field as keyof typeof formData] as string}
-                          onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
-                          className="w-full px-3 py-2 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => togglePasswordVisibility(field as 'passS' | 'passM' | 'passA')}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                        >
-                          {showPasswords[field as 'passS' | 'passM' | 'passA'] ? <FiEyeOff size={16} /> : <FiEye size={16} />}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* คอลัมน์ขวา: OTPs */}
-                <div className="space-y-4">
-                  {["otpS", "otpM", "otpA"].map((field) => (
-                    <div key={field}>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
-                        OTP {field === "otpS" ? "Super Admin" : field === "otpM" ? "Master Admin" : "Admin"}
-                      </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* คอลัมน์ซ้าย: Passwords */}
+              <div className="space-y-4">
+                {["passS", "passM", "passA"].map((field) => (
+                  <div key={field}>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                      Password {field === "passS" ? "Super Admin" : field === "passM" ? "Master Admin" : "Admin"}
+                    </label>
+                    <div className="relative">
                       <input
-                        type="text"
+                        type={showPasswords[field as 'passS' | 'passM' | 'passA'] ? "text" : "password"}
                         value={formData[field as keyof typeof formData] as string}
                         onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 pr-10 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                       />
+                      <button
+                        type="button"
+                        onClick={() => togglePasswordVisibility(field as 'passS' | 'passM' | 'passA')}
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                      >
+                        {showPasswords[field as 'passS' | 'passM' | 'passA'] ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                      </button>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
 
-
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="isActive"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="isActive" className="ml-2 text-xs sm:text-sm text-gray-700">
-                  เปิดใช้งาน
-                </label>
+              {/* คอลัมน์ขวา: OTPs */}
+              <div className="space-y-4">
+                {["otpS", "otpM", "otpA"].map((field) => (
+                  <div key={field}>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                      OTP {field === "otpS" ? "Super Admin" : field === "otpM" ? "Master Admin" : "Admin"}
+                    </label>
+                    <input
+                      type="text"
+                      value={formData[field as keyof typeof formData] as string}
+                      onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
+
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="isActive"
+                checked={formData.isActive}
+                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="isActive" className="ml-2 text-xs sm:text-sm text-gray-700">
+                เปิดใช้งาน
+              </label>
+            </div>
+          </div>
 
         </Modal.Body>
         <Modal.Footer>
