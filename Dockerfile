@@ -1,10 +1,13 @@
 # Use the official Node.js runtime as the base image
 FROM node:18-alpine AS base
+# Provide required native libs for Prisma on Alpine
+# - libc6-compat: glibc compatibility layer
+# - openssl1.1-compat: provides libssl.so.1.1 needed by Prisma engine
+RUN apk add --no-cache libc6-compat openssl openssl1.1-compat
 
 # Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+# Dependencies stage uses base which already has required native libs
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
