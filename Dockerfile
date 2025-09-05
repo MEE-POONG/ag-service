@@ -2,8 +2,9 @@
 FROM node:18-alpine AS base
 # Provide required native libs for Prisma on Alpine
 # - libc6-compat: glibc compatibility layer
-# - openssl1.1-compat: provides libssl.so.1.1 needed by Prisma engine
-RUN apk add --no-cache libc6-compat openssl openssl1.1-compat
+# - openssl: provides SSL libraries
+# - ca-certificates: for SSL certificate verification
+RUN apk add --no-cache libc6-compat openssl ca-certificates
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -21,6 +22,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Set environment variables for Prisma
+ENV PRISMA_CLI_BINARY_TARGETS=linux-musl
+
 # Generate Prisma client
 RUN npx prisma generate
 
@@ -35,6 +39,9 @@ ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+# Set Prisma environment variables for runtime
+ENV PRISMA_QUERY_ENGINE_LIBRARY=/app/node_modules/.prisma/client/libquery_engine-linux-musl.so.node
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -48,6 +55,10 @@ RUN chown nextjs:nodejs .next
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy Prisma client and generated files
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 
 USER nextjs
 
