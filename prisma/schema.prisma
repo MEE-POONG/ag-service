@@ -49,24 +49,6 @@ model UserDB {
   deleteBy  String?
 }
 
-// ระบบผู้ใช้ AG
-model AGUserDB {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  userAg    String    @unique // รหัสผู้ใช้ AG
-  userLogin String    @unique // ชื่อผู้ใช้
-  adviser   String? // ผู้แนะนำ
-  password  String
-  webBaseId String    @db.ObjectId
-  webBase   WebBaseDB @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  createdBy String
-  updatedAt DateTime  @updatedAt
-  updatedBy String
-  deleteAt  DateTime?
-  deleteBy  String?
-  isDeleted Boolean   @default(false)
-}
 
 // ระบบฐานข้อมูลเว็บ
 model WebBaseDB {
@@ -86,7 +68,6 @@ model WebBaseDB {
   deleteAt  DateTime?
   deleteBy  String?
   AdminDB   AdminDB[]
-  AGUserDB  AGUserDB[]
 }
 
 // ระบบผู้ดูแลระบบ
@@ -267,22 +248,22 @@ model WorkHistoryDB {
 
 // AG user accounts management (separate from AGUserDB login mapping)
 model AgUserAccountDB {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  username     String      @unique
-  reserve      String?
-  userLogin    String      @unique
-  webname      String?
-  origin       String?
-  position     String?
-  gaSecretEnc  String?
-  statusServe  StatusServe @default(PENDING)
-  note         String?
-  meta         String?     // JSON string for extra data
-  isActive     Boolean     @default(true)
-  createdAt    DateTime    @default(now())
-  createdBy    String
-  updatedAt    DateTime    @updatedAt
-  updatedBy    String
-  deleteAt     DateTime?
-  deleteBy     String?
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  username    String      @unique
+  reserve     String? // รหัสสำรอง หรือ สำหรับเอส
+  userLogin   String      @unique //ของเว็บ
+  webname     String?
+  origin      String?
+  position    String?
+  gaSecretEnc String?
+  statusServe StatusServe @default(PENDING)
+  note        String?
+  meta        String? // JSON string for extra data
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  createdBy   String
+  updatedAt   DateTime    @updatedAt
+  updatedBy   String
+  deleteAt    DateTime?
+  deleteBy    String?
 }
