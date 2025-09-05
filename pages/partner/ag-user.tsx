@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import Modal, { ModalBody, ModalFooter, ModalHeader, ModalTitle, ModalDescription } from '@/components/form/Modal'
 import ReactIconComponent from '@/components/ReactIconComponent'
+import { authenticator } from 'otplib'
 
 type AgUserAccountItem = {
   id?: string
@@ -274,6 +275,23 @@ export default function AgUserAccountPage() {
                       <td className="px-3 py-2 truncate max-w-[12rem]" title={u.gaSecretEnc}>{u.gaSecretEnc}</td>
                       <td className="px-3 py-2">
                         <div className="flex gap-2">
+                          <Button
+                            size="xs"
+                            className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
+                            onClick={async () => {
+                              try {
+                                if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
+                                // Generate TOTP using otplib (Google Auth compatible)
+                                const code = authenticator.generate(String(u.gaSecretEnc))
+                                await navigator.clipboard.writeText(code)
+                                toast.success('คัดลอก TOTP แล้ว')
+                              } catch (e: any) {
+                                toast.error(e?.message || 'สร้าง TOTP ไม่สำเร็จ')
+                              }
+                            }}
+                          >
+                            คัดลอก TOTP
+                          </Button>
                           <Button
                             size="xs"
                             className="btn-theme hover:!brightness-95 rounded-full px-3 !font-medium"
