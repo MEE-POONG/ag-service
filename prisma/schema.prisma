@@ -1,0 +1,268 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Status for provisioning/serve state
+enum StatusServe {
+  PENDING
+  SUCCESS
+  WORKING
+  FAILED
+}
+
+// ระบบจัดการไฟล์รูปภาพ
+model ImageList {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  imageUrl  String
+  modelName String?
+  nameFile  String
+  createdAt DateTime  @default(now())
+  createdBy String
+  updatedAt DateTime  @updatedAt
+  updatedBy String
+  deleteAt  DateTime?
+  deleteBy  String?
+}
+
+// ระบบผู้ใช้ทั่วไป
+model UserDB {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  username  String    @unique
+  password  String
+  img       String?
+  firstname String
+  lastname  String
+  nickname  String?
+  email     String    @unique
+  tel       String?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  createdBy String
+  updatedAt DateTime  @updatedAt
+  updatedBy String
+  deleteAt  DateTime?
+  deleteBy  String?
+}
+
+// ระบบฐานข้อมูลเว็บ
+model WebBaseDB {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String    @unique
+  passS     String? // Password สำหรับ Super Admin
+  passM     String? // Password สำหรับ Manager
+  passA     String? // Password สำหรับ Admin
+  otpS      String? // OTP สำหรับ Super Admin
+  otpM      String? // OTP สำหรับ Manager
+  otpA      String? // OTP สำหรับ Admin
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  createdBy String
+  updatedAt DateTime  @updatedAt
+  updatedBy String
+  deleteAt  DateTime?
+  deleteBy  String?
+  AdminDB   AdminDB[]
+}
+
+// ระบบผู้ดูแลระบบ
+model AdminDB {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  username        String           @unique
+  password        String
+  name            String
+  tel             String?
+  email           String?          @unique
+  profile         String? // JSON string สำหรับข้อมูลโปรไฟล์เพิ่มเติม
+  webBaseId       String?          @db.ObjectId
+  webBase         WebBaseDB?       @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
+  adminPositionId String?          @db.ObjectId
+  adminPosition   AdminPositionDB? @relation(fields: [adminPositionId], references: [id], onDelete: SetNull)
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  createdBy       String
+  updatedAt       DateTime         @updatedAt
+  updatedBy       String
+  deleteAt        DateTime?
+  deleteBy        String?
+}
+
+// ระบบสิทธิ์เริ่มต้นของตำแหน่ง
+model AdminDefaultPermissionDB {
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  adminPositionDBId String          @db.ObjectId
+  adminPosition     AdminPositionDB @relation(fields: [adminPositionDBId], references: [id], onDelete: Cascade)
+  menuPageWebId     String          @db.ObjectId
+  menuPage          MenuWebDB       @relation(fields: [menuPageWebId], references: [id], onDelete: Cascade)
+  canAdvance        Boolean         @default(false)
+  canViews          Boolean         @default(false)
+  canCreate         Boolean         @default(false)
+  canUpdate         Boolean         @default(false)
+  canDelete         Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  createdBy         String
+  updatedAt         DateTime        @updatedAt
+  updatedBy         String
+  deleteAt          DateTime?
+  deleteBy          String?
+
+  @@unique([adminPositionDBId, menuPageWebId])
+}
+
+// ระบบเมนูและหน้าของเว็บ
+model MenuWebDB {
+  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
+  name                     String                     @unique // ระบุหน้าที่สามารถควบคุมได้ เช่น "dashboard", "users", "settings"
+  description              String? // คำอธิบายหน้า
+  isVisible                Boolean                    @default(true) //ใช้งานหรือไม่
+  showOrder                Int                        @default(0) // ลำดับการแสดงผล
+  link                     String // ระบุหน้าที่สามารถควบคุมได้ เช่น "", "/users", "/setting"
+  icon                     String? // อาจเก็บชื่อไอคอนหรือ URL ไอคอน
+  manager                  String[]                   @default([]) //กรณีหน้านั้นมีหน้าย่อยจำเพาะ เพิ่ม แก้ไข แสดง ตัวอย่างการใช้งาน ["/create", "/update", "/delete"]
+  head                     Boolean                    @default(false) // เมื่อเป็น true : <button> ,false : <link>
+  parentId                 String?                    @db.ObjectId // เก็บเป็น ObjectId ของเมนูหลัก
+  parent                   MenuWebDB?                 @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children                 MenuWebDB[]                @relation("MenuHierarchy")
+  canAdvance               Boolean                    @default(false) // สามารถข้ามหน้าได้หรือไม่
+  canViews                 Boolean                    @default(false) // สามารถดูหน้าได้หรือไม่
+  canCreate                Boolean                    @default(false) // สามารถเพิ่มหน้าได้หรือไม่
+  canUpdate                Boolean                    @default(false) // สามารถแก้ไขหน้าได้หรือไม่
+  canDelete                Boolean                    @default(false) // สามารถลบหน้าได้หรือไม่
+  createdAt                DateTime                   @default(now())
+  createdBy                String
+  updatedAt                DateTime                   @updatedAt
+  updatedBy                String
+  deleteAt                 DateTime?
+  deleteBy                 String?
+  AdminDefaultPermissionDB AdminDefaultPermissionDB[]
+}
+
+// ระบบแผนก
+model AdminDepartmentDB {
+  id             String            @id @default(auto()) @map("_id") @db.ObjectId
+  name           String            @unique
+  description    String?
+  managerId      String?           @db.ObjectId
+  isActive       Boolean           @default(true)
+  createdAt      DateTime          @default(now())
+  createdBy      String
+  updatedAt      DateTime          @updatedAt
+  updatedBy      String
+  deleteAt       DateTime?
+  deleteBy       String?
+  adminPositions AdminPositionDB[]
+}
+
+// ระบบตำแหน่ง
+model AdminPositionDB {
+  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
+  name                     String
+  description              String?
+  priority                 Int                        @default(0)
+  adminDepartmentId        String?                    @db.ObjectId
+  adminDepartment          AdminDepartmentDB?         @relation(fields: [adminDepartmentId], references: [id], onDelete: SetNull)
+  isActive                 Boolean                    @default(true)
+  createdAt                DateTime                   @default(now())
+  createdBy                String
+  updatedAt                DateTime                   @updatedAt
+  updatedBy                String
+  deleteAt                 DateTime?
+  deleteBy                 String?
+  admins                   AdminDB[]
+  AdminDefaultPermissionDB AdminDefaultPermissionDB[]
+
+  // ✅ ชื่อซ้ำได้ข้ามแผนก แต่ "ห้ามซ้ำภายในแผนกเดียวกัน"
+  @@unique([adminDepartmentId, name], map: "uniq_position_name_per_dept")
+  // ✅ ลำดับห้ามชนภายในแผนก (รองรับ resequence)
+  @@unique([adminDepartmentId, priority], map: "uniq_position_priority_per_dept")
+  @@index([adminDepartmentId])
+}
+
+// ระบบ Log การทำงาน
+model ActivityLogDB {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  userType  String // "admin", "user", "aguser"
+  action    String // "create", "update", "delete", "login", "logout"
+  tableName String?
+  recordId  String?
+  oldData   String? // JSON string ของข้อมูลเก่า
+  newData   String? // JSON string ของข้อมูลใหม่
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}
+
+model SettingDB {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  logo              String?
+  logoText          String?
+  logoTextColor     String?
+  logoTextSize      Int?
+  logoTextFont      String?
+  logoTextFontSize  Int?
+  logoTextFontColor String?
+  facebook          String?
+  instagram         String?
+  line              String?
+  youtube           String?
+  website           String?
+  address           String?
+  tel               String?
+  createdAt         DateTime  @default(now())
+  createdBy         String
+  updatedAt         DateTime  @updatedAt
+  updatedBy         String
+  deleteAt          DateTime?
+  deleteBy          String?
+}
+
+// ระบบประวัติการทำงาน
+model WorkHistoryDB {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tableName String // ชื่อตาราง เช่น "AdminPositionDB", "AdminDepartmentDB"
+  recordId  String?  @db.ObjectId // ID ของข้อมูลที่ถูกดำเนินการ
+  action    String // "CREATE", "UPDATE", "DELETE"
+  oldData   String? // JSON string ของข้อมูลเก่า (สำหรับ UPDATE, DELETE)
+  newData   String? // JSON string ของข้อมูลใหม่ (สำหรับ CREATE, UPDATE)
+  isSuccess Boolean  @default(true) // สถานะการดำเนินการสำเร็จหรือไม่
+  errorMsg  String? // ข้อความ error (ถ้าไม่สำเร็จ)
+  userId    String // ผู้ที่ดำเนินการ
+  userType  String   @default("admin") // ประเภทผู้ใช้ "admin", "user", "system"
+  ipAddress String? // IP Address ของผู้ดำเนินการ
+  userAgent String? // User Agent ของผู้ดำเนินการ
+  createdAt DateTime @default(now())
+
+  @@index([tableName])
+  @@index([recordId])
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+// AG user accounts management (separate from AGUserDB login mapping)
+model AgUserAccountDB {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  username    String      @unique
+  reserve     String? // รหัสสำรอง หรือ สำหรับเอส
+  userLogin   String      @unique //ของเว็บ
+  webname     String?
+  origin      String?
+  position    String?
+  gaSecretEnc String?
+  statusServe StatusServe @default(PENDING)
+  note        String?
+  meta        String? // JSON string for extra data
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  createdBy   String
+  updatedAt   DateTime    @updatedAt
+  updatedBy   String
+  deleteAt    DateTime?
+  deleteBy    String?
+}

@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: ag-db-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: ag-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - ag-db-network
+
+  # AG-DB Portal Application
+  ag-db-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ag-db-portal
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "mongodb://admin:password123@mongodb:27017/ag-db?authSource=admin"
+      NEXTAUTH_SECRET: "your-secret-key-here"
+      NEXTAUTH_URL: "http://localhost:3000"
+      JWT_SECRET: "your-jwt-secret-here"
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    networks:
+      - ag-db-network
+    volumes:
+      - ./uploads:/app/uploads
+
+  # MongoDB Express (Optional - for database management)
+  mongo-express:
+    image: mongo-express:latest
+    container_name: ag-db-mongo-express
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password123
+      ME_CONFIG_MONGODB_URL: "mongodb://admin:password123@mongodb:27017/"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: password123
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - ag-db-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  ag-db-network:
+    driver: bridge 

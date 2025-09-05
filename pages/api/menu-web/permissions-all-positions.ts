@@ -1,0 +1,82 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { prisma } from '@/lib/prisma'
+
+type Body = {
+  menuPageWebId: string;
+  canAdvance?: boolean;
+  canViews?: boolean;
+  canCreate?: boolean;
+  canUpdate?: boolean;
+  canDelete?: boolean;
+};
+
+type Response = {
+  success: boolean;
+  message?: string;
+  error?: string;
+  updatedCount?: number;
+};
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Response>) {
+  if (req.method !== 'PUT') {
+    return res.status(405).json({ success: false, error: 'Method not allowed' });
+  }
+
+  const { menuPageWebId, canAdvance, canViews, canCreate, canUpdate, canDelete } = req.body as Body;
+
+  if (!menuPageWebId || typeof menuPageWebId !== 'string') {
+    return res.status(400).json({ success: false, error: 'ต้องระบุ menuPageWebId' });
+  }
+
+  try {
+    // verify menu exists
+    const menu = await prisma.menuWebDB.findFirst({ where: { id: menuPageWebId,  } });
+    if (!menu) {
+      return res.status(404).json({ success: false, error: 'ไม่พบเมนู' });
+    }
+
+    const positions = await prisma.adminPositionDB.findMany({ where: {  } });
+    if (!positions.length) {
+      return res.status(200).json({ success: true, updatedCount: 0, message: 'ไม่มีตำแหน่งสำหรับอัปเดต' });
+    }
+
+    const updates = positions.map((position) =>
+      prisma.adminDefaultPermissionDB.upsert({
+        where: {
+          adminPositionDBId_menuPageWebId: {
+            adminPositionDBId: position.id,
+            menuPageWebId,
+          },
+        },
+        update: {
+          canAdvance: Boolean(canAdvance),
+          canViews: Boolean(canViews),
+          canCreate: Boolean(canCreate),
+          canUpdate: Boolean(canUpdate),
+          canDelete: Boolean(canDelete),
+          updatedBy: 'system',
+        },
+        create: {
+          adminPositionDBId: position.id,
+          menuPageWebId,
+          canAdvance: Boolean(canAdvance),
+          canViews: Boolean(canViews),
+          canCreate: Boolean(canCreate),
+          canUpdate: Boolean(canUpdate),
+          canDelete: Boolean(canDelete),
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      })
+    );
+
+    await prisma.$transaction(updates);
+
+    return res.status(200).json({ success: true, message: 'อัปเดตสิทธิ์ให้ทุกตำแหน่งสำเร็จ', updatedCount: positions.length });
+  } catch (error) {
+    console.error('Bulk permissions apply error:', error);
+    return res.status(500).json({ success: false, error: 'เกิดข้อผิดพลาดในการอัปเดตสิทธิ์' });
+  }
+}
+
+
