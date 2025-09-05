@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+import { AgUser } from '../data/AgUser'
 
 const prisma = new PrismaClient()
 
@@ -616,6 +617,60 @@ async function main() {
   console.log('  - Reports (3 sub-items)');
   console.log('  - Settings (3 sub-items)');
   console.log('🎯 Total: 5 main menus + 12 sub-menus = 17 menu items');
+
+  // เพิ่มข้อมูล AgUser เข้า AgUserAccountDB
+  console.log('🌱 เริ่มต้นการนำเข้าข้อมูล AgUser...')
+  
+  let createdCount = 0
+  let updatedCount = 0
+  
+  for (const agUserData of AgUser) {
+    try {
+      const result = await prisma.agUserAccountDB.upsert({
+        where: { username: agUserData.username },
+        update: {
+          reserve: agUserData.reserve || '',
+          userLogin: agUserData.userLogin,
+          webname: agUserData.webname || 'ufa66',
+          origin: agUserData.origin,
+          position: agUserData.position,
+          gaSecretEnc: agUserData.gaSecretEnc || '',
+          statusServe: 'PENDING',
+          updatedBy: 'system',
+        },
+        create: {
+          username: agUserData.username,
+          reserve: agUserData.reserve || '',
+          userLogin: agUserData.userLogin,
+          webname: agUserData.webname || 'ufa66',
+          origin: agUserData.origin,
+          position: agUserData.position,
+          gaSecretEnc: agUserData.gaSecretEnc || '',
+          statusServe: 'PENDING',
+          createdBy: 'system',
+          updatedBy: 'system',
+        },
+      })
+      
+      // ตรวจสอบว่าเป็นการสร้างใหม่หรืออัปเดต
+      const existingUser = await prisma.agUserAccountDB.findUnique({
+        where: { username: agUserData.username }
+      })
+      
+      if (existingUser?.createdAt.getTime() === existingUser?.updatedAt.getTime()) {
+        createdCount++
+      } else {
+        updatedCount++
+      }
+    } catch (error) {
+      console.error(`❌ เกิดข้อผิดพลาดกับ user ${agUserData.username}:`, error)
+    }
+  }
+  
+  console.log(`✅ นำเข้าข้อมูล AgUser สำเร็จ!`)
+  console.log(`   - สร้างใหม่: ${createdCount} รายการ`)
+  console.log(`   - อัปเดต: ${updatedCount} รายการ`)
+  console.log(`   - รวม: ${createdCount + updatedCount} รายการ จากทั้งหมด ${AgUser.length} รายการ`)
 
   console.log('🎉 สร้างข้อมูลเริ่มต้นเสร็จสิ้น!')
   console.log('')

@@ -113,14 +113,16 @@ export default function AgUserAccountPage() {
       // Replace temp with real if present
       queryClient.setQueryData(listKey, (old: any) => {
         const items = old?.items ?? []
-        const withWeb = { ...created, webname: (created as any).webname ?? (() => {
-          try {
-            const m = (created as any)?.meta ? JSON.parse((created as any).meta) : null
-            return m?.webname
-          } catch {
-            return undefined
-          }
-        })() }
+        const withWeb = {
+          ...created, webname: (created as any).webname ?? (() => {
+            try {
+              const m = (created as any)?.meta ? JSON.parse((created as any).meta) : null
+              return m?.webname
+            } catch {
+              return undefined
+            }
+          })()
+        }
         const idx = items.findIndex((x: any) => String(x.id || '').startsWith('temp-'))
         if (idx >= 0) {
           items[idx] = withWeb
@@ -272,7 +274,26 @@ export default function AgUserAccountPage() {
                       <td className="px-3 py-2">{u.webname || '-'}</td>
                       <td className="px-3 py-2">{u.origin || '-'}</td>
                       <td className="px-3 py-2 capitalize">{u.position}</td>
-                      <td className="px-3 py-2 truncate max-w-[12rem]" title={u.gaSecretEnc}>{u.gaSecretEnc}</td>
+                      <td className="px-3 py-2 truncate max-w-[12rem]" title={u.gaSecretEnc}>
+                        {u.gaSecretEnc && (
+                          <Button
+                            size="xs"
+                            className="bg-blue-200 !text-gray-700 !border border-blue-500 hover:!bg-blue-100 rounded-full px-3"
+                            onClick={async () => {
+                              try {
+                                if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
+                                // Generate TOTP using otplib (Google Auth compatible)
+                                await navigator.clipboard.writeText(u.gaSecretEnc)
+                                toast.success('คัดลอก SecretEnc แล้ว')
+                              } catch (e: any) {
+                                toast.error(e?.message || 'สร้าง SecretEnc ไม่สำเร็จ')
+                              }
+                            }}
+                          >
+                            คัดลอก SecretEnc
+                          </Button>
+                        )}
+                      </td>
                       <td className="px-3 py-2">
                         <div className="flex gap-2">
                           <Button
@@ -550,7 +571,7 @@ function AgUserAccountFormModal({
               placeholder="ล็อกอินสำหรับเข้าระบบ AG"
             />
           </div>
-        <div>
+          <div>
             <label className="block mb-1 text-sm font-medium">reserve</label>
             <input
               value={form.reserve}
