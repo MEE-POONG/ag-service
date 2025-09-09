@@ -32,7 +32,8 @@ export default function LoginPage() {
   useEffect(() => {
     if (!router.isReady) return
     if (me) {
-      router.replace(typeof redirectTo === 'string' && redirectTo.startsWith('/') ? redirectTo : '/')
+      // Force a full page reload to ensure proper state synchronization
+      window.location.href = typeof redirectTo === 'string' && redirectTo.startsWith('/') ? redirectTo : '/'
     }
   }, [me, router.isReady, redirectTo, router])
 
@@ -45,7 +46,8 @@ export default function LoginPage() {
       // Prime the cache with returned user
       queryClient.setQueryData(qk.auth.me, data?.user ?? null)
       toast.success(data?.message || 'เข้าสู่ระบบสำเร็จ')
-      router.replace(typeof redirectTo === 'string' && redirectTo.startsWith('/') ? redirectTo : '/')
+      // Force a full page reload to ensure proper state synchronization
+      window.location.href = typeof redirectTo === 'string' && redirectTo.startsWith('/') ? redirectTo : '/'
     },
     onError: (error: any) => {
       const msg =
