@@ -88,9 +88,15 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       enabled: false,
       work: false,
     },
-    lotto: {
+    lottoRDC: {
       enabled: false,
       work: false,
+      share: 0,
+    },
+    lottoRCW: {
+      enabled: false,
+      work: false,
+      share: 0,
     },
     asiaPowerball: {
       enabled: false,
@@ -130,7 +136,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       { value: 5, label: 'E • 500 / 50,000 / 1,000,000' },
       { value: 6, label: 'F • 10,000 / 200,000 / 2,000,000' },
     ],
-  
+
     cockfight: [
       { value: 1, label: 'A • 20 / 2,500' },
       { value: 2, label: 'B • 100 / 5,000' },
@@ -255,9 +261,15 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
           enabled: false,
           work: false,
         },
-        lotto: {
+        lottoRDC: {
           enabled: false,
           work: false,
+          share: 0,
+        },
+        lottoRCW: {
+          enabled: false,
+          work: false,
+          share: 0,
         },
         asiaPowerball: {
           enabled: false,
@@ -302,7 +314,8 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         sportsbook: data.data.sportsbook,
         sexy: data.data.sexy,
         sa: data.data.sa,
-        lotto: data.data.lotto,
+        lottoRDC: data.data.lottoRDC,
+        lottoRCW: data.data.lottoRCW,
         slotItp: data.data.slotItp,
         slotJoker: data.data.slotJoker,
         slotPlaystar: data.data.slotPlaystar,
@@ -350,7 +363,8 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         },
         sexy: { enabled: false, work: false, profile: 1 },
         sa: { enabled: false, work: false, commissionRAR: 0, profile: 1 },
-        lotto: { enabled: false, work: false, },
+        lottoRDC: { enabled: false, work: false, share: 0, },
+        lottoRCW: { enabled: false, work: false, share: 0, },
         slotItp: { enabled: false, work: false, },
         slotJoker: { enabled: false, work: false, },
         slotPlaystar: { enabled: false, work: false, },
@@ -406,7 +420,8 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         slotItp: { ...formData.slotItp },
         slotJoker: { ...formData.slotJoker },
         slotPlaystar: { ...formData.slotPlaystar },
-        lotto: { ...formData.lotto },
+        lottoRDC: { ...formData.lottoRDC },
+        lottoRCW: { ...formData.lottoRCW },
         asiaPowerball: { ...formData.asiaPowerball },
         cockfight: { ...formData.cockfight },
         muayStep: { ...formData.muayStep },
@@ -416,6 +431,9 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       };
 
       let response;
+      console.log(`adjustBetData : `, adjustBetData);
+      console.log(`response : `, response);
+
       if (mode === 'create') {
         response = await axios.post('/api/adjust-bet', {
           name: formData.name,
@@ -588,7 +606,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
             <h4 className="text-sm font-medium text-gray-900">{title}</h4>
-            {game.work && (
+            {game?.work && (
               <span className="px-2 py-0.5 bg-orange-100 text-orange-800 text-xs rounded-full">
                 ทำรายการ
               </span>
@@ -598,21 +616,21 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
             <div className="relative">
               <input
                 type="checkbox"
-                checked={!!game.enabled}
+                checked={!!game?.enabled}
                 onChange={(e) => updateNestedFormData(gameKey as string, 'enabled', e.target.checked)}
                 disabled={mode === 'view'}
                 className="sr-only"
               />
-              <div className={`block w-10 h-6 rounded-full transition-colors duration-300 ${game.enabled ? 'bg-blue-500' : 'bg-gray-300'
+              <div className={`block w-10 h-6 rounded-full transition-colors duration-300 ${game?.enabled ? 'bg-blue-500' : 'bg-gray-300'
                 } ${mode === 'view' ? 'opacity-50' : ''}`}>
               </div>
-              <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ${game.enabled ? 'translate-x-4' : ''
+              <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ${game?.enabled ? 'translate-x-4' : ''
                 }`}>
               </div>
             </div>
-            <span className={`ml-3 text-sm font-medium ${game.enabled ? 'text-blue-700' : 'text-gray-500'
+            <span className={`ml-3 text-sm font-medium ${game?.enabled ? 'text-blue-700' : 'text-gray-500'
               }`}>
-              {game.enabled ? 'ON' : 'OFF'}
+              {game?.enabled ? 'ON' : 'OFF'}
             </span>
           </label>
         </div>
@@ -637,7 +655,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
               {field.type === 'number' && (
                 <input
                   type="number"
-                  value={Number(game[field.key] ?? 0)}
+                  value={Number(game?.[field.key] ?? 0)}
                   onChange={(e) =>
                     updateNestedFormData(
                       gameKey as string,
@@ -654,7 +672,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
 
               {field.type === 'profile' && (
                 <select
-                  value={Number(game[field.key] ?? 1)} // เก็บเป็นเลข 1..n
+                  value={Number(game?.[field.key] ?? 1)} // เก็บเป็นเลข 1..n
                   onChange={(e) =>
                     updateNestedFormData(
                       gameKey as string,
@@ -953,7 +971,9 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
           {renderGameSection('Slot PLAYSTAR (RBL)', 'slotPlaystar', [
           ])}
           {/* Lotto */}
-          {renderGameSection('Lotto (RBI)', 'lotto', [
+          {renderGameSection('Lotto (RDC)', 'lottoRDC', [
+          ])}
+          {renderGameSection('Lotto (RCW)', 'lottoRCW', [
           ])}
           {renderGameSection('Asia Powerball (RBP)', 'asiaPowerball', [
           ])}

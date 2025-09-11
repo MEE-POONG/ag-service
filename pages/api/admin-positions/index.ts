@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { recordWorkHistory, extractUserInfo } from '@/utils/workHistoryUtils';
+import { serializeBigIntToNumber } from '@/lib/bigintUtils';
 
 type PositionRow = {
   id: string;
@@ -92,7 +93,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
       if (!row) {
         return res.status(404).json({ success: false, error: 'ไม่พบตำแหน่ง' });
       }
-      return res.status(200).json({ success: true, data: row });
+      return res.status(200).json({ success: true, data: serializeBigIntToNumber(row) });
     }
 
     const pageNum = parseInt(String(page), 10) || 1;
@@ -132,10 +133,10 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
 
     return res.status(200).json({
       success: true,
-      data: {
+      data: serializeBigIntToNumber({
         positions,
         departments,
-      },
+      }),
       pagination: {
         totalItems: total,
         totalPages: Math.ceil(total / pageSizeNum),
@@ -238,7 +239,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
 
     return res.status(201).json({
       success: true,
-      data: created,
+      data: serializeBigIntToNumber(created),
       message: 'สร้างตำแหน่งสำเร็จ',
     });
   } catch (error: any) {
@@ -384,7 +385,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
 
     return res.status(200).json({
       success: true,
-      data: updated,
+      data: serializeBigIntToNumber(updated),
       message: 'แก้ไขตำแหน่งสำเร็จ',
     })
   } catch (error: any) {

@@ -67,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     if (req.method === 'POST') {
-      const { customer, usernameAG, agBaseUrl, pinUsed, sportsbook, sexy, sa, slotItp, slotJoker, slotPlaystar, cockfight, muayStep, virtualSports, overallStatus, attemptCount, createdBy, updatedBy, lastError }: any = req.body.data;
+      const { customer, usernameAG, agBaseUrl, pinUsed, sportsbook, sexy, sa, slotItp, slotJoker, slotPlaystar, lottoRDC, lottoRCW, asiaPowerball, cockfight, muayStep, virtualSports, overallStatus, attemptCount, createdBy, updatedBy, lastError }: any = req.body.data;
       console.log(req.body);
       console.log(customer, usernameAG, agBaseUrl, pinUsed, sportsbook, sexy, sa, slotItp, slotJoker, slotPlaystar, cockfight, muayStep, virtualSports, overallStatus, attemptCount, createdBy, updatedBy, lastError);
       // Validation
@@ -85,20 +85,89 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           usernameAG,
           agBaseUrl,
           pinUsed,
-          sportsbook: sportsbook || {},
-          sexy: sexy || {},
-          sa: sa || {},
-          slotItp: slotItp || {},
-          slotJoker: slotJoker || {},
-          slotPlaystar: slotPlaystar || {},
-          cockfight: cockfight || {},
-          muayStep: muayStep || {},
-          virtualSports: virtualSports || {},
+          sportsbook: {
+            enabled: sportsbook?.enabled || false,
+            work: sportsbook?.work || false,
+            commission: sportsbook?.commission || { main: 0, x12: 0, par: 0, other: 0 },
+            limits: sportsbook?.limits || {
+              transLimit: 0,
+              beforeRun: 0,
+              maxX12: 0,
+              matchLimitX12: 0,
+              maxPar: 0,
+              par: 0,
+              maxOther: 0,
+              matchLimitOther: 0,
+              maxOS: 0,
+              matchLimitOS: 0
+            },
+            lastError: null,
+            lastSavedAt: null
+          },
+          sexy: {
+            enabled: sexy?.enabled || false,
+            work: sexy?.work || false,
+            profile: sexy?.profile || 1,
+            lastError: null,
+            lastSavedAt: null
+          },
+          sa: {
+            enabled: sa?.enabled || false,
+            work: sa?.work || false,
+            commissionRAR: sa?.commissionRAR || 0,
+            profile: sa?.profile || 1,
+            lastError: null,
+            lastSavedAt: null
+          },
+          slotItp: {
+            enabled: slotItp?.enabled || false,
+            work: slotItp?.work || false,
+            lastSavedAt: null
+          },
+          slotJoker: {
+            enabled: slotJoker?.enabled || false,
+            work: slotJoker?.work || false,
+            lastSavedAt: null
+          },
+          slotPlaystar: {
+            enabled: slotPlaystar?.enabled || false,
+            work: slotPlaystar?.work || false
+          },
+          cockfight: {
+            enabled: cockfight?.enabled || false,
+            work: cockfight?.work || false,
+            profile: cockfight?.profile || 1,
+            commissionRBG: cockfight?.commissionRBG || 0,
+            lastError: null
+          },
+          muayStep: {
+            enabled: muayStep?.enabled || false,
+            work: muayStep?.work || false,
+            profile: muayStep?.profile || 1,
+            lastError: null
+          },
+          virtualSports: {
+            enabled: virtualSports?.enabled || false,
+            work: virtualSports?.work || false,
+            profile: virtualSports?.profile || 1,
+            lastSavedAt: null,
+            statusServe: null
+          },
+          lottoRDC: lottoRDC ? {
+            enabled: lottoRDC?.enabled || false,
+            work: lottoRDC?.work || false,
+            share: lottoRDC?.share || 0
+          } : null,
+          lottoRCW: lottoRCW ? {
+            enabled: lottoRCW?.enabled || false,
+            work: lottoRCW?.work || false,
+            share: lottoRCW?.share || 0
+          } : null,
           overallStatus: 'PENDING',
           attemptCount: attemptCount || 0,
           createdBy: createdBy || 'system',
           updatedBy: updatedBy || 'system',
-          lastError: lastError || null,
+          lastError: lastError || '',
           createdAt: new Date(),
           updatedAt: new Date()
         }

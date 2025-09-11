@@ -130,7 +130,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       data: {
         customerId,
         agentId,
-        note,
+        note: note || '',
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
         createdBy: 'current-user-id', // TODO: Get from auth context
         updatedBy: 'current-user-id'
       },
@@ -179,6 +182,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
 
     // อัพเดทข้อมูล
     const updateData: any = {
+      updatedAt: new Date(),
       updatedBy: 'current-user-id' // TODO: Get from auth context
     };
 

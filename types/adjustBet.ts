@@ -58,6 +58,7 @@ export interface SlotPlaystar {
 export interface Lottos {
   enabled: boolean;
   work: boolean;
+  share?: number;
 }
 export interface AsiaPowerball {
   enabled: boolean;
@@ -94,7 +95,8 @@ export interface AdjustBetData {
   slotItp: SlotItp;
   slotJoker: SlotJoker;
   slotPlaystar: SlotPlaystar;
-  lotto: Lottos;
+  lottoRDC: Lottos;
+  lottoRCW: Lottos;
   asiaPowerball: AsiaPowerball;
   cockfight: Cockfight;
   muayStep: MuayStep;
@@ -125,7 +127,8 @@ export interface AdjustBetFormData {
   slotItp: SlotItp;
   slotJoker: SlotJoker;
   slotPlaystar: SlotPlaystar;
-  lotto: Lottos;
+  lottoRDC: Lottos;
+  lottoRCW: Lottos;
   asiaPowerball: AsiaPowerball;
   cockfight: Cockfight;
   muayStep: MuayStep;

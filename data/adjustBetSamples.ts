@@ -13,7 +13,7 @@ export const adjustBetSamples: AdjustBetSample[] = [
       pinUsed: "221308",
       sportsbook: {
         enabled: true,
-        work: true,
+        work: false,
         commission: {
           main: 0,
           x12: 0,
@@ -36,48 +36,53 @@ export const adjustBetSamples: AdjustBetSample[] = [
       sexy: {
         enabled: true,
         profile: 1,
-        work: true
+        work: false
       },
       sa: {
         enabled: false,
         commissionRAR: 0,
         profile: 1,
-        work: true
+        work: false
       },
       slotItp: {
         enabled: false,
-        work: true
+        work: false
       },
       slotJoker: {
         enabled: false,
-        work: true
+        work: false
       },
       slotPlaystar: {
         enabled: false,
-        work: true
+        work: false
       },
-      lotto: {
+      lottoRDC: {
         enabled: false,
-        work: true
+        work: false
+      },
+      lottoRCW: {
+        enabled: false,
+        work: false,
+        share: 0
       },
       asiaPowerball: {
         enabled: false,
-        work: true
+        work: false
       },
       cockfight: {
         enabled: false,
         commissionRBG: 0,
-        work: true,
+        work: false,
         profile: 1
       },
       muayStep: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       virtualSports: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       createdBy: "507f1f77bcf86cd799439011",
@@ -113,53 +118,58 @@ export const adjustBetSamples: AdjustBetSample[] = [
           maxOS: 150000,
           matchLimitOS: 20
         },
-        work: true
+        work: false
       },
       sexy: {
         enabled: true,
         profile: 2,
-        work: true
+        work: false
       },
       sa: {
         enabled: true,
         commissionRAR: 0.5,
         profile: 2,
-        work: true
+        work: false
       },
       slotItp: {
         enabled: true,
-        work: true
+        work: false
       },
       slotJoker: {
         enabled: true,
-        work: true
+        work: false
       },
       slotPlaystar: {
         enabled: true,
-        work: true
+        work: false
       },
-      lotto: {
+      lottoRDC: {
         enabled: true,
-        work: true
+        work: false
+      },
+      lottoRCW: {
+        enabled: true,
+        work: false,
+        share: 0
       },
       asiaPowerball: {
         enabled: true,
-        work: true
+        work: false
       },
       cockfight: {
         enabled: true,
         commissionRBG: 0.3,
-        work: true,
+        work: false,
         profile: 1
       },
       muayStep: {
         enabled: true,
-        work: true,
+        work: false,
         profile: 1
       },
       virtualSports: {
         enabled: true,
-        work: true,
+        work: false,
         profile: 1
       },
       createdBy: "507f1f77bcf86cd799439011",
@@ -177,7 +187,7 @@ export const adjustBetSamples: AdjustBetSample[] = [
       pinUsed: "999999",
       sportsbook: {
         enabled: true,
-        work: true,
+        work: false,
           commission: {
           main: 0,
           x12: 0,
@@ -199,49 +209,54 @@ export const adjustBetSamples: AdjustBetSample[] = [
       },
       sexy: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       sa: {
         enabled: false,
         commissionRAR: 0,
-        work: true,
+        work: false,
         profile: 1
       },
       slotItp: {
         enabled: true,
-        work: true
+        work: false
       },
       slotJoker: {
         enabled: true,
-        work: true
+        work: false
       },
       slotPlaystar: {
         enabled: true,
-        work: true
+        work: false
       },
-      lotto: {
+      lottoRDC: {
         enabled: false,
-        work: true
+        work: false
+      },
+      lottoRCW: {
+        enabled: false,
+        work: false,
+        share: 0
       },
       asiaPowerball: {
         enabled: false,
-        work: true
+        work: false
       },
       cockfight: {
         enabled: false,
-        work: true,
+        work: false,
         commissionRBG: 0,
         profile: 1
       },
       muayStep: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       virtualSports: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       createdBy: "507f1f77bcf86cd799439011",
@@ -259,7 +274,7 @@ export const adjustBetSamples: AdjustBetSample[] = [
       pinUsed: "999999",
       sportsbook: {
         enabled: true,
-        work: true,
+        work: false,
         commission: {
           main: 0,
           x12: 0,
@@ -281,49 +296,54 @@ export const adjustBetSamples: AdjustBetSample[] = [
       },
       sexy: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       sa: {
         enabled: false,
         commissionRAR: 0,
         profile: 1,
-        work: true
+        work: false
       },
       slotItp: {
         enabled: false,
-        work: true
+        work: false
       },
       slotJoker: {
         enabled: false,
-        work: true
+        work: false
       },
       slotPlaystar: {
         enabled: false,
-        work: true
+        work: false
       },
-      lotto: {
+      lottoRDC: {
         enabled: false,
-        work: true
+        work: false
+      },
+      lottoRCW: {
+        enabled: false,
+        work: false,
+        share: 0
       },
       asiaPowerball: {
         enabled: false,
-        work: true
+        work: false
       },
       cockfight: {
         enabled: false,
-        work: true,
+        work: false,
         commissionRBG: 0,
         profile: 1
       },
       muayStep: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       virtualSports: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       createdBy: "507f1f77bcf86cd799439011",
@@ -341,7 +361,7 @@ export const adjustBetSamples: AdjustBetSample[] = [
       pinUsed: "999999",
       sportsbook: {
         enabled: true,
-        work: true,
+        work: false,
         commission: {
           main: 0,
           x12: 0,
@@ -363,49 +383,54 @@ export const adjustBetSamples: AdjustBetSample[] = [
       },
       sexy: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       sa: {
         enabled: false,
         commissionRAR: 0,
         profile: 1,
-        work: true
+        work: false
       },
       slotItp: {
         enabled: false,
-        work: true
+        work: false
       },
       slotJoker: {
         enabled: false,
-        work: true
+        work: false
       },
       slotPlaystar: {
         enabled: false,
-        work: true
+        work: false
       },
-      lotto: {
+      lottoRDC: {
         enabled: false,
-        work: true
+        work: false
+      },
+      lottoRCW: {
+        enabled: false,
+        work: false,
+        share: 0
       },
       asiaPowerball: {
         enabled: false,
-        work: true
+        work: false
       },
       cockfight: {
         enabled: true,
-        work: true,
+        work: false,
         commissionRBG: 0.4,
         profile: 1
       },
       muayStep: {
         enabled: true,
-        work: true,
+        work: false,
         profile: 1
       },
       virtualSports: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       createdBy: "507f1f77bcf86cd799439011",
@@ -423,7 +448,7 @@ export const adjustBetSamples: AdjustBetSample[] = [
       pinUsed: "999999",
       sportsbook: {
         enabled: true,
-        work: true,
+        work: false,
         commission: {
           main: 0,
           x12: 0,
@@ -445,49 +470,54 @@ export const adjustBetSamples: AdjustBetSample[] = [
       },
       sexy: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       sa: {
         enabled: true,
         commissionRAR: 0.6,
-        work: true,
+        work: false,
         profile: 3
       },
       slotItp: {
         enabled: false,
-        work: true
+        work: false
       },
       slotJoker: {
         enabled: false,
-        work: true
+        work: false
       },
       slotPlaystar: {
         enabled: false,
-        work: true
+        work: false
       },
-      lotto: {
+      lottoRDC: {
         enabled: false,
-        work: true
+        work: false
+      },
+      lottoRCW: {
+        enabled: false,
+        work: false,
+        share: 0
       },
       asiaPowerball: {
         enabled: false,
-        work: true
+        work: false
       },
       cockfight: {
         enabled: false,
-        work: true,
+        work: false,
         commissionRBG: 0,
         profile: 1
       },
       muayStep: {
         enabled: false,
-            work: true,
+            work: false,
         profile: 1
       },
       virtualSports: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       createdBy: "507f1f77bcf86cd799439011",
@@ -505,7 +535,7 @@ export const adjustBetSamples: AdjustBetSample[] = [
       pinUsed: "999999",
       sportsbook: {
         enabled: true,
-        work: true,
+        work: false,
         commission: {
           main: 0,
           x12: 0,
@@ -527,49 +557,54 @@ export const adjustBetSamples: AdjustBetSample[] = [
       },
       sexy: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       sa: {
         enabled: false,
         commissionRAR: 0,
-        work: true,
+        work: false,
             profile: 1
       },
       slotItp: {
         enabled: false,
-        work: true
+        work: false
       },
       slotJoker: {
         enabled: false,
-        work: true
+        work: false
       },
       slotPlaystar: {
         enabled: false,
-        work: true
+        work: false
       },
-      lotto: {
+      lottoRDC: {
         enabled: false,
-        work: true
+        work: false
+      },
+      lottoRCW: {
+        enabled: false,
+        work: false,
+        share: 0
       },
       asiaPowerball: {
         enabled: false,
-        work: true
+        work: false
       },
       cockfight: {
         enabled: false,
-        work: true,
+        work: false,
         commissionRBG: 0,
         profile: 1
       },
       muayStep: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       virtualSports: {
         enabled: true,
-        work: true,
+        work: false,
         profile: 1
       },
       createdBy: "507f1f77bcf86cd799439011",
@@ -587,7 +622,7 @@ export const adjustBetSamples: AdjustBetSample[] = [
       pinUsed: "999999",
       sportsbook: {
         enabled: true,
-        work: true,
+        work: false,
         commission: {
           main: 0,
           x12: 0,
@@ -609,49 +644,54 @@ export const adjustBetSamples: AdjustBetSample[] = [
       },
       sexy: {
         enabled: true,
-        work: true,
+        work: false,
         profile: 2
       },
       sa: {
         enabled: true,
         commissionRAR: 0.4,
-        work: true,
+        work: false,
         profile: 2,
       },
       slotItp: {
         enabled: false,
-        work: true,
+        work: false,
       },
       slotJoker: {
         enabled: false,
-        work: true,
+        work: false,
       },
       slotPlaystar: {
         enabled: false,
-        work: true
+        work: false
       },
-      lotto: {
+      lottoRDC: {
         enabled: false,
-        work: true
+        work: false
+      },
+      lottoRCW: {
+        enabled: false,
+        work: false,
+        share: 0
       },
       asiaPowerball: {
         enabled: false,
-        work: true
+        work: false
       },
       cockfight: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1,
         commissionRBG: 0,
       },
       muayStep: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       virtualSports: {
         enabled: false,
-        work: true,
+        work: false,
         profile: 1
       },
       createdBy: "507f1f77bcf86cd799439011",
