@@ -268,6 +268,7 @@ model AgUserAccountDB {
 
   // Relations
   customerAgents CustomerAgentDB[]
+  setZeros       SetZero[]
 }
 
 // ระบบจัดการ Adjust Bets (ตามข้อมูลจริงจาก ME004DB)
@@ -289,7 +290,7 @@ model adjustbets {
   muayStep      Json // ข้อมูล muayStep
   virtualSports Json // ข้อมูล virtualSports
   attemptCount  Int
-  overAllStatus String @default("PENDING")
+  overallStatus String @default("PENDING")
   createdBy     String
   updatedBy     String
   createdAt     DateTime @default(now())
@@ -311,4 +312,17 @@ model CustomerAgentDB {
   updatedBy  String
   deleteAt   DateTime?
   deleteBy   String?
+}
+
+// ระบบ SetZero - สำหรับการ reset ค่าเป็น 0
+model SetZero {
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String // รหัสลูกค้า
+  agentId    String          @db.ObjectId // ID ของ AG User Account
+  agent      AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  status     String          @default("PENDING") // PENDING, SUCCESS, FAILED
+  createdAt  DateTime        @default(now())
+  createdBy  String
+  updatedAt  DateTime        @updatedAt
+  updatedBy  String
 }

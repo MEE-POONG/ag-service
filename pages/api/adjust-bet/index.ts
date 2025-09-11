@@ -94,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           cockfight: cockfight || {},
           muayStep: muayStep || {},
           virtualSports: virtualSports || {},
-          overAllStatus: 'PENDING',
+          overallStatus: 'PENDING',
           attemptCount: attemptCount || 0,
           createdBy: createdBy || 'system',
           updatedBy: updatedBy || 'system',
