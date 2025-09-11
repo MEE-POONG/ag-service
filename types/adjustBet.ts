@@ -63,7 +63,7 @@ export interface Cockfight {
   enabled: boolean;
   work: boolean;
   profile?: number;
-  commissionRBG: number;
+  commissionRBG?: number;
 }
 
 export interface MuayStep {

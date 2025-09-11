@@ -7,6 +7,51 @@ import { AdjustBet, AdjustBetFormData, AdjustBetData, AgUserAccount } from '@/ty
 import toast from 'react-hot-toast';
 import { log } from 'console';
 
+/* =========================
+ * DEFAULTS ต่อ section
+ * ========================= */
+const DEFAULTS = {
+  sportsbook: {
+    work: false,
+    commission: { main: 0, x12: 0, par: 0, other: 0 },
+    limits: {
+      transLimit: 10000,
+      beforeRun: 10000,
+      maxX12: 10000,
+      matchLimitX12: 10000,
+      maxPar: 10000,
+      par: 10000,
+      maxOther: 10000,
+      matchLimitOther: 10000,
+      maxOS: 10,
+      matchLimitOS: 10,
+    },
+  },
+  sexy: { enabled: false, work: false, profile: 1 },
+  sa: { enabled: false, work: false, commissionRAR: 0, profile: 1 },
+  slotItp: { enabled: false, work: false },
+  slotJoker: { enabled: false, work: false },
+  slotPlaystar: { enabled: false, work: false },
+  lottoRCW: { enabled: false, work: false },
+  lottoRDC: { enabled: false, work: false },
+  cockfight: { enabled: false, work: false, profile: 1 },
+  muayStep: { enabled: false, work: false, profile: 1 },
+  virtualSports: { enabled: false, work: false, profile: 1 },
+} as const;
+
+type SectionKey = keyof typeof DEFAULTS;
+
+function makeResetSection(
+  setFormData: React.Dispatch<React.SetStateAction<AdjustBetFormData>>
+) {
+  return (gameKey: SectionKey) => {
+    setFormData(prev => ({
+      ...prev,
+      [gameKey]: { ...(DEFAULTS[gameKey] as any), work: false },
+    }));
+  };
+}
+
 interface ModalAdJustBetProps {
   data?: AdjustBet;
   isOpen: boolean;
@@ -36,6 +81,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [autoSelectedAgent, setAutoSelectedAgent] = useState(false);
+
   const [formData, setFormData] = useState<AdjustBetFormData>({
     name: '',
     description: '',
@@ -43,75 +89,20 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
     usernameAG: '',
     agBaseUrl: 'https://ag.ufabet.com',
     pinUsed: '',
-    sportsbook: {
-      work: false,
-      commission: {
-        main: 0,
-        x12: 0,
-        par: 0,
-        other: 0
-      },
-      limits: {
-        transLimit: 10000,
-        beforeRun: 10000,
-        maxX12: 10000,
-        matchLimitX12: 10000,
-        maxPar: 10000,
-        par: 10000,
-        maxOther: 10000,
-        matchLimitOther: 10000,
-        maxOS: 10,
-        matchLimitOS: 10
-      }
-    },
-    sexy: {
-      enabled: false,
-      work: false,
-      profile: 1
-    },
-    sa: {
-      enabled: false,
-      work: false,
-      commissionRAR: 0,
-      profile: 1
-    },
-    slotItp: {
-      enabled: false,
-      work: false,
-    },
-    slotJoker: {
-      enabled: false,
-      work: false,
-    },
-    slotPlaystar: {
-      enabled: false,
-      work: false,
-    },
-    lottoRCW: {
-      enabled: false,
-      work: false,
-    },
-    lottoRDC: {
-      enabled: false,
-      work: false,
-    },
-    cockfight: {
-      enabled: false,
-      work: false,
-      profile: 1,
-      commissionRBG: 0
-    },
-    muayStep: {
-      enabled: false,
-      work: false,
-      profile: 1
-    },
-    virtualSports: {
-      enabled: false,
-      work: false,
-      profile: 1
-    }
+    sportsbook: { ...DEFAULTS.sportsbook },
+    sexy: { ...DEFAULTS.sexy },
+    sa: { ...DEFAULTS.sa },
+    slotItp: { ...DEFAULTS.slotItp },
+    slotJoker: { ...DEFAULTS.slotJoker },
+    slotPlaystar: { ...DEFAULTS.slotPlaystar },
+    lottoRCW: { ...DEFAULTS.lottoRCW },
+    lottoRDC: { ...DEFAULTS.lottoRDC },
+    cockfight: { ...DEFAULTS.cockfight },
+    muayStep: { ...DEFAULTS.muayStep },
+    virtualSports: { ...DEFAULTS.virtualSports },
   });
+
+  const resetSection = makeResetSection(setFormData);
 
   const PROFILE_OPTIONS: Record<string, { value: number; label: string }[]> = {
     sexy: [
@@ -129,7 +120,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       { value: 5, label: 'E • 500 / 50,000 / 1,000,000' },
       { value: 6, label: 'F • 10,000 / 200,000 / 2,000,000' },
     ],
-
     cockfight: [
       { value: 1, label: 'A • 20 / 2,500' },
       { value: 2, label: 'B • 100 / 5,000' },
@@ -157,7 +147,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
     try {
       const response = await axios.get(`/api/aguseraccounts?keyword=${searchTerm}`);
       if (response.data.success) {
-        console.log(response.data.data);
         setAgUserAccounts(response.data.data || []);
       }
     } catch (error) {
@@ -165,7 +154,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
     }
   };
 
-  // โหลด agent ของลูกค้าจาก customer-agent mapping
   const loadCustomerAgent = async (customerId: string) => {
     try {
       const response = await axios.get(`/api/customer-agent?customerId=${customerId}`);
@@ -174,7 +162,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         setSelectedAgUser(customerAgent.agent);
         setSearchTerm(customerAgent.agent.username);
         setAutoSelectedAgent(true);
-
         toast.success(`เลือก Agent: ${customerAgent.agent.username} อัตโนมัติ`);
       }
     } catch (error) {
@@ -183,7 +170,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
     }
   };
 
-  // บันทึก customer-agent mapping
   const saveCustomerAgent = async (customerId: string, agentId: string) => {
     try {
       await axios.post('/api/customer-agent', {
@@ -193,11 +179,10 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       });
     } catch (error) {
       console.error('Failed to save customer-agent mapping:', error);
-      // ไม่ต้อง throw error เพราะนี่เป็นการบันทึกเพิ่มเติม
     }
   };
 
-  // Load AG User Accounts
+  // Load AG User Accounts / reset state on close
   useEffect(() => {
     if (isOpen) {
       loadAgUserAccounts();
@@ -209,79 +194,22 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         usernameAG: '',
         agBaseUrl: 'https://ag.ufabet.com',
         pinUsed: '',
-        sportsbook: {
-          work: false,
-          commission: {
-            main: 0,
-            x12: 0,
-            par: 0,
-            other: 0
-          },
-          limits: {
-            transLimit: 10000,
-            beforeRun: 10000,
-            maxX12: 10000,
-            matchLimitX12: 10000,
-            maxPar: 10000,
-            par: 10000,
-            maxOther: 10000,
-            matchLimitOther: 10000,
-            maxOS: 10,
-            matchLimitOS: 10
-          }
-        },
-        sexy: {
-          enabled: false,
-          work: false,
-          profile: 1
-        },
-        sa: {
-          enabled: false,
-          work: false,
-          commissionRAR: 0,
-          profile: 1
-        },
-        slotItp: {
-          enabled: false,
-          work: false,
-        },
-        slotJoker: {
-          enabled: false,
-          work: false,
-        },
-        slotPlaystar: {
-          enabled: false,
-          work: false,
-        },
-        lottoRCW: {
-          enabled: false,
-          work: false,
-        },
-        lottoRDC: {
-          enabled: false,
-          work: false,
-        },
-        cockfight: {
-          enabled: false,
-          work: false,
-          profile: 1,
-          commissionRBG: 0
-        },
-        muayStep: {
-          enabled: false,
-          work: false,
-          profile: 1
-        },
-        virtualSports: {
-          enabled: false,
-          work: false,
-          profile: 1
-        }
+        sportsbook: { ...DEFAULTS.sportsbook },
+        sexy: { ...DEFAULTS.sexy },
+        sa: { ...DEFAULTS.sa },
+        slotItp: { ...DEFAULTS.slotItp },
+        slotJoker: { ...DEFAULTS.slotJoker },
+        slotPlaystar: { ...DEFAULTS.slotPlaystar },
+        lottoRCW: { ...DEFAULTS.lottoRCW },
+        lottoRDC: { ...DEFAULTS.lottoRDC },
+        cockfight: { ...DEFAULTS.cockfight },
+        muayStep: { ...DEFAULTS.muayStep },
+        virtualSports: { ...DEFAULTS.virtualSports },
       });
     }
   }, [isOpen]);
+
   useEffect(() => {
-    console.log(searchTerm.length);
     if (searchTerm.length >= 6) {
       loadAgUserAccounts();
     }
@@ -329,35 +257,19 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         usernameAG: '',
         agBaseUrl: 'https://ag.ufabet.com',
         pinUsed: '',
-        sportsbook: {
-          work: false,
-          commission: { main: 0, x12: 0, par: 0, other: 0 },
-          limits: {
-            transLimit: 10000,
-            beforeRun: 10000,
-            maxX12: 10000,
-            matchLimitX12: 10000,
-            maxPar: 10000,
-            par: 10000,
-            maxOther: 10000,
-            matchLimitOther: 10000,
-            maxOS: 10,
-            matchLimitOS: 10
-          }
-        },
-        sexy: { enabled: false, work: false, profile: 1 },
-        sa: { enabled: false, work: false, commissionRAR: 0, profile: 1 },
-        lottoRCW: { enabled: false, work: false, },
-        lottoRDC: { enabled: false, work: false, },
-        slotItp: { enabled: false, work: false, },
-        slotJoker: { enabled: false, work: false, },
-        slotPlaystar: { enabled: false, work: false, },
-        cockfight: { enabled: false, work: false, profile: 1, commissionRBG: 0 },
-        muayStep: { enabled: false, work: false, profile: 1 },
-        virtualSports: { enabled: false, work: false, profile: 1 }
+        sportsbook: { ...DEFAULTS.sportsbook },
+        sexy: { ...DEFAULTS.sexy },
+        sa: { ...DEFAULTS.sa },
+        lottoRCW: { ...DEFAULTS.lottoRCW },
+        lottoRDC: { ...DEFAULTS.lottoRDC },
+        slotItp: { ...DEFAULTS.slotItp },
+        slotJoker: { ...DEFAULTS.slotJoker },
+        slotPlaystar: { ...DEFAULTS.slotPlaystar },
+        cockfight: { ...DEFAULTS.cockfight },
+        muayStep: { ...DEFAULTS.muayStep },
+        virtualSports: { ...DEFAULTS.virtualSports },
       });
 
-      // Reset AG User selection for create mode only if not already cleared
       if (selectedAgUser !== null || searchTerm !== '') {
         setSelectedAgUser(null);
         setSearchTerm('');
@@ -378,8 +290,24 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
     }
   }, [agUserAccounts, data, mode, selectedAgUser]);
 
+  const hasAnyWork = (fd: AdjustBetFormData) => {
+    const sections: (keyof AdjustBetFormData)[] = [
+      'sportsbook',
+      'sexy',
+      'sa',
+      'slotItp',
+      'slotJoker',
+      'slotPlaystar',
+      'lottoRCW',
+      'lottoRDC',
+      'cockfight',
+      'muayStep',
+      'virtualSports',
+    ];
+    return sections.some((k) => (fd as any)?.[k]?.work === true);
+  };
+
   const handleSubmit = async () => {
-    // Validation
     if (!formData.customer.trim()) {
       toast.error('กรุณากรอกรหัสลูกค้า');
       return;
@@ -388,10 +316,16 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       toast.error('กรุณาเลือก AG User');
       return;
     }
-
+  
+    // ✅ บล็อกการบันทึก ถ้าไม่มี section ไหนทำรายการเลย
+    if (!hasAnyWork(formData)) {
+      toast.error('กรุณาเลือกทำรายการอย่างน้อย 1 รายการ (เช่น เปิดเกม/เปลี่ยนโปรไฟล์/แก้ limits)');
+      return;
+    }
+  
     try {
       setSubmitting(true);
-
+  
       const adjustBetData: AdjustBetData = {
         customer: formData.customer,
         usernameAG: selectedAgUser.userLogin,
@@ -411,11 +345,9 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         createdBy: 'current-user-id', // TODO: Get from auth context
         updatedBy: 'current-user-id' // TODO: Get from auth context
       };
-
+  
       let response;
-      console.log(`adjustBetData : `, adjustBetData);
-      console.log(`response : `, response);
-
+  
       if (mode === 'create') {
         response = await axios.post('/api/adjust-bet', {
           name: formData.name,
@@ -429,7 +361,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
           data: adjustBetData
         });
       }
-
+  
       if (response?.data.success) {
         toast.success(mode === 'create' ? 'สร้าง Adjust Bet สำเร็จ' : 'อัพเดท Adjust Bet สำเร็จ');
         onSuccess();
@@ -443,13 +375,10 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       setSubmitting(false);
     }
   };
-
+  
   const handleDelete = async () => {
     if (!data) return;
-
-    if (!confirm('คุณแน่ใจหรือไม่ที่จะลบ Adjust Bet นี้?')) {
-      return;
-    }
+    if (!confirm('คุณแน่ใจหรือไม่ที่จะลบ Adjust Bet นี้?')) return;
 
     try {
       setSubmitting(true);
@@ -477,24 +406,34 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
 
     // เมื่อกรอกรหัสลูกค้า ให้โหลด agent ที่เชื่อมโยงอัตโนมัติ
     if (field === 'customer' && value.trim()) {
-      setAutoSelectedAgent(false); // รีเซ็ตสถานะ
+      setAutoSelectedAgent(false);
       loadCustomerAgent(value.trim());
     }
   };
 
+  /**
+   * อัปเดตฟิลด์ภายในแต่ละ section
+   * เงื่อนไขตามข้อกำหนด:
+   * - เมื่อมีการทำงานใน fields (number/profile/boolean ที่อยู่ใน fields ของ renderGameSection)
+   *   ให้ตั้ง work=true และ enabled=true อัตโนมัติ (ถือว่าเปิดเกม)
+   * - ถ้า field === 'enabled' จะตั้งค่าตามที่ผู้ใช้กด แต่ยังถือว่า work=true
+   */
   const updateNestedFormData = (parent: string, field: string, value: any) => {
     setFormData(prev => {
       const currentGameData = prev[parent as keyof AdjustBetFormData] as any;
-      const newGameData = {
+      const newGameData: any = {
         ...currentGameData,
-        [field]: value
+        [field]: value,
+        work: true,
       };
 
-      // ถ้ามีการเปลี่ยนแปลง enabled หรือ profile ให้ตั้งค่า ทำรายการ = true
-      if (field === 'enabled' || field === 'profile') {
-        newGameData.work = true;
+      // ถ้ามีแก้ไข "fields" ใดๆ ที่ไม่ใช่ปุ่มเปิด/ปิด ให้บังคับ enabled=true
+      if (field !== 'enabled') {
+        newGameData.enabled = true;
       }
 
+      // ถ้ามีการเปลี่ยนโปรไฟล์ ก็ตีความว่าเปิดใช้งานอยู่แล้ว
+      // (จริงๆ ถูกครอบคลุมโดย if(field!=='enabled') แล้ว)
       return {
         ...prev,
         [parent]: newGameData
@@ -502,30 +441,21 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
     });
   };
 
-  const updateCommission = (field: string, value: number) => {
-    setFormData(prev => ({
-      ...prev,
-      sportsbook: {
-        ...prev.sportsbook,
-        commission: {
-          ...prev.sportsbook.commission,
-          [field]: value
-        }
-      }
-    }));
-  };
-
+  // อัปเดต limits ของ sportsbook -> work=true และ enabled=true
   const updateLimits = (field: string, value: number) => {
     setFormData(prev => ({
       ...prev,
       sportsbook: {
         ...prev.sportsbook,
-        work: true, // ตั้งค่า ทำรายการ = true เมื่อมีการเปลี่ยนแปลง limits
+        work: true,
+        // เมื่อผู้ใช้แก้ไข limits ให้ถือว่าเปิดเกม
+        ...(prev.sportsbook as any),
+        enabled: true as any,
         limits: {
           ...prev.sportsbook.limits,
           [field]: value
         }
-      }
+      } as any
     }));
   };
 
@@ -539,9 +469,8 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
     setSelectedAgUser(agUser);
     setSearchTerm(agUser.username);
     setShowDropdown(false);
-    setAutoSelectedAgent(false); // เป็นการเลือกแบบ manual
+    setAutoSelectedAgent(false); // manual
 
-    // Auto-generate name from selected AG User
     if (mode === 'create') {
       setFormData(prev => ({
         ...prev,
@@ -549,7 +478,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         description: `การตั้งค่าปรับเบทสำหรับ ${agUser.username} (${prev.customer || agUser.userLogin})`
       }));
 
-      // บันทึก customer-agent mapping ถ้ามีรหัสลูกค้าแล้ว
       if (formData.customer.trim()) {
         saveCustomerAgent(formData.customer.trim(), agUser.id);
       }
@@ -594,27 +522,14 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
               </span>
             )}
           </div>
-          <label className="flex items-center cursor-pointer">
-            <div className="relative">
-              <input
-                type="checkbox"
-                checked={!!game?.enabled}
-                onChange={(e) => updateNestedFormData(gameKey as string, 'enabled', e.target.checked)}
-                disabled={mode === 'view'}
-                className="sr-only"
-              />
-              <div className={`block w-10 h-6 rounded-full transition-colors duration-300 ${game?.enabled ? 'bg-blue-500' : 'bg-gray-300'
-                } ${mode === 'view' ? 'opacity-50' : ''}`}>
-              </div>
-              <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ${game?.enabled ? 'translate-x-4' : ''
-                }`}>
-              </div>
-            </div>
-            <span className={`ml-3 text-sm font-medium ${game?.enabled ? 'text-blue-700' : 'text-gray-500'
-              }`}>
-              {game?.enabled ? 'ON' : 'OFF'}
-            </span>
-          </label>
+          <button
+            onClick={() => resetSection(gameKey as SectionKey)}
+            className={`flex items-center ml-auto px-2 py-0.5 ${game?.work ? `bg-red-100 text-red-800` : 'hidden'
+              } text-xs rounded-full`}
+          >
+            <ReactIconComponent icon="FaTimes" setClass="w-3 h-3 mr-2" />
+            ยกเลิกทำรายการ
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -628,7 +543,9 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
                 <input
                   type="checkbox"
                   checked={!!game[field.key]}
-                  onChange={(e) => updateNestedFormData(gameKey as string, field.key, e.target.checked)}
+                  onChange={(e) =>
+                    updateNestedFormData(gameKey as string, field.key, e.target.checked)
+                  }
                   disabled={mode === 'view'}
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
@@ -654,7 +571,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
 
               {field.type === 'profile' && (
                 <select
-                  value={Number(game?.[field.key] ?? 1)} // เก็บเป็นเลข 1..n
+                  value={Number(game?.[field.key] ?? 1)}
                   onChange={(e) =>
                     updateNestedFormData(
                       gameKey as string,
@@ -674,6 +591,38 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
               )}
             </div>
           ))}
+
+          {/* สวิตช์เปิด/ปิด เกม */}
+          <div >
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              เปิด/ปิด เกม
+            </label>
+            <label className="flex items-center cursor-pointer">
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  checked={!!game?.enabled}
+                  onChange={(e) => updateNestedFormData(gameKey as string, 'enabled', e.target.checked)}
+                  disabled={mode === 'view'}
+                  className="sr-only"
+                />
+                <div
+                  className={`block w-10 h-6 rounded-full transition-colors duration-300 ${game?.enabled ? 'bg-blue-500' : 'bg-gray-300'
+                    } ${mode === 'view' ? 'opacity-50' : ''}`}
+                />
+                <div
+                  className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ${game?.enabled ? 'translate-x-4' : ''
+                    }`}
+                />
+              </div>
+              <span
+                className={`ml-3 text-sm font-medium ${game?.enabled ? 'text-blue-700' : 'text-gray-500'
+                  }`}
+              >
+                {game?.enabled ? 'ON' : 'OFF'}
+              </span>
+            </label>
+          </div>
         </div>
       </div>
     );
@@ -733,8 +682,8 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
                     onFocus={() => setShowDropdown(true)}
                     disabled={mode === 'view'}
                     className={`w-full rounded-md border px-3 py-1 text-sm focus:outline-none focus:ring-2 ${autoSelectedAgent
-                      ? 'border-green-300 bg-green-50 focus:ring-green-500'
-                      : 'border-gray-300 focus:ring-blue-500'
+                        ? 'border-green-300 bg-green-50 focus:ring-green-500'
+                        : 'border-gray-300 focus:ring-blue-500'
                       }`}
                     placeholder="ค้นหา AG User..."
                   />
@@ -758,21 +707,15 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
                   )}
                 </div>
                 {selectedAgUser && (
-                  <div className={`mt-2 p-2 border rounded text-sm ${autoSelectedAgent
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-blue-50 border-blue-200'
-                    }`}>
-                    <div className={`font-medium ${autoSelectedAgent ? 'text-green-900' : 'text-blue-900'
-                      }`}>
+                  <div
+                    className={`mt-2 p-2 border rounded text-sm ${autoSelectedAgent ? 'bg-green-50 border-green-200' : 'bg-blue-50 border-blue-200'
+                      }`}
+                  >
+                    <div className={`font-medium ${autoSelectedAgent ? 'text-green-900' : 'text-blue-900'}`}>
                       เลือกแล้ว: {selectedAgUser.username}
-                      {autoSelectedAgent && (
-                        <span className="ml-2 text-xs">
-                          (เชื่อมโยงกับลูกค้าอัตโนมัติ)
-                        </span>
-                      )}
+                      {autoSelectedAgent && <span className="ml-2 text-xs">(เชื่อมโยงกับลูกค้าอัตโนมัติ)</span>}
                     </div>
-                    <div className={`text-xs ${autoSelectedAgent ? 'text-green-700' : 'text-blue-700'
-                      }`}>
+                    <div className={`text-xs ${autoSelectedAgent ? 'text-green-700' : 'text-blue-700'}`}>
                       User Login: {selectedAgUser.userLogin}
                       {selectedAgUser.webname && ` | Web: ${selectedAgUser.webname}`}
                       {selectedAgUser.position && ` | Position: ${selectedAgUser.position}`}
@@ -809,112 +752,143 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
           {/* Sportsbook */}
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center space-x-2">
-                <h4 className="text-sm font-medium text-gray-900">Sportsbook</h4>
+              <h4 className="text-sm font-medium text-gray-900">Sportsbook</h4>
+              <div className="ml-auto flex items-center gap-2">
+                <button
+                  onClick={() =>
+                    setFormData(prev => ({
+                      ...prev,
+                      sportsbook: { ...prev.sportsbook, work: !prev.sportsbook.work }
+                    }))
+                  }
+                  className={`ml-auto px-2 py-0.5 ${formData.sportsbook.work ? 'bg-orange-100 text-orange-800' : 'bg-gray-100 text-gray-800'
+                    } text-xs rounded-full`}
+                >
+                  {formData.sportsbook.work ? (
+                    <span className="flex items-center">
+                      คลิกไม่ทำรายการ <ReactIconComponent icon="FaTimes" setClass="w-3 h-3 ml-2" />
+                    </span>
+                  ) : (
+                    <span className="flex items-center">
+                      คลิกทำรายการ <ReactIconComponent icon="FaChevronDown" setClass="w-3 h-3 ml-2" />
+                    </span>
+                  )}
+                </button>
+
                 {formData.sportsbook.work && (
-                  <span className="px-2 py-0.5 bg-orange-100 text-orange-800 text-xs rounded-full">
-                    ทำรายการ
-                  </span>
+                  <button
+                    onClick={() => resetSection('sportsbook')}
+                    className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full"
+                    title="รีเซ็ต Sportsbook เป็นค่าเริ่มต้น"
+                  >
+                    รีเซ็ตค่าเริ่มต้น
+                  </button>
                 )}
               </div>
             </div>
 
-            <div className="space-y-4">
-              {/* Limits */}
-              <div>
-                <h5 className="text-xs font-medium text-gray-700 mb-2">ขีดจำกัด</h5>
-                <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">Trans Limit</label>
-                    <input
-                      type="number"
-                      value={formData.sportsbook.limits.transLimit}
-                      onChange={(e) => updateLimits('transLimit', parseInt(e.target.value) || 0)}
-                      disabled={mode === 'view'}
-                      min="0"
-                      className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">Before Run</label>
-                    <input
-                      type="number"
-                      value={formData.sportsbook.limits.beforeRun}
-                      onChange={(e) => updateLimits('beforeRun', parseInt(e.target.value) || 0)}
-                      disabled={mode === 'view'}
-                      min="0"
-                      className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">Max X12</label>
-                    <input
-                      type="number"
-                      value={formData.sportsbook.limits.maxX12}
-                      onChange={(e) => updateLimits('maxX12', parseInt(e.target.value) || 0)}
-                      disabled={mode === 'view'}
-                      min="0"
-                      className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">Match Limit X12</label>
-                    <input
-                      type="number"
-                      value={formData.sportsbook.limits.matchLimitX12}
-                      onChange={(e) => updateLimits('matchLimitX12', parseInt(e.target.value) || 0)}
-                      disabled={mode === 'view'}
-                      min="0"
-                      className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">Max Par</label>
-                    <input
-                      type="number"
-                      value={formData.sportsbook.limits.maxPar}
-                      onChange={(e) => updateLimits('maxPar', parseInt(e.target.value) || 0)}
-                      disabled={mode === 'view'}
-                      min="0"
-                      className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">Par</label>
-                    <input
-                      type="number"
-                      value={formData.sportsbook.limits.par}
-                      onChange={(e) => updateLimits('par', parseInt(e.target.value) || 0)}
-                      disabled={mode === 'view'}
-                      min="0"
-                      className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">MaxOther</label>
-                    <input
-                      type="number"
-                      value={formData.sportsbook.limits.maxOther}
-                      onChange={(e) => updateLimits('maxOther', parseInt(e.target.value) || 0)}
-                      disabled={mode === 'view'}
-                      min="0"
-                      className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-600 mb-1">MatchLimitOther</label>
-                    <input
-                      type="number"
-                      value={formData.sportsbook.limits.matchLimitOther}
-                      onChange={(e) => updateLimits('matchLimitOther', parseInt(e.target.value) || 0)}
-                      disabled={mode === 'view'}
-                      min="0"
-                      className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+            {formData.sportsbook.work ? (
+              <div className="space-y-4">
+                {/* Limits */}
+                <div>
+                  <h5 className="text-xs font-medium text-gray-700 mb-2">ขีดจำกัด</h5>
+                  <div className="grid grid-cols-2 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">Trans Limit</label>
+                      <input
+                        type="number"
+                        value={formData.sportsbook.limits.transLimit}
+                        onChange={(e) => updateLimits('transLimit', parseInt(e.target.value) || 0)}
+                        disabled={mode === 'view'}
+                        min={0}
+                        className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">Before Run</label>
+                      <input
+                        type="number"
+                        value={formData.sportsbook.limits.beforeRun}
+                        onChange={(e) => updateLimits('beforeRun', parseInt(e.target.value) || 0)}
+                        disabled={mode === 'view'}
+                        min={0}
+                        className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">Max X12</label>
+                      <input
+                        type="number"
+                        value={formData.sportsbook.limits.maxX12}
+                        onChange={(e) => updateLimits('maxX12', parseInt(e.target.value) || 0)}
+                        disabled={mode === 'view'}
+                        min={0}
+                        className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">Match Limit X12</label>
+                      <input
+                        type="number"
+                        value={formData.sportsbook.limits.matchLimitX12}
+                        onChange={(e) => updateLimits('matchLimitX12', parseInt(e.target.value) || 0)}
+                        disabled={mode === 'view'}
+                        min={0}
+                        className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">Max Par</label>
+                      <input
+                        type="number"
+                        value={formData.sportsbook.limits.maxPar}
+                        onChange={(e) => updateLimits('maxPar', parseInt(e.target.value) || 0)}
+                        disabled={mode === 'view'}
+                        min={0}
+                        className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">Par</label>
+                      <input
+                        type="number"
+                        value={formData.sportsbook.limits.par}
+                        onChange={(e) => updateLimits('par', parseInt(e.target.value) || 0)}
+                        disabled={mode === 'view'}
+                        min={0}
+                        className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">MaxOther</label>
+                      <input
+                        type="number"
+                        value={formData.sportsbook.limits.maxOther}
+                        onChange={(e) => updateLimits('maxOther', parseInt(e.target.value) || 0)}
+                        disabled={mode === 'view'}
+                        min={0}
+                        className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">MatchLimitOther</label>
+                      <input
+                        type="number"
+                        value={formData.sportsbook.limits.matchLimitOther}
+                        onChange={(e) => updateLimits('matchLimitOther', parseInt(e.target.value) || 0)}
+                        disabled={mode === 'view'}
+                        min={0}
+                        className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="text-xs text-gray-500">
+                คลิกทำรายการเพื่อดูข้อมูล
+              </div>
+            )}
           </div>
 
           {/* Live Casino */}
@@ -925,17 +899,12 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
             { key: 'profile', label: 'โปรไฟล์', type: 'profile' },
           ])}
           {/* Slot */}
-          {renderGameSection('Slot ITP (RAS)', 'slotItp', [
-          ])}
-          {renderGameSection('Slot JOKER (RAU)', 'slotJoker', [
-          ])}
-          {renderGameSection('Slot PLAYSTAR (RBL)', 'slotPlaystar', [
-          ])}
+          {renderGameSection('Slot ITP (RAS)', 'slotItp', [])}
+          {renderGameSection('Slot JOKER (RAU)', 'slotJoker', [])}
+          {renderGameSection('Slot PLAYSTAR (RBL)', 'slotPlaystar', [])}
           {/* Lotto */}
-          {renderGameSection('Lotto (RCW)', 'lottoRCW', [
-          ])}
-          {renderGameSection('Lotto (RDC)', 'lottoRDC', [
-          ])}
+          {renderGameSection('Lotto (RCW)', 'lottoRCW', [])}
+          {renderGameSection('Lotto (RDC)', 'lottoRDC', [])}
           {/* Other */}
           {renderGameSection('Cockfight (RBG)', 'cockfight', [
             { key: 'profile', label: 'โปรไฟล์', type: 'profile' },
@@ -946,7 +915,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
           {renderGameSection('Virtual Sports (RBO)', 'virtualSports', [
             { key: 'profile', label: 'โปรไฟล์', type: 'profile' },
           ])}
-
         </div>
       </Modal.Body>
 
