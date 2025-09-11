@@ -22,44 +22,65 @@ export interface SportsbookLimits {
 
 export interface Sportsbook {
   enabled: boolean;
+  work: boolean;
   commission: SportsbookCommission;
   limits: SportsbookLimits;
 }
 
 export interface Sexy {
   enabled: boolean;
-  profile: number;
+  work: boolean;
+  profile?: number;
 }
 
 export interface SA {
   enabled: boolean;
+  work: boolean;
   commissionRAR: number;
-  profile: number;
+  profile?: number;
 }
 
 export interface SlotItp {
   enabled: boolean;
+  work: boolean;
 }
 
 export interface SlotJoker {
   enabled: boolean;
+  work: boolean;
 }
 
 export interface SlotPlaystar {
   enabled: boolean;
+  work: boolean;
+}
+
+export interface Lottos {
+  enabled: boolean;
+  work: boolean;
+}
+export interface AsiaPowerball {
+  enabled: boolean;
+  work: boolean;
 }
 
 export interface Cockfight {
   enabled: boolean;
+  work: boolean;
+  profile?: number;
   commissionRBG: number;
 }
 
 export interface MuayStep {
   enabled: boolean;
+  work: boolean;
+  profile?: number;
 }
 
 export interface VirtualSports {
   enabled: boolean;
+  work: boolean;
+  profile?: number;
 }
 
 export interface AdjustBetData {
@@ -73,6 +94,8 @@ export interface AdjustBetData {
   slotItp: SlotItp;
   slotJoker: SlotJoker;
   slotPlaystar: SlotPlaystar;
+  lotto: Lottos;
+  asiaPowerball: AsiaPowerball;
   cockfight: Cockfight;
   muayStep: MuayStep;
   virtualSports: VirtualSports;
@@ -102,6 +125,8 @@ export interface AdjustBetFormData {
   slotItp: SlotItp;
   slotJoker: SlotJoker;
   slotPlaystar: SlotPlaystar;
+  lotto: Lottos;
+  asiaPowerball: AsiaPowerball;
   cockfight: Cockfight;
   muayStep: MuayStep;
   virtualSports: VirtualSports;

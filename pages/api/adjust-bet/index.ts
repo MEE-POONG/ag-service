@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../lib/prisma';
-import { AdjustBets, AdjustBetsListResponse, CreateAdjustBetsRequest } from '../../../types/adjustBets';
 import { AdjustBet, AdjustBetListResponse } from '../../../types/adjustBet';
 // GET - List all adjust bets
 export default async function handler(req: NextApiRequest, res: NextApiResponse<AdjustBetListResponse>) {
@@ -95,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           cockfight: cockfight || {},
           muayStep: muayStep || {},
           virtualSports: virtualSports || {},
-          overallStatus: overallStatus || 'PENDING',
+          overAllStatus: 'PENDING',
           attemptCount: attemptCount || 0,
           createdBy: createdBy || 'system',
           updatedBy: updatedBy || 'system',

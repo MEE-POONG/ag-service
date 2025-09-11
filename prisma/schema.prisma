@@ -283,6 +283,8 @@ model adjustbets {
   slotItp       Json // ข้อมูล slotItp
   slotJoker     Json // ข้อมูล slotJoker
   slotPlaystar  Json // ข้อมูล slotPlaystar
+  lotto         Json // ข้อมูล lotto
+  asiaPowerball Json // ข้อมูล asiaPowerball
   cockfight     Json // ข้อมูล cockfight
   muayStep      Json // ข้อมูล muayStep
   virtualSports Json // ข้อมูล virtualSports

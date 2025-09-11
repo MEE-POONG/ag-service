@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../lib/prisma';
-import { AdjustBets, AdjustBetsResponse, UpdateAdjustBetsRequest } from '../../../types/adjustBets';
 import { AdjustBet, AdjustBetResponse } from '../../../types/adjustBet';
 
 // GET - Get single adjust bet by ID
@@ -45,6 +44,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           slotItp: adjustBet.slotItp,
           slotJoker: adjustBet.slotJoker,
           slotPlaystar: adjustBet.slotPlaystar,
+          lotto: adjustBet.lotto,
+          asiaPowerball: adjustBet.asiaPowerball,
           cockfight: adjustBet.cockfight,
           muayStep: adjustBet.muayStep,
           virtualSports: adjustBet.virtualSports,
