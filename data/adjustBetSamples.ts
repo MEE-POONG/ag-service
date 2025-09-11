@@ -12,7 +12,6 @@ export const adjustBetSamples: AdjustBetSample[] = [
       agBaseUrl: "https://ag.ufabet.com",
       pinUsed: "221308",
       sportsbook: {
-        enabled: true,
         work: false,
         commission: {
           main: 0,
@@ -56,16 +55,11 @@ export const adjustBetSamples: AdjustBetSample[] = [
         enabled: false,
         work: false
       },
-      lottoRDC: {
-        enabled: false,
-        work: false
-      },
       lottoRCW: {
         enabled: false,
         work: false,
-        share: 0
       },
-      asiaPowerball: {
+      lottoRDC: {
         enabled: false,
         work: false
       },
@@ -99,7 +93,6 @@ export const adjustBetSamples: AdjustBetSample[] = [
       agBaseUrl: "https://ag.ufabet.com",
       pinUsed: "999999",
       sportsbook: {
-        enabled: true,
         commission: {
           main: 0,
           x12: 0,
@@ -143,16 +136,11 @@ export const adjustBetSamples: AdjustBetSample[] = [
         enabled: true,
         work: false
       },
-      lottoRDC: {
-        enabled: true,
-        work: false
-      },
       lottoRCW: {
         enabled: true,
         work: false,
-        share: 0
       },
-      asiaPowerball: {
+      lottoRDC: {
         enabled: true,
         work: false
       },
@@ -186,9 +174,8 @@ export const adjustBetSamples: AdjustBetSample[] = [
       agBaseUrl: "https://ag.ufabet.com",
       pinUsed: "999999",
       sportsbook: {
-        enabled: true,
         work: false,
-          commission: {
+        commission: {
           main: 0,
           x12: 0,
           par: 0,
@@ -230,16 +217,11 @@ export const adjustBetSamples: AdjustBetSample[] = [
         enabled: true,
         work: false
       },
-      lottoRDC: {
-        enabled: false,
-        work: false
-      },
       lottoRCW: {
         enabled: false,
         work: false,
-        share: 0
       },
-      asiaPowerball: {
+      lottoRDC: {
         enabled: false,
         work: false
       },
@@ -273,7 +255,6 @@ export const adjustBetSamples: AdjustBetSample[] = [
       agBaseUrl: "https://ag.ufabet.com",
       pinUsed: "999999",
       sportsbook: {
-        enabled: true,
         work: false,
         commission: {
           main: 0,
@@ -317,16 +298,11 @@ export const adjustBetSamples: AdjustBetSample[] = [
         enabled: false,
         work: false
       },
-      lottoRDC: {
-        enabled: false,
-        work: false
-      },
       lottoRCW: {
         enabled: false,
         work: false,
-        share: 0
       },
-      asiaPowerball: {
+      lottoRDC: {
         enabled: false,
         work: false
       },
@@ -360,7 +336,6 @@ export const adjustBetSamples: AdjustBetSample[] = [
       agBaseUrl: "https://ag.ufabet.com",
       pinUsed: "999999",
       sportsbook: {
-        enabled: true,
         work: false,
         commission: {
           main: 0,
@@ -404,16 +379,11 @@ export const adjustBetSamples: AdjustBetSample[] = [
         enabled: false,
         work: false
       },
-      lottoRDC: {
-        enabled: false,
-        work: false
-      },
       lottoRCW: {
         enabled: false,
         work: false,
-        share: 0
       },
-      asiaPowerball: {
+      lottoRDC: {
         enabled: false,
         work: false
       },
@@ -447,7 +417,6 @@ export const adjustBetSamples: AdjustBetSample[] = [
       agBaseUrl: "https://ag.ufabet.com",
       pinUsed: "999999",
       sportsbook: {
-        enabled: true,
         work: false,
         commission: {
           main: 0,
@@ -491,16 +460,11 @@ export const adjustBetSamples: AdjustBetSample[] = [
         enabled: false,
         work: false
       },
-      lottoRDC: {
-        enabled: false,
-        work: false
-      },
       lottoRCW: {
         enabled: false,
         work: false,
-        share: 0
       },
-      asiaPowerball: {
+      lottoRDC: {
         enabled: false,
         work: false
       },
@@ -512,7 +476,7 @@ export const adjustBetSamples: AdjustBetSample[] = [
       },
       muayStep: {
         enabled: false,
-            work: false,
+        work: false,
         profile: 1
       },
       virtualSports: {
@@ -534,7 +498,6 @@ export const adjustBetSamples: AdjustBetSample[] = [
       agBaseUrl: "https://ag.ufabet.com",
       pinUsed: "999999",
       sportsbook: {
-        enabled: true,
         work: false,
         commission: {
           main: 0,
@@ -564,7 +527,7 @@ export const adjustBetSamples: AdjustBetSample[] = [
         enabled: false,
         commissionRAR: 0,
         work: false,
-            profile: 1
+        profile: 1
       },
       slotItp: {
         enabled: false,
@@ -578,16 +541,11 @@ export const adjustBetSamples: AdjustBetSample[] = [
         enabled: false,
         work: false
       },
-      lottoRDC: {
-        enabled: false,
-        work: false
-      },
       lottoRCW: {
         enabled: false,
         work: false,
-        share: 0
       },
-      asiaPowerball: {
+      lottoRDC: {
         enabled: false,
         work: false
       },
@@ -621,7 +579,6 @@ export const adjustBetSamples: AdjustBetSample[] = [
       agBaseUrl: "https://ag.ufabet.com",
       pinUsed: "999999",
       sportsbook: {
-        enabled: true,
         work: false,
         commission: {
           main: 0,
@@ -665,16 +622,11 @@ export const adjustBetSamples: AdjustBetSample[] = [
         enabled: false,
         work: false
       },
-      lottoRDC: {
-        enabled: false,
-        work: false
-      },
       lottoRCW: {
         enabled: false,
         work: false,
-        share: 0
       },
-      asiaPowerball: {
+      lottoRDC: {
         enabled: false,
         work: false
       },
@@ -720,7 +672,7 @@ export const findSampleById = (id: string): AdjustBetSample | undefined => {
 
 // ฟังก์ชันสำหรับค้นหาตัวอย่างตามชื่อ
 export const findSamplesByName = (name: string): AdjustBetSample[] => {
-  return adjustBetSamples.filter(sample => 
+  return adjustBetSamples.filter(sample =>
     sample.name.toLowerCase().includes(name.toLowerCase())
   );
 };

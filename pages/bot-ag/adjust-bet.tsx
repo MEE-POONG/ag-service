@@ -203,6 +203,9 @@ const AdjustBetPage: React.FC = () => {
                         เกมที่เปิด
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Bot Run
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         สร้างเมื่อ
                       </th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -213,7 +216,6 @@ const AdjustBetPage: React.FC = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {adjustBets.map((adjustBet) => {
                       const enabledGames = [];
-                      if (adjustBet.data?.sportsbook?.enabled) enabledGames.push('Sportsbook');
                       if (adjustBet.data?.sexy?.enabled) enabledGames.push('Sexy');
                       if (adjustBet.data?.sa?.enabled) enabledGames.push('SA');
                       if (adjustBet.data?.slotItp?.enabled) enabledGames.push('Slot ITP');
@@ -250,7 +252,7 @@ const AdjustBetPage: React.FC = () => {
                                   key={game}
                                   className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
                                 >
-                                  {game}
+                                  <span className="mr-1"><ReactIconComponent icon="FaGamepad" setClass="w-3 h-3" /></span> {game}
                                 </span>
                               ))}
                               {enabledGames.length > 3 && (
@@ -259,6 +261,12 @@ const AdjustBetPage: React.FC = () => {
                                 </span>
                               )}
                             </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${adjustBet.overallStatus === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : adjustBet.overallStatus === 'SUCCESS' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                              <span className="mr-1"><ReactIconComponent icon={adjustBet.overallStatus === 'PENDING' ? 'FaClock' : adjustBet.overallStatus === 'SUCCESS' ? 'FaCheck' : 'FaTimes'} setClass="w-3 h-3" /></span>
+                              {adjustBet.overallStatus}
+                            </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {adjustBet.createdAt ? new Date(adjustBet.createdAt).toLocaleDateString('th-TH') : '-'}
@@ -307,24 +315,23 @@ const AdjustBetPage: React.FC = () => {
                       >
                         <ReactIconComponent icon="FaChevronLeft" setClass="w-4 h-4" />
                       </Button>
-                      
+
                       {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                         const pageNum = i + 1;
                         return (
                           <Button
                             key={pageNum}
                             onClick={() => handlePageChange(pageNum)}
-                            className={`inline-flex items-center px-3 py-1 rounded text-sm ${
-                              currentPage === pageNum
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
+                            className={`inline-flex items-center px-3 py-1 rounded text-sm ${currentPage === pageNum
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              }`}
                           >
                             {pageNum}
                           </Button>
                         );
                       })}
-                      
+
                       <Button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}

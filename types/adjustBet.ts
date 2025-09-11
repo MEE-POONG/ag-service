@@ -21,7 +21,6 @@ export interface SportsbookLimits {
 }
 
 export interface Sportsbook {
-  enabled: boolean;
   work: boolean;
   commission: SportsbookCommission;
   limits: SportsbookLimits;
@@ -58,11 +57,6 @@ export interface SlotPlaystar {
 export interface Lottos {
   enabled: boolean;
   work: boolean;
-  share?: number;
-}
-export interface AsiaPowerball {
-  enabled: boolean;
-  work: boolean;
 }
 
 export interface Cockfight {
@@ -95,9 +89,8 @@ export interface AdjustBetData {
   slotItp: SlotItp;
   slotJoker: SlotJoker;
   slotPlaystar: SlotPlaystar;
-  lottoRDC: Lottos;
   lottoRCW: Lottos;
-  asiaPowerball: AsiaPowerball;
+  lottoRDC: Lottos;
   cockfight: Cockfight;
   muayStep: MuayStep;
   virtualSports: VirtualSports;
@@ -112,6 +105,7 @@ export interface AdjustBet {
   data: AdjustBetData;
   createdAt?: Date;
   updatedAt?: Date;
+  overallStatus?: string;
 }
 
 export interface AdjustBetFormData {
@@ -129,7 +123,6 @@ export interface AdjustBetFormData {
   slotPlaystar: SlotPlaystar;
   lottoRDC: Lottos;
   lottoRCW: Lottos;
-  asiaPowerball: AsiaPowerball;
   cockfight: Cockfight;
   muayStep: MuayStep;
   virtualSports: VirtualSports;

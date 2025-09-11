@@ -36,6 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         id: adjustBet.id,
         name: `${adjustBet.customer} - ${adjustBet.usernameAG}`,
         description: `Adjust Bet for ${adjustBet.customer}`,
+        overallStatus: adjustBet.overallStatus,
         data: {
           customer: adjustBet.customer,
           usernameAG: adjustBet.usernameAG,
@@ -67,9 +68,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     if (req.method === 'POST') {
-      const { customer, usernameAG, agBaseUrl, pinUsed, sportsbook, sexy, sa, slotItp, slotJoker, slotPlaystar, lottoRDC, lottoRCW, asiaPowerball, cockfight, muayStep, virtualSports, overallStatus, attemptCount, createdBy, updatedBy, lastError }: any = req.body.data;
-      console.log(req.body);
-      console.log(customer, usernameAG, agBaseUrl, pinUsed, sportsbook, sexy, sa, slotItp, slotJoker, slotPlaystar, cockfight, muayStep, virtualSports, overallStatus, attemptCount, createdBy, updatedBy, lastError);
+      const { customer, usernameAG, agBaseUrl, pinUsed, sportsbook, sexy, sa, slotItp, slotJoker, slotPlaystar, lottoRDC, lottoRCW, cockfight, muayStep, virtualSports, overallStatus, attemptCount, createdBy, updatedBy, lastError }: any = req.body.data;
+      console.log("req.body : ", req.body);
+      console.log(72, " : req.body : ", customer, usernameAG, agBaseUrl, pinUsed, sportsbook, sexy, sa, slotItp, slotJoker, slotPlaystar, cockfight, muayStep, virtualSports, overallStatus, attemptCount, createdBy, updatedBy, lastError);
       // Validation
       if (!customer || !usernameAG) {
         return res.status(400).json({
@@ -77,6 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           error: 'Customer, usernameAG are required'
         });
       }
+      console.log(80, " : customer, usernameAG : ", customer, usernameAG);
 
       // Create new adjust bet
       const newAdjustBet = await (prisma as any).adjustbets.create({
@@ -86,7 +88,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           agBaseUrl,
           pinUsed,
           sportsbook: {
-            enabled: sportsbook?.enabled || false,
             work: sportsbook?.work || false,
             commission: sportsbook?.commission || { main: 0, x12: 0, par: 0, other: 0 },
             limits: sportsbook?.limits || {

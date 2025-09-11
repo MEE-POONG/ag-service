@@ -44,7 +44,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
     agBaseUrl: 'https://ag.ufabet.com',
     pinUsed: '',
     sportsbook: {
-      enabled: true,
       work: false,
       commission: {
         main: 0,
@@ -88,17 +87,11 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       enabled: false,
       work: false,
     },
-    lottoRDC: {
-      enabled: false,
-      work: false,
-      share: 0,
-    },
     lottoRCW: {
       enabled: false,
       work: false,
-      share: 0,
     },
-    asiaPowerball: {
+    lottoRDC: {
       enabled: false,
       work: false,
     },
@@ -217,7 +210,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         agBaseUrl: 'https://ag.ufabet.com',
         pinUsed: '',
         sportsbook: {
-          enabled: true,
           work: false,
           commission: {
             main: 0,
@@ -261,17 +253,11 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
           enabled: false,
           work: false,
         },
-        lottoRDC: {
-          enabled: false,
-          work: false,
-          share: 0,
-        },
         lottoRCW: {
           enabled: false,
           work: false,
-          share: 0,
         },
-        asiaPowerball: {
+        lottoRDC: {
           enabled: false,
           work: false,
         },
@@ -314,12 +300,11 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         sportsbook: data.data.sportsbook,
         sexy: data.data.sexy,
         sa: data.data.sa,
-        lottoRDC: data.data.lottoRDC,
         lottoRCW: data.data.lottoRCW,
+        lottoRDC: data.data.lottoRDC,
         slotItp: data.data.slotItp,
         slotJoker: data.data.slotJoker,
         slotPlaystar: data.data.slotPlaystar,
-        asiaPowerball: data.data.asiaPowerball,
         cockfight: data.data.cockfight,
         muayStep: data.data.muayStep,
         virtualSports: data.data.virtualSports
@@ -345,7 +330,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         agBaseUrl: 'https://ag.ufabet.com',
         pinUsed: '',
         sportsbook: {
-          enabled: true,
           work: false,
           commission: { main: 0, x12: 0, par: 0, other: 0 },
           limits: {
@@ -363,12 +347,11 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         },
         sexy: { enabled: false, work: false, profile: 1 },
         sa: { enabled: false, work: false, commissionRAR: 0, profile: 1 },
-        lottoRDC: { enabled: false, work: false, share: 0, },
-        lottoRCW: { enabled: false, work: false, share: 0, },
+        lottoRCW: { enabled: false, work: false, },
+        lottoRDC: { enabled: false, work: false, },
         slotItp: { enabled: false, work: false, },
         slotJoker: { enabled: false, work: false, },
         slotPlaystar: { enabled: false, work: false, },
-        asiaPowerball: { enabled: false, work: false, },
         cockfight: { enabled: false, work: false, profile: 1, commissionRBG: 0 },
         muayStep: { enabled: false, work: false, profile: 1 },
         virtualSports: { enabled: false, work: false, profile: 1 }
@@ -420,9 +403,8 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         slotItp: { ...formData.slotItp },
         slotJoker: { ...formData.slotJoker },
         slotPlaystar: { ...formData.slotPlaystar },
-        lottoRDC: { ...formData.lottoRDC },
         lottoRCW: { ...formData.lottoRCW },
-        asiaPowerball: { ...formData.asiaPowerball },
+        lottoRDC: { ...formData.lottoRDC },
         cockfight: { ...formData.cockfight },
         muayStep: { ...formData.muayStep },
         virtualSports: { ...formData.virtualSports },
@@ -538,7 +520,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       ...prev,
       sportsbook: {
         ...prev.sportsbook,
-        ทำรายการ: true, // ตั้งค่า ทำรายการ = true เมื่อมีการเปลี่ยนแปลง limits
+        work: true, // ตั้งค่า ทำรายการ = true เมื่อมีการเปลี่ยนแปลง limits
         limits: {
           ...prev.sportsbook.limits,
           [field]: value
@@ -835,27 +817,6 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
                   </span>
                 )}
               </div>
-              <label className="flex items-center cursor-pointer">
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    checked={formData.sportsbook.enabled}
-                    onChange={(e) => updateNestedFormData('sportsbook', 'enabled', e.target.checked)}
-                    disabled={mode === 'view'}
-                    className="sr-only"
-                  />
-                  <div className={`block w-10 h-6 rounded-full transition-colors duration-300 ${formData.sportsbook.enabled ? 'bg-blue-500' : 'bg-gray-300'
-                    } ${mode === 'view' ? 'opacity-50' : ''}`}>
-                  </div>
-                  <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ${formData.sportsbook.enabled ? 'translate-x-4' : ''
-                    }`}>
-                  </div>
-                </div>
-                <span className={`ml-3 text-sm font-medium ${formData.sportsbook.enabled ? 'text-blue-700' : 'text-gray-500'
-                  }`}>
-                  {formData.sportsbook.enabled ? 'ON' : 'OFF'}
-                </span>
-              </label>
             </div>
 
             <div className="space-y-4">
@@ -971,11 +932,9 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
           {renderGameSection('Slot PLAYSTAR (RBL)', 'slotPlaystar', [
           ])}
           {/* Lotto */}
-          {renderGameSection('Lotto (RDC)', 'lottoRDC', [
-          ])}
           {renderGameSection('Lotto (RCW)', 'lottoRCW', [
           ])}
-          {renderGameSection('Asia Powerball (RBP)', 'asiaPowerball', [
+          {renderGameSection('Lotto (RDC)', 'lottoRDC', [
           ])}
           {/* Other */}
           {renderGameSection('Cockfight (RBG)', 'cockfight', [

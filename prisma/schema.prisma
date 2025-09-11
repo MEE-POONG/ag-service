@@ -59,7 +59,6 @@ type AdjustbetsSlotPlaystar {
 }
 
 type AdjustbetsSportsbook {
-  enabled     Boolean
   work        Boolean?
   commission  AdjustbetsSportsbookCommission
   limits      AdjustbetsSportsbookLimits

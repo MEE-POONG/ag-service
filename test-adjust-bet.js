@@ -39,7 +39,6 @@ const testData = {
     slotPlaystar: { enabled: false, work: false },
     lottoRDC: { enabled: false, work: false, share: 0 },
     lottoRCW: { enabled: false, work: false, share: 0 },
-    asiaPowerball: { enabled: false, work: false },
     cockfight: { enabled: false, work: false, profile: 1, commissionRBG: 0 },
     muayStep: { enabled: false, work: false, profile: 1 },
     virtualSports: { enabled: false, work: false, profile: 1 },
