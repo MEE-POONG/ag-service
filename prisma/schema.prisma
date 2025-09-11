@@ -265,31 +265,48 @@ model AgUserAccountDB {
   updatedBy   String
   deleteAt    DateTime?
   deleteBy    String?
+
+  // Relations
+  customerAgents CustomerAgentDB[]
 }
-
-
 
 // ระบบจัดการ Adjust Bets (ตามข้อมูลจริงจาก ME004DB)
 model adjustbets {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  customer        String
-  usernameAG      String
-  agBaseUrl       String
-  pinUsed         String
-  sportsbook      Json     // ข้อมูล sportsbook
-  sexy            Json     // ข้อมูล sexy
-  sa              Json     // ข้อมูล sa
-  slotItp         Json     // ข้อมูล slotItp
-  slotJoker       Json     // ข้อมูล slotJoker
-  slotPlaystar    Json     // ข้อมูล slotPlaystar
-  cockfight       Json     // ข้อมูล cockfight
-  muayStep        Json     // ข้อมูล muayStep
-  virtualSports   Json     // ข้อมูล virtualSports
-  overallStatus   String
-  attemptCount    Int
-  createdBy       String
-  updatedBy       String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  lastError       String?
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  customer      String
+  usernameAG    String
+  agBaseUrl     String
+  pinUsed       String
+  sportsbook    Json // ข้อมูล sportsbook
+  sexy          Json // ข้อมูล sexy
+  sa            Json // ข้อมูล sa
+  slotItp       Json // ข้อมูล slotItp
+  slotJoker     Json // ข้อมูล slotJoker
+  slotPlaystar  Json // ข้อมูล slotPlaystar
+  cockfight     Json // ข้อมูล cockfight
+  muayStep      Json // ข้อมูล muayStep
+  virtualSports Json // ข้อมูล virtualSports
+  attemptCount  Int
+  overAllStatus String @default("PENDING")
+  createdBy     String
+  updatedBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastError     String?
+}
+
+// ระบบจัดการความสัมพันธ์ระหว่าง Customer และ Agent
+model CustomerAgentDB {
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String          @unique // รหัสลูกค้า เช่น ufh27oa10001
+  agentId    String          @db.ObjectId // ID ของ AG User Account
+  agent      AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  note       String? // หมายเหตุเพิ่มเติม
+  isActive   Boolean         @default(true)
+  createdAt  DateTime        @default(now())
+  createdBy  String
+  updatedAt  DateTime        @updatedAt
+  updatedBy  String
+  deleteAt   DateTime?
+  deleteBy   String?
 }

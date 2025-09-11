@@ -27,6 +27,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
   const [selectedAgUser, setSelectedAgUser] = useState<AgUserAccount | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [autoSelectedAgent, setAutoSelectedAgent] = useState(false);
   const [formData, setFormData] = useState<AdjustBetFormData>({
     name: '',
     description: '',
@@ -94,6 +95,38 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       }
     } catch (error) {
       console.error('Failed to load AG User Accounts:', error);
+    }
+  };
+
+  // โหลด agent ของลูกค้าจาก customer-agent mapping
+  const loadCustomerAgent = async (customerId: string) => {
+    try {
+      const response = await axios.get(`/api/customer-agent?customerId=${customerId}`);
+      if (response.data.success && response.data.data) {
+        const customerAgent = response.data.data;
+        setSelectedAgUser(customerAgent.agent);
+        setSearchTerm(customerAgent.agent.username);
+        setAutoSelectedAgent(true);
+        
+        toast.success(`เลือก Agent: ${customerAgent.agent.username} อัตโนมัติ`);
+      }
+    } catch (error) {
+      console.error('Failed to load customer agent:', error);
+      setAutoSelectedAgent(false);
+    }
+  };
+
+  // บันทึก customer-agent mapping
+  const saveCustomerAgent = async (customerId: string, agentId: string) => {
+    try {
+      await axios.post('/api/customer-agent', {
+        customerId,
+        agentId,
+        note: `Auto-created from ModalAdJustBet for customer ${customerId}`
+      });
+    } catch (error) {
+      console.error('Failed to save customer-agent mapping:', error);
+      // ไม่ต้อง throw error เพราะนี่เป็นการบันทึกเพิ่มเติม
     }
   };
 
@@ -290,6 +323,12 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
       ...prev,
       [field]: value
     }));
+
+    // เมื่อกรอกรหัสลูกค้า ให้โหลด agent ที่เชื่อมโยงอัตโนมัติ
+    if (field === 'customer' && value.trim()) {
+      setAutoSelectedAgent(false); // รีเซ็ตสถานะ
+      loadCustomerAgent(value.trim());
+    }
   };
 
   const updateNestedFormData = (parent: string, field: string, value: any) => {
@@ -338,6 +377,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
     setSelectedAgUser(agUser);
     setSearchTerm(agUser.username);
     setShowDropdown(false);
+    setAutoSelectedAgent(false); // เป็นการเลือกแบบ manual
 
     // Auto-generate name from selected AG User
     if (mode === 'create') {
@@ -346,6 +386,11 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         name: `${agUser.username} - Adjust Bet`,
         description: `การตั้งค่าปรับเบทสำหรับ ${agUser.username} (${prev.customer || agUser.userLogin})`
       }));
+
+      // บันทึก customer-agent mapping ถ้ามีรหัสลูกค้าแล้ว
+      if (formData.customer.trim()) {
+        saveCustomerAgent(formData.customer.trim(), agUser.id);
+      }
     }
   };
 
@@ -464,7 +509,14 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">AG User *</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">
+                  AG User *
+                  {autoSelectedAgent && (
+                    <span className="ml-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">
+                      เลือกอัตโนมัติ
+                    </span>
+                  )}
+                </label>
                 <div className="relative ag-user-dropdown">
                   <input
                     type="text"
@@ -472,7 +524,11 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
                     onChange={(e) => handleSearchChange(e.target.value)}
                     onFocus={() => setShowDropdown(true)}
                     disabled={mode === 'view'}
-                    className="w-full rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full rounded-md border px-3 py-1 text-sm focus:outline-none focus:ring-2 ${
+                      autoSelectedAgent 
+                        ? 'border-green-300 bg-green-50 focus:ring-green-500' 
+                        : 'border-gray-300 focus:ring-blue-500'
+                    }`}
                     placeholder="ค้นหา AG User..."
                   />
                   {showDropdown && filteredAgUsers.length > 0 && (
@@ -495,13 +551,33 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
                   )}
                 </div>
                 {selectedAgUser && (
-                  <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-sm">
-                    <div className="font-medium text-blue-900">เลือกแล้ว: {selectedAgUser.username}</div>
-                    <div className="text-blue-700 text-xs">
+                  <div className={`mt-2 p-2 border rounded text-sm ${
+                    autoSelectedAgent 
+                      ? 'bg-green-50 border-green-200' 
+                      : 'bg-blue-50 border-blue-200'
+                  }`}>
+                    <div className={`font-medium ${
+                      autoSelectedAgent ? 'text-green-900' : 'text-blue-900'
+                    }`}>
+                      เลือกแล้ว: {selectedAgUser.username}
+                      {autoSelectedAgent && (
+                        <span className="ml-2 text-xs">
+                          (เชื่อมโยงกับลูกค้าอัตโนมัติ)
+                        </span>
+                      )}
+                    </div>
+                    <div className={`text-xs ${
+                      autoSelectedAgent ? 'text-green-700' : 'text-blue-700'
+                    }`}>
                       User Login: {selectedAgUser.userLogin}
                       {selectedAgUser.webname && ` | Web: ${selectedAgUser.webname}`}
                       {selectedAgUser.position && ` | Position: ${selectedAgUser.position}`}
                     </div>
+                    {!autoSelectedAgent && mode === 'create' && formData.customer.trim() && (
+                      <div className="mt-1 text-xs text-gray-600">
+                        💡 การเลือกนี้จะถูกบันทึกเป็นค่าเริ่มต้นสำหรับลูกค้า {formData.customer}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
