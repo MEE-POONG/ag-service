@@ -22,6 +22,41 @@ export default function BotAgPage() {
         </div>
 
         <div className="p-4 rounded-2xl ring-1 ring-gray-200 shadow-lg backdrop-blur shadow-gray-900/5 sm:p-6 sm:mb-8 bg-white/90">
+          <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-2 sm:mb-2">จัดการลูกค้า</h2>
+          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
+            จัดการข้อมูลลูกค้าและการเข้าถึงระบบด้วยบอท
+          </p>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+             <Link
+               href="/bot-ag/adjust-bet"
+               className="block p-4 sm:p-6 rounded-2xl ring-1 ring-gray-200 bg-white/90 hover:bg-white transition-colors shadow-sm"
+             >
+               <div className="flex items-center mb-2 sm:mb-3">
+                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-[#A78BFA] to-[#34D399] rounded-lg flex items-center justify-center mr-2 sm:mr-3 text-white font-bold text-xs sm:text-sm">
+                   AB
+                 </div>
+                 <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">Adjust Bet</h3>
+               </div>
+               <p className="text-sm sm:text-base text-gray-600">จัดการการปรับเบทสำหรับลูกค้า</p>
+             </Link>
+
+            <Link
+              href="/partner/members"
+              className="block p-4 sm:p-6 rounded-2xl ring-1 ring-gray-200 bg-white/90 hover:bg-white transition-colors shadow-sm"
+            >
+              <div className="flex items-center mb-2 sm:mb-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-[#A78BFA] to-[#34D399] rounded-lg flex items-center justify-center mr-2 sm:mr-3 text-white font-bold text-xs sm:text-sm">
+                  SM
+                </div>
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900">สมาชิก</h3>
+              </div>
+              <p className="text-sm sm:text-base text-gray-600">จัดการข้อมูลสมาชิกและสิทธิ์การใช้งาน</p>
+            </Link>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl ring-1 ring-gray-200 shadow-lg backdrop-blur shadow-gray-900/5 sm:p-6 sm:mb-8 bg-white/90">
           <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-2 sm:mb-2">ยอดได้เสีย</h2>
           <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
             ระบบจัดการข้อมูลพันธมิตรและสมาชิกทั้งหมด

@@ -266,3 +266,30 @@ model AgUserAccountDB {
   deleteAt    DateTime?
   deleteBy    String?
 }
+
+
+
+// ระบบจัดการ Adjust Bets (ตามข้อมูลจริงจาก ME004DB)
+model adjustbets {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  customer        String
+  usernameAG      String
+  agBaseUrl       String
+  pinUsed         String
+  sportsbook      Json     // ข้อมูล sportsbook
+  sexy            Json     // ข้อมูล sexy
+  sa              Json     // ข้อมูล sa
+  slotItp         Json     // ข้อมูล slotItp
+  slotJoker       Json     // ข้อมูล slotJoker
+  slotPlaystar    Json     // ข้อมูล slotPlaystar
+  cockfight       Json     // ข้อมูล cockfight
+  muayStep        Json     // ข้อมูล muayStep
+  virtualSports   Json     // ข้อมูล virtualSports
+  overallStatus   String
+  attemptCount    Int
+  createdBy       String
+  updatedBy       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastError       String?
+}

@@ -1,0 +1,657 @@
+[{
+  "_id": {
+    "$oid": "68c1d4a19f19c4038399d7a8"
+  },
+  "customer": "ufh27oa10001",
+  "usernameAG": "ufh27oa1ufa66",
+  "agBaseUrl": "https://ag.ufabet.com",
+  "pinUsed": "221308",
+  "sportsbook": {
+    "enabled": true,
+    "commission": {
+      "main": 0,
+      "x12": 0,
+      "par": 0,
+      "other": 0
+    },
+    "limits": {
+      "transLimit": 50000,
+      "beforeRun": 50000,
+      "maxX12": 50000,
+      "matchLimitX12": 50000,
+      "maxPar": 50000,
+      "par": 50000,
+      "maxOther": 50000,
+      "matchLimitOther": 50000,
+      "maxOS": 50000,
+      "matchLimitOS": 50000
+    },
+    "statusServe": "SUCCESS",
+    "lastSavedAt": {
+      "$date": "2025-09-11T09:49:18.337Z"
+    }
+  },
+  "sexy": {
+    "enabled": true,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "sa": {
+    "enabled": false,
+    "commissionRAR": 0,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "slotItp": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotJoker": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotPlaystar": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "cockfight": {
+    "enabled": false,
+    "commissionRBG": 0,
+    "statusServe": "PENDING"
+  },
+  "muayStep": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "virtualSports": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "overallStatus": "SUCCESS",
+  "attemptCount": 3,
+  "createdBy": "507f1f77bcf86cd799439011",
+  "updatedBy": "507f1f77bcf86cd799439011",
+  "createdAt": {
+    "$date": "2025-09-10T19:42:25.258Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-11T09:49:19.487Z"
+  },
+  "__v": 0,
+  "lastError": "ปรับสำเร็จ"
+},
+{
+  "_id": {
+    "$oid": "68c1d4a19f19c4038399d7aa"
+  },
+  "customer": "ufh27oa10002",
+  "usernameAG": "ufh27oa1ufa66",
+  "agBaseUrl": "https://ag.ufabet.com",
+  "pinUsed": "999999",
+  "sportsbook": {
+    "enabled": true,
+    "commission": {
+      "main": 0,
+      "x12": 0,
+      "par": 0,
+      "other": 0
+    },
+    "limits": {
+      "transLimit": 500000,
+      "beforeRun": 250000,
+      "maxX12": 50000,
+      "matchLimitX12": 10,
+      "maxPar": 100000,
+      "par": 75000,
+      "maxOther": 25000,
+      "matchLimitOther": 8,
+      "maxOS": 150000,
+      "matchLimitOS": 20
+    },
+    "statusServe": "SUCCESS",
+    "lastSavedAt": {
+      "$date": "2025-09-10T19:43:52.800Z"
+    }
+  },
+  "sexy": {
+    "enabled": true,
+    "profile": 2,
+    "statusServe": "PENDING"
+  },
+  "sa": {
+    "enabled": true,
+    "commissionRAR": 0.5,
+    "profile": 2,
+    "statusServe": "PENDING"
+  },
+  "slotItp": {
+    "enabled": true,
+    "statusServe": "PENDING"
+  },
+  "slotJoker": {
+    "enabled": true,
+    "statusServe": "PENDING"
+  },
+  "slotPlaystar": {
+    "enabled": true,
+    "statusServe": "PENDING"
+  },
+  "cockfight": {
+    "enabled": true,
+    "commissionRBG": 0.3,
+    "statusServe": "PENDING"
+  },
+  "muayStep": {
+    "enabled": true,
+    "statusServe": "PENDING"
+  },
+  "virtualSports": {
+    "enabled": true,
+    "statusServe": "PENDING"
+  },
+  "overallStatus": "SUCCESS",
+  "attemptCount": 1,
+  "createdBy": "507f1f77bcf86cd799439011",
+  "updatedBy": "507f1f77bcf86cd799439011",
+  "createdAt": {
+    "$date": "2025-09-10T19:42:25.332Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-10T19:43:52.977Z"
+  },
+  "__v": 0,
+  "lastError": "ปรับสำเร็จ"
+},
+{
+  "_id": {
+    "$oid": "68c1d4a19f19c4038399d7ac"
+  },
+  "customer": "ufh27oa10003",
+  "usernameAG": "ufh27oa1ufa66",
+  "agBaseUrl": "https://ag.ufabet.com",
+  "pinUsed": "999999",
+  "sportsbook": {
+    "enabled": true,
+    "commission": {
+      "main": 0,
+      "x12": 0,
+      "par": 0,
+      "other": 0
+    },
+    "limits": {
+      "transLimit": 5000,
+      "beforeRun": 5000,
+      "maxX12": 5000,
+      "matchLimitX12": 5000,
+      "maxPar": 5000,
+      "par": 5000,
+      "maxOther": 5000,
+      "matchLimitOther": 5000,
+      "maxOS": 5000,
+      "matchLimitOS": 5000
+    },
+    "statusServe": "SUCCESS",
+    "lastSavedAt": {
+      "$date": "2025-09-11T09:53:00.562Z"
+    }
+  },
+  "sexy": {
+    "enabled": false,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "sa": {
+    "enabled": false,
+    "commissionRAR": 0,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "slotItp": {
+    "enabled": true,
+    "statusServe": "PENDING"
+  },
+  "slotJoker": {
+    "enabled": true,
+    "statusServe": "PENDING"
+  },
+  "slotPlaystar": {
+    "enabled": true,
+    "statusServe": "PENDING"
+  },
+  "cockfight": {
+    "enabled": false,
+    "commissionRBG": 0,
+    "statusServe": "PENDING"
+  },
+  "muayStep": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "virtualSports": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "overallStatus": "SUCCESS",
+  "attemptCount": 2,
+  "createdBy": "507f1f77bcf86cd799439011",
+  "updatedBy": "507f1f77bcf86cd799439011",
+  "createdAt": {
+    "$date": "2025-09-10T19:42:25.378Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-11T09:53:01.993Z"
+  },
+  "__v": 0,
+  "lastError": "ปรับสำเร็จ"
+},
+{
+  "_id": {
+    "$oid": "68c1d4a19f19c4038399d7ae"
+  },
+  "customer": "ufh27oa10004",
+  "usernameAG": "ufh27oa1ufa66",
+  "agBaseUrl": "https://ag.ufabet.com",
+  "pinUsed": "999999",
+  "sportsbook": {
+    "enabled": true,
+    "commission": {
+      "main": 0,
+      "x12": 0,
+      "par": 0,
+      "other": 0
+    },
+    "limits": {
+      "transLimit": 200000,
+      "beforeRun": 100000,
+      "maxX12": 20000,
+      "matchLimitX12": 8,
+      "maxPar": 40000,
+      "par": 30000,
+      "maxOther": 10000,
+      "matchLimitOther": 5,
+      "maxOS": 60000,
+      "matchLimitOS": 15
+    },
+    "statusServe": "SUCCESS",
+    "lastSavedAt": {
+      "$date": "2025-09-11T09:58:35.326Z"
+    },
+    "lastError": "ปรับ SPORTSBOOK ไม่สำเร็จ: ไม่พบปุ่ม กีฬา (#tbSports) ในหน้าเว็บ"
+  },
+  "sexy": {
+    "enabled": false,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "sa": {
+    "enabled": false,
+    "commissionRAR": 0,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "slotItp": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotJoker": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotPlaystar": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "cockfight": {
+    "enabled": false,
+    "commissionRBG": 0,
+    "statusServe": "PENDING"
+  },
+  "muayStep": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "virtualSports": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "overallStatus": "SUCCESS",
+  "attemptCount": 4,
+  "createdBy": "507f1f77bcf86cd799439011",
+  "updatedBy": "507f1f77bcf86cd799439011",
+  "createdAt": {
+    "$date": "2025-09-10T19:42:25.420Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-11T09:58:37.495Z"
+  },
+  "__v": 0,
+  "lastError": "ปรับสำเร็จ"
+},
+{
+  "_id": {
+    "$oid": "68c1d4a19f19c4038399d7b0"
+  },
+  "customer": "ufh27oa10005",
+  "usernameAG": "ufh27oa1ufa66",
+  "agBaseUrl": "https://ag.ufabet.com",
+  "pinUsed": "999999",
+  "sportsbook": {
+    "enabled": true,
+    "commission": {
+      "main": 0,
+      "x12": 0,
+      "par": 0,
+      "other": 0
+    },
+    "limits": {
+      "transLimit": 5000,
+      "beforeRun": 5000,
+      "maxX12": 5000,
+      "matchLimitX12": 5000,
+      "maxPar": 5000,
+      "par": 5000,
+      "maxOther": 5000,
+      "matchLimitOther": 5000,
+      "maxOS": 5000,
+      "matchLimitOS": 5000
+    },
+    "statusServe": "SUCCESS",
+    "lastSavedAt": {
+      "$date": "2025-09-10T19:45:08.682Z"
+    }
+  },
+  "sexy": {
+    "enabled": false,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "sa": {
+    "enabled": false,
+    "commissionRAR": 0,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "slotItp": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotJoker": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotPlaystar": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "cockfight": {
+    "enabled": true,
+    "commissionRBG": 0.4,
+    "statusServe": "PENDING"
+  },
+  "muayStep": {
+    "enabled": true,
+    "statusServe": "PENDING"
+  },
+  "virtualSports": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "overallStatus": "SUCCESS",
+  "attemptCount": 1,
+  "createdBy": "507f1f77bcf86cd799439011",
+  "updatedBy": "507f1f77bcf86cd799439011",
+  "createdAt": {
+    "$date": "2025-09-10T19:42:25.461Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-10T19:45:08.868Z"
+  },
+  "__v": 0,
+  "lastError": "ปรับสำเร็จ"
+},
+{
+  "_id": {
+    "$oid": "68c1d4a19f19c4038399d7b2"
+  },
+  "customer": "ufh27oa10006",
+  "usernameAG": "ufh27oa1ufa66",
+  "agBaseUrl": "https://ag.ufabet.com",
+  "pinUsed": "999999",
+  "sportsbook": {
+    "enabled": true,
+    "commission": {
+      "main": 0,
+      "x12": 0,
+      "par": 0,
+      "other": 0
+    },
+    "limits": {
+      "transLimit": 5000,
+      "beforeRun": 5000,
+      "maxX12": 5000,
+      "matchLimitX12": 5000,
+      "maxPar": 5000,
+      "par": 5000,
+      "maxOther": 5000,
+      "matchLimitOther": 5000,
+      "maxOS": 5000,
+      "matchLimitOS": 5000
+    },
+    "statusServe": "SUCCESS",
+    "lastSavedAt": {
+      "$date": "2025-09-10T19:45:34.514Z"
+    }
+  },
+  "sexy": {
+    "enabled": false,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "sa": {
+    "enabled": true,
+    "commissionRAR": 0.6,
+    "profile": 3,
+    "statusServe": "PENDING"
+  },
+  "slotItp": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotJoker": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotPlaystar": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "cockfight": {
+    "enabled": false,
+    "commissionRBG": 0,
+    "statusServe": "PENDING"
+  },
+  "muayStep": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "virtualSports": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "overallStatus": "SUCCESS",
+  "attemptCount": 1,
+  "createdBy": "507f1f77bcf86cd799439011",
+  "updatedBy": "507f1f77bcf86cd799439011",
+  "createdAt": {
+    "$date": "2025-09-10T19:42:25.502Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-10T19:45:34.721Z"
+  },
+  "__v": 0,
+  "lastError": "ปรับสำเร็จ"
+},
+{
+  "_id": {
+    "$oid": "68c1d4a19f19c4038399d7b4"
+  },
+  "customer": "ufh27oa10007",
+  "usernameAG": "ufh27oa1ufa66",
+  "agBaseUrl": "https://ag.ufabet.com",
+  "pinUsed": "999999",
+  "sportsbook": {
+    "enabled": true,
+    "commission": {
+      "main": 0,
+      "x12": 0,
+      "par": 0,
+      "other": 0
+    },
+    "limits": {
+      "transLimit": 5000,
+      "beforeRun": 5000,
+      "maxX12": 5000,
+      "matchLimitX12": 5000,
+      "maxPar": 5000,
+      "par": 5000,
+      "maxOther": 5000,
+      "matchLimitOther": 5000,
+      "maxOS": 5000,
+      "matchLimitOS": 5000
+    },
+    "statusServe": "SUCCESS",
+    "lastSavedAt": {
+      "$date": "2025-09-10T19:45:59.498Z"
+    }
+  },
+  "sexy": {
+    "enabled": false,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "sa": {
+    "enabled": false,
+    "commissionRAR": 0,
+    "profile": 1,
+    "statusServe": "PENDING"
+  },
+  "slotItp": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotJoker": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotPlaystar": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "cockfight": {
+    "enabled": false,
+    "commissionRBG": 0,
+    "statusServe": "PENDING"
+  },
+  "muayStep": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "virtualSports": {
+    "enabled": true,
+    "statusServe": "PENDING"
+  },
+  "overallStatus": "SUCCESS",
+  "attemptCount": 1,
+  "createdBy": "507f1f77bcf86cd799439011",
+  "updatedBy": "507f1f77bcf86cd799439011",
+  "createdAt": {
+    "$date": "2025-09-10T19:42:25.545Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-10T19:45:59.676Z"
+  },
+  "__v": 0,
+  "lastError": "ปรับสำเร็จ"
+},
+{
+  "_id": {
+    "$oid": "68c1d4a19f19c4038399d7b6"
+  },
+  "customer": "ufh27oa10008",
+  "usernameAG": "ufh27oa1ufa66",
+  "agBaseUrl": "https://ag.ufabet.com",
+  "pinUsed": "999999",
+  "sportsbook": {
+    "enabled": true,
+    "commission": {
+      "main": 0,
+      "x12": 0,
+      "par": 0,
+      "other": 0
+    },
+    "limits": {
+      "transLimit": 5000,
+      "beforeRun": 5000,
+      "maxX12": 5000,
+      "matchLimitX12": 5000,
+      "maxPar": 5000,
+      "par": 5000,
+      "maxOther": 5000,
+      "matchLimitOther": 5000,
+      "maxOS": 5000,
+      "matchLimitOS": 5000
+    },
+    "statusServe": "SUCCESS",
+    "lastSavedAt": {
+      "$date": "2025-09-10T19:46:24.533Z"
+    }
+  },
+  "sexy": {
+    "enabled": true,
+    "profile": 2,
+    "statusServe": "PENDING"
+  },
+  "sa": {
+    "enabled": true,
+    "commissionRAR": 0.4,
+    "profile": 2,
+    "statusServe": "PENDING"
+  },
+  "slotItp": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotJoker": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "slotPlaystar": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "cockfight": {
+    "enabled": false,
+    "commissionRBG": 0,
+    "statusServe": "PENDING"
+  },
+  "muayStep": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "virtualSports": {
+    "enabled": false,
+    "statusServe": "PENDING"
+  },
+  "overallStatus": "SUCCESS",
+  "attemptCount": 1,
+  "createdBy": "507f1f77bcf86cd799439011",
+  "updatedBy": "507f1f77bcf86cd799439011",
+  "createdAt": {
+    "$date": "2025-09-10T19:42:25.588Z"
+  },
+  "updatedAt": {
+    "$date": "2025-09-10T19:46:25.185Z"
+  },
+  "__v": 0,
+  "lastError": "ปรับสำเร็จ"
+}]
