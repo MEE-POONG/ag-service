@@ -7,236 +7,318 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Status for provisioning/serve state
-enum StatusServe {
-  PENDING
-  SUCCESS
-  WORKING
-  FAILED
+type AdjustbetsCockfight {
+  /// Multiple data types found: Float: 17.4%, Int: 82.6% out of 23 sampled entries
+  commissionRBG Json
+  enabled       Boolean
+  lastError     String?
+  statusServe   String?
 }
 
-// ระบบจัดการไฟล์รูปภาพ
-model ImageList {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  imageUrl  String
-  modelName String?
-  nameFile  String
-  createdAt DateTime  @default(now())
+type AdjustbetsMuayStep {
+  enabled     Boolean
+  lastError   String?
+  statusServe String?
+}
+
+type AdjustbetsSa {
+  /// Multiple data types found: Float: 26.1%, Int: 73.9% out of 23 sampled entries
+  commissionRAR Json
+  enabled       Boolean
+  lastError     String?
+  lastSavedAt   DateTime? @db.Date
+  profile       Int
+  statusServe   String?
+}
+
+type AdjustbetsSexy {
+  enabled     Boolean
+  lastError   String?
+  lastSavedAt DateTime? @db.Date
+  profile     Int
+  statusServe String?
+}
+
+type AdjustbetsSlotItp {
+  enabled     Boolean
+  lastSavedAt DateTime? @db.Date
+  statusServe String?
+}
+
+type AdjustbetsSlotJoker {
+  enabled     Boolean
+  lastSavedAt DateTime? @db.Date
+  statusServe String?
+}
+
+type AdjustbetsSlotPlaystar {
+  enabled     Boolean
+  statusServe String?
+}
+
+type AdjustbetsSportsbook {
+  commission  AdjustbetsSportsbookCommission
+  enabled     Boolean
+  lastError   String?
+  lastSavedAt DateTime                       @db.Date
+  limits      AdjustbetsSportsbookLimits
+  statusServe String
+}
+
+type AdjustbetsSportsbookCommission {
+  main  Int
+  other Int
+  par   Int
+  x12   Int
+}
+
+type AdjustbetsSportsbookLimits {
+  beforeRun       Int
+  matchLimitOS    Int
+  matchLimitOther Int
+  matchLimitX12   Int
+  maxOS           Int
+  maxOther        Int
+  maxPar          Int
+  maxX12          Int
+  par             Int
+  transLimit      Int
+}
+
+type AdjustbetsVirtualSports {
+  enabled     Boolean
+  lastSavedAt DateTime? @db.Date
+  statusServe String?
+}
+
+model AGUserDB {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  adviser   String
+  createdAt DateTime @db.Date
   createdBy String
-  updatedAt DateTime  @updatedAt
-  updatedBy String
-  deleteAt  DateTime?
-  deleteBy  String?
-}
-
-// ระบบผู้ใช้ทั่วไป
-model UserDB {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  username  String    @unique
+  isActive  Boolean
+  isDeleted Boolean
   password  String
-  img       String?
-  firstname String
-  lastname  String
-  nickname  String?
-  email     String    @unique
-  tel       String?
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  createdBy String
-  updatedAt DateTime  @updatedAt
+  updatedAt DateTime @db.Date
   updatedBy String
-  deleteAt  DateTime?
-  deleteBy  String?
+  userAg    String   @unique
+  userLogin String   @unique
+  webBaseId String   @db.ObjectId
 }
 
-// ระบบฐานข้อมูลเว็บ
-model WebBaseDB {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  name      String    @unique
-  passS     String? // Password สำหรับ Super Admin
-  passM     String? // Password สำหรับ Manager
-  passA     String? // Password สำหรับ Admin
-  otpS      String? // OTP สำหรับ Super Admin
-  otpM      String? // OTP สำหรับ Manager
-  otpA      String? // OTP สำหรับ Admin
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  createdBy String
-  updatedAt DateTime  @updatedAt
-  updatedBy String
-  deleteAt  DateTime?
-  deleteBy  String?
-  AdminDB   AdminDB[]
+model ActivityLogDB {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  action    String
+  createdAt DateTime @db.Date
+  ipAddress String?
+  newData   String?
+  recordId  String?
+  tableName String?
+  userAgent String?
+  userId    String
+  userType  String
 }
 
-// ระบบผู้ดูแลระบบ
 model AdminDB {
-  id              String           @id @default(auto()) @map("_id") @db.ObjectId
-  username        String           @unique
-  password        String
-  name            String
-  tel             String?
-  email           String?          @unique
-  profile         String? // JSON string สำหรับข้อมูลโปรไฟล์เพิ่มเติม
-  webBaseId       String?          @db.ObjectId
-  webBase         WebBaseDB?       @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
-  adminPositionId String?          @db.ObjectId
-  adminPosition   AdminPositionDB? @relation(fields: [adminPositionId], references: [id], onDelete: SetNull)
-  isActive        Boolean          @default(true)
-  createdAt       DateTime         @default(now())
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  adminPositionId String?   @db.ObjectId
+  createdAt       DateTime  @db.Date
   createdBy       String
-  updatedAt       DateTime         @updatedAt
+  deleteAt        DateTime? @db.Date
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  deleteBy        Json?
+  email           String?   @unique
+  isActive        Boolean
+  name            String
+  password        String
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  profile         Json?
+  tel             String?
+  updatedAt       DateTime  @db.Date
   updatedBy       String
-  deleteAt        DateTime?
-  deleteBy        String?
+  username        String    @unique
 }
 
-// ระบบสิทธิ์เริ่มต้นของตำแหน่ง
 model AdminDefaultPermissionDB {
-  id                String          @id @default(auto()) @map("_id") @db.ObjectId
-  adminPositionDBId String          @db.ObjectId
-  adminPosition     AdminPositionDB @relation(fields: [adminPositionDBId], references: [id], onDelete: Cascade)
-  menuPageWebId     String          @db.ObjectId
-  menuPage          MenuWebDB       @relation(fields: [menuPageWebId], references: [id], onDelete: Cascade)
-  canAdvance        Boolean         @default(false)
-  canViews          Boolean         @default(false)
-  canCreate         Boolean         @default(false)
-  canUpdate         Boolean         @default(false)
-  canDelete         Boolean         @default(false)
-  createdAt         DateTime        @default(now())
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  adminPositionDBId String   @db.ObjectId
+  canAdvance        Boolean
+  canCreate         Boolean
+  canDelete         Boolean
+  canUpdate         Boolean
+  canViews          Boolean
+  createdAt         DateTime @db.Date
   createdBy         String
-  updatedAt         DateTime        @updatedAt
+  isDeleted         Boolean
+  menuPageWebId     String   @db.ObjectId
+  updatedAt         DateTime @db.Date
   updatedBy         String
-  deleteAt          DateTime?
-  deleteBy          String?
 
   @@unique([adminPositionDBId, menuPageWebId])
 }
 
-// ระบบเมนูและหน้าของเว็บ
-model MenuWebDB {
-  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
-  name                     String                     @unique // ระบุหน้าที่สามารถควบคุมได้ เช่น "dashboard", "users", "settings"
-  description              String? // คำอธิบายหน้า
-  isVisible                Boolean                    @default(true) //ใช้งานหรือไม่
-  showOrder                Int                        @default(0) // ลำดับการแสดงผล
-  link                     String // ระบุหน้าที่สามารถควบคุมได้ เช่น "", "/users", "/setting"
-  icon                     String? // อาจเก็บชื่อไอคอนหรือ URL ไอคอน
-  manager                  String[]                   @default([]) //กรณีหน้านั้นมีหน้าย่อยจำเพาะ เพิ่ม แก้ไข แสดง ตัวอย่างการใช้งาน ["/create", "/update", "/delete"]
-  head                     Boolean                    @default(false) // เมื่อเป็น true : <button> ,false : <link>
-  parentId                 String?                    @db.ObjectId // เก็บเป็น ObjectId ของเมนูหลัก
-  parent                   MenuWebDB?                 @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children                 MenuWebDB[]                @relation("MenuHierarchy")
-  canAdvance               Boolean                    @default(false) // สามารถข้ามหน้าได้หรือไม่
-  canViews                 Boolean                    @default(false) // สามารถดูหน้าได้หรือไม่
-  canCreate                Boolean                    @default(false) // สามารถเพิ่มหน้าได้หรือไม่
-  canUpdate                Boolean                    @default(false) // สามารถแก้ไขหน้าได้หรือไม่
-  canDelete                Boolean                    @default(false) // สามารถลบหน้าได้หรือไม่
-  createdAt                DateTime                   @default(now())
-  createdBy                String
-  updatedAt                DateTime                   @updatedAt
-  updatedBy                String
-  deleteAt                 DateTime?
-  deleteBy                 String?
-  AdminDefaultPermissionDB AdminDefaultPermissionDB[]
-}
-
-// ระบบแผนก
 model AdminDepartmentDB {
-  id             String            @id @default(auto()) @map("_id") @db.ObjectId
-  name           String            @unique
-  description    String?
-  managerId      String?           @db.ObjectId
-  isActive       Boolean           @default(true)
-  createdAt      DateTime          @default(now())
-  createdBy      String
-  updatedAt      DateTime          @updatedAt
-  updatedBy      String
-  deleteAt       DateTime?
-  deleteBy       String?
-  adminPositions AdminPositionDB[]
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @db.Date
+  createdBy   String
+  description String
+  isActive    Boolean
+  isDeleted   Boolean
+  name        String   @unique
+  updatedAt   DateTime @db.Date
+  updatedBy   String
 }
 
-// ระบบตำแหน่ง
 model AdminPositionDB {
-  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
-  name                     String
-  description              String?
-  priority                 Int                        @default(0)
-  adminDepartmentId        String?                    @db.ObjectId
-  adminDepartment          AdminDepartmentDB?         @relation(fields: [adminDepartmentId], references: [id], onDelete: SetNull)
-  isActive                 Boolean                    @default(true)
-  createdAt                DateTime                   @default(now())
-  createdBy                String
-  updatedAt                DateTime                   @updatedAt
-  updatedBy                String
-  deleteAt                 DateTime?
-  deleteBy                 String?
-  admins                   AdminDB[]
-  AdminDefaultPermissionDB AdminDefaultPermissionDB[]
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  adminDepartmentId String   @db.ObjectId
+  createdAt         DateTime @db.Date
+  createdBy         String
+  isActive          Boolean
+  isDeleted         Boolean
+  name              String
+  priority          BigInt
+  updatedAt         DateTime @db.Date
+  updatedBy         String
 
-  // ✅ ชื่อซ้ำได้ข้ามแผนก แต่ "ห้ามซ้ำภายในแผนกเดียวกัน"
   @@unique([adminDepartmentId, name], map: "uniq_position_name_per_dept")
-  // ✅ ลำดับห้ามชนภายในแผนก (รองรับ resequence)
   @@unique([adminDepartmentId, priority], map: "uniq_position_priority_per_dept")
   @@index([adminDepartmentId])
 }
 
-// ระบบ Log การทำงาน
-model ActivityLogDB {
+model AgUserAccountDB {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime  @db.Date
+  createdBy   String
+  gaSecretEnc String
+  isActive    Boolean
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  meta        Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  note        Json?
+  origin      String
+  position    String
+  reserve     String
+  statusServe String
+  updatedAt   DateTime  @db.Date
+  updatedBy   String
+  userLogin   String    @unique
+  username    String    @unique
+  webname     String
+  SetZero     SetZero[]
+}
+
+model CustomerAgentDB {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  agentId    String   @db.ObjectId
+  createdAt  DateTime @db.Date
+  createdBy  String
+  customerId String   @unique
+  isActive   Boolean
+  note       String
+  updatedAt  DateTime @db.Date
+  updatedBy  String
+}
+
+model ImageList {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String
-  userType  String // "admin", "user", "aguser"
-  action    String // "create", "update", "delete", "login", "logout"
-  tableName String?
-  recordId  String?
-  oldData   String? // JSON string ของข้อมูลเก่า
-  newData   String? // JSON string ของข้อมูลใหม่
-  ipAddress String?
-  userAgent String?
-  createdAt DateTime @default(now())
+  createdAt DateTime @db.Date
+  createdBy String
+  deleteBy  String
+  imageUrl  String
+  isDeleted Boolean
+  modelName String
+  nameFile  String
+  updatedAt DateTime @db.Date
+  updatedBy String
+}
+
+model MenuPageWebDB {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  link Json?  @unique
+  /// Field referred in an index, but found no data to define the type.
+  name Json?  @unique
+}
+
+model MenuWebDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  canAdvance  Boolean
+  canCreate   Boolean
+  canDelete   Boolean
+  canUpdate   Boolean
+  canViews    Boolean
+  createdAt   DateTime @db.Date
+  createdBy   String
+  description String
+  head        Boolean
+  icon        String?
+  isDeleted   Boolean?
+  isVisible   Boolean
+  link        String
+  manager     String[]
+  name        String   @unique
+  parentId    String?  @db.ObjectId
+  showOrder   BigInt
+  updatedAt   DateTime @db.Date
+  updatedBy   String
 }
 
 model SettingDB {
-  id                String    @id @default(auto()) @map("_id") @db.ObjectId
-  name              String
-  logo              String?
-  logoText          String?
-  logoTextColor     String?
-  logoTextSize      Int?
-  logoTextFont      String?
-  logoTextFontSize  Int?
-  logoTextFontColor String?
-  facebook          String?
-  instagram         String?
-  line              String?
-  youtube           String?
-  website           String?
-  address           String?
-  tel               String?
-  createdAt         DateTime  @default(now())
-  createdBy         String
-  updatedAt         DateTime  @updatedAt
-  updatedBy         String
-  deleteAt          DateTime?
-  deleteBy          String?
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 }
 
-// ระบบประวัติการทำงาน
+model UserDB {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @db.Date
+  createdBy String
+  email     String   @unique
+  firstname String
+  isActive  Boolean
+  isDeleted Boolean
+  lastname  String
+  password  String
+  tel       String
+  updatedAt DateTime @db.Date
+  updatedBy String
+  username  String   @unique
+}
+
+model WebBaseDB {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @db.Date
+  createdBy String
+  deleteBy  String?
+  isActive  Boolean
+  isDeleted Boolean
+  name      String   @unique
+  otpA      String
+  otpM      String
+  otpS      String
+  passA     String
+  passM     String
+  passS     String
+  updatedAt DateTime @db.Date
+  updatedBy String
+
+  @@index([isActive], map: "isActive_1")
+}
+
 model WorkHistoryDB {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  tableName String // ชื่อตาราง เช่น "AdminPositionDB", "AdminDepartmentDB"
-  recordId  String?  @db.ObjectId // ID ของข้อมูลที่ถูกดำเนินการ
-  action    String // "CREATE", "UPDATE", "DELETE"
-  oldData   String? // JSON string ของข้อมูลเก่า (สำหรับ UPDATE, DELETE)
-  newData   String? // JSON string ของข้อมูลใหม่ (สำหรับ CREATE, UPDATE)
-  isSuccess Boolean  @default(true) // สถานะการดำเนินการสำเร็จหรือไม่
-  errorMsg  String? // ข้อความ error (ถ้าไม่สำเร็จ)
-  userId    String // ผู้ที่ดำเนินการ
-  userType  String   @default("admin") // ประเภทผู้ใช้ "admin", "user", "system"
-  ipAddress String? // IP Address ของผู้ดำเนินการ
-  userAgent String? // User Agent ของผู้ดำเนินการ
-  createdAt DateTime @default(now())
+  action    String
+  createdAt DateTime @db.Date
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  errorMsg  Json?
+  ipAddress String
+  isSuccess Boolean
+  newData   String?
+  oldData   String?
+  recordId  String   @db.ObjectId
+  tableName String
+  userAgent String
+  userId    String
+  userType  String
 
   @@index([tableName])
   @@index([recordId])
@@ -245,73 +327,59 @@ model WorkHistoryDB {
   @@index([createdAt])
 }
 
-// AG user accounts management (separate from AGUserDB login mapping)
-model AgUserAccountDB {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
-  username    String      @unique
-  reserve     String? // รหัสสำรอง หรือ สำหรับเอส
-  userLogin   String      @unique //ของเว็บ
-  webname     String?
-  origin      String?
-  position    String?
-  gaSecretEnc String?
-  statusServe StatusServe @default(PENDING)
-  note        String?
-  meta        String? // JSON string for extra data
-  isActive    Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  createdBy   String
-  updatedAt   DateTime    @updatedAt
-  updatedBy   String
-  deleteAt    DateTime?
-  deleteBy    String?
-
-  // Relations
-  customerAgents CustomerAgentDB[]
-  setZeros       SetZero[]
-}
-
-// ระบบจัดการ Adjust Bets (ตามข้อมูลจริงจาก ME004DB)
 model adjustbets {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  customer      String
-  usernameAG    String
+  id            String                  @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int?                    @map("__v")
   agBaseUrl     String
-  pinUsed       String
-  sportsbook    Json // ข้อมูล sportsbook
-  sexy          Json // ข้อมูล sexy
-  sa            Json // ข้อมูล sa
-  slotItp       Json // ข้อมูล slotItp
-  slotJoker     Json // ข้อมูล slotJoker
-  slotPlaystar  Json // ข้อมูล slotPlaystar
-  lotto         Json // ข้อมูล lotto
-  asiaPowerball Json // ข้อมูล asiaPowerball
-  cockfight     Json // ข้อมูล cockfight
-  muayStep      Json // ข้อมูล muayStep
-  virtualSports Json // ข้อมูล virtualSports
-  attemptCount  Int
-  overallStatus String @default("PENDING")
+  /// Multiple data types found: Int: 34.8%, BigInt: 65.2% out of 23 sampled entries
+  attemptCount  Json
+  cockfight     AdjustbetsCockfight
+  createdAt     DateTime                @db.Date
   createdBy     String
+  customer      String
+  lastError     String
+  muayStep      AdjustbetsMuayStep
+  overallStatus String
+  pinUsed       String
+  sa            AdjustbetsSa
+  sexy          AdjustbetsSexy
+  slotItp       AdjustbetsSlotItp
+  slotJoker     AdjustbetsSlotJoker
+  slotPlaystar  AdjustbetsSlotPlaystar
+  sportsbook    AdjustbetsSportsbook
+  updatedAt     DateTime                @db.Date
   updatedBy     String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  lastError     String?
+  usernameAG    String
+  virtualSports AdjustbetsVirtualSports
 }
 
-// ระบบจัดการความสัมพันธ์ระหว่าง Customer และ Agent
-model CustomerAgentDB {
-  id         String          @id @default(auto()) @map("_id") @db.ObjectId
-  customerId String          @unique // รหัสลูกค้า เช่น ufh27oa10001
-  agentId    String          @db.ObjectId // ID ของ AG User Account
-  agent      AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  note       String? // หมายเหตุเพิ่มเติม
-  isActive   Boolean         @default(true)
-  createdAt  DateTime        @default(now())
-  createdBy  String
-  updatedAt  DateTime        @updatedAt
-  updatedBy  String
-  deleteAt   DateTime?
-  deleteBy   String?
+model admin {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  bankName   String
+  bankNumber String
+  createdAt  DateTime @db.Date
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  deleted_at Json?
+  firstname  String
+  lastname   String
+  line       String
+  nickname   String
+  password   String
+  position   String
+  team       String
+  tel        String
+  updatedAt  DateTime @db.Date
+  username   String
+}
+
+model aguseraccounts {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  username Json?  @unique(map: "username_1")
+}
+
+model user {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 }
 
 // ระบบ SetZero - สำหรับการ reset ค่าเป็น 0
