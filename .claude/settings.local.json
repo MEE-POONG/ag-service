@@ -15,7 +15,14 @@
       "Read(/D:\\web\\ag-service\\container\\admin\\departments/**)",
       "Bash(npm run typecheck:*)",
       "Bash(npm run:*)",
-      "Bash(npx prisma db seed:*)"
+      "Bash(npx prisma db seed:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma:*)",
+      "Bash(node:*)",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

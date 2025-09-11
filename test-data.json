@@ -1,0 +1,44 @@
+{
+  "name": "ufh27oa1 - Adjust Bet",
+  "description": "การตั้งค่าปรับเบทสำหรับ ufh27oa1 (ufh27oa10007)",
+  "data": {
+    "customer": "ufh27oa10007",
+    "usernameAG": "ufh27oa1ufa66",
+    "agBaseUrl": "https://ag.ufabet.com",
+    "pinUsed": "",
+    "sportsbook": {
+      "enabled": true,
+      "work": false,
+      "commission": {
+        "main": 0,
+        "x12": 0,
+        "par": 0,
+        "other": 0
+      },
+      "limits": {
+        "transLimit": 96,
+        "beforeRun": 96,
+        "maxX12": 96,
+        "matchLimitX12": 96,
+        "maxPar": 96,
+        "par": 96,
+        "maxOther": 96,
+        "matchLimitOther": 96,
+        "maxOS": 10,
+        "matchLimitOS": 10
+      }
+    },
+    "sexy": { "enabled": false, "work": false, "profile": 1 },
+    "sa": { "enabled": false, "work": false, "commissionRAR": 0, "profile": 1 },
+    "slotItp": { "enabled": false, "work": false },
+    "slotJoker": { "enabled": false, "work": false },
+    "slotPlaystar": { "enabled": false, "work": false },
+    "lottoRDC": { "enabled": false, "work": false, "share": 0 },
+    "lottoRCW": { "enabled": false, "work": false, "share": 0 },
+    "cockfight": { "enabled": false, "work": false, "profile": 1, "commissionRBG": 0 },
+    "muayStep": { "enabled": false, "work": false, "profile": 1 },
+    "virtualSports": { "enabled": false, "work": false, "profile": 1 },
+    "createdBy": "current-user-id",
+    "updatedBy": "current-user-id"
+  }
+}
