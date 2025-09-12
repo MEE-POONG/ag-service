@@ -228,7 +228,7 @@ class MenuWebModel {
     }
 
     // หา showOrder ถัดไป ถ้าไม่ได้ระบุ
-    let showOrder = data.showOrder || 0
+    let showOrder: bigint = data.showOrder ? (typeof data.showOrder === 'number' ? BigInt(data.showOrder) : data.showOrder) : BigInt(0)
     if (!data.showOrder) {
       const lastMenu = await prisma.menuWebDB.findFirst({
         where: {
@@ -237,13 +237,13 @@ class MenuWebModel {
         },
         orderBy: { showOrder: 'desc' }
       })
-      showOrder = (lastMenu?.showOrder || 0) + 1
+      showOrder = BigInt(Number(lastMenu?.showOrder || 0) + 1)
     }
 
     return await prisma.menuWebDB.create({
       data: {
         name: data.name.trim(),
-        description: data.description?.trim(),
+        description: data.description?.trim() || '',
         isVisible: data.isVisible ?? true,
         showOrder,
         link: data.link.trim(),
@@ -256,7 +256,9 @@ class MenuWebModel {
         canCreate: data.canCreate ?? false,
         canUpdate: data.canUpdate ?? false,
         canDelete: data.canDelete ?? false,
+        createdAt: new Date(),
         createdBy: data.createdBy,
+        updatedAt: new Date(),
         updatedBy: data.createdBy
       },
       include: {
@@ -393,7 +395,7 @@ class MenuWebModel {
     return await prisma.menuWebDB.update({
       where: { id },
       data: {
-        deleteBy: deleteBy,
+        isDeleted: true,
         updatedAt: new Date(),
         updatedBy: deleteBy
       }

@@ -249,7 +249,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
       orderBy: { showOrder: 'desc' }
     });
     
-    nextShowOrder = lastMenu ? lastMenu.showOrder + 1 : 1;
+    nextShowOrder = lastMenu ? BigInt(Number(lastMenu.showOrder) + 1) : BigInt(1);
     
     console.log(`📋 กำหนด showOrder สำหรับกลุ่ม ${parentId ? `แม่: ${parentId}` : 'ไม่มีแม่'}: ${nextShowOrder}`);
   }
@@ -270,7 +270,9 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
     canCreate: typeof canCreate === 'boolean' ? canCreate : false,
     canUpdate: typeof canUpdate === 'boolean' ? canUpdate : false,
     canDelete: typeof canDelete === 'boolean' ? canDelete : false,
+    createdAt: new Date(),
     createdBy: createdBy.trim(),
+    updatedAt: new Date(),
     updatedBy: createdBy.trim()
   };
 

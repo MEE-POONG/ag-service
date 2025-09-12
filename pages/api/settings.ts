@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   try {
     const setting = await prisma.settingDB.findFirst({
-      orderBy: { createdAt: 'desc' },
+      orderBy: { id: 'desc' },
     });
     return res.status(200).json({ setting, message: 'ดึงข้อมูลการตั้งค่าสำเร็จ' });
   } catch (error) {

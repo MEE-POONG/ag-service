@@ -288,6 +288,8 @@ model MenuWebDB {
   manager                  String[]
   name                     String                     @unique
   parentId                 String?                    @db.ObjectId
+  parent                   MenuWebDB?                 @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children                 MenuWebDB[]                @relation("MenuHierarchy")
   showOrder                BigInt
   updatedAt                DateTime                   @db.Date
   updatedBy                String
@@ -295,7 +297,24 @@ model MenuWebDB {
 }
 
 model SettingDB {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
+  name                String?
+  logo                String?
+  logoText            String?
+  logoTextColor       String?
+  logoTextSize        Int?
+  logoTextFont        String?
+  logoTextFontSize    Int?
+  logoTextFontColor   String?
+  facebook            String?
+  instagram           String?
+  line                String?
+  youtube             String?
+  website             String?
+  address             String?
+  tel                 String?
+  createdBy           String?
+  updatedBy           String?
 }
 
 model UserDB {
@@ -341,13 +360,13 @@ model WorkHistoryDB {
   createdAt DateTime @db.Date
   /// Could not determine type: the field only had null or empty values in the sample set.
   errorMsg  Json?
-  ipAddress String
+  ipAddress String?
   isSuccess Boolean
   newData   String?
   oldData   String?
-  recordId  String   @db.ObjectId
+  recordId  String?   @db.ObjectId
   tableName String
-  userAgent String
+  userAgent String?
   userId    String
   userType  String
 

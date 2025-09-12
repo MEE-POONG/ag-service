@@ -11,7 +11,7 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
     name: "แดชบอร์ด",
     description: "แดชบอร์ด",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: true,
     link: "/",
     icon: "FaHome",
@@ -26,8 +26,7 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
     children: []
   },
@@ -36,7 +35,7 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
     name: "การวิเคราะห์",
     description: "การวิเคราะห์",
     isVisible: true,
-    showOrder: 2,
+    showOrder: BigInt(2),
     head: true,
     link: "/analytics",
     icon: "FaChartBar",
@@ -51,8 +50,7 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
     children: [
       {
@@ -60,7 +58,7 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         name: "รายงานยอดขาย",
         description: "รายงานยอดขาย",
         isVisible: true,
-        showOrder: 1,
+        showOrder: BigInt(1),
         head: false,
         link: "/analytics/sales",
         icon: "FaArrowUp",
@@ -75,16 +73,15 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
-        deleteAt: new Date(),
-        deleteBy: null,
-
+        isDeleted: false,
+    
       },
       {
         id: "analytics-performance",
         name: "ผลประกอบการ",
         description: "ผลประกอบการ",
         isVisible: true,
-        showOrder: 2,
+        showOrder: BigInt(2),
         head: false,
         link: "/analytics/performance",
         icon: "FaStar",
@@ -99,16 +96,15 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
-        deleteAt: new Date(),
-        deleteBy: null,
-
+        isDeleted: false,
+    
       },
       {
         id: "analytics-charts",
         name: "แผนภูมิ",
         description: "แผนภูมิ",
         isVisible: true,
-        showOrder: 3,
+        showOrder: BigInt(3),
         head: false,
         link: "/analytics/charts",
         icon: "FaChartBar",
@@ -123,9 +119,8 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
-        deleteAt: new Date(),
-        deleteBy: null,
-
+        isDeleted: false,
+    
       }
     ]
   },
@@ -135,7 +130,7 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
     name: "ผู้ใช้",
     description: "ผู้ใช้",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: true,
     link: "/users",
     icon: "FaUsers",
@@ -150,8 +145,7 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
     children: [
       {
@@ -159,7 +153,7 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         name: "รายชื่อผู้ใช้",
         description: "รายชื่อผู้ใช้",
         isVisible: true,
-        showOrder: 1,
+        showOrder: BigInt(1),
         head: false,
         link: "/users/list",
         icon: "FaUser",
@@ -174,16 +168,15 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
-        deleteAt: new Date(),
-        deleteBy: null,
-
+        isDeleted: false,
+    
       },
       {
         id: "users-roles",
         name: "บทบาท",
         description: "บทบาท",
         isVisible: true,
-        showOrder: 2,
+        showOrder: BigInt(2),
         head: false,
         link: "/users/roles",
         icon: "FaCog",
@@ -198,16 +191,15 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
-        deleteAt: new Date(),
-        deleteBy: null,
-
+        isDeleted: false,
+    
       },
       {
         id: "users-permissions",
         name: "การอนุญาต",
         description: "การอนุญาต",
         isVisible: true,
-        showOrder: 3,
+        showOrder: BigInt(3),
         head: false,
         link: "/users/permissions",
         icon: "FaCog",
@@ -222,9 +214,8 @@ export const menuItemOne: MenuWebDBWithChildren[] = [
         createdBy: "system",
         updatedAt: new Date(),
         updatedBy: "system",
-        deleteAt: new Date(),
-        deleteBy: null,
-
+        isDeleted: false,
+    
       }
     ]
   },
@@ -238,7 +229,7 @@ export const menuItems: MenuWebDB[] = [
     name: "หน้าหลัก",
     description: "หน้าหลัก",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: true,
     link: "/",
     icon: "FaHome",
@@ -253,8 +244,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -262,7 +252,7 @@ export const menuItems: MenuWebDB[] = [
     name: "รายงาน",
     description: "รายงานและสถิติการใช้งานระบบ",
     isVisible: true,
-    showOrder: 2,
+    showOrder: BigInt(2),
     head: true,
     link: "/reports",
     icon: "FaChartBar",
@@ -277,8 +267,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   // เมนูย่อยของ reports
@@ -287,7 +276,7 @@ export const menuItems: MenuWebDB[] = [
     name: "จัดการเอกสาร",
     description: "จัดการและอัปโหลดเอกสารต่างๆ",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: false,
     link: "/documents",
     icon: "FaFileAlt",
@@ -302,8 +291,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -311,7 +299,7 @@ export const menuItems: MenuWebDB[] = [
     name: "จัดการบอท",
     description: "จัดการบอท",
     isVisible: true,
-    showOrder: 2,
+    showOrder: BigInt(2),
     head: false,
     link: "/bot-management",
     icon: "FaRobot",
@@ -326,8 +314,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   // เมนูพันธมิตร
@@ -336,7 +323,7 @@ export const menuItems: MenuWebDB[] = [
     name: "พันธมิตร",
     description: "จัดการข้อมูลพันธมิตรและสมาชิก",
     isVisible: true,
-    showOrder: 3,
+    showOrder: BigInt(3),
     head: true,
     link: "/partner",
     icon: "FaHandshake",
@@ -351,8 +338,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -360,7 +346,7 @@ export const menuItems: MenuWebDB[] = [
     name: "AG User",
     description: "จัดการข้อมูล AG User",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: false,
     link: "/ag-user",
     icon: "FaUser",
@@ -375,8 +361,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -384,7 +369,7 @@ export const menuItems: MenuWebDB[] = [
     name: "สมาชิก",
     description: "จัดการข้อมูลสมาชิก",
     isVisible: true,
-    showOrder: 2,
+    showOrder: BigInt(2),
     head: false,
     link: "/members",
     icon: "FaUsers",
@@ -399,8 +384,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   // เมนูจัดการผู้ดูแล
@@ -409,7 +393,7 @@ export const menuItems: MenuWebDB[] = [
     name: "จัดการผู้ดูแล",
     description: "จัดการข้อมูลผู้ดูแลระบบและแผนกงาน",
     isVisible: true,
-    showOrder: 4,
+    showOrder: BigInt(4),
     head: true,
     link: "/admin-management",
     icon: "FaUserShield",
@@ -424,8 +408,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -433,7 +416,7 @@ export const menuItems: MenuWebDB[] = [
     name: "ผู้ดูแล",
     description: "จัดการข้อมูลผู้ดูแลระบบ",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: false,
     link: "/admins",
     icon: "FaUserCog",
@@ -449,8 +432,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -458,7 +440,7 @@ export const menuItems: MenuWebDB[] = [
     name: "แผนกงาน",
     description: "จัดการข้อมูลแผนกงาน",
     isVisible: true,
-    showOrder: 2,
+    showOrder: BigInt(2),
     head: false,
     link: "/departments",
     icon: "FaBuilding",
@@ -473,8 +455,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   // เมนูระบบผู้ดูแล
@@ -483,7 +464,7 @@ export const menuItems: MenuWebDB[] = [
     name: "ระบบผู้ดูแล",
     description: "ระบบจัดการผู้ใช้และสิทธิ์",
     isVisible: true,
-    showOrder: 5,
+    showOrder: BigInt(5),
     head: true,
     link: "/admin",
     icon: "FaShieldAlt",
@@ -498,8 +479,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -507,7 +487,7 @@ export const menuItems: MenuWebDB[] = [
     name: "จัดการผู้ใช้",
     description: "จัดการข้อมูลผู้ใช้ระบบ",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: false,
     link: "/users",
     icon: "FaUsers",
@@ -522,8 +502,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -531,7 +510,7 @@ export const menuItems: MenuWebDB[] = [
     name: "จัดการสิทธิ์",
     description: "จัดการสิทธิ์การเข้าถึงระบบ",
     isVisible: true,
-    showOrder: 2,
+    showOrder: BigInt(2),
     head: false,
     link: "/permissions",
     icon: "FaKey",
@@ -546,8 +525,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -555,7 +533,7 @@ export const menuItems: MenuWebDB[] = [
     name: "แผนกระบบ",
     description: "จัดการแผนกระบบ",
     isVisible: true,
-    showOrder: 3,
+    showOrder: BigInt(3),
     head: false,
     link: "/departments",
     icon: "FaSitemap",
@@ -570,8 +548,7 @@ export const menuItems: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
 
@@ -583,7 +560,7 @@ export const menuDev: MenuWebDB[] = [
     name: "ตั้งค่า",
     description: "ตั้งค่าข้อมูลภายในเว็บ",
     isVisible: true,
-    showOrder: 6,
+    showOrder: BigInt(6),
     head: true,
     link: "/setting",
     icon: "FaCog",
@@ -598,8 +575,7 @@ export const menuDev: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -607,7 +583,7 @@ export const menuDev: MenuWebDB[] = [
     name: "ข้อมูลหน้าเว็บ",
     description: "ตั้งค่าข้อมูลภายในเว็บและหน้าเว็บ",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: false,
     link: "",
     icon: "FaGlobe",
@@ -622,8 +598,7 @@ export const menuDev: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -631,7 +606,7 @@ export const menuDev: MenuWebDB[] = [
     name: "รูปภาพ",
     description: "รูปภาพ",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: false,
     link: "/image-list",
     icon: "FaImage",
@@ -646,15 +621,14 @@ export const menuDev: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
     id: "web-ag",
     name: "เว็บเกมส์",
     description: "ข้อมูลเว็บเกมส์",
-    showOrder: 2,
+    showOrder: BigInt(2),
     isVisible: true,
     head: false,
     link: "/web-ag",
@@ -670,8 +644,7 @@ export const menuDev: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -679,7 +652,7 @@ export const menuDev: MenuWebDB[] = [
     name: "เมนูเว็บเพจ",
     description: "ข้อมูลเมนูเว็บเพจ",
     isVisible: true,
-    showOrder: 3,
+    showOrder: BigInt(3),
     head: false,
     link: "/menuweb",
     icon: "FaList",
@@ -694,8 +667,7 @@ export const menuDev: MenuWebDB[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
 ];
@@ -706,7 +678,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     name: "การตั้งค่า",
     description: "การตั้งค่า",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: true,
     link: "/setting",
     icon: "FaCog",
@@ -721,8 +693,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -730,7 +701,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     name: "เว็บพนัน",
     description: "ข้อมูลเว็บพนัน",
     isVisible: true,
-    showOrder: 0,
+    showOrder: BigInt(0),
     head: true,
     link: "",
     icon: "",
@@ -745,8 +716,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -754,7 +724,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     name: "เมนูเว็บเพจ",
     description: "ข้อมูลหน้าเว็บเพจ",
     isVisible: true,
-    showOrder: 6,
+    showOrder: BigInt(6),
     head: true,
     link: "/menuweb",
     icon: "",
@@ -769,8 +739,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
 
@@ -779,7 +748,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     name: "การตั้งค่าทั่วไป",
     description: "การตั้งค่าทั่วไป",
     isVisible: true,
-    showOrder: 1,
+    showOrder: BigInt(1),
     head: false,
     link: "/general",
     icon: "FaCog",
@@ -794,8 +763,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -803,7 +771,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     name: "ความปลอดภัย",
     description: "ความปลอดภัย",
     isVisible: true,
-    showOrder: 2,
+    showOrder: BigInt(2),
     head: false,
     link: "/security",
     icon: "FaCog",
@@ -818,8 +786,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
   {
@@ -827,7 +794,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     name: "การแจ้งเตือน",
     description: "การแจ้งเตือน",
     isVisible: true,
-    showOrder: 3,
+    showOrder: BigInt(3),
     head: false,
     link: "/notifications",
     icon: "FaCog",
@@ -842,8 +809,7 @@ export const bottomMenuItems: MenuWebDBWithChildren[] = [
     createdBy: "system",
     updatedAt: new Date(),
     updatedBy: "system",
-    deleteAt: new Date(),
-    deleteBy: null,
+    isDeleted: false,
 
   },
 ];

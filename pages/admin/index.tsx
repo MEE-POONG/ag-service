@@ -160,7 +160,7 @@ export default function AdminPage() {
                             <br />
                             {item.adminPosition?.name && (
                               <span
-                                className={`inline-flex px-2 py-1 mt-1 rounded-full text-xs font-semibold ${positionColorByPriority(item.adminPosition?.priority)}`}
+                                className={`inline-flex px-2 py-1 mt-1 rounded-full text-xs font-semibold ${positionColorByPriority(Number(item.adminPosition?.priority))}`}
                               >
                                 {item.adminPosition?.name}
                               </span>

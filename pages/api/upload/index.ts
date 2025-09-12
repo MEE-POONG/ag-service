@@ -137,7 +137,8 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse) => {
                     createdBy: "system",
                     updatedAt: new Date(),
                     updatedBy: "system",
-                    deleteBy: ""
+                    deleteBy: "",
+                    isDeleted: false
                 },
             });
 

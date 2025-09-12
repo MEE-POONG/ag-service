@@ -130,7 +130,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         otpA,
         isActive,
         createdBy,
-        updatedBy: createdBy
+        updatedBy: createdBy,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isDeleted: false,
       }
     });
 

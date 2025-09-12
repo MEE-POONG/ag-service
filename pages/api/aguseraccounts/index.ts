@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
-import { Prisma, StatusServe } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { requireAuth } from '@/lib/permissions'
 import { recordWorkHistory, extractUserInfo } from '@/utils/workHistoryUtils'
 
@@ -41,7 +41,7 @@ async function getHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
           ],
         }
       : {}),
-    ...(statusServe ? { statusServe: (String(statusServe).toUpperCase() as StatusServe) } : {}),
+    ...(statusServe ? { statusServe: String(statusServe).toUpperCase() } : {}),
   }
 
   const [items, total] = await Promise.all([
@@ -76,10 +76,13 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
         origin,
         position,
         gaSecretEnc,
-        statusServe: (String(statusServe).toUpperCase() as StatusServe) || StatusServe.PENDING,
+        statusServe: String(statusServe).toUpperCase() || 'PENDING',
         note,
         meta,
+        isActive: true,
+        createdAt: new Date(),
         createdBy: admin.username,
+        updatedAt: new Date(),
         updatedBy: admin.username,
       },
     })
@@ -121,7 +124,7 @@ async function putHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
         ...(origin !== undefined && { origin }),
         ...(position !== undefined && { position }),
         ...(gaSecretEnc !== undefined && { gaSecretEnc }),
-        ...(statusServe !== undefined && { statusServe: (String(statusServe).toUpperCase() as StatusServe) }),
+        ...(statusServe !== undefined && { statusServe: String(statusServe).toUpperCase() }),
         ...(note !== undefined && { note }),
         ...(meta !== undefined && { meta }),
         ...(isActive !== undefined && { isActive }),

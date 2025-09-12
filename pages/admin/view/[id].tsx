@@ -190,12 +190,12 @@ export default function ViewAdminPage() {
                     <FaUserTag className="inline mr-2" />
                     ตำแหน่ง
                   </label>
-                  <span className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${getPriorityColor(admin.adminPosition.priority)}`}>
+                  <span className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${getPriorityColor(Number(admin.adminPosition.priority))}`}>
                     {admin.adminPosition.name}
                   </span>
                   {admin.adminPosition.priority && (
                     <div className="text-xs text-gray-500 mt-1">
-                      ลำดับความสำคัญ: {admin.adminPosition.priority}
+                      ลำดับความสำคัญ: {Number(admin.adminPosition.priority)}
                     </div>
                   )}
                 </div>

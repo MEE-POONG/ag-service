@@ -26,7 +26,7 @@ export const buildMenuTree = (list: MenuWebDB[]): MenuNode[] => {
   const sortRec = (nodes: MenuNode[]) => {
     nodes.sort(
       (a, b) =>
-        (a.showOrder ?? 0) - (b.showOrder ?? 0) ||
+        Number(a.showOrder ?? 0) - Number(b.showOrder ?? 0) ||
         a.name.localeCompare(b.name, "th")
     )
     nodes.forEach((n) => sortRec(n.children))

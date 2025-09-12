@@ -157,7 +157,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<DepartmentRe
           name,
           description,
           isActive: typeof isActive === 'boolean' ? isActive : true,
+          isDeleted: false,
+          createdAt: new Date(),
           createdBy: createdBy || 'system',
+          updatedAt: new Date(),
           updatedBy: updatedBy || 'system',
         },
       });

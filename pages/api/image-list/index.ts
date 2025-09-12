@@ -86,6 +86,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
                 createdBy,
                 updatedBy: createdBy || '',
                 deleteBy: '',
+                isDeleted: false,
             },
         });
 

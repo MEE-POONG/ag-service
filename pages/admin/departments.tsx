@@ -113,10 +113,10 @@ export default function DepartmentsPage() {
                       </div>
                       {Array.isArray(list.adminPositions) &&
                         // ถ้าอยากให้ชัวร์ว่าเรียงตาม priority
-                        list.adminPositions.slice().sort((a, b) => a.priority - b.priority).map((pos) => (
+                        list.adminPositions.slice().sort((a, b) => Number(a.priority) - Number(b.priority)).map((pos) => (
                           <div
                             key={pos.id}
-                            className={`flex items-center justify-between bg-gray-50 px-2 sm:px-3 py-1 sm:py-2 rounded-lg border-l-4 ${priorityLeftBorder(pos.priority)} ${priorityDot(pos.priority)}`}
+                            className={`flex items-center justify-between bg-gray-50 px-2 sm:px-3 py-1 sm:py-2 rounded-lg border-l-4 ${priorityLeftBorder(Number(pos.priority))} ${priorityDot(Number(pos.priority))}`}
                           >
                             <div className="flex items-center">
                               <ReactIconComponent icon="FaUser" setClass="w-3 h-3 sm:w-4 sm:h-4 text-blue-400 mr-1 sm:mr-2" />
