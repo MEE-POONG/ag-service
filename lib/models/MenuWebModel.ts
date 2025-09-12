@@ -245,7 +245,7 @@ class MenuWebModel {
         name: data.name.trim(),
         description: data.description?.trim() || '',
         isVisible: data.isVisible ?? true,
-        showOrder,
+        showOrder: Number(showOrder),
         link: data.link.trim(),
         icon: data.icon?.trim(),
         manager: data.manager || [],

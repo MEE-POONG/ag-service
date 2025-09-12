@@ -200,14 +200,13 @@ model AdminPositionDB {
   isActive                 Boolean
   isDeleted                Boolean
   name                     String
-  priority                 BigInt
+  priority                 Int
   updatedAt                DateTime                   @updatedAt @db.Date
   updatedBy                String
   AdminDefaultPermissionDB AdminDefaultPermissionDB[]
   admins                   AdminDB[]
 
   @@unique([adminDepartmentId, name], map: "uniq_position_name_per_dept")
-  @@unique([adminDepartmentId, priority], map: "uniq_position_priority_per_dept")
   @@index([adminDepartmentId])
 }
 

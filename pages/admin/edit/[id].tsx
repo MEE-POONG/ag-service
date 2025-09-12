@@ -145,26 +145,29 @@ export default function AdminEditPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.username || !form.email || !form.password || !selectedDeptId || !form.adminPositionId) {
+    if (!form.username || !form.email || !selectedDeptId || !form.adminPositionId) {
       alert('กรุณากรอกข้อมูลให้ครบถ้วน')
       return
     }
+    console.log(152, `form : `, form);
+
     try {
       setLoading(true)
-      const res = await axios.post('/api/admin', {
+      const res = await axios.put('/api/admin', {
+        id: id,
         ...form,
         adminDepartmentId: selectedDeptId,
         createdBy: 'admin',
       })
       if (res.data?.success) {
         await queryClient.invalidateQueries({ queryKey: qk.admins.list, exact: false })
-        alert('สร้าง Admin สำเร็จ')
-        router.push('/admin/admins')
+        alert('แก้ไข Admin สำเร็จ')
+        router.push('/admin')
       } else {
-        alert(res.data?.error || 'เกิดข้อผิดพลาดในการสร้าง Admin')
+        alert(res.data?.error || 'เกิดข้อผิดพลาดในการแก้ไข Admin')
       }
     } catch (e) {
-      console.error('Create admin failed:', e)
+      console.error('Edit admin failed:', e)
       alert('เกิดข้อผิดพลาดในการเชื่อมต่อ')
     } finally {
       setLoading(false)
@@ -232,7 +235,7 @@ export default function AdminEditPage() {
           </div>
 
           <div className="flex gap-2 mt-4">
-            <button type="submit" className="btn-primary text-sm" disabled={loading}>{loading ? 'กำลังบันทึก...' : 'เพิ่มผู้ดูแลระบบ'}</button>
+            <button type="submit" className="btn-primary text-sm" disabled={loading}>{loading ? 'กำลังบันทึก...' : 'แก้ไขผู้ดูแลระบบ'}</button>
             <button type="button" className="btn-secondary text-sm" onClick={() => router.push('/admin/admins')}>ยกเลิก</button>
           </div>
         </form>

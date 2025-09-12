@@ -18,6 +18,7 @@ import PositionModalEdit from '@/container/admin/departments/PositionModalEdit';
 import PositionModalActive from '@/container/admin/departments/PositionModalActive';
 import PositionModalPermission from '@/container/admin/departments/PositionModalPermission';
 import PositionModalChange from '@/container/admin/departments/PositionModalChange';
+import DepartmentsModalPosition from '@/container/admin/departments/ModalSwitchPosition';
 
 // วาง helper ข้างบน component ได้เลย (ไม่ใช้ cn/cva)
 const priorityDot = (p: number) =>
@@ -78,6 +79,7 @@ export default function DepartmentsPage() {
             แผนกงาน
           </h1>
           <DepartmentsModalAdd onSuccess={() => { refetch() }} />
+
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4">
@@ -109,7 +111,8 @@ export default function DepartmentsPage() {
                     <div className="space-y-2">
                       <div className='flex flex-row gap-1'>
                         <PositionModalAdd list={list} onSuccess={() => refetch()} />
-                        <PositionModalChange list={list} onSuccess={() => refetch()} />
+                        {/* <PositionModalChange list={list} onSuccess={() => refetch()} /> */}
+                        <DepartmentsModalPosition onSuccess={() => refetch()} data={list ?? []} />
                       </div>
                       {Array.isArray(list.adminPositions) &&
                         // ถ้าอยากให้ชัวร์ว่าเรียงตาม priority
