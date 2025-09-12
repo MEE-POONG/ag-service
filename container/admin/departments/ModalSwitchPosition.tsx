@@ -1,13 +1,14 @@
 import { Button } from '@/components/ui/button';
-import { MenuWebDB } from '@prisma/client';
+import { AdminDepartmentDB, AdminPositionDB } from '@prisma/client';
 import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
+import { ExtendedAdminDepartment } from '@/data/interface';
 
-interface MenuWebModalPositionProps {
+interface MenuWebModalSwitchPositionProps {
   onSuccess: () => void;
-  data: MenuWebDB[];
+  data: ExtendedAdminDepartment;
 }
 
 interface MenuWithOrder {
@@ -15,11 +16,9 @@ interface MenuWithOrder {
   name: string;
   originalOrder: number;
   showOrder: number;
-  parentId: string | null;
-  icon?: string | null;
 }
 
-const MenuWebModalPosition: React.FC<MenuWebModalPositionProps> = ({ onSuccess, data }) => {
+const MenuWebModalSwitchPosition: React.FC<MenuWebModalSwitchPositionProps> = ({ onSuccess, data }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuWithOrder[]>([]);
   const [loading, setLoading] = useState(false);
@@ -29,15 +28,13 @@ const MenuWebModalPosition: React.FC<MenuWebModalPositionProps> = ({ onSuccess, 
     if (isOpen && data) {
       console.log(data);
       // เรียงลำดับตาม showOrder และแปลงเป็น format ที่ใช้งาน
-      const sortedMenus = [...data]
-        .sort((a, b) => Number(a.showOrder) - Number(b.showOrder))
+      const sortedMenus = [...data.adminPositions]
+        .sort((a, b) => Number(a.priority) - Number(b.priority))
         .map(menu => ({
           id: menu.id,
           name: menu.name,
-          originalOrder: Number(menu.showOrder),
-          showOrder: Number(menu.showOrder),
-          parentId: menu.parentId,
-          icon: menu.icon
+          originalOrder: Number(menu.priority),
+          showOrder: Number(menu.priority),
         }));
       setMenuItems(sortedMenus);
     }
@@ -126,10 +123,9 @@ const MenuWebModalPosition: React.FC<MenuWebModalPositionProps> = ({ onSuccess, 
       const updates = menuItems.map(item => ({
         id: item.id,
         showOrder: item.showOrder,
-        parentId: item.parentId
       }));
 
-      const response = await axios.put('/api/menu-web/showorder', {
+      const response = await axios.put('/api/admin-positions/showorder', {
         updates,
         updatedBy: 'admin' // ควรได้จาก auth context
       });
@@ -153,7 +149,7 @@ const MenuWebModalPosition: React.FC<MenuWebModalPositionProps> = ({ onSuccess, 
     <>
 
       <Button onClick={() => setIsOpen(true)}
-        className="inline-flex items-center px-2 py-1 rounded-full text-base bg-purple-100 text-purple-700 border border-solid border-purple-700 hover:bg-purple -200 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="inline-flex items-center px-2 py-1 rounded text-base bg-purple-100 text-purple-700 border border-solid border-purple-700 hover:bg-purple-200 disabled:opacity-50 disabled:cursor-not-allowed"
         size="sm">
         จัดลำดับการแสดง
       </Button>
@@ -205,12 +201,6 @@ const MenuWebModalPosition: React.FC<MenuWebModalPositionProps> = ({ onSuccess, 
                       <ReactIconComponent icon="FaGripVertical" setClass="w-4 h-4 text-gray-400" />
                     </div>
 
-
-
-                    {/* ไอคอนเมนู */}
-                    {menu.icon && (
-                      <ReactIconComponent icon={menu.icon} setClass="w-4 h-4 text-blue-500 mr-2" />
-                    )}
 
                     {/* ชื่อเมนู */}
                     <span className="text-sm font-medium text-gray-700 flex-1">
@@ -319,5 +309,5 @@ const MenuWebModalPosition: React.FC<MenuWebModalPositionProps> = ({ onSuccess, 
   );
 };
 
-export default MenuWebModalPosition;
+export default MenuWebModalSwitchPosition;
 
