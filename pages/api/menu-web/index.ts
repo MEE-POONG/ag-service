@@ -119,7 +119,7 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     const whereClause: any = {
-      
+
       name: {
         contains: keyword as string,
         mode: Prisma.QueryMode.insensitive,
@@ -209,7 +209,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
   const existingMenuByName = await prisma.menuWebDB.findFirst({
     where: {
       name: name.trim(),
-      
+
     }
   });
 
@@ -225,7 +225,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
     where: {
       link: link.trim(),
       parentId: parentId || null,
-      
+
     }
   });
 
@@ -240,17 +240,17 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
   let nextShowOrder = showOrder;
   if (typeof nextShowOrder !== 'number' || nextShowOrder <= 0) {
     // หาลำดับสูงสุดในกลุ่มเดียวกัน (ทั้งกลุ่มไม่มีแม่และกลุ่มแม่คนเดียวกัน)
-    const whereCondition = parentId && typeof parentId === 'string' 
-      ? { parentId: parentId,  } // กลุ่มแม่คนเดียวกัน
-      : { parentId: null,  };   // กลุ่มไม่มีแม่
+    const whereCondition = parentId && typeof parentId === 'string'
+      ? { parentId: parentId, } // กลุ่มแม่คนเดียวกัน
+      : { parentId: null, };   // กลุ่มไม่มีแม่
 
     const lastMenu = await prisma.menuWebDB.findFirst({
       where: whereCondition,
       orderBy: { showOrder: 'desc' }
     });
-    
-    nextShowOrder = lastMenu ? BigInt(Number(lastMenu.showOrder) + 1) : BigInt(1);
-    
+
+    nextShowOrder = lastMenu ? Number(lastMenu.showOrder) + 1 : 1;
+
     console.log(`📋 กำหนด showOrder สำหรับกลุ่ม ${parentId ? `แม่: ${parentId}` : 'ไม่มีแม่'}: ${nextShowOrder}`);
   }
 

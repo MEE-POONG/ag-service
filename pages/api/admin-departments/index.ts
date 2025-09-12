@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 import { requireAuth, hasPermission } from '@/lib/permissions'
 import { recordWorkHistory, extractUserInfo } from '@/utils/workHistoryUtils'
+import { serializeBigIntToString } from '@/lib/bigintUtils'
 
 interface DepartmentResponse {
   success?: boolean;
@@ -67,11 +68,11 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<DepartmentRes
         });
       }
 
-      return res.status(200).json({
+      return res.status(200).json(serializeBigIntToString({
         success: true,
         data: department,
         message: 'ดึงข้อมูลแผนกสำเร็จ',
-      });
+      }));
     }
 
     const searchKeyword = (keyword || search) as string;

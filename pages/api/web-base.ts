@@ -230,12 +230,8 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // Soft delete
-    const deleteWebBase = await prisma.webBaseDB.update({
+    const deleteWebBase = await prisma.webBaseDB.delete({
       where: { id },
-      data: {
-        deleteBy,
-        updatedBy: deleteBy
-      }
     });
 
     return res.status(200).json({
