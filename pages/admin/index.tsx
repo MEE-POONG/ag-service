@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import toast from 'react-hot-toast'
 import { TheLayout } from '@/components/TheLayout'
 import axios from '@/lib/axios'
 import Link from 'next/link'
