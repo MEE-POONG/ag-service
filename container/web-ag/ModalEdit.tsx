@@ -42,7 +42,7 @@ const WebBaseModalEdit: React.FC<WebBaseModalEditProps> = ({
     otpM: data.otpM,
     otpA: data.otpA,
     isActive: data.isActive,
-    deleteAt: null,          // ✅ ต้องมี
+    isDeleted: data.isDeleted,
     deleteBy: null,          // ✅ ต้องมี
   });
   const handleSave = async () => {

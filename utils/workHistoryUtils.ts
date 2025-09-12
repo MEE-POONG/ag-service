@@ -29,6 +29,7 @@ export async function recordWorkHistory(
         userType,
         ipAddress,
         userAgent,
+        createdAt: new Date(),
       },
     });
   } catch (error) {

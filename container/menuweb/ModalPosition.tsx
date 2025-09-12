@@ -30,12 +30,12 @@ const MenuWebModalPosition: React.FC<MenuWebModalPositionProps> = ({ onSuccess, 
       console.log(data);
       // เรียงลำดับตาม showOrder และแปลงเป็น format ที่ใช้งาน
       const sortedMenus = [...data]
-        .sort((a, b) => a.showOrder - b.showOrder)
+        .sort((a, b) => Number(a.showOrder) - Number(b.showOrder))
         .map(menu => ({
           id: menu.id,
           name: menu.name,
-          originalOrder: menu.showOrder,
-          showOrder: menu.showOrder,
+          originalOrder: Number(menu.showOrder),
+          showOrder: Number(menu.showOrder),
           parentId: menu.parentId,
           icon: menu.icon
         }));

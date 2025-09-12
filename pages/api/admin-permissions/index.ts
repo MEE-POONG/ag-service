@@ -63,7 +63,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
               canCreate: Boolean(it.canCreate),
               canUpdate: Boolean(it.canUpdate),
               canDelete: Boolean(it.canDelete),
+              isDeleted: false,
+              createdAt: new Date(),
               createdBy: 'system',
+              updatedAt: new Date(),
               updatedBy: 'system',
             },
           })
@@ -102,7 +105,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           canCreate: Boolean(it.canCreate),
           canUpdate: Boolean(it.canUpdate),
           canDelete: Boolean(it.canDelete),
+          isDeleted: false,
+          createdAt: new Date(),
           createdBy: 'system',
+          updatedAt: new Date(),
           updatedBy: 'system',
         },
       })

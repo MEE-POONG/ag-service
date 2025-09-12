@@ -213,7 +213,7 @@ const AdjustBetPage: React.FC = () => {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {adjustBets.map((adjustBet) => {
                       const enabledGames = [];
-                      if (adjustBet.data?.sportsbook?.enabled) enabledGames.push('Sportsbook');
+                      if (adjustBet.data?.sportsbook?.work) enabledGames.push('Sportsbook');
                       if (adjustBet.data?.sexy?.enabled) enabledGames.push('Sexy');
                       if (adjustBet.data?.sa?.enabled) enabledGames.push('SA');
                       if (adjustBet.data?.slotItp?.enabled) enabledGames.push('Slot ITP');

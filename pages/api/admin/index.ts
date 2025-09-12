@@ -191,7 +191,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
           email,
           tel,
           adminPositionId,
+          isActive: true,
+          createdAt: new Date(),
           createdBy: currentAdmin.username,
+          updatedAt: new Date(),
           updatedBy: currentAdmin.username,
         },
         include: {

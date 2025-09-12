@@ -69,7 +69,11 @@ const PositionModalChange: React.FC<PositionModalChangeProps> = ({ list, onSucce
   useEffect(() => {
     if (isOpen) {
       if (Array.isArray(list.adminPositions) && list.adminPositions.length > 0) {
-        setPositions([...list.adminPositions].sort((a, b) => a.priority - b.priority));
+        setPositions([...list.adminPositions].sort((a, b) => Number(a.priority) - Number(b.priority)).map(pos => ({
+          id: pos.id,
+          name: pos.name,
+          priority: Number(pos.priority)
+        })));
       } else {
         fetchPositions(list.id);
       }

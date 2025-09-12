@@ -64,7 +64,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           canCreate: Boolean(canCreate),
           canUpdate: Boolean(canUpdate),
           canDelete: Boolean(canDelete),
+          isDeleted: false,
+          createdAt: new Date(),
           createdBy: 'system',
+          updatedAt: new Date(),
           updatedBy: 'system',
         },
       })

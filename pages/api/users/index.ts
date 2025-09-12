@@ -95,6 +95,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           tel,
           createdBy: 'system',
           updatedBy: 'system',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          isActive: true,
+          isDeleted: false,
         },
       })
       return res.status(201).json({

@@ -54,7 +54,7 @@ export default function MenuList({ dataList, collapsed, currentUser = "" }: Enha
 
             // เรียงลำดับตาม showOrder
             const sortByShowOrder = (items: MenuWebDBWithChildren[]) => {
-                items.sort((a, b) => (a.showOrder || 0) - (b.showOrder || 0));
+                items.sort((a, b) => Number(a.showOrder || 0) - Number(b.showOrder || 0));
                 items.forEach(item => {
                     if (item.children && item.children.length > 0) {
                         sortByShowOrder(item.children);
@@ -79,7 +79,7 @@ export default function MenuList({ dataList, collapsed, currentUser = "" }: Enha
             if (finalMenus && finalMenus.length > 0) {
                 finalMenus = [...finalMenus];
                 // เรียงใหม่ตาม showOrder
-                finalMenus.sort((a, b) => (a.showOrder || 999) - (b.showOrder || 999));
+                finalMenus.sort((a, b) => Number(a.showOrder || 999) - Number(b.showOrder || 999));
             }
 
             return finalMenus;

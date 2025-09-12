@@ -36,6 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           ? req.headers['x-forwarded-for'][0]
           : (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress,
         userAgent: req.headers['user-agent'] || undefined,
+        createdAt: new Date(),
       },
     })
 

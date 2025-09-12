@@ -649,6 +649,9 @@ async function main() {
           statusServe: 'PENDING',
           createdBy: 'system',
           updatedBy: 'system',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          isActive: true,
         },
       })
       

@@ -31,6 +31,7 @@ const WebBaseModalAdd: React.FC<WebBaseModalAddProps> = ({
     id: '',
     name: '',
     isActive: true,
+    isDeleted: false,
     passS: '',   // ok เพราะ type คือ string | null (string ใส่ได้)
     passM: '',
     passA: '',
@@ -41,7 +42,6 @@ const WebBaseModalAdd: React.FC<WebBaseModalAddProps> = ({
     createdBy: '',
     updatedAt: new Date(),
     updatedBy: '',
-    deleteAt: null,          // ✅ ต้องมี
     deleteBy: null,          // ✅ ต้องมี
     // ถ้า type ของคุณมี field อื่นอีก เช่นความสัมพันธ์ AdminDB[] แต่ใน error ไม่บอกว่าขาด ก็ยังไม่ต้องใส่
   })
