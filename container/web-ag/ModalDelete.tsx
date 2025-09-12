@@ -30,9 +30,12 @@ const WebBaseModalDelete: React.FC<WebBaseModalDeleteProps> = ({
       });
 
       const result = response.data;
+      console.log(33, ` :  result : `, result);
 
       if (result.success) {
-        alert('ลบข้อมูลสำเร็จ');
+        console.log(36, ` :  result : `, result);
+        
+        alert('ลบข้อมูลสำเร็จนะ');
         onSuccess();
         setIsOpen(false);
       } else {

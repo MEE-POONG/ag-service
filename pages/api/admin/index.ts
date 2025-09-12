@@ -4,6 +4,7 @@ import { hashPassword } from '@/lib/auth'
 import { Prisma } from '@prisma/client'
 import { requireAuth, hasPermission } from '@/lib/permissions'
 import { recordWorkHistory, extractUserInfo } from '@/utils/workHistoryUtils'
+import { serializeBigIntToString } from '@/lib/bigintUtils'
 
 interface AdminResponse {
   success?: boolean;
@@ -367,11 +368,11 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
 
 
 
-    return res.status(200).json({
+    return res.status(200).json(serializeBigIntToString({
       success: true,
       data: admin, // เปลี่ยนจาก admin เป็น data เพื่อความสอดคล้อง
       message: 'อัปเดตผู้ดูแลระบบสำเร็จ'
-    });
+    }));
   } catch (error: any) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       // ชน unique
@@ -511,3 +512,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
   }
 } 
+

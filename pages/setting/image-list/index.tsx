@@ -1,5 +1,5 @@
 import { TheLayout } from '@/components/TheLayout';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import axios from '@/lib/axios';
 import Link from 'next/link';
 import { FcAddImage } from 'react-icons/fc';
@@ -43,7 +43,7 @@ export default function ImagePage() {
     const { data: imageResp, isLoading, isFetching, refetch } = useQuery<ImageResp>({
         queryKey: qk.images.list(params.page, params.pageSize, params.keyword),
         queryFn: async () => {
-            const res = await axios.get(`/api/imagelist?${search}`);
+            const res = await axios.get(`/api/image-list?${search}`);
             return res.data as ImageResp;
         },
         placeholderData: (prev) => prev, // แทน keepPreviousData
@@ -58,6 +58,10 @@ export default function ImagePage() {
             [field]: value,
         }));
     };
+
+    useEffect(() => {       
+        console.log(`imageResp : `, imageResp);
+    }, [imageResp]);
 
     return (
         <TheLayout>
