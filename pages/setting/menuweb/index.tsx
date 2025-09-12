@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import MenuWebModalView from '@/container/menuweb/ModalView';
 import MenuWebModalEdit from '@/container/menuweb/ModalEdit';
 import MenuWebModalDelete from '@/container/menuweb/ModalDelete';
-import MenuWebModalPosition from '@/container/menuweb/ModalPosition';
+import MenuWebModalPosition from '@/container/menuweb/ModalSwitchPosition';
 import { useQuery } from '@tanstack/react-query';
 import { qk } from '@/lib/queryKeys';
 

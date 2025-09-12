@@ -190,8 +190,8 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
 
       const insertPriority =
         typeof priority === 'number'
-          ? BigInt(clampPriority(priority, maxPlusOne))
-          : BigInt(maxPlusOne);
+          ? clampPriority(priority, maxPlusOne)
+          : maxPlusOne;
 
       console.log(`insertPriority : `, insertPriority);
 
@@ -312,7 +312,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
         })
         const maxPlusOne = Number(maxRow?.priority ?? 0) + 1
         const newPriority =
-          typeof priority === 'number' ? BigInt(clampPriority(priority, maxPlusOne)) : BigInt(maxPlusOne)
+          typeof priority === 'number' ? clampPriority(priority, maxPlusOne) : maxPlusOne
 
         // ย้ายแผนก + ตั้งชื่อ/ลำดับใหม่
         await tx.adminPositionDB.update({
