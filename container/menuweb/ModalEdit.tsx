@@ -71,17 +71,6 @@ const MenuWebModalEdit: React.FC<MenuWebModalEditProps> = ({ onSuccess, data }) 
         return;
       }
 
-      if (!formData.link?.trim()) {
-        alert('⚠️ กรุณากรอกลิงก์');
-        return;
-      }
-
-      // Check if link starts with /
-      if (!formData.link.startsWith('/')) {
-        alert('⚠️ ลิงก์ต้องขึ้นต้นด้วย / เช่น /dashboard, /users');
-        return;
-      }
-
       const url = '/api/menu-web';
       const method = 'PUT';
       const body = {
