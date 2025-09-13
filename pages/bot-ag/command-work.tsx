@@ -223,20 +223,6 @@ export default function CommandWorkPage() {
                 placeholder="ค้นหา (รหัส/ล็อกอิน/ตำแหน่ง/ต้นทาง/สำรอง/Secret)"
                 className="px-4 py-2 w-full text-sm sm:text-base rounded-xl bg-white/90 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#A78BFA] focus:border-transparent shadow-sm"
               />
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">แสดง</span>
-                <select
-                  value={pageSize}
-                  onChange={e => setPageSize(parseInt(e.target.value, 10) || 10)}
-                  className="px-3 py-2 rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-                  disabled={isFetching}
-                >
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                </select>
-                <span className="text-sm text-gray-600">ต่อหน้า</span>
-              </div>
             </div>
 
             <div className="overflow-hidden overflow-x-auto rounded-xl ring-1 ring-gray-200">

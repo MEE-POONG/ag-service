@@ -16,11 +16,11 @@ const CommandWorkModalCreateC: React.FC<CommandWorkModalCreateCProps> = ({ data 
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [customerStartNew, setCustomerStartNew] = useState(``);
-
+  const [createNum, setCreateNum] = useState(0);
   const handleSave = async () => {
     try {
       setLoading(true);
-      console.log('customerStartNew:', customerStartNew);
+      console.log('เอเย่น : ', data.username, 'ยูส : ', data.username + customerStartNew, 'จำนวน : ', createNum);
       // TODO: call API ที่ใช้บันทึกเครดิตจริง
     } catch (error) {
       console.error('❌ เกิดข้อผิดพลาดในการบันทึก:', error);
@@ -52,12 +52,47 @@ const CommandWorkModalCreateC: React.FC<CommandWorkModalCreateCProps> = ({ data 
 
         <Modal.Body>
           <label htmlFor="input-group-1" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ยูสลูกค้าใหม่</label>
-          <div className="flex rounded-md border-2 border-blue-200 hover:border-blue-500 ">
-            <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 rounded-e-0 border-none rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+          <div className="flex rounded-md border-2 border-blue-200 hover:border-blue-500 overflow-hidden">
+            {/* ซ้ายสุด */}
+            <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 dark:bg-gray-600 dark:text-gray-400">
               {data.username}
             </span>
-            <input type="text" id="website-admin" className="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white focus:outline-none focus:ring-0" placeholder="elonmusk" />
+
+            {/* ช่องกรอกกลาง */}
+            <input
+              type="text"
+              className="flex-1 min-w-0 bg-gray-50 border-x border-gray-300 text-gray-900 text-sm p-2.5 
+               dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
+               focus:outline-none focus:ring-0"
+              placeholder="ระบุลำดับยูสลูกค้าที่จะสร้าง"
+              value={customerStartNew}
+              onChange={(e) => setCustomerStartNew(e.target.value)}
+            />
+
+            {/* label จำนวน */}
+            <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 dark:bg-gray-600 dark:text-gray-400">
+              จำนวน
+            </span>
+
+            {/* ช่องกรอกกลาง */}
+            <input
+              type="number"
+              min={1}
+              max={100}
+              className="w-[10ch] text-end bg-gray-50 border-x border-gray-300 text-gray-900 text-sm p-2.5 
+             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white 
+             focus:outline-none focus:ring-0"
+              placeholder="จำนวน"
+              value={createNum}
+              onChange={(e) => setCreateNum(Number(e.target.value))}
+            />
+
+            {/* ขวาสุด */}
+            <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 dark:bg-gray-600 dark:text-gray-400">
+              ยูส
+            </span>
           </div>
+
         </Modal.Body>
 
         <Modal.Footer>
