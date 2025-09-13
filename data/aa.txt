@@ -1,0 +1,53 @@
+import { test, expect } from '@playwright/test';
+
+test.use({
+  ignoreHTTPSErrors: true,
+  viewport: {
+    height: 1080,
+    width: 1920
+  }
+});
+
+test('test', async ({ page }) => {
+  await page.goto('https://ag.ufabet.com/Public/Default11.aspx?lang=EN-GB');
+  await page.getByRole('textbox', { name: 'รหัสผู้ใช้' }).click();
+  await page.getByRole('textbox', { name: 'รหัสผู้ใช้' }).fill('ufh27oa1ufa66');
+  await page.getByRole('textbox', { name: 'รหัสผ่าน' }).click();
+  await page.getByRole('textbox', { name: 'รหัสผ่าน' }).fill('qtewAP6168++');
+  await page.getByRole('textbox', { name: 'รหัสผ่าน' }).press('Tab');
+  await page.getByRole('textbox', { name: 'รหัสการทดสอบ' }).fill('1761');
+  await page.getByRole('textbox', { name: 'รหัสการทดสอบ' }).press('Enter');
+  await page.getByRole('link', { name: 'ล็อคอิน' }).click();
+  await page.getByText('ล็อคอิน ชื่อเล่นหรือรหัสผ่านไม่ถูกต้อง').click();
+  await page.getByRole('textbox', { name: 'รหัสผ่าน' }).click();
+  await page.getByRole('textbox', { name: 'รหัสผ่าน' }).fill('Di991166+m11++');
+  await page.getByRole('textbox', { name: 'รหัสผ่าน' }).press('Tab');
+  await page.getByRole('textbox', { name: 'รหัสการทดสอบ' }).fill('9625');
+  await page.getByRole('textbox', { name: 'รหัสการทดสอบ' }).press('Enter');
+  await page.getByRole('link', { name: 'ล็อคอิน' }).click();
+  await page.locator('#txtMFA').fill('828608');
+  await page.getByRole('link', { name: 'ยืนยัน' }).click();
+  await page.locator('#txtMFA').fill('828608610808');
+  await page.locator('#txtMFA').press('ControlOrMeta+a');
+  await page.locator('#txtMFA').fill('610808');
+  await page.getByRole('link', { name: 'ยืนยัน' }).click();
+  await page.locator('#fraMenu').contentFrame().getByRole('link', { name: 'สมาชิก', exact: true }).click();
+เข้าดูหน้าลูกค้า
+  await page.locator('#fraMain').contentFrame().locator('#MemberList_cm1_g_ctl02_btnSetting').click();
+  await page.locator('#fraMain').contentFrame().locator('#txtConfirmSC').fill('221308');
+  await page.locator('#fraMain').contentFrame().getByRole('link', { name: 'ยืนยัน' }).click();
+หน้าลูกค้า
+  await page.locator('#fraMain').contentFrame().locator('#txtPassword').click();
+  await page.locator('#fraMain').contentFrame().getByRole('cell', { name: 'เปิด ล็อค', exact: true }).getByLabel('เปิด').check();
+  await page.locator('#fraMain').contentFrame().getByRole('radio', { name: 'ล็อค' }).check();
+  await page.locator('#fraMain').contentFrame().getByRole('cell', { name: 'ใช่ เปิด', exact: true }).getByLabel('ใช่').check();
+  await page.locator('#fraMain').contentFrame().getByRole('cell', { name: 'ใช่ เปิด', exact: true }).getByLabel('เปิด').check();
+  await page.locator('#fraMain').contentFrame().locator('#txtPassword').click();
+  await page.locator('#fraMain').contentFrame().locator('#txtPassword').fill('Aa123456');
+  await page.locator('#fraMain').contentFrame().getByRole('link', { name: 'รีเซ็ต' }).click();
+  await page.locator('#fraMain').contentFrame().getByRole('cell', { name: 'เปิด ล็อค', exact: true }).getByLabel('เปิด').check();
+  await page.locator('#fraMain').contentFrame().getByRole('radio', { name: 'ล็อค' }).check();
+  await page.locator('#fraMain').contentFrame().getByRole('cell', { name: 'ใช่ เปิด', exact: true }).getByLabel('ใช่').check();
+  await page.locator('#fraMain').contentFrame().getByRole('cell', { name: 'ใช่ เปิด', exact: true }).getByLabel('เปิด').check();
+  await page.locator('#fraMain').contentFrame().getByRole('link', { name: 'บันทึก' }).click();
+});
