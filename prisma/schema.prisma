@@ -466,3 +466,22 @@ model PartnerDB {
   updatedAt  DateTime        @updatedAt @db.Date
   updatedBy  String
 }
+
+model AgQueueJobDB {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  jobId        String   @unique
+  type         String
+  priority     Int
+  status       String   @default("PENDING")
+  eventDocId   String?
+  queueSize    Int?
+  errorMessage String?
+  createdAt    DateTime @default(now()) @db.Date
+  updatedAt    DateTime @updatedAt @db.Date
+  v            Int?     @map("__v")
+
+  @@index([status])
+  @@index([type])
+  @@index([priority])
+  @@index([createdAt])
+}

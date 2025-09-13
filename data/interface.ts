@@ -1,4 +1,4 @@
-import { AdminDB, AdminDepartmentDB, AdminPositionDB, WebBaseDB } from "@prisma/client";
+import { AdminDB, AdminDepartmentDB, AdminPositionDB, WebBaseDB, AgQueueJobDB } from "@prisma/client";
 
 export interface PageParams {
     page: number;
@@ -48,4 +48,9 @@ export interface ExtendedWebBaseDB extends WebBaseDB {
 // ตำแหน่งที่มีการขยายความ
 export interface ExtendedAdminDepartment extends AdminDepartmentDB {
     adminPositions: AdminPositionDB[];
+}
+
+// AgQueueJobDB interface
+export interface ExtendedAgQueueJobDB extends AgQueueJobDB {
+    // Additional fields if needed in the future
 }
