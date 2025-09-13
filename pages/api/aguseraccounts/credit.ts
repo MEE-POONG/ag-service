@@ -74,7 +74,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       statusFlag: 'A',
       usernameAG: agent.username,
       adviser: agent.origin,
-      adviserDetails: adviser,
       credit: amount,
       status: agent.position, // position of the agent (e.g. master/agent/senior)
       createdBy: String((admin as any).id || admin.username),
