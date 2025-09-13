@@ -172,3 +172,52 @@ const a = [
   `ufh27oa100`,
   `ufh27oa10`,
 ];
+
+
+
+
+
+// import { test, expect } from '@playwright/test';
+
+// test.use({
+//   ignoreHTTPSErrors: true,
+//   viewport: {
+//     height: 1080,
+//     width: 1920
+//   }
+// });
+
+// test('test', async ({ page }) => {
+//   await page.goto('https://ag.ufabet.com/Public/Default11.aspx?lang=EN-GB');
+//   await page.getByRole('textbox', { name: 'รหัสผู้ใช้' }).click();
+//   await page.getByRole('textbox', { name: 'รหัสผู้ใช้' }).fill('ufh27oa2ufa66');
+//   await page.getByRole('textbox', { name: 'รหัสผู้ใช้' }).press('ControlOrMeta+a');
+//   await page.getByRole('textbox', { name: 'รหัสผู้ใช้' }).press('ControlOrMeta+c');
+//   await page.getByRole('textbox', { name: 'รหัสผ่าน' }).click();
+//   await page.getByRole('textbox', { name: 'รหัสผ่าน' }).fill('Di991166+m11++');
+//   await page.getByRole('textbox', { name: 'รหัสผ่าน' }).press('Tab');
+//   await page.getByRole('textbox', { name: 'รหัสการทดสอบ' }).fill('1012');
+//   await page.getByRole('textbox', { name: 'รหัสการทดสอบ' }).press('Enter');
+//   await page.getByRole('link', { name: 'ล็อคอิน' }).click();
+//   await page.locator('#txtMFA').fill('459025');
+//   await page.getByRole('link', { name: 'ยืนยัน' }).click();
+//   await page.locator('#txtMFA').fill('513849');
+//   await page.getByRole('link', { name: 'ยืนยัน' }).click();
+//   await page.locator('#fraMenu').contentFrame().getByRole('link', { name: 'สมาชิก', exact: true }).click();
+//   await page.locator('#fraMain').contentFrame().getByRole('link', { name: 'สมาชิกใหม่' }).click();
+//   await page.locator('#fraMain').contentFrame().locator('#txtConfirmSC').fill('221308');
+//   await page.locator('#fraMain').contentFrame().locator('#txtConfirmSC').click();
+//   await page.locator('#fraMain').contentFrame().getByRole('link', { name: 'ยืนยัน' }).click();
+//   // https://ag.ufabet.com/_SubAg1/MemberSet.aspx?cName=ufh27oa20000&set=1
+
+//   await page.locator('#txtUserName').click();
+//   await page.locator('#txtUserName').fill('ฟฟฟฟ');
+//   await page.locator('#txtPassword').click();
+//   await page.locator('#txtPassword').fill('sssss');
+//   await page.locator('#txtTotalLimit').click();
+//   await page.locator('#txtContact').click();
+//   await page.locator('#txtContact').fill('sssss');
+//   await page.getByRole('cell', { name: 'เปิด ล็อค', exact: true }).getByLabel('เปิด').check();
+//   await page.getByRole('cell', { name: 'ใช่ เปิด', exact: true }).getByLabel('เปิด').check();
+//   await page.getByRole('link', { name: 'บันทึก' }).nth(1).click();
+// });

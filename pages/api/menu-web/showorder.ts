@@ -1,59 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
 import { serializeBigIntToNumber } from '@/lib/bigintUtils'
-import { setMenuWebCookie, MenuWebData } from '@/lib/cookieUtils'
 
 const prisma = new PrismaClient()
-
-// ฟังก์ชันสร้าง hierarchical structure ของเมนู
-function buildMenuHierarchy(flatMenus: any[]): MenuWebData[] {
-  const menuMap = new Map<string, MenuWebData & { parentId?: string | null }>();
-  const rootMenus: MenuWebData[] = [];
-
-  // สร้าง Map ของเมนูทั้งหมด
-  flatMenus.forEach(menu => {
-    const menuData: MenuWebData & { parentId?: string | null } = {
-      id: menu.id,
-      name: menu.name,
-      link: menu.link,
-      icon: menu.icon || undefined,
-      description: menu.description,
-      showOrder: menu.showOrder,
-      children: [],
-      parentId: menu.parentId
-    };
-    menuMap.set(menu.id, menuData);
-  });
-
-  // สร้างโครงสร้างและเมนูหลัก
-  menuMap.forEach(menu => {
-    if (menu.parentId) {
-      // เมนูย่อย
-      const parent = menuMap.get(menu.parentId);
-      if (parent) {
-        if (!parent.children) parent.children = [];
-        parent.children.push(menu);
-      }
-    } else {
-      // เมนูหลัก
-      const { parentId, ...menuWithoutParentId } = menu;
-      rootMenus.push(menuWithoutParentId);
-    }
-  });
-
-  // เรียงลำดับ children ตาม showOrder
-  const sortMenus = (menus: MenuWebData[]): void => {
-    menus.sort((a, b) => a.showOrder - b.showOrder);
-    menus.forEach(menu => {
-      if (menu.children && menu.children.length > 0) {
-        sortMenus(menu.children);
-      }
-    });
-  };
-
-  sortMenus(rootMenus);
-  return rootMenus;
-}
 
 interface MenuWebResponse {
   success: boolean
@@ -84,17 +33,6 @@ export default async function handler(
             { showOrder: 'asc' },
           ]
         })
-
-        // สร้าง hierarchical structure ของเมนู
-        const menuWebData: MenuWebData[] = buildMenuHierarchy(data);
-
-        // บันทึกข้อมูลลง cookie
-        try {
-          setMenuWebCookie(res, menuWebData);
-        } catch (error) {
-          console.error('Failed to set MenuWeb cookie:', error);
-          // ไม่ return error เพราะ cookie เป็น optional
-        }
 
         return res.status(200).json({
           success: true,
