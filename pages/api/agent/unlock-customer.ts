@@ -46,13 +46,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       : null
     if (!agent) {
       // ถ้าหา agent ไม่เจอ แต่มี adviser กับ usernameAG อาจจะยังต้องอนุญาตให้คิวทำต่อ
-      if (!adviser || !usernameAG) {
-        return res.status(404).json({ success: false, error: 'ไม่พบเอเย่น (usernameAG)' })
+      if (!adviser) {
+        return res.status(404).json({ success: false, error: 'ไม่พบเอเย่น (adviser)' })
       }
     }
 
     const payload = {
-      usernameAG: usernameAG || agent?.username || 'unknown',
+      usernameAG: usernameAG,
       adviser: adviser || agent?.origin || 'unknown',
       newPassword: newPassword || 'Aa123456',
       status: 'PENDING' as 'PENDING' | 'PROCESSING' | 'SUCCESS' | 'FAILED',
