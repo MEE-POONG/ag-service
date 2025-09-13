@@ -43,7 +43,7 @@ export function BotSectionGrid({ section }: { section: BotSection }) {
               <div className="flex items-center">
                 <ReactIconComponent icon={btn.icon} setClass="w-8 h-8 mr-2" />
                 <div>
-                  <h3 className="text-purple-500 text-base sm:text-lg md:text-xl font-semibold text-gray-900 flex items-center">
+                  <h3 className="text-purple-500 text-base sm:text-lg md:text-xl font-semibold flex items-center">
                     {btn.title}
                     <Badge type={btn.badge} />
                   </h3>

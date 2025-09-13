@@ -116,11 +116,9 @@ const AdjustBetPage: React.FC = () => {
       <div className="space-y-6">
         <PageHeader
           title="จัดการ Adjust Bet"
+          icon='FaAdjust'
           description="ระบบจัดการการปรับเบทสำหรับลูกค้า"
-          breadcrumbs={[
-            { name: 'Bot AG', href: '/bot-ag' },
-            { name: 'Adjust Bet' }
-          ]}
+          gradient={true}
           actions={
             <Button
               onClick={() => openModal('create')}
@@ -131,36 +129,27 @@ const AdjustBetPage: React.FC = () => {
             </Button>
           }
         />
-
-        {/* Search and Filters */}
-        <div className="bg-white rounded-lg shadow-sm border p-4">
-          <form onSubmit={handleSearch} className="flex gap-4">
-            <div className="flex-1">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="ค้นหาตามชื่อ, รหัสลูกค้า, หรือ username..."
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <Button
-              type="submit"
-              className="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-gray-600 text-white hover:bg-gray-700"
-            >
-              <ReactIconComponent icon="FaSearch" setClass="w-4 h-4 mr-2" />
-              ค้นหา
-            </Button>
-          </form>
-        </div>
-
         {/* Adjust Bets List */}
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">
-              รายการ Adjust Bet ({total} รายการ)
-            </h3>
+
+            <form onSubmit={handleSearch} className="flex gap-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                รายการ Adjust Bet ({total} รายการ)
+              </h3>
+              {/* ใส่ icon search ด้านฝย input */}
+              <div className="flex-1">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="ค้นหาตามชื่อ, รหัสลูกค้า, หรือ username..."
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </form>
           </div>
+
 
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
