@@ -1,21 +1,33 @@
 'use client'
 
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useState, useMemo } from 'react'
 import { ExtendedAdminDB } from '@/data/interface'
 import { TheSidebar } from './TheSidebar'
 import { TheHeader } from './TheHeader'
-import { useRouter } from 'next/router'
 import { useAuth } from '@/hooks/useAuth'
+import { useRouter } from 'next/router'
+import { useMenuWeb } from '@/hooks/useMenuWeb'
+import PageHeader from './PageHeader'
+
+interface PageConfig {
+  title: string;
+  description?: string;
+  icon?: string;
+  gradient?: boolean;
+  hidePageHeader?: boolean;
+}
 
 interface LayoutProps {
   children: ReactNode
   admin?: ExtendedAdminDB
   user?: any  // Accept user prop for backward compatibility
+  pageConfig?: PageConfig
 }
 
-export function TheLayout({ children }: LayoutProps) {
-  const { user, userLoading, logout } = useAuth()
+export function TheLayout({ children, pageConfig }: LayoutProps) {
+  const { user } = useAuth()
   const router = useRouter()
+  const { getPageConfigFromPath } = useMenuWeb()
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -25,6 +37,14 @@ export function TheLayout({ children }: LayoutProps) {
   const toggleTheme = () => {
     setDarkMode(!darkMode);
   };
+
+  // Auto-generate page header based on route using MenuWeb data
+  const defaultPageConfig = useMemo((): PageConfig => {
+    const path = router.pathname;
+    return getPageConfigFromPath(path);
+  }, [router.pathname, getPageConfigFromPath]);
+
+  const finalPageConfig: PageConfig = pageConfig || defaultPageConfig;
 
   // useEffect(() => {
   //   console.log('user in dashboard : ', user);
@@ -59,6 +79,15 @@ export function TheLayout({ children }: LayoutProps) {
           {/* Main Content Area - Adjusted for fixed header */}
           <main className="md:pt-20 bg-transparent p-2 md:p-4 w-full overflow-y-auto min-h-full">
             <div className="animate-fade-in max-w-full">
+              {/* Auto PageHeader - can be hidden by setting hidePageHeader: true */}
+              {!finalPageConfig.hidePageHeader && (
+                <PageHeader
+                  title={finalPageConfig.title}
+                  description={finalPageConfig.description}
+                  icon={finalPageConfig.icon}
+                  gradient={finalPageConfig.gradient}
+                />
+              )}
               {children}
             </div>
           </main>

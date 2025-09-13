@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import axios from '@/lib/axios';
 import React, { useState } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';

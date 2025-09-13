@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "@/lib/axios";
-import { FaTimes, FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { ImageList } from "@prisma/client";
 import ReactIconComponent from "@/components/ReactIconComponent";

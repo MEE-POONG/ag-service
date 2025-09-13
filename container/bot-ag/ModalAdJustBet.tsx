@@ -5,7 +5,6 @@ import ReactIconComponent from '@/components/ReactIconComponent';
 import Modal from '@/components/form/Modal';
 import { AdjustBet, AdjustBetFormData, AdjustBetData, AgUserAccount } from '@/types/adjustBet';
 import toast from 'react-hot-toast';
-import { log } from 'console';
 
 /* =========================
  * DEFAULTS ต่อ section

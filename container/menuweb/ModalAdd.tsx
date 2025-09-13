@@ -3,7 +3,6 @@ import { MenuWebDB } from '@prisma/client';
 import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
 import { FaPlus } from 'react-icons/fa';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
 

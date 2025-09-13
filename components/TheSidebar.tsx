@@ -1,4 +1,4 @@
-import { menuDev, menuItems as seedMenuItems, user_dev } from "@/data"; // 👈 กันชื่อชน
+import { menuDev } from "@/data"; // 👈 กันชื่อชน
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { MdDashboard as LayoutDashboard } from "react-icons/md";
 import MenuPage from "./MenuPage";
@@ -13,7 +13,7 @@ interface TheSidebarProps {
   setCollapsed: Dispatch<SetStateAction<boolean>>;
 }
 
-export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
+export function TheSidebar({ collapsed }: TheSidebarProps) {
   const { user } = useAuth();
 
   // ✅ เปลี่ยนชื่อ state ไม่ให้ชนกับตัวที่ import
@@ -124,7 +124,7 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
         </div>
 
         {/* Main Navigation */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-2">
           <nav>
             <ul className="space-y-1">
               {loading ? (

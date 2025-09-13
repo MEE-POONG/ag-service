@@ -1,11 +1,8 @@
 import { Button } from '@/components/ui/button';
-import axios from '@/lib/axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { AgUserAccountDB } from '@prisma/client';
-import { qk } from '@/lib/queryKeys';
-import { useQuery } from '@tanstack/react-query';
 
 interface CommandWorkModalCreateCProps {
   onSuccess?: () => void;

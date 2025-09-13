@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { FaCheck, FaHurricane, FaXmark } from 'react-icons/fa6';
+import React from 'react';
+import { FaHurricane } from 'react-icons/fa6';
 
 interface StatusLoadProps {
     status: 'loading' | 'error' | 'success' | null;

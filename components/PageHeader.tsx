@@ -1,6 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import ReactIconComponent from './ReactIconComponent';
 
 interface BreadcrumbItem {

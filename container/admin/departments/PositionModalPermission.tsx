@@ -6,8 +6,6 @@ import { AdminPositionDB, MenuWebDB } from '@prisma/client';
 import Modal from '@/components/form/Modal';
 import buildMenuTree from '@/utils/buildMenuTree';
 import { ExtendedAdminDepartment } from '@/data/interface';
-import Toggle from '@/components/ui/button/Toggle';
-import Tooltip from '@/components/ui/tooltip';
 
 // -------- Types --------
 type MenuNode = MenuWebDB & { children: MenuNode[] }
@@ -44,7 +42,6 @@ const PermissionBadges: React.FC<{
 
   const p = perms[node.id] || { advance: false, view: false, create: false, update: false, delete: false };
 
-  const visibleFields = fields.filter(f => f.can);
 
   return (
     <div className="grid grid-cols-4 gap-2 text-xs w-max">
@@ -224,7 +221,7 @@ const MenuTreeItem: React.FC<{
 };
 
 // -------- Main modal --------
-const PositionModalPermission: React.FC<PositionModalPermissionProps> = ({ onSuccess, list, position }) => {
+const PositionModalPermission: React.FC<PositionModalPermissionProps> = ({ onSuccess, position }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string>('');
@@ -270,20 +267,6 @@ const PositionModalPermission: React.FC<PositionModalPermissionProps> = ({ onSuc
     return false
   }
 
-  const applyColumnToTree = (key: PermKey, value: boolean) => {
-    setPerms((prev) => {
-      const next: Perms = { ...prev }
-      const walk = (n: MenuNode) => {
-        if (nodeSupportsKey(n, key)) {
-          const base = next[n.id] || { advance: false, view: false, create: false, update: false, delete: false }
-          next[n.id] = { ...base, [key]: value }
-        }
-        n.children.forEach(walk)
-      }
-      menuTree.forEach(walk)
-      return next
-    })
-  }
 
   //โหลดเมนู
   const fetchMenus = async () => {
