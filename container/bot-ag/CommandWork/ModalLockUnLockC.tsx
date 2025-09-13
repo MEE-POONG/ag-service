@@ -24,8 +24,8 @@ const CommandWorkModalLockUnLockC: React.FC<CommandWorkModalLockUnLockCProps> = 
       const fullUsername = `${data.username}${customerStartNew}`;
       // เรียก API ปลดล็อค
       const res = await axios.post('/api/agent/unlock-customer', {
-        adviser: data.origin,
-        usernameAG: data.username,
+        adviser: data.username,
+        usernameAG: fullUsername,
         // หากต้องการกำหนดรหัสผ่านใหม่เอง ให้เพิ่ม input และส่งค่าแทนที่นี้
         // ไม่ส่งจะให้เซิร์ฟเวอร์ตั้งค่า default เอง
         // newPassword: 'Aa123456',
