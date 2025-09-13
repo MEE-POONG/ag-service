@@ -22,21 +22,18 @@ export function TheHeader({
   darkMode,
   toggleTheme
 }: TheHeaderProps) {
-  const { user, userLoading, error, logout } = useAuth();
+  const { user, logout } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setIsScrolled(scrollY > 99);
+      setIsScrolled(window.scrollY > 0);
     };
-
-    // เรียกใช้ครั้งแรกเพื่อตั้งค่าเริ่มต้น
-    handleScroll();
 
     // เพิ่ม passive: true เพื่อเพิ่มประสิทธิภาพ
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);

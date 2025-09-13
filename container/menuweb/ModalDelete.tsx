@@ -15,7 +15,6 @@ const MenuWebModalDelete: React.FC<MenuWebModalDeleteProps> = ({ data, onSuccess
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useAuth();
   const [formData, setFormData] = useState<Partial<MenuWebDB>>({});
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -24,7 +23,6 @@ const MenuWebModalDelete: React.FC<MenuWebModalDeleteProps> = ({ data, onSuccess
   }, [isOpen]);
 
   const handleDelete = async () => {
-    setLoading(true);
     try {
 
       const response = await axios.delete('/api/menu-web', {
@@ -47,8 +45,6 @@ const MenuWebModalDelete: React.FC<MenuWebModalDeleteProps> = ({ data, onSuccess
       }
     } catch (error) {
       alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-    } finally {
-      setLoading(false);
     }
   };
 

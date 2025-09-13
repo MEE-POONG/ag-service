@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import ReactIconComponent from '@/components/ReactIconComponent';

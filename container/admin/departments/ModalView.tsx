@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { AdminDepartmentDB } from '@prisma/client';
-import ReactIconComponent from '@/components/ReactIconComponent';
-import Modal, { ModalClose } from '@/components/form/Modal';
+import Modal from '@/components/form/Modal';
 import { FaTimes } from 'react-icons/fa';
 
 interface DepartmentsModalViewProps {

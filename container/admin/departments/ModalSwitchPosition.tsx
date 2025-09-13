@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { AdminDepartmentDB, AdminPositionDB } from '@prisma/client';
+import { AdminDepartmentDB } from '@prisma/client';
 import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/components/form/Modal';

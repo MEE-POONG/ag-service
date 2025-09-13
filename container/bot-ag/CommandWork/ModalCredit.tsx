@@ -13,24 +13,17 @@ interface CommandWorkModalCreditProps {
   data: AgUserAccountDB;
 }
 
-type SelectoriginResp = {
-  originUser: AgUserAccountDB | null;
-  higherUsers: AgUserAccountDB[];
-};
 
 const CommandWorkModalCredit: React.FC<CommandWorkModalCreditProps> = ({ data }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [credit, setCredit] = useState({ username: '', credit: 0 });
 
-  // --- เพิ่ม state สำหรับ pagination ของ higherUsers ---
-  const [hiPage, setHiPage] = useState(1);
 
   // เติมค่าเริ่มต้นเมื่อเปิดโมดัล
   useEffect(() => {
     if (isOpen && data) {
       setCredit({ username: data.username, credit: 0 });
-      setHiPage(1); // รีเซ็ตหน้าเมื่อเปิดใหม่
     }
   }, [isOpen, data]);
 
@@ -56,7 +49,6 @@ const CommandWorkModalCredit: React.FC<CommandWorkModalCreditProps> = ({ data })
   });
 
   const originUser = sel?.data?.originUser ?? null;
-  const higherUsers = sel?.data?.higherUsers ?? [];
 
   const handleSave = async () => {
     try {
