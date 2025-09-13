@@ -83,6 +83,15 @@ export const API_ENDPOINTS = {
     BY_WEBBASE: (webBaseId: string) => `${API_BASE_URL}/ag-users/webbase/${webBaseId}`,
   },
 
+  // Partners Management
+  PARTNERS: {
+    LIST: `${API_BASE_URL}/partners`,
+    CREATE: `${API_BASE_URL}/partners`,
+    UPDATE: (id: string) => `${API_BASE_URL}/partners/${id}`,
+    DELETE: (id: string) => `${API_BASE_URL}/partners/${id}`,
+    GET_BY_ID: (id: string) => `${API_BASE_URL}/partners/${id}`,
+  },
+
   // Reports
   REPORTS: {
     DASHBOARD_STATS: `${API_BASE_URL}/reports-stats`,
