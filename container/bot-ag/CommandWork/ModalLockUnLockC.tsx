@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { AgUserAccountDB } from '@prisma/client';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 interface CommandWorkModalLockUnLockCProps {
   onSuccess?: () => void;
@@ -20,19 +22,23 @@ const CommandWorkModalLockUnLockC: React.FC<CommandWorkModalLockUnLockCProps> = 
     try {
       setLoading(true);
       const fullUsername = `${data.username}${customerStartNew}`;
-      console.log('ปลดล็อคยูสลูกค้า → เอเย่น:', data.username, 'ยูสเต็ม:', fullUsername);
-
-      // TODO: เรียก API ปลดล็อคจริง
-      // await axios.post('/api/agent/unlock-customer', {
-      //   agentUsername: data.username,
-      //   customerUsername: fullUsername,
-      // });
+      // เรียก API ปลดล็อค
+      const res = await axios.post('/api/agent/unlock-customer', {
+        adviser: data.origin,
+        usernameAG: data.username,
+        // หากต้องการกำหนดรหัสผ่านใหม่เอง ให้เพิ่ม input และส่งค่าแทนที่นี้
+        // ไม่ส่งจะให้เซิร์ฟเวอร์ตั้งค่า default เอง
+        // newPassword: 'Aa123456',
+      })
+      if (!res.data?.success) throw new Error(res.data?.error || 'ปลดล็อคไม่สำเร็จ');
+      toast.success('ส่งคำสั่งปลดล็อคแล้ว');
 
       onSuccess?.();
       setIsOpen(false);
       setCustomerStartNew('');
     } catch (error) {
       console.error('❌ เกิดข้อผิดพลาดในการปลดล็อค:', error);
+      toast.error((error as any)?.message || 'เกิดข้อผิดพลาด');
     } finally {
       setLoading(false);
     }
@@ -51,7 +57,7 @@ const CommandWorkModalLockUnLockC: React.FC<CommandWorkModalLockUnLockCProps> = 
           <div>
             <Modal.Title>
               ปลดล็อคลูกค้าใน
-              <span className="ms-2 text-lg font-bold text-purple-500">{data.username}</span>
+              <span className="text-lg font-bold text-purple-500 ms-2">{data.username}</span>
             </Modal.Title>
           </div>
           <Modal.Close onClick={() => setIsOpen(false)} size="sm">
@@ -65,7 +71,7 @@ const CommandWorkModalLockUnLockC: React.FC<CommandWorkModalLockUnLockCProps> = 
           </label>
 
           {/* Input Group (ไม่มีช่องจำนวนแล้ว) */}
-          <div className="flex rounded-md border-2 border-blue-200 hover:border-blue-500 overflow-hidden">
+          <div className="flex overflow-hidden rounded-md border-2 border-blue-200 hover:border-blue-500">
             {/* ซ้ายสุด: prefix เอเย่น */}
             <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 dark:bg-gray-600 dark:text-gray-400">
               {data.username}
@@ -97,7 +103,7 @@ const CommandWorkModalLockUnLockC: React.FC<CommandWorkModalLockUnLockCProps> = 
             <Button
               onClick={handleUnlock}
               disabled={loading || !customerStartNew.trim()}
-              className="inline-flex items-center px-4 py-2 rounded text-sm bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-4 py-2 text-sm text-blue-700 bg-blue-100 rounded border border-blue-700 border-solid hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -115,7 +121,7 @@ const CommandWorkModalLockUnLockC: React.FC<CommandWorkModalLockUnLockCProps> = 
             <Button
               onClick={() => setIsOpen(false)}
               disabled={loading}
-              className="inline-flex items-center px-4 py-2 rounded text-sm bg-gray-100 text-gray-700 border border-solid border-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded border border-gray-700 border-solid hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ReactIconComponent icon="FaTimes" setClass="w-4 h-4 mr-2" />
               ปิด
