@@ -12,6 +12,7 @@ interface BreadcrumbItem {
 interface PageHeaderProps {
   title: string;
   description?: string;
+  breadcrumbs?: BreadcrumbItem[];
   actions?: React.ReactNode;
   icon?: string;
   gradient?: boolean;
@@ -27,10 +28,10 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   return (
     <div className={`bg-white shadow-sm rounded-lg px-4 sm:px-6 sm:py-3 mb-6 border border-purple-500 ${gradient ? 'bg-gradient-to-r from-purple-50 to-white' : ''}`}>
       {/* Header Content */}
-      <div className="flex flex-col items-center sm:flex-row sm:justify-between gap-4">
-        <div className="flex items-center space-x-3 sm:space-x-4 text-purple-500">
+      <div className="flex flex-col gap-4 items-center sm:flex-row sm:justify-between">
+        <div className="flex items-center space-x-3 text-purple-500 sm:space-x-4">
           {icon && (
-            <div className={`rounded-lg flex-shrink-0 `}>
+            <div className={`flex-shrink-0 rounded-lg`}>
               <ReactIconComponent
                 icon={icon}
                 setClass="w-8 h-8"
@@ -38,11 +39,11 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2">
+            <h1 className="mb-1 text-lg font-bold sm:text-xl md:text-2xl lg:text-3xl sm:mb-2">
               {title}
             </h1>
             {description && (
-              <p className="text-sm sm:text-base text-gray-600 max-w-2xl">
+              <p className="max-w-2xl text-sm text-gray-600 sm:text-base">
                 {description}
               </p>
             )}
@@ -51,7 +52,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
         {/* Actions */}
         {actions && (
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
+          <div className="flex flex-col items-stretch space-y-2 w-full sm:flex-row sm:items-center sm:space-y-0 sm:space-x-3 sm:w-auto">
             {actions}
           </div>
         )}

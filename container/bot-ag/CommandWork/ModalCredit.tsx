@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { AgUserAccountDB } from '@prisma/client';
@@ -59,11 +60,30 @@ const CommandWorkModalCredit: React.FC<CommandWorkModalCreditProps> = ({ data })
 
   const handleSave = async () => {
     try {
+      if (!credit.credit || credit.credit <= 0) {
+        toast.error('กรุณาระบุจำนวนเครดิตให้ถูกต้อง')
+        return
+      }
       setLoading(true);
-      console.log('credit : ', credit);
-      // TODO: call API ที่ใช้บันทึกเครดิตจริง
-    } catch (error) {
+      const res = await axios.post('/api/aguseraccounts/credit', {
+        username: data.username,
+        credit: credit.credit,
+      })
+      if (!res.data?.success) throw new Error(res.data?.error || 'บันทึกไม่สำเร็จ')
+
+      const result = res.data?.data
+      const flag = result?.statusServe
+      if (flag === 'SUCCESS') {
+        toast.success('เติมเครดิตสำเร็จ')
+      } else if (flag === 'FAILED') {
+        toast.error(result?.statusAG || 'เติมเครดิตล้มเหลว')
+      } else {
+        toast.success('ส่งคำสั่งเติมเครดิตแล้ว')
+      }
+      setIsOpen(false)
+    } catch (error: any) {
       console.error('❌ เกิดข้อผิดพลาดในการบันทึก:', error);
+      toast.error(error?.message || 'เกิดข้อผิดพลาด')
     } finally {
       setLoading(false);
     }
@@ -145,7 +165,7 @@ const CommandWorkModalCredit: React.FC<CommandWorkModalCreditProps> = ({ data })
             <div className="flex space-x-2">
               <Button
                 onClick={handleSave}
-                disabled={loading}
+                disabled={loading || !credit.credit || credit.credit <= 0}
                 className="inline-flex items-center px-4 py-2 rounded text-sm bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
