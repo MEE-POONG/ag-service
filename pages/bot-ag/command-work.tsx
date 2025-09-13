@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import CommandWorkModalCredit from '@/container/bot-ag/CommandWork/ModalCredit'
 import { AgUserAccountDB } from '@prisma/client'
 import CommandWorkModalCreateC from '@/container/bot-ag/CommandWork/ModalCreateC'
+import CommandWorkModalLockUnLockC from '@/container/bot-ag/CommandWork/ModalLockUnLockC'
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -245,19 +246,10 @@ export default function CommandWorkPage() {
                         <div className="flex gap-2">
                           {/* ทุกอันจะเป็น modal */}
                           <CommandWorkModalCredit data={u} />
-                          <CommandWorkModalCreateC data={u} />
-
-                          {/* สร้างยูสลูกค้าใหม่สร้างครั้งละ 20 คน */}
-                          {/* <Button >
-                            สร้างยูสลูกค้าใหม่
-                          </Button> */}
-                          <Button className='px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc-200 hover:bg-gradient-to-r from-[#A78BFA50] to-[#34D39950] hover:shadow-md cursor-pointer'>
-                            ปลดล็อคลูกค้า
-                          </Button>
-                          {/* 
-                          <Button className='px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-purple-200 hover:bg-gradient-to-r from-[#A78BFA50] to-[#34D39950] hover:shadow-md cursor-pointer'>
-                            ปลดล็อคลูกค้า
-                          </Button> */}
+                          {u.position === 'agent' && <>
+                            <CommandWorkModalCreateC data={u} />
+                            <CommandWorkModalLockUnLockC data={u} />
+                          </>}
                         </div>
                       </td>
                     </tr>
