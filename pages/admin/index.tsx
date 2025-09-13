@@ -173,7 +173,8 @@ export default function AdminPage() {
                             : <span className="inline-flex px-1 sm:px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">ปิดใช้งาน</span>}
                         </TableCell>
                         <TableCell className="text-right space-x-1">
-                          {headPermissions.canAdvance || supportPermissions.canUpdate || user?.username === `admin` && <AdminModalNewPassword data={item} />}
+                          {headPermissions.canAdvance || supportPermissions.canUpdate || user?.username === `admin` ?
+                            (<AdminModalNewPassword data={item} />) : null}
                           {headPermissions.canAdvance || supportPermissions.canView || user?.username === `admin` ? (
                             <Link href={`/admin/view/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-green-100 text-green-700 border border-solid border-green-700 hover:bg-green-200">
                               ดู
