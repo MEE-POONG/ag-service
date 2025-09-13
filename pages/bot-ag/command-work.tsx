@@ -247,7 +247,7 @@ export default function CommandWorkPage() {
                           {/* ทุกอันจะเป็น modal */}
                           <CommandWorkModalCredit data={u} />
                           {u.position === 'agent' && <>
-                            <CommandWorkModalCreateC data={u} />
+                            {/* <CommandWorkModalCreateC data={u} /> */}
                             <CommandWorkModalLockUnLockC data={u} />
                           </>}
                         </div>
