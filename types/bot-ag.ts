@@ -68,6 +68,16 @@ export const botSections: BotSection[] = [
         badge: 'soon',
         requireRole: ['ADMIN'],
       },
+      {
+        key: 'Quest',
+        href: '/bot-ag/quest',
+        icon: 'FaFlag',
+        title: 'Quest',
+        desc: 'จัดการระบบ Quest และรางวัลประจำวัน',
+        enabled: true,
+        badge: 'new',
+        requireRole: ['STAFF', 'MASTER', 'ADMIN'],
+      },
     ],
   },
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
 import { TheLayout } from '@/components/TheLayout'
 import axios from '@/lib/axios'
 import Link from 'next/link'
@@ -41,11 +40,9 @@ export default function AdminPage() {
     totalPages: 1,
   })
   const [admins, setAdmins] = useState<ExtendedAdminDB[]>([])
-  const [deleteId, setDeleteId] = useState<string | null>(null)
-  const [deleteLoading, setDeleteLoading] = useState(false)
-  const router = useRouter()
 
-  const adminPermissions = checkPermission('ระบบผู้ดูแล')
+  const headPermissions = checkPermission('ระบบผู้ดูแล')
+  const supportPermissions = checkPermission('แอดมิน')
 
   // ✅ ใส่ params ลง queryKey และยิงไปกับ API
   const {
@@ -99,6 +96,10 @@ export default function AdminPage() {
     }
   }, [refetch])
 
+  useEffect(() => {
+    console.log('headPermissions : ', headPermissions);
+    console.log('supportPermissions : ', supportPermissions);
+  }, [headPermissions])
 
   return (
     <TheLayout>
@@ -112,14 +113,14 @@ export default function AdminPage() {
           </div>
 
           {/* ✅ จัดวงเล็บเงื่อนไขให้ชัดเจน */}
-          {(adminPermissions.canCreate || (user?.username === 'superadmin' || user?.username === 'admin')) && (
+          {(headPermissions.canAdvance || supportPermissions.canCreate || (user?.username === 'superadmin' || user?.username === 'admin')) ? (
             <Link
               href="/admin/add"
               className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
             >
               <FaPlus className="mr-2" /> เพิ่มผู้ดูแล
             </Link>
-          )}
+          ) : null}
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
@@ -157,13 +158,13 @@ export default function AdminPage() {
                               {item.adminPosition?.adminDepartment?.name || '-'}
                             </span>
                             <br />
-                            {item.adminPosition?.name && (
+                            {item.adminPosition?.name ? (
                               <span
                                 className={`inline-flex px-2 py-1 mt-1 rounded-full text-xs font-semibold ${positionColorByPriority(Number(item.adminPosition?.priority))}`}
                               >
                                 {item.adminPosition?.name}
                               </span>
-                            )}
+                            ) : null}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -172,24 +173,23 @@ export default function AdminPage() {
                             : <span className="inline-flex px-1 sm:px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">ปิดใช้งาน</span>}
                         </TableCell>
                         <TableCell className="text-right space-x-1">
-                          {adminPermissions.canUpdate || user?.username === `admin` && <AdminModalNewPassword data={item} />}
-                          {adminPermissions.canView || user?.username === `admin` && (
+                          {headPermissions.canAdvance || supportPermissions.canUpdate || user?.username === `admin` && <AdminModalNewPassword data={item} />}
+                          {headPermissions.canAdvance || supportPermissions.canView || user?.username === `admin` ? (
                             <Link href={`/admin/view/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-green-100 text-green-700 border border-solid border-green-700 hover:bg-green-200">
                               ดู
                             </Link>
-                          )}
-                          {adminPermissions.canUpdate || user?.username === `admin` && (
+                          ) : null}
+                          {headPermissions.canAdvance || supportPermissions.canUpdate || user?.username === `admin` ? (
                             <Link href={`/admin/edit/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200">
                               แก้ไข
                             </Link>
-                          )}
-                          {adminPermissions.canDelete || user?.username === `admin` && (
+                          ) : null}
+                          {headPermissions.canAdvance || supportPermissions.canDelete || user?.username === `admin` ? (
                             <AdminModalDelete
                               data={item}
                               onSuccess={() => refetch()}
-                            // หรือให้ modal เรียก setDeleteId/handleDelete ตามโฟลว์ของคุณ
                             />
-                          )}
+                          ) : null}
                         </TableCell>
                       </TableRow>
                     ))}

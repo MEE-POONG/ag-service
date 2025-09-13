@@ -8,6 +8,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import axios from '@/lib/axios'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
+import { usePermissions } from '@/hooks/usePermissions'
 
 interface Permission {
   id: string
@@ -47,6 +48,7 @@ const defaultForm: Partial<Permission> = {
 }
 
 export default function PermissionsPage() {
+  const { checkPermission } = usePermissions()
   const [permissions, setPermissions] = useState<Permission[]>([])
   const [authUser, setAuthUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
@@ -54,6 +56,14 @@ export default function PermissionsPage() {
   const [showForm, setShowForm] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const router = useRouter()
+
+  const headPermissions = checkPermission('ระบบผู้ดูแล')
+  const supportPermissions = checkPermission('แอดมิน')
+
+  useEffect(() => {
+    console.log('headPermissions : ', headPermissions);
+    console.log('supportPermissions : ', supportPermissions);
+  }, [headPermissions, supportPermissions])
 
   // useEffect(() => {
   //   const checkAuth = async () => {
