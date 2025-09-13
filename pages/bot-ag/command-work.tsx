@@ -3,28 +3,16 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
 import toast from 'react-hot-toast'
 import { TheLayout } from '@/components/TheLayout'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import Modal, { ModalBody, ModalFooter, ModalHeader, ModalTitle, ModalDescription } from '@/components/form/Modal'
-import ReactIconComponent from '@/components/ReactIconComponent'
-import { authenticator } from 'otplib'
+import CommandWorkModalCredit from '@/container/bot-ag/CommandWork/ModalCredit'
+import { AgUserAccountDB } from '@prisma/client'
+import CommandWorkModalCreateC from '@/container/bot-ag/CommandWork/ModalCreateC'
 
-type AgUserAccountItem = {
-  id?: string
-  username: string
-  reserve: string
-  userLogin: string
-  origin: string
-  position: string
-  gaSecretEnc: string
-  meta?: string
-  webname?: string
-}
-const WEBNAME_OPTIONS = ['psd99', 'ufa66'] as const
 function useAgUserAccounts() {
-  const [items, setItems] = useState<AgUserAccountItem[]>([])
-  const add = (item: AgUserAccountItem) => setItems(prev => [...prev, item])
-  const update = (idx: number, item: AgUserAccountItem) =>
+  const [items, setItems] = useState<AgUserAccountDB[]>([])
+  const add = (item: AgUserAccountDB) => setItems(prev => [...prev, item])
+  const update = (idx: number, item: AgUserAccountDB) =>
     setItems(prev => prev.map((v, i) => (i === idx ? item : v)))
   const remove = (idx: number) => setItems(prev => prev.filter((_, i) => i !== idx))
   return { items, add, update, remove, setItems }
@@ -45,13 +33,13 @@ export default function CommandWorkPage() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   // Fetch list via react-query (server-side filter by keyword)
-  const { data, isFetching } = useQuery<{ items: AgUserAccountItem[]; pagination?: { totalItems: number; totalPages: number; currentPage: number; pageSize: number } }>({
+  const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: { totalItems: number; totalPages: number; currentPage: number; pageSize: number } }>({
     queryKey: qk.agUsers.listPaged(debouncedKeyword, page, pageSize),
     queryFn: async () => {
       const res = await axios.get('/api/aguseraccounts', { params: { keyword: debouncedKeyword, page, pageSize } })
       if (!res.data?.success) throw new Error(res.data?.error || 'โหลดข้อมูลล้มเหลว')
       return {
-        items: (res.data.data || []) as AgUserAccountItem[],
+        items: (res.data.data || []) as AgUserAccountDB[],
         pagination: res.data.pagination as { totalItems: number; totalPages: number; currentPage: number; pageSize: number } | undefined,
       }
     },
@@ -86,7 +74,7 @@ export default function CommandWorkPage() {
 
   // Mutations: create, update, delete (with optimistic updates on current page)
   const createMutation = useMutation({
-    onMutate: async (val: AgUserAccountItem) => {
+    onMutate: async (val: AgUserAccountDB) => {
       await queryClient.cancelQueries({ queryKey: listKey })
       const prev = queryClient.getQueryData<any>(listKey)
       const tempId = `temp-${Date.now()}`
@@ -100,10 +88,10 @@ export default function CommandWorkPage() {
       })
       return { prev }
     },
-    mutationFn: async (val: AgUserAccountItem) => {
+    mutationFn: async (val: AgUserAccountDB) => {
       const res = await axios.post('/api/aguseraccounts', val)
       if (!res.data?.success) throw new Error(res.data?.error || 'บันทึกไม่สำเร็จ')
-      return res.data.data as AgUserAccountItem
+      return res.data.data as AgUserAccountDB
     },
     onError: (e: any, _vars, ctx) => {
       if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
@@ -137,7 +125,7 @@ export default function CommandWorkPage() {
   })
 
   const updateMutation = useMutation({
-    onMutate: async (payload: AgUserAccountItem & { id: string }) => {
+    onMutate: async (payload: AgUserAccountDB & { id: string }) => {
       await queryClient.cancelQueries({ queryKey: listKey })
       const prev = queryClient.getQueryData<any>(listKey)
       queryClient.setQueryData(listKey, (old: any) => {
@@ -146,10 +134,10 @@ export default function CommandWorkPage() {
       })
       return { prev }
     },
-    mutationFn: async (payload: AgUserAccountItem & { id: string }) => {
+    mutationFn: async (payload: AgUserAccountDB & { id: string }) => {
       const res = await axios.put('/api/aguseraccounts', payload)
       if (!res.data?.success) throw new Error(res.data?.error || 'อัปเดตไม่สำเร็จ')
-      return res.data.data as AgUserAccountItem
+      return res.data.data as AgUserAccountDB
     },
     onError: (e: any, _vars, ctx) => {
       if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
@@ -210,7 +198,7 @@ export default function CommandWorkPage() {
           <div className="relative overflow-hidden rounded-[1.5rem] p-5 sm:p-8 mb-6 sm:mb-8 bg-gradient-to-r from-[#A78BFA] via-[#A78BFA] to-[#34D399] shadow-lg shadow-gray-900/10">
             <div className="flex relative z-10 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 drop-shadow-sm sm:text-3xl md:text-4xl">
-                ระบบจัดการผู้ใช้ AG
+                คำสั่งหน้างาน AG
               </h1>
               <Button
                 size="sm"
@@ -270,17 +258,17 @@ export default function CommandWorkPage() {
                       <td className="px-3 py-2">
                         <div className="flex gap-2">
                           {/* ทุกอันจะเป็น modal */}
-                          <Button className='px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-purple-200 hover:bg-gradient-to-r from-[#A78BFA50] to-[#34D39950] hover:shadow-md cursor-pointer'>
-                            เติมเครดิต
-                          </Button>
+                          <CommandWorkModalCredit data={u} />
+                          <CommandWorkModalCreateC data={u} />
+
                           {/* สร้างยูสลูกค้าใหม่สร้างครั้งละ 20 คน */}
-                          <Button className='px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-red-200 hover:bg-gradient-to-r from-[rgba(255,120,120,0.76)] to-[#34D39950] hover:shadow-md cursor-pointer'>
+                          {/* <Button >
                             สร้างยูสลูกค้าใหม่
-                          </Button>
+                          </Button> */}
                           <Button className='px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc-200 hover:bg-gradient-to-r from-[#A78BFA50] to-[#34D39950] hover:shadow-md cursor-pointer'>
                             ปลดล็อคลูกค้า
                           </Button>
-{/* 
+                          {/* 
                           <Button className='px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-purple-200 hover:bg-gradient-to-r from-[#A78BFA50] to-[#34D39950] hover:shadow-md cursor-pointer'>
                             ปลดล็อคลูกค้า
                           </Button> */}
@@ -299,7 +287,21 @@ export default function CommandWorkPage() {
               </table>
             </div>
             <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-gray-600">ทั้งหมด {totalItems} รายการ</div>
+              <div className="flex items-center gap-2">
+                ทั้งหมด {totalItems} รายการ
+                <span className="text-sm text-gray-600">แสดง</span>
+                <select
+                  value={pageSize}
+                  onChange={e => setPageSize(parseInt(e.target.value, 10) || 10)}
+                  className="px-3 py-1 text-end rounded-md border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
+                  disabled={isFetching}
+                >
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+                <span className="text-sm text-gray-600">ต่อหน้า</span>
+              </div>
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
@@ -323,290 +325,9 @@ export default function CommandWorkPage() {
           </div>
         </div>
       </div>
-
-      {/* Modal: Add */}
-      {/* <AgUserAccountFormModal
-        key={`add-${openAdd}`}
-        title="เพิ่ม AG User"
-        open={openAdd}
-        onOpenChange={setOpenAdd}
-        loading={createMutation.isPending}
-        onSubmit={(val, helpers) => {
-          // unique AgUserAccount
-          if (items.some((i) => i.username === val.username)) {
-            helpers.setError('Username นี้ถูกใช้แล้ว')
-            return
-          }
-          createMutation.mutate(val, {
-            onSuccess: () => {
-              helpers.reset()
-              setOpenAdd(false)
-            },
-            onError: (e: any) => helpers.setError(e?.message || 'เกิดข้อผิดพลาด')
-          })
-        }}
-      /> */}
-
-      {/* Modal: Edit */}
-      {/* {openEdit && selectedIndex != null && (
-        <AgUserAccountFormModal
-          title="แก้ไข AG User"
-          open={openEdit}
-          onOpenChange={setOpenEdit}
-          loading={updateMutation.isPending}
-          initialValue={items[selectedIndex]}
-          onSubmit={(val, helpers) => {
-            // unique AgUserAccount (ignore current index)
-            const duplicate = items.some((i, idx) => idx !== selectedIndex && i.username === val.username)
-            if (duplicate) {
-              helpers.setError('Username นี้ถูกใช้แล้ว')
-              return
-            }
-            const cur = items[selectedIndex]
-            if (!cur?.id) {
-              helpers.setError('ไม่พบรหัสรายการ')
-              return
-            }
-            updateMutation.mutate({ ...val, id: cur.id }, {
-              onSuccess: () => setOpenEdit(false),
-              onError: (e: any) => helpers.setError(e?.message || 'เกิดข้อผิดพลาด')
-            })
-          }}
-        />
-      )} */}
-
-      {/* Modal: Delete */}
-      {/* {openDelete && selectedIndex != null && (
-        <Modal open={openDelete} onOpenChange={setOpenDelete} size="sm">
-          <ModalHeader>
-            <div className="flex flex-col">
-              <ModalTitle>
-                <span className="bg-gradient-to-r from-[#A78BFA] to-[#34D399] bg-clip-text text-transparent">ลบ AG User</span>
-              </ModalTitle>
-              <ModalDescription className="mt-1 text-gray-500">การลบไม่สามารถย้อนกลับได้ โปรดยืนยันอีกครั้ง</ModalDescription>
-            </div>
-          </ModalHeader>
-          <ModalBody>
-            <p className="text-sm text-gray-700">
-              ยืนยันการลบผู้ใช้
-              <span className="mx-1 font-semibold">{items[selectedIndex].username}</span>
-              หรือไม่?
-            </p>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-4"
-              onClick={() => setOpenDelete(false)}
-            >
-              ยกเลิก
-            </Button>
-            <Button
-              variant="destructive"
-              className="rounded-full px-4 shadow flex items-center gap-1.5 disabled:opacity-60"
-              disabled={deleteMutation.isPending}
-              onClick={() => {
-                const cur = items[selectedIndex]
-                if (cur?.id) {
-                  deleteMutation.mutate(cur.id)
-                } else {
-                  toast.error('ไม่พบรหัสรายการ')
-                }
-                setOpenDelete(false)
-              }}
-            >
-              {deleteMutation.isPending ? (
-                <>
-                  <ReactIconComponent icon="FaSpinner" setClass="h-4 w-4 animate-spin" />
-                  กำลังลบ...
-                </>
-              ) : (
-                <>
-                  <ReactIconComponent icon="FaTrashAlt" setClass="h-4 w-4" />
-                  ลบ
-                </>
-              )}
-            </Button>
-          </ModalFooter>
-        </Modal>
-      )} */}
     </TheLayout>
   )
 }
-
-// type FormHelpers = { setError: (msg: string) => void; reset: () => void }
-
-// function AgUserAccountFormModal({
-//   title,
-//   open,
-//   onOpenChange,
-//   onSubmit,
-//   initialValue,
-//   loading,
-// }: {
-//   title: string
-//   open: boolean
-//   onOpenChange: (v: boolean) => void
-//   onSubmit: (val: AgUserAccountItem, helpers: FormHelpers) => void
-//   initialValue?: AgUserAccountItem
-//   loading?: boolean
-// }) {
-//   const [form, setForm] = useState<AgUserAccountItem>(
-//     initialValue ?? {
-//       username: '',
-//       reserve: '',
-//       userLogin: '',
-//       origin: '',
-//       position: 'agent',
-//       gaSecretEnc: '',
-//       webname: '',
-//     }
-//   )
-//   const [error, setError] = useState('')
-
-//   const resetForm = () => {
-//     setForm({
-//       username: '',
-//       reserve: '',
-//       userLogin: '',
-//       origin: '',
-//       position: 'agent',
-//       gaSecretEnc: '',
-//       webname: '',
-//     })
-//     setError('')
-//   }
-
-//   const updateField = (k: keyof AgUserAccountItem, v: string) => {
-//     setForm(prev => ({ ...prev, [k]: v }))
-//   }
-
-//   const handleSubmit = () => {
-//     // basic validation
-//     if (!form.username || !form.userLogin || !form.position) {
-//       setError('กรอกข้อมูลให้ครบถ้วน (AgUserAccount, userLogin, position)')
-//       return
-//     }
-//     setError('')
-//     onSubmit(form, { setError, reset: resetForm })
-//   }
-
-//   return (
-//     <Modal open={open} onOpenChange={onOpenChange} size="lg">
-//       <ModalHeader>
-//         <div className="flex flex-col">
-//           <ModalTitle>
-//             <span className="bg-gradient-to-r from-[#A78BFA] to-[#34D399] bg-clip-text text-transparent">{title}</span>
-//           </ModalTitle>
-//           <ModalDescription className="mt-1 text-gray-500">
-//             {initialValue ? 'แก้ไขข้อมูลผู้ใช้ แล้วกดบันทึก' : 'กรอกข้อมูลผู้ใช้ แล้วกดบันทึก'}
-//           </ModalDescription>
-//         </div>
-//       </ModalHeader>
-//       <ModalBody>
-//         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-//           <div>
-//             <label className="block mb-1 text-sm font-medium">Username</label>
-//             <input
-//               value={form.username}
-//               onChange={e => updateField('username', e.target.value)}
-//               className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-//               placeholder="รหัสผู้ใช้ AG"
-//             />
-//           </div>
-//           <div>
-//             <label className="block mb-1 text-sm font-medium">userLogin</label>
-//             <input
-//               value={form.userLogin}
-//               onChange={e => updateField('userLogin', e.target.value)}
-//               className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-//               placeholder="ล็อกอินสำหรับเข้าระบบ AG"
-//             />
-//           </div>
-//           <div>
-//             <label className="block mb-1 text-sm font-medium">reserve</label>
-//             <input
-//               value={form.reserve}
-//               onChange={e => updateField('reserve', e.target.value)}
-//               className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-//               placeholder="reserve"
-//             />
-//           </div>
-//           <div>
-//             <label className="block mb-1 text-sm font-medium">webname</label>
-//             <select
-//               value={form.webname || ''}
-//               onChange={e => updateField('webname', e.target.value)}
-//               className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-//             >
-//               <option value="">เลือกเว็บ</option>
-//               {WEBNAME_OPTIONS.map((w) => (
-//                 <option key={w} value={w}>{w}</option>
-//               ))}
-//             </select>
-//           </div>
-//           <div>
-//             <label className="block mb-1 text-sm font-medium">origin</label>
-//             <input
-//               value={form.origin}
-//               onChange={e => updateField('origin', e.target.value)}
-//               className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-//               placeholder="origin"
-//             />
-//           </div>
-//           <div>
-//             <label className="block mb-1 text-sm font-medium">position</label>
-//             <select
-//               value={form.position}
-//               onChange={e => updateField('position', e.target.value)}
-//               className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#34D399]"
-//             >
-//               <option value="agent">agent</option>
-//               <option value="senior">senior</option>
-//               <option value="master">master</option>
-//             </select>
-//           </div>
-//           <div className="sm:col-span-2">
-//             <label className="block mb-1 text-sm font-medium">gaSecretEnc</label>
-//             <input
-//               value={form.gaSecretEnc}
-//               onChange={e => updateField('gaSecretEnc', e.target.value)}
-//               className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-//               placeholder="รหัส 2FA ของ AG"
-//             />
-//           </div>
-//         </div>
-//         {error && (
-//           <p className="mt-3 text-sm text-red-600">{error}</p>
-//         )}
-//       </ModalBody>
-//       <ModalFooter>
-//         <Button
-//           className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-4"
-//           onClick={() => onOpenChange(false)}
-//         >
-//           ยกเลิก
-//         </Button>
-//         <Button
-//           disabled={!!loading}
-//           className="btn-theme hover:!brightness-95 rounded-full px-4 flex items-center gap-1.5 disabled:opacity-60"
-//           onClick={handleSubmit}
-//         >
-//           {loading ? (
-//             <>
-//               <ReactIconComponent icon="FaSpinner" setClass="h-4 w-4 animate-spin" />
-//               กำลังบันทึก...
-//             </>
-//           ) : (
-//             <>
-//               <ReactIconComponent icon="FaSave" setClass="h-4 w-4" />
-//               บันทึก
-//             </>
-//           )}
-//         </Button>
-//       </ModalFooter>
-//     </Modal>
-//   )
-// }
 
 function useDebouncedValue<T>(value: T, delay = 300) {
   const [debounced, setDebounced] = useState<T>(value)

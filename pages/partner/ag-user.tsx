@@ -9,7 +9,7 @@ import Modal, { ModalBody, ModalFooter, ModalHeader, ModalTitle, ModalDescriptio
 import ReactIconComponent from '@/components/ReactIconComponent'
 import { authenticator } from 'otplib'
 
-type AgUserAccountItem = {
+type AgUserAccountDB = {
   id?: string
   username: string
   reserve: string
@@ -22,9 +22,9 @@ type AgUserAccountItem = {
 }
 const WEBNAME_OPTIONS = ['psd99', 'ufa66'] as const
 function useAgUserAccounts() {
-  const [items, setItems] = useState<AgUserAccountItem[]>([])
-  const add = (item: AgUserAccountItem) => setItems(prev => [...prev, item])
-  const update = (idx: number, item: AgUserAccountItem) =>
+  const [items, setItems] = useState<AgUserAccountDB[]>([])
+  const add = (item: AgUserAccountDB) => setItems(prev => [...prev, item])
+  const update = (idx: number, item: AgUserAccountDB) =>
     setItems(prev => prev.map((v, i) => (i === idx ? item : v)))
   const remove = (idx: number) => setItems(prev => prev.filter((_, i) => i !== idx))
   return { items, add, update, remove, setItems }
@@ -45,13 +45,13 @@ export default function AgUserAccountPage() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   // Fetch list via react-query (server-side filter by keyword)
-  const { data, isFetching } = useQuery<{ items: AgUserAccountItem[]; pagination?: { totalItems: number; totalPages: number; currentPage: number; pageSize: number } }>({
+  const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: { totalItems: number; totalPages: number; currentPage: number; pageSize: number } }>({
     queryKey: qk.agUsers.listPaged(debouncedKeyword, page, pageSize),
     queryFn: async () => {
       const res = await axios.get('/api/aguseraccounts', { params: { keyword: debouncedKeyword, page, pageSize } })
       if (!res.data?.success) throw new Error(res.data?.error || 'โหลดข้อมูลล้มเหลว')
       return {
-        items: (res.data.data || []) as AgUserAccountItem[],
+        items: (res.data.data || []) as AgUserAccountDB[],
         pagination: res.data.pagination as { totalItems: number; totalPages: number; currentPage: number; pageSize: number } | undefined,
       }
     },
@@ -86,7 +86,7 @@ export default function AgUserAccountPage() {
 
   // Mutations: create, update, delete (with optimistic updates on current page)
   const createMutation = useMutation({
-    onMutate: async (val: AgUserAccountItem) => {
+    onMutate: async (val: AgUserAccountDB) => {
       await queryClient.cancelQueries({ queryKey: listKey })
       const prev = queryClient.getQueryData<any>(listKey)
       const tempId = `temp-${Date.now()}`
@@ -100,10 +100,10 @@ export default function AgUserAccountPage() {
       })
       return { prev }
     },
-    mutationFn: async (val: AgUserAccountItem) => {
+    mutationFn: async (val: AgUserAccountDB) => {
       const res = await axios.post('/api/aguseraccounts', val)
       if (!res.data?.success) throw new Error(res.data?.error || 'บันทึกไม่สำเร็จ')
-      return res.data.data as AgUserAccountItem
+      return res.data.data as AgUserAccountDB
     },
     onError: (e: any, _vars, ctx) => {
       if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
@@ -137,7 +137,7 @@ export default function AgUserAccountPage() {
   })
 
   const updateMutation = useMutation({
-    onMutate: async (payload: AgUserAccountItem & { id: string }) => {
+    onMutate: async (payload: AgUserAccountDB & { id: string }) => {
       await queryClient.cancelQueries({ queryKey: listKey })
       const prev = queryClient.getQueryData<any>(listKey)
       queryClient.setQueryData(listKey, (old: any) => {
@@ -146,10 +146,10 @@ export default function AgUserAccountPage() {
       })
       return { prev }
     },
-    mutationFn: async (payload: AgUserAccountItem & { id: string }) => {
+    mutationFn: async (payload: AgUserAccountDB & { id: string }) => {
       const res = await axios.put('/api/aguseraccounts', payload)
       if (!res.data?.success) throw new Error(res.data?.error || 'อัปเดตไม่สำเร็จ')
-      return res.data.data as AgUserAccountItem
+      return res.data.data as AgUserAccountDB
     },
     onError: (e: any, _vars, ctx) => {
       if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
@@ -235,20 +235,7 @@ export default function AgUserAccountPage() {
                 placeholder="ค้นหา (รหัส/ล็อกอิน/ตำแหน่ง/ต้นทาง/สำรอง/Secret)"
                 className="px-4 py-2 w-full text-sm sm:text-base rounded-xl bg-white/90 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#A78BFA] focus:border-transparent shadow-sm"
               />
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">แสดง</span>
-                <select
-                  value={pageSize}
-                  onChange={e => setPageSize(parseInt(e.target.value, 10) || 10)}
-                  className="px-3 py-2 rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-                  disabled={isFetching}
-                >
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                </select>
-                <span className="text-sm text-gray-600">ต่อหน้า</span>
-              </div>
+
             </div>
 
             <div className="overflow-hidden overflow-x-auto rounded-xl ring-1 ring-gray-200">
@@ -348,7 +335,21 @@ export default function AgUserAccountPage() {
               </table>
             </div>
             <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-gray-600">ทั้งหมด {totalItems} รายการ</div>
+              <div className="flex items-center gap-2">
+                ทั้งหมด {totalItems} รายการ
+                <span className="text-sm text-gray-600">แสดง</span>
+                <select
+                  value={pageSize}
+                  onChange={e => setPageSize(parseInt(e.target.value, 10) || 10)}
+                  className="px-3 py-1 text-end rounded-md border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
+                  disabled={isFetching}
+                >
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+                <span className="text-sm text-gray-600">ต่อหน้า</span>
+              </div>
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
@@ -495,11 +496,11 @@ function AgUserAccountFormModal({
   title: string
   open: boolean
   onOpenChange: (v: boolean) => void
-  onSubmit: (val: AgUserAccountItem, helpers: FormHelpers) => void
-  initialValue?: AgUserAccountItem
+  onSubmit: (val: AgUserAccountDB, helpers: FormHelpers) => void
+  initialValue?: AgUserAccountDB
   loading?: boolean
 }) {
-  const [form, setForm] = useState<AgUserAccountItem>(
+  const [form, setForm] = useState<AgUserAccountDB>(
     initialValue ?? {
       username: '',
       reserve: '',
@@ -525,7 +526,7 @@ function AgUserAccountFormModal({
     setError('')
   }
 
-  const updateField = (k: keyof AgUserAccountItem, v: string) => {
+  const updateField = (k: keyof AgUserAccountDB, v: string) => {
     setForm(prev => ({ ...prev, [k]: v }))
   }
 

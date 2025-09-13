@@ -24,7 +24,15 @@ export const qk = {
     listPaged: (keyword: string, page: number, pageSize: number) =>
       ['aguseraccounts', 'list', { keyword, page, pageSize }] as const,
     detail: (id: string) => ['aguseraccounts', 'detail', id] as const,
+    selectOrigin: (
+      origin: string,
+      position: string,
+      page?: number,
+      pageSize?: number
+    ) =>
+      ['aguseraccounts', 'selectorigin', { origin, position, page, pageSize }] as const,
   },
+
   settings: {
     root: ['settings'] as const,
   },
