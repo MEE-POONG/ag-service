@@ -78,12 +78,10 @@ export default async function handler(
         // ดึงเมนูทั้งหมดเรียงตาม showOrder
         const data = await prisma.menuWebDB.findMany({
           where: {
-            isDeleted: { not: true },
             isVisible: true
           },
           orderBy: [
             { showOrder: 'asc' },
-            { createdAt: 'desc' }
           ]
         })
 
