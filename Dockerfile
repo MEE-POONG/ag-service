@@ -1,5 +1,5 @@
 # Use the official Node.js runtime as the base image
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 # Provide required native libs for Prisma on Alpine
 # - libc6-compat: glibc compatibility layer
 # - openssl: provides SSL libraries
@@ -13,8 +13,8 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-# Use npm ci when a lockfile is present; fallback to npm install otherwise
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+# Use npm install to handle potential lockfile sync issues
+RUN npm install
 
 # Rebuild the source code only when needed
 FROM base AS builder
