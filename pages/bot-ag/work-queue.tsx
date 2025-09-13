@@ -102,6 +102,10 @@ export default function WorkQueuePage() {
     })
   }
 
+  useEffect(() => {
+    console.log(`workQueues : `, workQueues);
+  }, [workQueues])
+
   return (
     <TheLayout>
       <div className="mx-auto">
