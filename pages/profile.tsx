@@ -1,14 +1,10 @@
-import React, { useEffect } from 'react'
-import { useRouter } from 'next/router'
+import React from 'react'
 import { TheLayout } from '@/components/TheLayout'
-import axios from '@/lib/axios'
-import { ExtendedAdminDB } from '@/data/interface'
 import Link from 'next/link'
 import { FaEdit, FaArrowLeft, FaUser, FaEnvelope, FaPhone, FaBuilding, FaUserTag, FaCalendarAlt, FaToggleOn, FaToggleOff, FaShieldAlt, FaKey, FaCog, FaInfoCircle } from 'react-icons/fa'
-import { useQuery } from '@tanstack/react-query'
-import { qk } from '@/lib/queryKeys'
 import { useAuth } from '@/hooks/useAuth'
 import AdminModalNewPassword from '@/container/admin/ModalNewPassword'
+import AdminModalEdit from '@/container/admin/ModalEdit'
 
 export default function ViewAdminPage() {
   const { user, userLoading } = useAuth()
@@ -90,8 +86,8 @@ export default function ViewAdminPage() {
       <TheLayout>
         <div className="flex flex-col justify-center items-center min-h-screen">
           <div className="text-lg text-red-600 mb-4">ไม่พบข้อมูลผู้ใช้</div>
-          <Link 
-            href="/admin" 
+          <Link
+            href="/admin"
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             <FaArrowLeft className="mr-2" />
@@ -130,6 +126,7 @@ export default function ViewAdminPage() {
           </div>
           <div className="flex space-x-2">
             <AdminModalNewPassword data={admin} />
+            <AdminModalEdit data={admin} />
             <Link
               href={`/admin/edit/${admin.id}`}
               className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
