@@ -34,7 +34,7 @@ export default function MembersPage() {
       partner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       partner.tel.includes(searchTerm) ||
       partner.bankNumber.includes(searchTerm) ||
-      partner.agent.username.toLowerCase().includes(searchTerm.toLowerCase())
+      partner.agUserAccountDB.username.toLowerCase().includes(searchTerm.toLowerCase())
     
     const matchesStatus = statusFilter === 'all' || partner.status === statusFilter
     
@@ -157,7 +157,7 @@ export default function MembersPage() {
                             {index + 1}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                            {partner.agent.username}
+                            {partner.agUserAccountDB.username}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
                             {partner.bankNumber}

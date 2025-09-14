@@ -75,8 +75,8 @@ const MemberModalEdit: React.FC<MemberModalEditProps> = ({
         const uniqueAgUsers = new Map();
         
         partners.forEach((partner: any) => {
-          if (partner.agent && partner.agent.id) {
-            const agent = partner.agent;
+          if (partner.agUserAccountDB && partner.agUserAccountDB.id) {
+            const agent = partner.agUserAccountDB;
             // Filter by search term if provided
             if (!searchTerm || 
                 agent.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -153,7 +153,7 @@ const MemberModalEdit: React.FC<MemberModalEditProps> = ({
   useEffect(() => {
     if (partner && isOpen) {
       setFormData({
-        customer: partner.agent?.userLogin || '', // ใช้ userLogin เป็น customer ID
+        customer: partner.agUserAccountDB?.userLogin || '', // ใช้ userLogin เป็น customer ID
         freeFight: 0, // ไม่มีในข้อมูล partner
         bankNumber: partner.bankNumber || '',
         name: partner.name || '',
@@ -166,9 +166,9 @@ const MemberModalEdit: React.FC<MemberModalEditProps> = ({
       });
 
       // Set selected AG User
-      if (partner.agent) {
-        setSelectedAgUser(partner.agent);
-        setSearchTerm(partner.agent.username);
+      if (partner.agUserAccountDB) {
+        setSelectedAgUser(partner.agUserAccountDB);
+        setSearchTerm(partner.agUserAccountDB.username);
         setAutoSelectedAgent(true);
       }
     }

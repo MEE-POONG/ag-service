@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method === 'GET') {
             const partners = await prisma.partnerDB.findMany({
                 include: {
-                    agent: {
+                    agUserAccountDB: {
                         select: { id: true, username: true, userLogin: true, webname: true, position: true },
                     },
                 },
@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     updatedBy: createdBy ?? 'system',
                 },
                 include: {
-                    agent: { select: { id: true, username: true, userLogin: true, webname: true, position: true } },
+                    agUserAccountDB: { select: { id: true, username: true, userLogin: true, webname: true, position: true } },
                 },
             })
 
@@ -88,7 +88,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 where: { id },
                 data: updateFields,
                 include: {
-                    agent: { select: { id: true, username: true, userLogin: true, webname: true, position: true } },
+                    agUserAccountDB: { select: { id: true, username: true, userLogin: true, webname: true, position: true } },
                 },
             })
 
