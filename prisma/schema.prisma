@@ -9,62 +9,89 @@ datasource db {
 }
 
 type AdjustbetsCockfight {
-  /// Multiple data types found: Float: 17.4%, Int: 82.6% out of 23 sampled entries
-  commissionRBG Json
+  commissionRBG Int
   enabled       Boolean
-  work          Boolean?
-  profile       Int?
-  lastError     String?
-}
-
-type AdjustbetsMuayStep {
-  enabled   Boolean
-  work      Boolean?
-  profile   Int?
-  lastError String?
-}
-
-type AdjustbetsSa {
-  /// Multiple data types found: Float: 26.1%, Int: 73.9% out of 23 sampled entries
-  commissionRAR Json
-  enabled       Boolean
-  work          Boolean?
   lastError     String?
   lastSavedAt   DateTime? @db.Date
   profile       Int
+  statusServe   String?
+  work          Boolean
+}
+
+type AdjustbetsLottoRcw {
+  enabled     Boolean
+  lastSavedAt DateTime? @db.Date
+  share       Int
+  statusServe String?
+  work        Boolean
+}
+
+type AdjustbetsLottoRdc {
+  enabled     Boolean
+  lastSavedAt DateTime? @db.Date
+  share       Int
+  statusServe String?
+  work        Boolean
+}
+
+type AdjustbetsMuayStep {
+  enabled     Boolean
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  lastError   Json?
+  lastSavedAt DateTime? @db.Date
+  profile     Int
+  statusServe String?
+  work        Boolean
+}
+
+type AdjustbetsSa {
+  commissionRAR Int
+  enabled       Boolean
+  lastError     String?
+  lastSavedAt   DateTime? @db.Date
+  profile       Int
+  statusServe   String?
+  work          Boolean
 }
 
 type AdjustbetsSexy {
   enabled     Boolean
-  work        Boolean?
   lastError   String?
   lastSavedAt DateTime? @db.Date
   profile     Int
+  statusServe String?
+  work        Boolean
 }
 
 type AdjustbetsSlotItp {
   enabled     Boolean
-  work        Boolean?
+  lastError   String?
   lastSavedAt DateTime? @db.Date
+  statusServe String?
+  work        Boolean
 }
 
 type AdjustbetsSlotJoker {
   enabled     Boolean
-  work        Boolean?
+  lastError   String?
   lastSavedAt DateTime? @db.Date
+  statusServe String?
+  work        Boolean
 }
 
 type AdjustbetsSlotPlaystar {
   enabled Boolean
-  work    Boolean?
+  work    Boolean
 }
 
 type AdjustbetsSportsbook {
-  work        Boolean?
   commission  AdjustbetsSportsbookCommission
-  limits      AdjustbetsSportsbookLimits
-  lastError   String?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  lastError   Json?
   lastSavedAt DateTime?                      @db.Date
+  limits      AdjustbetsSportsbookLimits
+  statusServe String?
+  work        Boolean
 }
 
 type AdjustbetsSportsbookCommission {
@@ -89,43 +116,53 @@ type AdjustbetsSportsbookLimits {
 
 type AdjustbetsVirtualSports {
   enabled     Boolean
-  work        Boolean?
-  profile     Int?
   lastSavedAt DateTime? @db.Date
+  profile     Int
   statusServe String?
+  work        Boolean
 }
 
-type AdjustbetsLottoRCW {
-  work    Boolean?
-  enabled Boolean?
-  share   Int?
-}
-
-type AdjustbetsLottoRDC {
-  work    Boolean?
-  enabled Boolean?
-  share   Int?
+type CreditTopUpAdviserDetails {
+  createdAt   String
+  createdBy   String
+  gaSecretEnc String
+  id          String
+  isActive    Boolean
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  meta        Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  note        Json?
+  origin      String
+  position    String
+  reserve     String
+  statusServe String
+  updatedAt   String
+  updatedBy   String
+  userLogin   String
+  username    String
+  webname     String
 }
 
 model AGUserDB {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   adviser   String
-  createdAt DateTime @default(now()) @db.Date
+  createdAt DateTime  @db.Date
   createdBy String
   isActive  Boolean
   isDeleted Boolean
   password  String
-  updatedAt DateTime @updatedAt @db.Date
+  updatedAt DateTime  @db.Date
   updatedBy String
-  userAg    String   @unique
-  userLogin String   @unique
-  webBaseId String   @db.ObjectId
+  userAg    String    @unique
+  userLogin String    @unique
+  webBaseId String    @db.ObjectId
+  webBase   WebBaseDB @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
 }
 
 model ActivityLogDB {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   action    String
-  createdAt DateTime @default(now()) @db.Date
+  createdAt DateTime @db.Date
   ipAddress String?
   newData   String?
   recordId  String?
@@ -136,26 +173,26 @@ model ActivityLogDB {
 }
 
 model AdminDB {
-  id              String           @id @default(auto()) @map("_id") @db.ObjectId
-  adminPositionId String?          @db.ObjectId
-  adminPosition   AdminPositionDB? @relation(fields: [adminPositionId], references: [id], onDelete: SetNull)
-  webBaseId       String?          @db.ObjectId
-  webBase         WebBaseDB?       @relation(fields: [webBaseId], references: [id], onDelete: SetNull)
-  createdAt       DateTime         @default(now()) @db.Date
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  adminPositionId String          @db.ObjectId
+  adminPosition   AdminPositionDB @relation(fields: [adminPositionId], references: [id], onDelete: Cascade)
+  webBaseId       String?         @db.ObjectId
+  webBase         WebBaseDB?      @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
+  createdAt       DateTime        @db.Date
   createdBy       String
-  deleteAt        DateTime?        @db.Date
+  deleteAt        DateTime?       @db.Date
   /// Could not determine type: the field only had null or empty values in the sample set.
   deleteBy        Json?
-  email           String?          @unique
+  email           String          @unique
   isActive        Boolean
   name            String
   password        String
   /// Could not determine type: the field only had null or empty values in the sample set.
   profile         Json?
-  tel             String?
-  updatedAt       DateTime         @updatedAt @db.Date
+  tel             String
+  updatedAt       DateTime        @db.Date
   updatedBy       String
-  username        String           @unique
+  username        String          @unique
 }
 
 model AdminDefaultPermissionDB {
@@ -167,12 +204,12 @@ model AdminDefaultPermissionDB {
   canDelete         Boolean
   canUpdate         Boolean
   canViews          Boolean
-  createdAt         DateTime        @default(now()) @db.Date
+  createdAt         DateTime        @db.Date
   createdBy         String
   isDeleted         Boolean
-  menuPageWebId     String          @db.ObjectId
-  menuPage          MenuWebDB       @relation(fields: [menuPageWebId], references: [id], onDelete: Cascade)
-  updatedAt         DateTime        @updatedAt @db.Date
+  menuPageWebId     String?         @db.ObjectId
+  menuPage          MenuPageWebDB?  @relation(fields: [menuPageWebId], references: [id], onDelete: Cascade)
+  updatedAt         DateTime        @db.Date
   updatedBy         String
 
   @@unique([adminPositionDBId, menuPageWebId])
@@ -180,13 +217,13 @@ model AdminDefaultPermissionDB {
 
 model AdminDepartmentDB {
   id             String            @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt      DateTime          @default(now()) @db.Date
+  createdAt      DateTime          @db.Date
   createdBy      String
   description    String
   isActive       Boolean
   isDeleted      Boolean
   name           String            @unique
-  updatedAt      DateTime          @updatedAt @db.Date
+  updatedAt      DateTime          @db.Date
   updatedBy      String
   adminPositions AdminPositionDB[]
 }
@@ -195,131 +232,190 @@ model AdminPositionDB {
   id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
   adminDepartmentId        String                     @db.ObjectId
   adminDepartment          AdminDepartmentDB          @relation(fields: [adminDepartmentId], references: [id], onDelete: Cascade)
-  createdAt                DateTime                   @default(now()) @db.Date
+  createdAt                DateTime                   @db.Date
   createdBy                String
   isActive                 Boolean
   isDeleted                Boolean
   name                     String
   priority                 Int
-  updatedAt                DateTime                   @updatedAt @db.Date
+  updatedAt                DateTime                   @db.Date
   updatedBy                String
+  AdminDB                  AdminDB[]
   AdminDefaultPermissionDB AdminDefaultPermissionDB[]
-  admins                   AdminDB[]
 
   @@unique([adminDepartmentId, name], map: "uniq_position_name_per_dept")
   @@index([adminDepartmentId])
 }
 
+model AgQueueJobDB {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  v            Int      @map("__v")
+  adviser      String?
+  createdAt    DateTime @db.Date
+  errorMessage String?
+  eventDocId   String
+  jobId        String   @unique(map: "jobId_1")
+  priority     Int
+  queueSize    Int
+  status       String
+  type         String
+  updatedAt    DateTime @db.Date
+  username     String?
+}
+
 model AgUserAccountDB {
-  id             String            @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt      DateTime          @default(now()) @db.Date
-  createdBy      String
-  gaSecretEnc    String
-  isActive       Boolean
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime          @db.Date
+  createdBy       String
+  gaSecretEnc     String
+  isActive        Boolean
   /// Could not determine type: the field only had null or empty values in the sample set.
-  meta           Json?
+  meta            Json?
   /// Could not determine type: the field only had null or empty values in the sample set.
-  note           Json?
-  origin         String
-  position       String
-  reserve        String
-  statusServe    String
-  updatedAt      DateTime          @updatedAt @db.Date
-  updatedBy      String
-  userLogin      String            @unique
-  username       String            @unique
-  webname        String
-  SetZero        SetZero[]
-  customerAgents CustomerAgentDB[]
-  PartnerDB      PartnerDB[]
+  note            Json?
+  origin          String
+  position        String
+  reserve         String
+  statusServe     String
+  updatedAt       DateTime          @db.Date
+  updatedBy       String
+  userLogin       String            @unique
+  username        String            @unique
+  webname         String
+  CustomerAgentDB CustomerAgentDB[]
+  PartnerDB       PartnerDB[]
 }
 
 model CustomerAgentDB {
-  id         String          @id @default(auto()) @map("_id") @db.ObjectId
-  agentId    String          @db.ObjectId
-  agent      AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  createdAt  DateTime        @default(now()) @db.Date
-  createdBy  String
-  customerId String          @unique
-  isActive   Boolean
-  note       String
-  updatedAt  DateTime        @updatedAt @db.Date
-  updatedBy  String
-  deleteAt   DateTime?       @db.Date
-  deleteBy   String?
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  agentId         String          @db.ObjectId
+  agUserAccountDB AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  createdAt       DateTime        @db.Date
+  createdBy       String
+  customerId      String          @unique
+  isActive        Boolean
+  note            String
+  updatedAt       DateTime        @db.Date
+  updatedBy       String
 }
 
 model ImageList {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now()) @db.Date
+  createdAt DateTime @db.Date
   createdBy String
   deleteBy  String
   imageUrl  String
   isDeleted Boolean
   modelName String
   nameFile  String
-  updatedAt DateTime @updatedAt @db.Date
+  updatedAt DateTime @db.Date
   updatedBy String
 }
 
 model MenuPageWebDB {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  link Json?  @unique
-  /// Field referred in an index, but found no data to define the type.
-  name Json?  @unique
-}
-
-model MenuWebDB {
   id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
-  canAdvance               Boolean
-  canCreate                Boolean
-  canDelete                Boolean
-  canUpdate                Boolean
-  canViews                 Boolean
-  createdAt                DateTime                   @default(now()) @db.Date
-  createdBy                String
-  description              String
-  head                     Boolean
-  icon                     String?
-  isDeleted                Boolean?
-  isVisible                Boolean
-  link                     String
-  manager                  String[]
-  name                     String                     @unique
-  parentId                 String?                    @db.ObjectId
-  parent                   MenuWebDB?                 @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children                 MenuWebDB[]                @relation("MenuHierarchy")
-  showOrder                Int
-  updatedAt                DateTime                   @updatedAt @db.Date
-  updatedBy                String
+  /// Field referred in an index, but found no data to define the type.
+  link                     Json?                      @unique
+  /// Field referred in an index, but found no data to define the type.
+  name                     Json?                      @unique
   AdminDefaultPermissionDB AdminDefaultPermissionDB[]
 }
 
+model MenuWebDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  canAdvance  Boolean
+  canCreate   Boolean
+  canDelete   Boolean
+  canUpdate   Boolean
+  canViews    Boolean
+  createdAt   DateTime @db.Date
+  createdBy   String
+  description String
+  head        Boolean
+  icon        String?
+  isDeleted   Boolean?
+  isVisible   Boolean
+  link        String
+  manager     String[]
+  name        String   @unique
+  parentId    String?  @db.ObjectId
+  showOrder   Int
+  updatedAt   DateTime @db.Date
+  updatedBy   String
+
+  // Self-referential relations for menu hierarchy
+  parent   MenuWebDB?  @relation("MenuParentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children MenuWebDB[] @relation("MenuParentChildren")
+}
+
+model PartnerDB {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  agentId         String          @db.ObjectId
+  agUserAccountDB AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  bankName        String
+  bankNumber      String
+  createdAt       DateTime        @db.Date
+  createdBy       String
+  line            String
+  method          String
+  name            String
+  startDate       DateTime        @db.Date
+  status          String
+  tel             String
+  updatedAt       DateTime        @db.Date
+  updatedBy       String
+}
+
+model SetZero {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
 model SettingDB {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  name              String?
-  logo              String?
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  logo              String
   logoText          String?
-  logoTextColor     String?
-  logoTextSize      Int?
-  logoTextFont      String?
-  logoTextFontSize  Int?
-  logoTextFontColor String?
+  logoTextColor     String
+  logoTextSize      Int
+  logoTextFont      String
+  logoTextFontSize  Int
+  logoTextFontColor String
   facebook          String?
   instagram         String?
   line              String?
   youtube           String?
   website           String?
   address           String?
-  tel               String?
-  createdBy         String?
-  updatedBy         String?
+  tel               String
+  createdAt         DateTime @db.Date
+  createdBy         String
+  updatedAt         DateTime @db.Date
+  updatedBy         String
+}
+
+model UnblockCustomerDB {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  adviser          String
+  createdAt        String
+  createdBy        String
+  customerUsername String?
+  errorMessage     String
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  errorStack       Json?
+  ipAddress        String
+  newPassword      String
+  processedAt      DateTime @db.Date
+  requestedBy      String
+  status           String
+  type             String
+  updatedAt        DateTime @db.Date
+  userAgent        String
+  usernameAG       String
 }
 
 model UserDB {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now()) @db.Date
+  createdAt DateTime @db.Date
   createdBy String
   email     String   @unique
   firstname String
@@ -328,28 +424,28 @@ model UserDB {
   lastname  String
   password  String
   tel       String
-  updatedAt DateTime @updatedAt @db.Date
+  updatedAt DateTime @db.Date
   updatedBy String
   username  String   @unique
 }
 
 model WebBaseDB {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime  @default(now()) @db.Date
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime   @db.Date
   createdBy String
-  deleteBy  String?
   isActive  Boolean
   isDeleted Boolean
-  name      String    @unique
+  name      String     @unique
   otpA      String
   otpM      String
   otpS      String
   passA     String
   passM     String
   passS     String
-  updatedAt DateTime  @updatedAt @db.Date
+  updatedAt DateTime   @db.Date
   updatedBy String
   AdminDB   AdminDB[]
+  AGUserDB  AGUserDB[]
 
   @@index([isActive], map: "isActive_1")
 }
@@ -357,16 +453,15 @@ model WebBaseDB {
 model WorkHistoryDB {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   action    String
-  createdAt DateTime @default(now()) @db.Date
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  errorMsg  Json?
-  ipAddress String?
+  createdAt DateTime @db.Date
+  errorMsg  String?
+  ipAddress String
   isSuccess Boolean
   newData   String?
   oldData   String?
   recordId  String?  @db.ObjectId
   tableName String
-  userAgent String?
+  userAgent String
   userId    String
   userType  String
 
@@ -379,17 +474,17 @@ model WorkHistoryDB {
 
 model adjustbets {
   id            String                  @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int?                    @map("__v")
   agBaseUrl     String
-  /// Multiple data types found: Int: 34.8%, BigInt: 65.2% out of 23 sampled entries
-  attemptCount  Json
+  attemptCount  Int
   cockfight     AdjustbetsCockfight
-  createdAt     DateTime                @default(now()) @db.Date
+  createdAt     DateTime                @db.Date
   createdBy     String
   customer      String
   lastError     String
+  lottoRCW      AdjustbetsLottoRcw
+  lottoRDC      AdjustbetsLottoRdc
   muayStep      AdjustbetsMuayStep
-  overallStatus String                  @default("PENDING")
+  overallStatus String
   pinUsed       String
   sa            AdjustbetsSa
   sexy          AdjustbetsSexy
@@ -397,12 +492,10 @@ model adjustbets {
   slotJoker     AdjustbetsSlotJoker
   slotPlaystar  AdjustbetsSlotPlaystar
   sportsbook    AdjustbetsSportsbook
-  updatedAt     DateTime                @updatedAt @db.Date
+  updatedAt     DateTime                @db.Date
   updatedBy     String
   usernameAG    String
   virtualSports AdjustbetsVirtualSports
-  lottoRCW      AdjustbetsLottoRCW?
-  lottoRDC      AdjustbetsLottoRDC?
 }
 
 model admin {
@@ -424,64 +517,28 @@ model admin {
   username   String
 }
 
-model aguseraccounts {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  username Json?  @unique(map: "username_1")
+model creditTopUp {
+  id             String                     @id @default(auto()) @map("_id") @db.ObjectId
+  adviser        String
+  adviserDetails CreditTopUpAdviserDetails?
+  agentId        String
+  agentLogin     String
+  createdAt      String
+  createdBy      String
+  credit         Int
+  creditBy       String
+  status         String
+  statusAG       String?
+  statusFlag     String
+  statusServe    String
+  type           String
+  /// Multiple data types found: String: 20%, DateTime (Date): 80% out of 5 sampled entries
+  updatedAt      Json
+  updatedBy      String
+  usernameAG     String
+  webname        String
 }
 
 model user {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-}
-
-// ระบบ SetZero - สำหรับการ reset ค่าเป็น 0
-model SetZero {
-  id         String          @id @default(auto()) @map("_id") @db.ObjectId
-  customerId String // รหัสลูกค้า
-  agentId    String          @db.ObjectId // ID ของ AG User Account
-  agent      AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  status     String          @default("PENDING") // PENDING, SUCCESS, FAILED
-  createdAt  DateTime        @default(now())
-  createdBy  String
-  updatedAt  DateTime        @updatedAt
-  updatedBy  String
-}
-
-model PartnerDB {
-  // สู้ฟรี	เลขบัญชี	Name	Bank	Tel	Line	ค้างบวก	จ่าย	วิธีคิด	เริ่มทำงาน
-  // 0.40	1668972833	สาโรจน์	กสิกรไทย	0915239792		Y	Y	normal	21/5/2021
-  id         String          @id @default(auto()) @map("_id") @db.ObjectId
-  agentId    String          @db.ObjectId
-  agent      AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  bankName   String
-  bankNumber String
-  name       String
-  tel        String
-  line       String
-  status     String
-  method     String
-  startDate  DateTime
-  createdAt  DateTime        @default(now()) @db.Date
-  createdBy  String
-  updatedAt  DateTime        @updatedAt @db.Date
-  updatedBy  String
-}
-
-model AgQueueJobDB {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  jobId        String   @unique
-  type         String
-  priority     Int
-  status       String   @default("PENDING")
-  eventDocId   String?
-  queueSize    Int?
-  errorMessage String?
-  createdAt    DateTime @default(now()) @db.Date
-  updatedAt    DateTime @updatedAt @db.Date
-  v            Int?     @map("__v")
-
-  @@index([status])
-  @@index([type])
-  @@index([priority])
-  @@index([createdAt])
 }

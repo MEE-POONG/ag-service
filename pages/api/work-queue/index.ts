@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
-import { requireAuth, hasPermission } from '@/lib/permissions'
+import { requireAuth } from '@/lib/permissions'
 import { recordWorkHistory, extractUserInfo } from '@/utils/workHistoryUtils'
 import { serializeBigIntToString } from '@/lib/bigintUtils'
 
@@ -132,6 +132,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<WorkQueueRes
           errorMessage,
           createdAt: new Date(),
           updatedAt: new Date(),
+          v: 0,
         },
       });
 

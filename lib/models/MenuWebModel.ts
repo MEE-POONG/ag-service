@@ -90,7 +90,7 @@ class MenuWebModel {
 
     // สร้าง where clause
     const whereClause: Prisma.MenuWebDBWhereInput = {
-      
+      isDeleted: { not: true },
       // Filter by parentId
       ...(parentId !== undefined ? { 
         parentId: parentId === 'null' ? null : parentId 
@@ -130,7 +130,7 @@ class MenuWebModel {
             }
           },
           children: {
-            where: {  },
+            where: { isDeleted: { not: true } },
             select: {
               id: true,
               name: true,
@@ -162,7 +162,7 @@ class MenuWebModel {
     return await prisma.menuWebDB.findFirst({
       where: {
         id,
-        
+        isDeleted: { not: true }
       },
       include: {
         parent: {
@@ -193,7 +193,7 @@ class MenuWebModel {
     const existingName = await prisma.menuWebDB.findFirst({
       where: {
         name: data.name.trim(),
-        
+        isDeleted: { not: true }
       }
     })
 
@@ -205,7 +205,7 @@ class MenuWebModel {
     const existingLink = await prisma.menuWebDB.findFirst({
       where: {
         link: data.link.trim(),
-        
+        isDeleted: { not: true }
       }
     })
 
@@ -218,7 +218,7 @@ class MenuWebModel {
       const parentExists = await prisma.menuWebDB.findFirst({
         where: {
           id: data.parentId,
-          
+          isDeleted: { not: true }
         }
       })
 
@@ -228,16 +228,16 @@ class MenuWebModel {
     }
 
     // หา showOrder ถัดไป ถ้าไม่ได้ระบุ
-    let showOrder: bigint = data.showOrder ? (typeof data.showOrder === 'number' ? BigInt(data.showOrder) : data.showOrder) : BigInt(0)
+    let showOrder: number = data.showOrder || 0
     if (!data.showOrder) {
       const lastMenu = await prisma.menuWebDB.findFirst({
         where: {
           parentId: data.parentId || null,
-          
+          isDeleted: { not: true }
         },
         orderBy: { showOrder: 'desc' }
       })
-      showOrder = BigInt(Number(lastMenu?.showOrder || 0) + 1)
+      showOrder = Number(lastMenu?.showOrder || 0) + 1
     }
 
     return await prisma.menuWebDB.create({
@@ -245,7 +245,7 @@ class MenuWebModel {
         name: data.name.trim(),
         description: data.description?.trim() || '',
         isVisible: data.isVisible ?? true,
-        showOrder: Number(showOrder),
+        showOrder: showOrder,
         link: data.link.trim(),
         icon: data.icon?.trim(),
         manager: data.manager || [],
@@ -278,7 +278,7 @@ class MenuWebModel {
     const existingMenu = await prisma.menuWebDB.findFirst({
       where: {
         id,
-        
+        isDeleted: { not: true }
       }
     })
 
@@ -292,7 +292,7 @@ class MenuWebModel {
         where: {
           name: data.name.trim(),
           id: { not: id },
-          
+          isDeleted: { not: true }
         }
       })
 
@@ -307,7 +307,7 @@ class MenuWebModel {
         where: {
           link: data.link.trim(),
           id: { not: id },
-          
+          isDeleted: { not: true }
         }
       })
 
@@ -326,7 +326,7 @@ class MenuWebModel {
       const parentExists = await prisma.menuWebDB.findFirst({
         where: {
           id: data.parentId,
-          
+          isDeleted: { not: true }
         }
       })
 
@@ -372,7 +372,7 @@ class MenuWebModel {
     const existingMenu = await prisma.menuWebDB.findFirst({
       where: {
         id,
-        
+        isDeleted: { not: true }
       }
     })
 
@@ -384,7 +384,7 @@ class MenuWebModel {
     const hasChildren = await prisma.menuWebDB.findFirst({
       where: {
         parentId: id,
-        
+        isDeleted: { not: true }
       }
     })
 
@@ -422,7 +422,7 @@ class MenuWebModel {
   static async getAllMenusOrderedByShowOrder(): Promise<MenuWebDB[]> {
     return await prisma.menuWebDB.findMany({
       where: {
-        
+        isDeleted: { not: true }
       },
       orderBy: [
         { showOrder: 'asc' },
@@ -453,7 +453,7 @@ class MenuWebModel {
     const menu = await prisma.menuWebDB.findFirst({
       where: {
         id: menuId,
-        
+        isDeleted: { not: true }
       }
     })
 

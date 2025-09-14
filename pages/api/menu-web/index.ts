@@ -90,7 +90,6 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
         include: {
           parent: true,
           children: true,
-          AdminDefaultPermissionDB: true,
         },
       });
 
@@ -146,7 +145,6 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
         include: {
           parent: true,
           children: true,
-          AdminDefaultPermissionDB: true,
         },
       }),
       prisma.menuWebDB.count({ where: whereClause }),

@@ -2,15 +2,16 @@ import { TheLayout } from '@/components/TheLayout'
 import MemberModalAdd from '@/container/partner/ModalAddMember'
 import MemberModalEdit from '@/container/partner/ModalEditMember'
 import { useState } from 'react'
-import { usePartners } from '@/hooks/usePartners'
+import { ExtendedPartnerDB, usePartners } from '@/hooks/usePartners'
+
 
 export default function MembersPage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [editingPartner, setEditingPartner] = useState<any>(null)
+  const [editingPartner, setEditingPartner] = useState<ExtendedPartnerDB | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  
+
   const { partners, loading, error, stats, fetchPartners } = usePartners()
 
   const handleRefresh = () => {
@@ -18,7 +19,7 @@ export default function MembersPage() {
     fetchPartners()
   }
 
-  const handleEditPartner = (partner: any) => {
+  const handleEditPartner = (partner: ExtendedPartnerDB) => {
     setEditingPartner(partner)
     setIsEditModalOpen(true)
   }
@@ -30,14 +31,14 @@ export default function MembersPage() {
 
   // Filter partners based on search and status
   const filteredPartners = partners.filter(partner => {
-    const matchesSearch = 
-      partner.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      partner.tel.includes(searchTerm) ||
-      partner.bankNumber.includes(searchTerm) ||
-      partner.agent.username.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesStatus = statusFilter === 'all' || partner.status === statusFilter
-    
+    const matchesSearch =
+      partner?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      partner?.tel?.includes(searchTerm) ||
+      partner?.bankNumber?.includes(searchTerm) ||
+      partner?.agUserAccountDB?.username?.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const matchesStatus = statusFilter === 'all' || partner?.status === statusFilter
+
     return matchesSearch && matchesStatus
   })
 
@@ -76,7 +77,7 @@ export default function MembersPage() {
                   className="w-full px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 />
               </div>
-              <select 
+              <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
@@ -157,48 +158,47 @@ export default function MembersPage() {
                             {index + 1}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                            {partner.agent.username}
+                            {partner?.agUserAccountDB?.username}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                            {partner.bankNumber}
+                            {partner?.bankNumber}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                            {partner.name}
+                            {partner?.name}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                            {partner.bankName}
+                            {partner?.bankName}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                            {partner.tel || '-'}
+                            {partner?.tel || '-'}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                            {partner.line || '-'}
+                            {partner?.line || '-'}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                            <span className={`px-2 py-1 rounded-full text-xs ${
-                              partner.status === 'active' ? 'bg-green-100 text-green-800' :
-                              partner.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                              partner.status === 'suspended' ? 'bg-red-100 text-red-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
-                              {partner.status === 'active' ? 'ใช้งาน' :
-                               partner.status === 'pending' ? 'รออนุมัติ' :
-                               partner.status === 'suspended' ? 'ระงับ' :
-                               partner.status}
+                            <span className={`px-2 py-1 rounded-full text-xs ${partner?.status === 'active' ? 'bg-green-100 text-green-800' :
+                              partner?.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                partner?.status === 'suspended' ? 'bg-red-100 text-red-800' :
+                                  'bg-gray-100 text-gray-800'
+                              }`}>
+                              {partner?.status === 'active' ? 'ใช้งาน' :
+                                partner?.status === 'pending' ? 'รออนุมัติ' :
+                                  partner?.status === 'suspended' ? 'ระงับ' :
+                                    partner?.status}
                             </span>
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                            {partner.method}
+                            {partner?.method}
                           </td>
                           <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                            {formatDate(partner.startDate)}
+                            {formatDate(new Date(partner?.startDate || '').toISOString() || '')}
                           </td>
                           <td className="px-2 sm:px-4 py-3">
                             <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
                               {/* <button className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed">
                                 ดู
                               </button> */}
-                              <button 
+                              <button
                                 onClick={() => handleEditPartner(partner)}
                                 className="px-2 sm:px-3 py-1 text-xs bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200"
                               >
@@ -217,7 +217,7 @@ export default function MembersPage() {
             {/* Pagination */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 sm:mt-6">
               <div className="text-xs sm:text-sm text-gray-500">
-                {loading ? 'กำลังโหลด...' : `แสดง ${filteredPartners.length} จาก ${partners.length} รายการ`}
+                {loading ? 'กำลังโหลด...' : `แสดง ${filteredPartners.length} จาก ${partners?.length} รายการ`}
               </div>
               {filteredPartners.length > 0 && (
                 <div className="flex space-x-1 sm:space-x-2">

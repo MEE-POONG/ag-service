@@ -14,11 +14,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method === 'GET') {
             const partner = await prisma.partnerDB.findUnique({
                 where: { id },
-                include: {
-                    agent: {
-                        select: { id: true, username: true, userLogin: true, webname: true, position: true },
-                    },
-                },
             })
 
             if (!partner) {
@@ -67,9 +62,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const updated = await prisma.partnerDB.update({
                 where: { id },
                 data: updateFields,
-                include: {
-                    agent: { select: { id: true, username: true, userLogin: true, webname: true, position: true } },
-                },
             })
 
             return res.status(200).json({ success: true, data: updated, message: 'อัปเดตสำเร็จ' })

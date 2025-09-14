@@ -59,17 +59,14 @@ export async function checkUserPermissions(
     where: {
       username: user.username,
       isActive: true,
-      
+
     },
     include: {
       adminPosition: {
         include: {
           AdminDefaultPermissionDB: {
             where: {
-              menuPage: {
-                name: menuPageName,
-                
-              }
+              isDeleted: false,
             },
             include: {
               menuPage: true,
@@ -78,7 +75,7 @@ export async function checkUserPermissions(
         },
       },
     },
-  })
+  }) as any
 
   if (!admin || !admin.adminPosition) {
     return {
@@ -94,8 +91,8 @@ export async function checkUserPermissions(
   }
 
   // Get permissions from AdminDefaultPermissionDB
-  const permission = admin.adminPosition.AdminDefaultPermissionDB.find(
-    p => p.menuPage.name === menuPageName
+  const permission = admin.adminPosition?.AdminDefaultPermissionDB?.find(
+    (p: any) => p.menuPage?.name === menuPageName
   )
 
   const permissions: PermissionContext = {
@@ -141,28 +138,33 @@ export async function getAdminFromCookie(req: NextApiRequest): Promise<any | nul
     where: {
       username: user.username,
       isActive: true,
-      
+
     },
     include: {
       adminPosition: {
         include: {
           adminDepartment: true,
           AdminDefaultPermissionDB: {
+            where: {
+              isDeleted: false,
+            },
             include: {
               menuPage: true,
             },
           },
         },
       },
-      webBase: true,
+      webBase: {
+        include: {}
+      },
     },
-  })
+  }) as any
 
   if (!admin) {
     return null
   }
 
-  const permissions = admin.adminPosition?.AdminDefaultPermissionDB.map(p => p.menuPage.name) || []
+  const permissions = admin.adminPosition?.AdminDefaultPermissionDB?.map((p: any) => p.menuPage?.name).filter(Boolean) || []
 
   return {
     ...admin,

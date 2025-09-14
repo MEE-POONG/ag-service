@@ -31,7 +31,7 @@ const positionColorByPriority = (p?: number) => {
 }
 
 export default function AdminPage() {
-  const { checkPermission, hasMenuAccess, isSuperAdmin } = usePermissions()
+  const { checkPermission, isSuperAdmin } = usePermissions()
   const { user } = useAuth()
   const [params, setParams] = useState<Params>({
     page: 1,
@@ -99,7 +99,7 @@ export default function AdminPage() {
   useEffect(() => {
     console.log('headPermissions : ', headPermissions);
     console.log('supportPermissions : ', supportPermissions);
-  }, [headPermissions])
+  }, [headPermissions, supportPermissions])
 
   return (
     <TheLayout>

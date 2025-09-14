@@ -97,7 +97,10 @@ export async function authenticateAdmin(
       adminPosition: {
         include: {
           adminDepartment: true,
-          AdminDefaultPermissionDB: { include: { menuPage: true } },
+          AdminDefaultPermissionDB: {
+            where: { isDeleted: false },
+            include: { menuPage: true }
+          },
         },
       },
       webBase: true,

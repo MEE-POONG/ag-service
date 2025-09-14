@@ -40,7 +40,9 @@ export function TheSidebar({ collapsed }: TheSidebarProps) {
     const userPermissionsMap = new Map();
     if (currentUser.adminPosition?.AdminDefaultPermissionDB) {
       currentUser.adminPosition.AdminDefaultPermissionDB.forEach((permission: any) => {
-        userPermissionsMap.set(permission.menuPage.name, permission);
+        if (permission.menuPage?.name) {
+          userPermissionsMap.set(permission.menuPage.name, permission);
+        }
       });
     }
 

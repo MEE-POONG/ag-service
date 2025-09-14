@@ -42,8 +42,7 @@ const WebBaseModalAdd: React.FC<WebBaseModalAddProps> = ({
     createdBy: '',
     updatedAt: new Date(),
     updatedBy: '',
-    deleteBy: null,          // ✅ ต้องมี
-    // ถ้า type ของคุณมี field อื่นอีก เช่นความสัมพันธ์ AdminDB[] แต่ใน error ไม่บอกว่าขาด ก็ยังไม่ต้องใส่
+    // Note: deleteBy field removed - not in WebBaseDB schema
   })
 
   const handleSave = async () => {
