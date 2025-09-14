@@ -21,7 +21,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           AdminDefaultPermissionDB: { include: { menuPage: true } },
         },
       },
-      webBase: true,
+      webBase: {
+        include: {}
+      },
     },
   })
 

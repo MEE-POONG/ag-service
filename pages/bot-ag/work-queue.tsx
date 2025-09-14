@@ -7,8 +7,6 @@ import { Params } from '@/data/interfaceDefault'
 import { ExtendedAgQueueJobDB } from '@/data/interface'
 import { usePermissions } from '@/hooks/usePermissions'
 import { useQuery } from '@tanstack/react-query'
-import { qk } from '@/lib/queryKeys'
-import { useAuth } from '@/hooks/useAuth'
 
 type WorkQueueListResp = {
   success: boolean
@@ -37,8 +35,7 @@ const typeColorByType = (type?: string) => {
 }
 
 export default function WorkQueuePage() {
-  const { checkPermission, hasMenuAccess, isSuperAdmin } = usePermissions()
-  const { user } = useAuth()
+  const { isSuperAdmin } = usePermissions()
   const [params, setParams] = useState<Params>({
     page: 1,
     pageSize: 10,

@@ -13,7 +13,7 @@ type AdjustbetsCockfight {
   enabled       Boolean
   lastError     String?
   lastSavedAt   DateTime? @db.Date
-  profile       BigInt
+  profile       Int
   statusServe   String?
   work          Boolean
 }
@@ -21,7 +21,7 @@ type AdjustbetsCockfight {
 type AdjustbetsLottoRcw {
   enabled     Boolean
   lastSavedAt DateTime? @db.Date
-  share       BigInt
+  share       Int
   statusServe String?
   work        Boolean
 }
@@ -29,7 +29,7 @@ type AdjustbetsLottoRcw {
 type AdjustbetsLottoRdc {
   enabled     Boolean
   lastSavedAt DateTime? @db.Date
-  share       BigInt
+  share       Int
   statusServe String?
   work        Boolean
 }
@@ -39,7 +39,7 @@ type AdjustbetsMuayStep {
   /// Could not determine type: the field only had null or empty values in the sample set.
   lastError   Json?
   lastSavedAt DateTime? @db.Date
-  profile     BigInt
+  profile     Int
   statusServe String?
   work        Boolean
 }
@@ -49,7 +49,7 @@ type AdjustbetsSa {
   enabled       Boolean
   lastError     String?
   lastSavedAt   DateTime? @db.Date
-  profile       BigInt
+  profile       Int
   statusServe   String?
   work          Boolean
 }
@@ -58,7 +58,7 @@ type AdjustbetsSexy {
   enabled     Boolean
   lastError   String?
   lastSavedAt DateTime? @db.Date
-  profile     BigInt
+  profile     Int
   statusServe String?
   work        Boolean
 }
@@ -95,29 +95,29 @@ type AdjustbetsSportsbook {
 }
 
 type AdjustbetsSportsbookCommission {
-  main  BigInt
-  other BigInt
-  par   BigInt
-  x12   BigInt
+  main  Int
+  other Int
+  par   Int
+  x12   Int
 }
 
 type AdjustbetsSportsbookLimits {
-  beforeRun       BigInt
-  matchLimitOS    BigInt
-  matchLimitOther BigInt
-  matchLimitX12   BigInt
-  maxOS           BigInt
-  maxOther        BigInt
-  maxPar          BigInt
-  maxX12          BigInt
-  par             BigInt
-  transLimit      BigInt
+  beforeRun       Int
+  matchLimitOS    Int
+  matchLimitOther Int
+  matchLimitX12   Int
+  maxOS           Int
+  maxOther        Int
+  maxPar          Int
+  maxX12          Int
+  par             Int
+  transLimit      Int
 }
 
 type AdjustbetsVirtualSports {
   enabled     Boolean
   lastSavedAt DateTime? @db.Date
-  profile     BigInt
+  profile     Int
   statusServe String?
   work        Boolean
 }
@@ -144,18 +144,19 @@ type CreditTopUpAdviserDetails {
 }
 
 model AGUserDB {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   adviser   String
-  createdAt DateTime @db.Date
+  createdAt DateTime  @db.Date
   createdBy String
   isActive  Boolean
   isDeleted Boolean
   password  String
-  updatedAt DateTime @db.Date
+  updatedAt DateTime  @db.Date
   updatedBy String
-  userAg    String   @unique
-  userLogin String   @unique
-  webBaseId String   @db.ObjectId
+  userAg    String    @unique
+  userLogin String    @unique
+  webBaseId String    @db.ObjectId
+  webBase   WebBaseDB @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
 }
 
 model ActivityLogDB {
@@ -172,66 +173,75 @@ model ActivityLogDB {
 }
 
 model AdminDB {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  adminPositionId String    @db.ObjectId
-  createdAt       DateTime  @db.Date
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  adminPositionId String          @db.ObjectId
+  adminPosition   AdminPositionDB @relation(fields: [adminPositionId], references: [id], onDelete: Cascade)
+  webBaseId       String?         @db.ObjectId
+  webBase         WebBaseDB?      @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
+  createdAt       DateTime        @db.Date
   createdBy       String
-  deleteAt        DateTime? @db.Date
+  deleteAt        DateTime?       @db.Date
   /// Could not determine type: the field only had null or empty values in the sample set.
   deleteBy        Json?
-  email           String    @unique
+  email           String          @unique
   isActive        Boolean
   name            String
   password        String
   /// Could not determine type: the field only had null or empty values in the sample set.
   profile         Json?
   tel             String
-  updatedAt       DateTime  @db.Date
+  updatedAt       DateTime        @db.Date
   updatedBy       String
-  username        String    @unique
+  username        String          @unique
 }
 
 model AdminDefaultPermissionDB {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  adminPositionDBId String   @db.ObjectId
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  adminPositionDBId String          @db.ObjectId
+  adminPosition     AdminPositionDB @relation(fields: [adminPositionDBId], references: [id], onDelete: Cascade)
   canAdvance        Boolean
   canCreate         Boolean
   canDelete         Boolean
   canUpdate         Boolean
   canViews          Boolean
-  createdAt         DateTime @db.Date
+  createdAt         DateTime        @db.Date
   createdBy         String
   isDeleted         Boolean
-  menuPageWebId     String   @db.ObjectId
-  updatedAt         DateTime @db.Date
+  menuPageWebId     String?         @db.ObjectId
+  menuPage          MenuPageWebDB?  @relation(fields: [menuPageWebId], references: [id], onDelete: Cascade)
+  updatedAt         DateTime        @db.Date
   updatedBy         String
 
   @@unique([adminPositionDBId, menuPageWebId])
 }
 
 model AdminDepartmentDB {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime @db.Date
-  createdBy   String
-  description String
-  isActive    Boolean
-  isDeleted   Boolean
-  name        String   @unique
-  updatedAt   DateTime @db.Date
-  updatedBy   String
+  id             String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt      DateTime          @db.Date
+  createdBy      String
+  description    String
+  isActive       Boolean
+  isDeleted      Boolean
+  name           String            @unique
+  updatedAt      DateTime          @db.Date
+  updatedBy      String
+  adminPositions AdminPositionDB[]
 }
 
 model AdminPositionDB {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
-  adminDepartmentId String   @db.ObjectId
-  createdAt         DateTime @db.Date
-  createdBy         String
-  isActive          Boolean
-  isDeleted         Boolean
-  name              String
-  priority          BigInt
-  updatedAt         DateTime @db.Date
-  updatedBy         String
+  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
+  adminDepartmentId        String                     @db.ObjectId
+  adminDepartment          AdminDepartmentDB          @relation(fields: [adminDepartmentId], references: [id], onDelete: Cascade)
+  createdAt                DateTime                   @db.Date
+  createdBy                String
+  isActive                 Boolean
+  isDeleted                Boolean
+  name                     String
+  priority                 Int
+  updatedAt                DateTime                   @db.Date
+  updatedBy                String
+  AdminDB                  AdminDB[]
+  AdminDefaultPermissionDB AdminDefaultPermissionDB[]
 
   @@unique([adminDepartmentId, name], map: "uniq_position_name_per_dept")
   @@index([adminDepartmentId])
@@ -254,36 +264,39 @@ model AgQueueJobDB {
 }
 
 model AgUserAccountDB {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime @db.Date
-  createdBy   String
-  gaSecretEnc String
-  isActive    Boolean
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime          @db.Date
+  createdBy       String
+  gaSecretEnc     String
+  isActive        Boolean
   /// Could not determine type: the field only had null or empty values in the sample set.
-  meta        Json?
+  meta            Json?
   /// Could not determine type: the field only had null or empty values in the sample set.
-  note        Json?
-  origin      String
-  position    String
-  reserve     String
-  statusServe String
-  updatedAt   DateTime @db.Date
-  updatedBy   String
-  userLogin   String   @unique
-  username    String   @unique
-  webname     String
+  note            Json?
+  origin          String
+  position        String
+  reserve         String
+  statusServe     String
+  updatedAt       DateTime          @db.Date
+  updatedBy       String
+  userLogin       String            @unique
+  username        String            @unique
+  webname         String
+  CustomerAgentDB CustomerAgentDB[]
+  PartnerDB       PartnerDB[]
 }
 
 model CustomerAgentDB {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  agentId    String   @db.ObjectId
-  createdAt  DateTime @db.Date
-  createdBy  String
-  customerId String   @unique
-  isActive   Boolean
-  note       String
-  updatedAt  DateTime @db.Date
-  updatedBy  String
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  agentId         String          @db.ObjectId
+  agUserAccountDB AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  createdAt       DateTime        @db.Date
+  createdBy       String
+  customerId      String          @unique
+  isActive        Boolean
+  note            String
+  updatedAt       DateTime        @db.Date
+  updatedBy       String
 }
 
 model ImageList {
@@ -300,11 +313,12 @@ model ImageList {
 }
 
 model MenuPageWebDB {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
   /// Field referred in an index, but found no data to define the type.
-  link Json?  @unique
+  link                     Json?                      @unique
   /// Field referred in an index, but found no data to define the type.
-  name Json?  @unique
+  name                     Json?                      @unique
+  AdminDefaultPermissionDB AdminDefaultPermissionDB[]
 }
 
 model MenuWebDB {
@@ -325,26 +339,31 @@ model MenuWebDB {
   manager     String[]
   name        String   @unique
   parentId    String?  @db.ObjectId
-  showOrder   BigInt
+  showOrder   Int
   updatedAt   DateTime @db.Date
   updatedBy   String
+
+  // Self-referential relations for menu hierarchy
+  parent   MenuWebDB?  @relation("MenuParentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children MenuWebDB[] @relation("MenuParentChildren")
 }
 
 model PartnerDB {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  agentId    String   @db.ObjectId
-  bankName   String
-  bankNumber String
-  createdAt  DateTime @db.Date
-  createdBy  String
-  line       String
-  method     String
-  name       String
-  startDate  DateTime @db.Date
-  status     String
-  tel        String
-  updatedAt  DateTime @db.Date
-  updatedBy  String
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  agentId         String          @db.ObjectId
+  agUserAccountDB AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  bankName        String
+  bankNumber      String
+  createdAt       DateTime        @db.Date
+  createdBy       String
+  line            String
+  method          String
+  name            String
+  startDate       DateTime        @db.Date
+  status          String
+  tel             String
+  updatedAt       DateTime        @db.Date
+  updatedBy       String
 }
 
 model SetZero {
@@ -352,7 +371,26 @@ model SetZero {
 }
 
 model SettingDB {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  logo              String
+  logoText          String?
+  logoTextColor     String
+  logoTextSize      Int
+  logoTextFont      String
+  logoTextFontSize  Int
+  logoTextFontColor String
+  facebook          String?
+  instagram         String?
+  line              String?
+  youtube           String?
+  website           String?
+  address           String?
+  tel               String
+  createdAt         DateTime @db.Date
+  createdBy         String
+  updatedAt         DateTime @db.Date
+  updatedBy         String
 }
 
 model UnblockCustomerDB {
@@ -392,20 +430,22 @@ model UserDB {
 }
 
 model WebBaseDB {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @db.Date
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime   @db.Date
   createdBy String
   isActive  Boolean
   isDeleted Boolean
-  name      String   @unique
+  name      String     @unique
   otpA      String
   otpM      String
   otpS      String
   passA     String
   passM     String
   passS     String
-  updatedAt DateTime @db.Date
+  updatedAt DateTime   @db.Date
   updatedBy String
+  AdminDB   AdminDB[]
+  AGUserDB  AGUserDB[]
 
   @@index([isActive], map: "isActive_1")
 }

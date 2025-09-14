@@ -87,7 +87,7 @@ export const Modal = ({
       const t = setTimeout(() => setShouldRender(false), 200)
       return () => clearTimeout(t)
     }
-  }, [open])
+  }, [open, shouldRender])
 
   // ล็อกสกอลล์ของ body เมื่อเปิด
   React.useEffect(() => {

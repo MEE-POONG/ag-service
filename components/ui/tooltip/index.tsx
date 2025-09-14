@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 
 interface TooltipProps {
@@ -44,7 +44,7 @@ const Tooltip: React.FC<TooltipProps> = ({
     setIsVisible(false)
   }
 
-  const updatePosition = () => {
+  const updatePosition = useCallback(() => {
     if (!triggerRef.current || !tooltipRef.current) return
 
     const triggerRect = triggerRef.current.getBoundingClientRect()
@@ -79,13 +79,13 @@ const Tooltip: React.FC<TooltipProps> = ({
     y = Math.max(8, Math.min(y, viewportHeight - tooltipRect.height - 8))
 
     setPosition({ x, y })
-  }
+  }, [placement])
 
   useEffect(() => {
     if (isVisible) {
       updatePosition()
     }
-  }, [isVisible])
+  }, [isVisible, updatePosition])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -110,7 +110,7 @@ const Tooltip: React.FC<TooltipProps> = ({
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [isVisible])
+  }, [isVisible, updatePosition])
 
   const clonedChildren = React.cloneElement(children, {
     ref: triggerRef,

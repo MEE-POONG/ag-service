@@ -73,7 +73,7 @@ export default function AdminAddPage() {
       const stillExists = posDep.departments.some(d => d.id === selectedDeptId)
       if (!stillExists) setSelectedDeptId('')
     }
-  }, [posDep])
+  }, [posDep, selectedDeptId])
 
   const filteredPositions = useMemo(() => {
     if (!selectedDeptId) return []

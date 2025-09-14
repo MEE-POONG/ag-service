@@ -27,8 +27,8 @@ export async function recordWorkHistory(
         errorMsg,
         userId,
         userType,
-        ipAddress,
-        userAgent,
+        ipAddress: ipAddress || 'unknown',
+        userAgent: userAgent || 'unknown',
         createdAt: new Date(),
       },
     });

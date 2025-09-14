@@ -7,11 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         if (req.method === 'GET') {
             const partners = await prisma.partnerDB.findMany({
-                include: {
-                    agUserAccountDB: {
-                        select: { id: true, username: true, userLogin: true, webname: true, position: true },
-                    },
-                },
                 orderBy: { createdAt: 'desc' },
             })
             return res.status(200).json({ success: true, data: partners })
@@ -40,6 +35,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     agentId,
                     bankName,
                     bankNumber,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
                     name,
                     tel: tel ?? '',
                     line: line ?? '',
@@ -48,9 +45,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     startDate: startDate ? new Date(startDate) : new Date(),
                     createdBy: createdBy ?? 'system',
                     updatedBy: createdBy ?? 'system',
-                },
-                include: {
-                    agUserAccountDB: { select: { id: true, username: true, userLogin: true, webname: true, position: true } },
                 },
             })
 
@@ -76,6 +70,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (updateData.agentId) updateFields.agentId = updateData.agentId
             if (updateData.bankName) updateFields.bankName = updateData.bankName
             if (updateData.bankNumber) updateFields.bankNumber = updateData.bankNumber
+            if (updateData.createdAt) updateFields.createdAt = updateData.createdAt
+            if (updateData.updatedAt) updateFields.updatedAt = updateData.updatedAt
             if (updateData.name) updateFields.name = updateData.name
             if (updateData.tel !== undefined) updateFields.tel = updateData.tel
             if (updateData.line !== undefined) updateFields.line = updateData.line
@@ -87,9 +83,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const updated = await prisma.partnerDB.update({
                 where: { id },
                 data: updateFields,
-                include: {
-                    agUserAccountDB: { select: { id: true, username: true, userLogin: true, webname: true, position: true } },
-                },
             })
 
             return res.status(200).json({ success: true, data: updated, message: 'อัปเดตสำเร็จ' })

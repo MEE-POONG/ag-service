@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
 import toast from 'react-hot-toast'
 import { TheLayout } from '@/components/TheLayout'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import ReactIconComponent from '@/components/ReactIconComponent'
 import QuestModalAdd from '@/container/bot-ag/Quest/ModalAdd'
@@ -59,7 +59,7 @@ export default function QuestPage() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   // Mock data for demonstration
-  const mockQuests: Quest[] = [
+  const mockQuests: Quest[] = useMemo(() => [
     {
       id: '1',
       title: 'เข้าสู่ระบบประจำวัน',
@@ -99,14 +99,14 @@ export default function QuestPage() {
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z'
     }
-  ]
+  ], [])
 
   // Simulate API call with mock data
   useEffect(() => {
     setItems(mockQuests)
     setTotalItems(mockQuests.length)
     setTotalPages(Math.ceil(mockQuests.length / pageSize))
-  }, [])
+  }, [mockQuests, pageSize])
 
   // Filter quests based on search and filters
   const filteredQuests = items.filter(quest => {

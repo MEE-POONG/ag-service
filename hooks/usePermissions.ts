@@ -18,7 +18,9 @@ export function usePermissions() {
     
     if (user?.adminPosition?.AdminDefaultPermissionDB) {
       user.adminPosition.AdminDefaultPermissionDB.forEach((permission: any) => {
-        map.set(permission.menuPage.name, permission)
+        if (permission.menuPage?.name) {
+          map.set(permission.menuPage.name, permission)
+        }
       })
     }
     

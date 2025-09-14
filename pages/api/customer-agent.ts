@@ -36,7 +36,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
       const customerAgent = await prisma.customerAgentDB.findUnique({
         where: { customerId: customerId as string },
         include: {
-          agent: true
+          agUserAccountDB: true
         }
       });
 
@@ -52,7 +52,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
           isActive: true
         },
         include: {
-          agent: true
+          agUserAccountDB: true
         },
         orderBy: {
           createdAt: 'desc'
@@ -68,7 +68,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
       const customerAgents = await prisma.customerAgentDB.findMany({
         where: { isActive: true },
         include: {
-          agent: true
+          agUserAccountDB: true
         },
         orderBy: {
           createdAt: 'desc'
@@ -138,7 +138,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         updatedBy: 'current-user-id'
       },
       include: {
-        agent: true
+        agUserAccountDB: true
       }
     });
 
@@ -207,12 +207,9 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const customerAgent = await prisma.customerAgentDB.update({
-      where: { customerId },
-      data: updateData,
-      include: {
-        agent: true
-      }
-    });
+        where: { customerId },
+        data: updateData
+      });
 
     return res.status(200).json({
       success: true,
@@ -257,8 +254,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
       where: { customerId: customerId as string },
       data: {
         isActive: false,
-        deleteAt: new Date(),
-        deleteBy: 'current-user-id', // TODO: Get from auth context
+        updatedAt: new Date(),
         updatedBy: 'current-user-id'
       }
     });

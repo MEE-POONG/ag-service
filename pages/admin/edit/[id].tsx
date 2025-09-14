@@ -98,7 +98,7 @@ export default function AdminEditPage() {
       const stillExists = posDep.departments.some(d => d.id === selectedDeptId)
       if (!stillExists) setSelectedDeptId('')
     }
-  }, [posDep])
+  }, [posDep, selectedDeptId])
 
   useEffect(() => {
     if (!adminRes?.data) return

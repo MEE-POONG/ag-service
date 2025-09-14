@@ -63,7 +63,7 @@ export default function DepartmentsPage() {
 
   useEffect(() => {
     console.log('departments', departments);
-  }, [depResp])
+  }, [departments, depResp])
 
   return (
     <TheLayout>

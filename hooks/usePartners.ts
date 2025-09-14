@@ -1,33 +1,15 @@
 import { useState, useEffect } from 'react'
 import { API_ENDPOINTS } from '@/data/apiEndpoints'
+import { AgUserAccountDB, PartnerDB } from '@prisma/client'
 
-export interface Partner {
-  id: string
-  agentId: string
-  bankName: string
-  bankNumber: string
-  name: string
-  tel: string
-  line: string
-  status: string
-  method: string
-  startDate: string
-  createdAt: string
-  createdBy: string
-  updatedAt: string
-  updatedBy: string
-  agent: {
-    id: string
-    username: string
-    userLogin: string
-    webname: string
-    position: string
-  }
+export interface ExtendedPartnerDB extends PartnerDB {
+  agUserAccountDB: AgUserAccountDB
 }
+
 
 export interface PartnersResponse {
   success: boolean
-  data: Partner[]
+  data: ExtendedPartnerDB[]
   message?: string
   error?: string
 }
@@ -40,7 +22,7 @@ export interface PartnersStats {
 }
 
 export const usePartners = () => {
-  const [partners, setPartners] = useState<Partner[]>([])
+  const [partners, setPartners] = useState<ExtendedPartnerDB[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [stats, setStats] = useState<PartnersStats>({
@@ -54,19 +36,19 @@ export const usePartners = () => {
     try {
       setLoading(true)
       setError(null)
-      
+
       const response = await fetch(API_ENDPOINTS.PARTNERS.LIST)
       const result: PartnersResponse = await response.json()
-      
+
       if (result.success && result.data) {
         setPartners(result.data)
-        
+
         // Calculate stats
         const total = result.data.length
         const active = result.data.filter(p => p.status === 'active').length
         const pending = result.data.filter(p => p.status === 'pending').length
         const suspended = result.data.filter(p => p.status === 'suspended').length
-        
+
         setStats({ total, active, pending, suspended })
       } else {
         setError(result.error || 'ไม่สามารถโหลดข้อมูลได้')
@@ -79,7 +61,7 @@ export const usePartners = () => {
     }
   }
 
-  const createPartner = async (partnerData: Partial<Partner>) => {
+  const createPartner = async (partnerData: Partial<ExtendedPartnerDB>) => {
     try {
       const response = await fetch(API_ENDPOINTS.PARTNERS.CREATE, {
         method: 'POST',
@@ -88,9 +70,9 @@ export const usePartners = () => {
         },
         body: JSON.stringify(partnerData),
       })
-      
+
       const result = await response.json()
-      
+
       if (result.success) {
         await fetchPartners() // Refresh the list
         return { success: true, data: result.data }
@@ -102,7 +84,7 @@ export const usePartners = () => {
     }
   }
 
-  const updatePartner = async (id: string, partnerData: Partial<Partner>) => {
+  const updatePartner = async (id: string, partnerData: Partial<ExtendedPartnerDB>) => {
     try {
       const response = await fetch(API_ENDPOINTS.PARTNERS.UPDATE(id), {
         method: 'PUT',
@@ -111,9 +93,9 @@ export const usePartners = () => {
         },
         body: JSON.stringify(partnerData),
       })
-      
+
       const result = await response.json()
-      
+
       if (result.success) {
         await fetchPartners() // Refresh the list
         return { success: true, data: result.data }
@@ -134,9 +116,9 @@ export const usePartners = () => {
         },
         body: JSON.stringify({ id }),
       })
-      
+
       const result = await response.json()
-      
+
       if (result.success) {
         await fetchPartners() // Refresh the list
         return { success: true }

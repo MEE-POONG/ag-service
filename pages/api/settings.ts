@@ -67,9 +67,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         logo,
         logoText,
         logoTextColor,
-        logoTextSize: logoTextSize ? parseInt(logoTextSize) : undefined,
+        logoTextSize,
         logoTextFont,
-        logoTextFontSize: logoTextFontSize ? parseInt(logoTextFontSize) : undefined,
+        logoTextFontSize,
         logoTextFontColor,
         facebook,
         instagram,
@@ -79,6 +79,8 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         address,
         tel,
         createdBy,
+        createdAt: new Date(),
+        updatedAt: new Date(),
         updatedBy: createdBy,
       },
     });
@@ -103,7 +105,10 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
         ...data,
         logoTextSize: data.logoTextSize ? parseInt(data.logoTextSize) : undefined,
         logoTextFontSize: data.logoTextFontSize ? parseInt(data.logoTextFontSize) : undefined,
-        updatedBy
+        updatedBy,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isDeleted: false,
       },
     });
 
@@ -120,7 +125,9 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.body;
     if (!id) return res.status(400).json({ error: 'ไม่พบ id' });
 
-    await prisma.settingDB.delete({ where: { id } });
+    await prisma.settingDB.delete({
+      where: { id },
+    });
 
     return res.status(200).json({ message: 'ลบการตั้งค่าสำเร็จ' });
   } catch (error) {
