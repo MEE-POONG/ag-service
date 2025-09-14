@@ -129,8 +129,10 @@ export default function WorkQueuePage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>No.</TableHead>
-                      <TableHead>Job ID</TableHead>
+                      <TableHead>userAg</TableHead>
+                      {/* <TableHead>Job ID</TableHead> */}
                       <TableHead>Type</TableHead>
+                      <TableHead>username</TableHead>
                       <TableHead>Priority</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Event Doc ID</TableHead>
@@ -144,10 +146,19 @@ export default function WorkQueuePage() {
                     {workQueues.map((item, index) => (
                       <TableRow key={item.id}>
                         <TableCell>{(params.page - 1) * params.pageSize + index + 1}</TableCell>
-                        <TableCell className="font-mono text-sm">{item.jobId}</TableCell>
+                        <TableCell>
+                          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${typeColorByType(item.type)}`}>
+                            {item.adviser}
+                          </span>
+                        </TableCell>
                         <TableCell>
                           <span className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${typeColorByType(item.type)}`}>
                             {item.type}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold ${typeColorByType(item.type)}`}>
+                            {item.username}
                           </span>
                         </TableCell>
                         <TableCell>
