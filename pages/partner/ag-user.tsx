@@ -313,7 +313,7 @@ export default function AgUserAccountPage() {
                           <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600 select-none">
                             เหลือ {totpRemaining}s
                           </span>
-                          {/* <Button
+                          <Button
                             size="xs"
                             className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
                             onClick={async () => {
@@ -329,7 +329,7 @@ export default function AgUserAccountPage() {
                             }}
                           >
                             คัดลอก TOTP (ลาว)
-                          </Button> */}
+                          </Button>
                           <Button
                             size="xs"
                             className="btn-theme hover:!brightness-95 rounded-full px-3 !font-medium"

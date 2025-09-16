@@ -12,7 +12,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
       return res.status(405).json({ success: false, error: 'Method Not Allowed' })
     }
 
-    const { secret, token, window } = req.body || {}
+    const { secret, token, window: winParam } = req.body || {}
     if (!secret || typeof secret !== 'string') {
       return res.status(400).json({ success: false, error: 'secret is required' })
     }
@@ -21,11 +21,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
     }
 
     const normalized = String(secret).replace(/\s+/g, '').toUpperCase()
-    const win = Number.isFinite(window) ? Number(window) : 1
-    const valid = authenticator.verify({ token, secret: normalized, window: win })
+    const win = Number.isFinite(Number(winParam)) ? Number(winParam) : 1
+    const inst = authenticator.create({ window: win })
+    const valid = inst.check(token, normalized)
     return res.status(200).json({ success: true, valid })
   } catch (e: any) {
     return res.status(500).json({ success: false, error: e?.message || 'Internal Server Error' })
   }
 }
-
