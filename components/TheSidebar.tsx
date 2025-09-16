@@ -4,103 +4,128 @@ import { MdDashboard as LayoutDashboard } from "react-icons/md";
 import MenuPage from "./MenuPage";
 import UserInfo from "@/components/UserInfo";
 import { useAuth } from "@/hooks/useAuth";
-import axios from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
-import { qk } from "@/lib/queryKeys";
+import { useMenuWeb } from "@/hooks/useMenuWeb";
 
 interface TheSidebarProps {
   collapsed: boolean;
   setCollapsed: Dispatch<SetStateAction<boolean>>;
 }
 
+// types ช่วยอ่านง่าย
+type MenuNode = {
+  id: string;
+  title?: string;
+  path?: string;
+  canViews?: boolean;         // ไม่ได้ใช้ตัดสินใจ แต่จะ sync ให้เท่ากับสิทธิจริง
+  children?: MenuNode[];
+  subMenus?: MenuNode[];
+  items?: MenuNode[];
+  [k: string]: any;
+};
+
 export function TheSidebar({ collapsed }: TheSidebarProps) {
   const { user } = useAuth();
-
+  const { menuWeb, menuLoading } = useMenuWeb();
   // ✅ เปลี่ยนชื่อ state ไม่ให้ชนกับตัวที่ import
-  const [menus, setMenus] = useState<any[]>([]);
-  const [filteredMenus, setFilteredMenus] = useState<any[]>([]);
+  const [filteredMenuWebs, setFilteredMenuWebs] = useState<any[]>([]);
 
-  const { data: menusData, isLoading: loading } = useQuery({
-    queryKey: qk.menus.showOrder,
-    queryFn: async () => {
-      const res = await axios.get(`/api/menu-web/showorder`);
-      return res?.data?.data ?? [];
-    },
-    staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-  });
 
   // กรองเมนูตามสิทธิ์ของ user
-  const filterMenusByPermissions = useCallback((menus: any[], currentUser: any) => {
-    if (!currentUser || !currentUser.permissions || currentUser.permissions.length === 0) {
-      return [];
-    }
+  const filterMenusByPermissions = useCallback(
+    (menus: any[], currentUser: any): MenuNode[] => {
+      const perms: Array<{ menuPageWebId: string; canViews: boolean }> =
+        currentUser?.adminPosition?.AdminDefaultPermissionDB ?? [];
 
-    // map ของสิทธิ์ user จาก AdminDefaultPermissionDB
-    const userPermissionsMap = new Map();
-    if (currentUser.adminPosition?.AdminDefaultPermissionDB) {
-      currentUser.adminPosition.AdminDefaultPermissionDB.forEach((permission: any) => {
-        if (permission.menuPage?.name) {
-          userPermissionsMap.set(permission.menuPage.name, permission);
-        }
-      });
-    }
+      if (!Array.isArray(perms) || perms.length === 0 || !Array.isArray(menus)) {
+        return [];
+      }
 
-    const filterMenu = (menu: any): any | null => {
-      const userPermission = userPermissionsMap.get(menu.name);
-      const hasBasicPermission = currentUser.permissions.includes(menu.name);
+      // set ของ id ที่ "ดูได้" จากตารางสิทธิ์
+      const allow = new Set(
+        perms.filter(p => p?.canViews).map(p => String(p.menuPageWebId))
+      );
 
-      if (!userPermission && !hasBasicPermission) {
-        if (menu.children?.length > 0) {
-          const filteredChildren = menu.children.map(filterMenu).filter(Boolean);
-          if (filteredChildren.length > 0) {
-            return { ...menu, children: filteredChildren };
+      // ฟังก์ชันหา children ที่แท้จริง (รองรับหลายชื่อ children)
+      const getChildren = (node: any): MenuNode[] =>
+        (node?.children ?? node?.subMenus ?? node?.items ?? []) as MenuNode[];
+
+      // หาชื่อพร็อพที่ต้องคืนลูกกลับ (children/subMenus/items)
+      const childKeyOf = (node: any): 'children' | 'subMenus' | 'items' | null => {
+        if (Array.isArray(node?.children)) return 'children';
+        if (Array.isArray(node?.subMenus)) return 'subMenus';
+        if (Array.isArray(node?.items)) return 'items';
+        return null;
+      };
+
+      // กรองแบบ recursive: include ถ้า node เองมีสิทธิ หรือมีลูกที่มีสิทธิ
+      const walk = (list: MenuNode[]): MenuNode[] => {
+        return (list ?? []).reduce<MenuNode[]>((acc, node) => {
+          const id = String(node?.id ?? '');
+          const childKey = childKeyOf(node);
+          const rawChildren = getChildren(node);
+          const filteredChildren = walk(rawChildren);
+
+          const selfAllowed = allow.has(id);
+          const hasAllowedChild = filteredChildren.length > 0;
+
+          if (selfAllowed || hasAllowedChild) {
+            // sync canViews ให้สะท้อนสิทธิจริง (อิง AdminDefaultPermissionDB เท่านั้น)
+            const next: MenuNode = {
+              ...node,
+              canViews: !!selfAllowed, // ตามโจทย์: ไม่ต้องสนค่าใน menu เดิม
+            };
+
+            if (childKey) {
+              // คง key เดิมของ children เอาไว้ (รักษาโครงสร้าง UI)
+              (next as any)[childKey] = filteredChildren;
+            }
+
+            acc.push(next);
           }
-        }
-        return null;
-      }
 
-      if (userPermission && !userPermission.canViews) {
-        return null;
-      }
+          return acc;
+        }, []);
+      };
 
-      if (menu.children?.length > 0) {
-        const filteredChildren = menu.children.map(filterMenu).filter(Boolean);
-        return { ...menu, children: filteredChildren, userPermission };
-      }
+      const result = walk(menus);
 
-      return { ...menu, userPermission };
-    };
+      // debug ช่วยตรวจสอบ
+      console.log(
+        '[filterMenusByPermissions] allowedIds:',
+        Array.from(allow.values())
+      );
+      console.log('[filterMenusByPermissions] result:', result);
 
-    return menus.map(filterMenu).filter(Boolean);
-  }, []);
-
-  // โหลดเมนูจาก API -> เก็บใน state
-  useEffect(() => {
-    if (menusData && Array.isArray(menusData)) {
-      setMenus(menusData);
-    } else {
-      setMenus([]);
-    }
-  }, [menusData]);
+      return result;
+    },
+    []
+  );
 
   // ✅ ถ้าเป็น admin/superadmin ให้เห็นทุกเมนู ไม่ต้องกรอง
   useEffect(() => {
-    const isAdmin =
-      typeof user?.username === "string" &&
-      ["admin", "superadmin"].includes(user.username.toLowerCase());
+    const isAdmin = ['admin', 'superadmin'].includes(
+      (user?.username || '').toLowerCase()
+    );
 
-    if (user && menus.length > 0) {
-      if (isAdmin) {
-        setFilteredMenus(menus);
-      } else {
-        const filtered = filterMenusByPermissions(menus, user);
-        setFilteredMenus(filtered);
-      }
-    } else {
-      setFilteredMenus([]);
+    if (!user || !menuWeb) {
+      setFilteredMenuWebs([]);
+      console.log('filter: no user or no menuWeb');
+      return;
     }
-  }, [user, menus, filterMenusByPermissions]); // ✅ เพิ่ม deps ให้ครบ
+
+    if (isAdmin) {
+      console.log('filter: admin -> see all');
+      setFilteredMenuWebs(menuWeb);
+      return;
+    }
+
+    const filtered = filterMenusByPermissions(menuWeb, user);
+    setFilteredMenuWebs(filtered);
+  }, [user, menuWeb, filterMenusByPermissions]);
+
+  // useEffect(() => {
+  //   console.log(48, ` filteredMenuWebs : `, filteredMenuWebs);
+  // }, [filteredMenuWebs]);
 
   return (
     <div className={`h-screen bg-white/70 backdrop-blur-xl border-r border-gray-200/60 shadow-sm transition-all duration-300 ${collapsed ? "w-16" : "w-56"}`}>
@@ -129,13 +154,13 @@ export function TheSidebar({ collapsed }: TheSidebarProps) {
         <div className="flex-1 overflow-y-auto p-2">
           <nav>
             <ul className="space-y-1">
-              {loading ? (
+              {menuLoading ? (
                 <li className="text-center text-gray-500 py-4">
                   <div className="animate-pulse">กำลังโหลดเมนู...</div>
                 </li>
               ) : (
-                filteredMenus.length > 0 && (
-                  <MenuPage dataList={filteredMenus} collapsed={collapsed} />
+                filteredMenuWebs && (
+                  <MenuPage dataList={filteredMenuWebs} collapsed={collapsed} />
                 )
               )}
 

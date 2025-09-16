@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { PrismaClient } from '@prisma/client'
-import { serializeBigIntToNumber } from '@/lib/bigintUtils'
 
 const prisma = new PrismaClient()
 
@@ -36,7 +35,7 @@ export default async function handler(
 
         return res.status(200).json({
           success: true,
-          data: serializeBigIntToNumber(data),
+          data: data,
           message: `ดึงข้อมูลเมนูทั้งหมดสำเร็จ จำนวน ${data.length} รายการ`
         })
 
@@ -127,7 +126,7 @@ export default async function handler(
 
         return res.status(200).json({
           success: true,
-          data: serializeBigIntToNumber(updatedMenus),
+          data: updatedMenus,
           message: `อัปเดตลำดับการแสดงสำเร็จ จำนวน ${updates.length} รายการ`
         })
 
