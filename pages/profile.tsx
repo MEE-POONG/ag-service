@@ -127,13 +127,6 @@ export default function ViewAdminPage() {
           <div className="flex space-x-2">
             <AdminModalNewPassword data={admin} />
             <AdminModalEdit data={admin} />
-            <Link
-              href={`/admin/edit/${admin.id}`}
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <FaEdit className="mr-2" />
-              แก้ไข
-            </Link>
           </div>
         </div>
 
