@@ -7,7 +7,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import Modal, { ModalBody, ModalFooter, ModalHeader, ModalTitle, ModalDescription } from '@/components/form/Modal'
 import ReactIconComponent from '@/components/ReactIconComponent'
-import { authenticator } from 'otplib'
 
 type AgUserAccountDB = {
   id?: string
@@ -30,9 +29,20 @@ function useAgUserAccounts() {
   return { items, add, update, remove, setItems }
 }
 
+function useTotpRemaining(stepSec = 30) {
+  const calc = () => stepSec - (Math.floor(Date.now() / 1000) % stepSec)
+  const [remaining, setRemaining] = useState<number>(calc)
+  useEffect(() => {
+    const id = setInterval(() => setRemaining(calc()), 1000)
+    return () => clearInterval(id)
+  }, [stepSec])
+  return remaining
+}
+
 export default function AgUserAccountPage() {
   const queryClient = useQueryClient()
   const { items, add, update, remove, setItems } = useAgUserAccounts()
+  const totpRemaining = useTotpRemaining(30)
   const [keyword, setKeyword] = useState('')
   const debouncedKeyword = useDebouncedValue(keyword, 300)
   const [page, setPage] = useState(1)
@@ -206,7 +216,7 @@ export default function AgUserAccountPage() {
   return (
     <TheLayout>
       <div className={`p-4 sm:p-6`}>
-        <div className="mx-auto ">
+        <div className="mx-auto">
           <div className="relative overflow-hidden rounded-[1.5rem] p-5 sm:p-8 mb-6 sm:mb-8 bg-gradient-to-r from-[#A78BFA] via-[#A78BFA] to-[#34D399] shadow-lg shadow-gray-900/10">
             <div className="flex relative z-10 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 drop-shadow-sm sm:text-3xl md:text-4xl">
@@ -282,16 +292,16 @@ export default function AgUserAccountPage() {
                         )}
                       </td>
                       <td className="px-3 py-2">
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center">
                           <Button
                             size="xs"
                             className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
                             onClick={async () => {
                               try {
                                 if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
-                                // Generate TOTP using otplib (Google Auth compatible)
-                                const code = authenticator.generate(String(u.gaSecretEnc))
-                                await navigator.clipboard.writeText(code)
+                                const res = await axios.post('/api/totp/generate', { secret: u.gaSecretEnc })
+                                if (!res.data?.success) throw new Error(res.data?.error || 'สร้าง TOTP ไม่สำเร็จ')
+                                await navigator.clipboard.writeText(res.data.code)
                                 toast.success('คัดลอก TOTP แล้ว')
                               } catch (e: any) {
                                 toast.error(e?.message || 'สร้าง TOTP ไม่สำเร็จ')
@@ -300,6 +310,26 @@ export default function AgUserAccountPage() {
                           >
                             คัดลอก TOTP
                           </Button>
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600 select-none">
+                            เหลือ {totpRemaining}s
+                          </span>
+                          {/* <Button
+                            size="xs"
+                            className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
+                            onClick={async () => {
+                              try {
+                                if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
+                                const res = await axios.post('/api/totp/generate', { secret: u.gaSecretEnc })
+                                if (!res.data?.success) throw new Error(res.data?.error || 'สร้าง TOTP ไม่สำเร็จ')
+                                await navigator.clipboard.writeText(res.data.code)
+                                toast.success('คัดลอก TOTP (ลาว) แล้ว')
+                              } catch (e: any) {
+                                toast.error(e?.message || 'สร้าง TOTP (ลาว) ไม่สำเร็จ')
+                              }
+                            }}
+                          >
+                            คัดลอก TOTP (ลาว)
+                          </Button> */}
                           <Button
                             size="xs"
                             className="btn-theme hover:!brightness-95 rounded-full px-3 !font-medium"
@@ -314,7 +344,7 @@ export default function AgUserAccountPage() {
                             onClick={() => startDelete(idx)}
                           >
                             {deleteMutation.isPending ? (
-                              <span className="inline-flex items-center gap-1">
+                              <span className="inline-flex gap-1 items-center">
                                 <ReactIconComponent icon="FaSpinner" setClass="h-3.5 w-3.5 animate-spin" />
                                 ลบ
                               </span>
@@ -334,8 +364,8 @@ export default function AgUserAccountPage() {
                 </tbody>
               </table>
             </div>
-            <div className="flex items-center justify-between mt-4">
-              <div className="flex items-center gap-2">
+            <div className="flex justify-between items-center mt-4">
+              <div className="flex gap-2 items-center">
                 ทั้งหมด {totalItems} รายการ
                 <span className="text-sm text-gray-600">แสดง</span>
                 <select
@@ -350,7 +380,7 @@ export default function AgUserAccountPage() {
                 </select>
                 <span className="text-sm text-gray-600">ต่อหน้า</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex gap-2 items-center">
                 <Button
                   size="sm"
                   className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
