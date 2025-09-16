@@ -360,22 +360,6 @@ export default function ViewAdminPage() {
         )}
 
         {/* Actions */}
-        <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href={`/admin/edit/${admin.id}`}
-            className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <FaEdit className="mr-2" />
-            แก้ไขข้อมูล
-          </Link>
-          <Link
-            href="/admin"
-            className="inline-flex items-center justify-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            <FaArrowLeft className="mr-2" />
-            กลับหน้ารายการ
-          </Link>
-        </div>
       </div>
     </TheLayout>
   )
