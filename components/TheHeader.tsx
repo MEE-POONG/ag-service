@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Breadcrumbs from "./ui/Breadcrumbs";
 import Link from "next/link";
 import { CloseButton } from "./TheSidebar";
+import ReactIconComponent from "./ReactIconComponent";
 
 interface TheHeaderProps {
   collapsed: boolean;
@@ -52,18 +53,7 @@ export function TheHeader({
         <div className="flex justify-between items-center h-16">
           {/* Mobile menu button & Sidebar toggle */}
           <div className="flex items-center">
-          <CloseButton collapsed={collapsed} setCollapsed={setCollapsed} />
-
-            {/* Desktop sidebar toggle */}
-            <button
-              type="button"
-              className="hidden lg:inline-flex items-center justify-center p-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#A78BFA]"
-              onClick={() => setCollapsed(!collapsed)}
-            >
-              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-              </svg>
-            </button>
+            <CloseButton collapsed={collapsed} setCollapsed={setCollapsed} />
           </div>
 
           {/* Search */}
