@@ -74,30 +74,30 @@ export default function LoginPage() {
 
   if (checking) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">กำลังตรวจสอบสถานะการเข้าสู่ระบบ...</p>
+          <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <p className="mt-3 sm:mt-4 text-sm sm:text-base text-gray-600">กำลังตรวจสอบสถานะการเข้าสู่ระบบ...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-sm sm:max-w-md w-full space-y-6 sm:space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-4 sm:py-8 md:py-12 px-3 sm:px-6 lg:px-8">
+      <div className="max-w-xs sm:max-w-sm md:max-w-md w-full space-y-4 sm:space-y-6 md:space-y-8">
         <div>
-          <h2 className="mt-4 sm:mt-6 text-center text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-2 sm:mt-4 md:mt-6 text-center text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-gray-900">
             เข้าสู่ระบบ
           </h2>
-          <p className="mt-2 text-center text-xs sm:text-sm text-gray-600">
+          <p className="mt-1 sm:mt-2 text-center text-xs sm:text-sm text-gray-600">
             หรือ{' '}
             <Link href="/auth/register" className="font-medium text-primary-600 hover:text-primary-500">
               สมัครสมาชิกใหม่
             </Link>
           </p>
         </div>
-        <form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-4 sm:mt-6 md:mt-8 space-y-3 sm:space-y-4 md:space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="username" className="sr-only">ชื่อผู้ใช้</label>
@@ -106,7 +106,7 @@ export default function LoginPage() {
                 name="username"
                 type="text"
                 required
-                className="input-field rounded-t-lg text-sm sm:text-base"
+                className="input-field rounded-t-lg text-sm sm:text-base py-3 sm:py-4"
                 placeholder="ชื่อผู้ใช้"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -120,7 +120,7 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 required
-                className="input-field rounded-b-lg text-sm sm:text-base"
+                className="input-field rounded-b-lg text-sm sm:text-base py-3 sm:py-4"
                 placeholder="รหัสผ่าน"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -132,7 +132,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 sm:py-3 px-4 border border-transparent text-xs sm:text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+              className="group relative w-full flex justify-center py-3 sm:py-4 px-4 border border-transparent text-sm sm:text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 transition-all duration-200"
             >
               {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
             </button>

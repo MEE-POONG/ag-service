@@ -5,6 +5,7 @@ import MenuPage from "./MenuPage";
 import UserInfo from "@/components/UserInfo";
 import { useAuth } from "@/hooks/useAuth";
 import { useMenuWeb } from "@/hooks/useMenuWeb";
+import ReactIconComponent from "./ReactIconComponent";
 
 interface TheSidebarProps {
   collapsed: boolean;
@@ -23,7 +24,7 @@ type MenuNode = {
   [k: string]: any;
 };
 
-export function TheSidebar({ collapsed }: TheSidebarProps) {
+export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   const { user } = useAuth();
   const { menuWeb, menuLoading } = useMenuWeb();
   // ✅ เปลี่ยนชื่อ state ไม่ให้ชนกับตัวที่ import
@@ -123,10 +124,6 @@ export function TheSidebar({ collapsed }: TheSidebarProps) {
     setFilteredMenuWebs(filtered);
   }, [user, menuWeb, filterMenusByPermissions]);
 
-  // useEffect(() => {
-  //   console.log(48, ` filteredMenuWebs : `, filteredMenuWebs);
-  // }, [filteredMenuWebs]);
-
   return (
     <div className={`h-screen bg-white/70 backdrop-blur-xl border-r border-gray-200/60 shadow-sm transition-all duration-300 ${collapsed ? "w-16" : "w-56"}`}>
       <div className="flex flex-col h-full">
@@ -180,3 +177,11 @@ export function TheSidebar({ collapsed }: TheSidebarProps) {
     </div>
   );
 }
+// ปุ่มสำหรับกดปิดหน้าต่าง
+export const CloseButton = ({ collapsed, setCollapsed }: { collapsed: boolean, setCollapsed: (collapsed: boolean) => void }) => {
+  return (
+    <button onClick={() => setCollapsed(!collapsed)} className="top-2 right-2 text-white-500 hover:text-gray-700">
+      <ReactIconComponent icon="FaBars" setClass="h-5 w-5" />
+    </button>
+  );
+};
