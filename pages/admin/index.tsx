@@ -119,12 +119,7 @@ export default function AdminPage() {
       />
       <div className="mx-auto">
 
-
-        {/* ✅ จัดวงเล็บเงื่อนไขให้ชัดเจน */}
-        {/*
-        </div> */}
-
-        <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
+        <div className="bg-white rounded-lg shadow-md pl-1 sm:p-2 mb-6 sm:mb-8">
           {isLoading ? (
             <div className="text-sm text-gray-500">กำลังโหลดข้อมูล...</div>
           ) : isError ? (

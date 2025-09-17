@@ -231,7 +231,7 @@ export default function AgUserAccountPage() {
           </Button>
         }
       />
-      <div className={`p1-1 sm:p-2`}>
+      <div className={`pl-1 sm:p-2`}>
         <div className="mx-auto">
           <div className="p-4 mb-6 rounded-2xl ring-1 ring-gray-200 shadow-lg backdrop-blur shadow-gray-900/5 sm:p-6 sm:mb-8 bg-white/90">
             {isFetching && (

@@ -5,7 +5,7 @@ import { TheLayout } from '@/components/TheLayout'
 export default function PartnerPage() {
   return (
     <TheLayout>
-      <div className="p1-1 sm:p-2">
+      <div className="pl-1 sm:p-2">
         <div className="max-w-6xl mx-auto">
           {/* Themed header */}
           <div className="relative overflow-hidden rounded-[1.5rem] p-5 sm:p-8 mb-6 sm:mb-8 bg-gradient-to-r from-[#A78BFA] via-[#A78BFA] to-[#34D399] shadow-lg shadow-gray-900/10">
@@ -27,7 +27,7 @@ export default function PartnerPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <Link 
                 href="/partner/ag-user"
-                className="block p1-1 sm:p-2 rounded-2xl ring-1 ring-gray-200 bg-white/90 hover:bg-white transition-colors shadow-sm"
+                className="block pl-1 sm:p-2 rounded-2xl ring-1 ring-gray-200 bg-white/90 hover:bg-white transition-colors shadow-sm"
               >
                 <div className="flex items-center mb-2 sm:mb-3">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-[#A78BFA] to-[#34D399] rounded-lg flex items-center justify-center mr-2 sm:mr-3 text-white font-bold text-xs sm:text-sm">
@@ -40,7 +40,7 @@ export default function PartnerPage() {
               
               <Link 
                 href="/partner/members"
-                className="block p1-1 sm:p-2 rounded-2xl ring-1 ring-gray-200 bg-white/90 hover:bg-white transition-colors shadow-sm"
+                className="block pl-1 sm:p-2 rounded-2xl ring-1 ring-gray-200 bg-white/90 hover:bg-white transition-colors shadow-sm"
               >
                 <div className="flex items-center mb-2 sm:mb-3">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-[#A78BFA] to-[#34D399] rounded-lg flex items-center justify-center mr-2 sm:mr-3 text-white font-bold text-xs sm:text-sm">

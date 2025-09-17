@@ -201,94 +201,92 @@ export default function CommandWorkPage() {
         description="ระบบจัดการตั้งค่าเว็บไซต์ของระบบ"
         gradient={true}
       />
-      <div className={`p1-1 sm:p-2`}>
-        <div className="mx-auto ">
-          <div className="p-4 mb-6 rounded-2xl ring-1 ring-gray-200 shadow-lg backdrop-blur shadow-gray-900/5 sm:p-6 sm:mb-8 bg-white/90">
-            {isFetching && (
-              <div className="mb-3 text-sm text-gray-500">กำลังโหลดข้อมูล...</div>
-            )}
-            <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:gap-4 sm:mb-6">
-              <input
-                value={keyword}
-                onChange={e => setKeyword(e.target.value)}
-                placeholder="ค้นหา (รหัส/ล็อกอิน/ตำแหน่ง/ต้นทาง/สำรอง/Secret)"
-                className="px-4 py-2 w-full text-sm sm:text-base rounded-xl bg-white/90 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#A78BFA] focus:border-transparent shadow-sm"
-              />
-            </div>
+      <div className="mx-auto ">
+        <div className="p-4 mb-6 rounded-2xl ring-1 ring-gray-200 shadow-lg backdrop-blur shadow-gray-900/5 sm:p-6 sm:mb-8 bg-white/90">
+          {isFetching && (
+            <div className="mb-3 text-sm text-gray-500">กำลังโหลดข้อมูล...</div>
+          )}
+          <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:gap-4 sm:mb-6">
+            <input
+              value={keyword}
+              onChange={e => setKeyword(e.target.value)}
+              placeholder="ค้นหา (รหัส/ล็อกอิน/ตำแหน่ง/ต้นทาง/สำรอง/Secret)"
+              className="px-4 py-2 w-full text-sm sm:text-base rounded-xl bg-white/90 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#A78BFA] focus:border-transparent shadow-sm"
+            />
+          </div>
 
-            <div className="overflow-hidden overflow-x-auto rounded-xl ring-1 ring-gray-200">
-              <table className="w-full text-sm table-auto">
-                <thead>
-                  <tr className="text-white bg-gradient-to-r from-[#A78BFA] to-[#34D399]">
-                    <th className="px-3 py-2 font-semibold text-left">Username</th>
-                    <th className="px-3 py-2 font-semibold text-left">userLogin</th>
-                    <th className="px-3 py-2 font-semibold text-left">position</th>
-                    <th className="px-3 py-2 font-semibold text-left">การจัดการ</th>
+          <div className="overflow-hidden overflow-x-auto rounded-xl ring-1 ring-gray-200">
+            <table className="w-full text-sm table-auto">
+              <thead>
+                <tr className="text-white bg-gradient-to-r from-[#A78BFA] to-[#34D399]">
+                  <th className="px-3 py-2 font-semibold text-left">Username</th>
+                  <th className="px-3 py-2 font-semibold text-left">userLogin</th>
+                  <th className="px-3 py-2 font-semibold text-left">position</th>
+                  <th className="px-3 py-2 font-semibold text-left">การจัดการ</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {list.map((u, idx) => (
+                  <tr key={u.id ?? `${u.username}-${idx}`} className="hover:bg-[#A78BFA]/5 transition-colors">
+                    <td className="px-3 py-2 font-semibold text-gray-900">{u.username}</td>
+                    <td className="px-3 py-2">{u.userLogin}</td>
+                    <td className="px-3 py-2 capitalize">{u.position}</td>
+                    <td className="px-3 py-2">
+                      <div className="flex gap-2">
+                        {/* ทุกอันจะเป็น modal */}
+                        <CommandWorkModalCredit data={u} />
+                        {u.position === 'agent' && <>
+                          {/* <CommandWorkModalCreateC data={u} /> */}
+                          <CommandWorkModalLockUnLockC data={u} />
+                        </>}
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {list.map((u, idx) => (
-                    <tr key={u.id ?? `${u.username}-${idx}`} className="hover:bg-[#A78BFA]/5 transition-colors">
-                      <td className="px-3 py-2 font-semibold text-gray-900">{u.username}</td>
-                      <td className="px-3 py-2">{u.userLogin}</td>
-                      <td className="px-3 py-2 capitalize">{u.position}</td>
-                      <td className="px-3 py-2">
-                        <div className="flex gap-2">
-                          {/* ทุกอันจะเป็น modal */}
-                          <CommandWorkModalCredit data={u} />
-                          {u.position === 'agent' && <>
-                            {/* <CommandWorkModalCreateC data={u} /> */}
-                            <CommandWorkModalLockUnLockC data={u} />
-                          </>}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {list.length === 0 && (
-                    <tr>
-                      <td className="px-3 py-6 text-center text-gray-500" colSpan={7}>
-                        ไม่พบข้อมูล
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                ))}
+                {list.length === 0 && (
+                  <tr>
+                    <td className="px-3 py-6 text-center text-gray-500" colSpan={7}>
+                      ไม่พบข้อมูล
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center gap-2">
+              ทั้งหมด {totalItems} รายการ
+              <span className="text-sm text-gray-600">แสดง</span>
+              <select
+                value={pageSize}
+                onChange={e => setPageSize(parseInt(e.target.value, 10) || 10)}
+                className="px-3 py-1 text-end rounded-md border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
+                disabled={isFetching}
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+              <span className="text-sm text-gray-600">ต่อหน้า</span>
             </div>
-            <div className="flex items-center justify-between mt-4">
-              <div className="flex items-center gap-2">
-                ทั้งหมด {totalItems} รายการ
-                <span className="text-sm text-gray-600">แสดง</span>
-                <select
-                  value={pageSize}
-                  onChange={e => setPageSize(parseInt(e.target.value, 10) || 10)}
-                  className="px-3 py-1 text-end rounded-md border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-                  disabled={isFetching}
-                >
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                </select>
-                <span className="text-sm text-gray-600">ต่อหน้า</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
-                  disabled={isFetching || page <= 1}
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
-                >
-                  ก่อนหน้า
-                </Button>
-                <span className="text-sm text-gray-700">หน้า {page} / {Math.max(1, totalPages)}</span>
-                <Button
-                  size="sm"
-                  className="btn-theme hover:!brightness-95 rounded-full px-3"
-                  disabled={isFetching || page >= totalPages}
-                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                >
-                  ถัดไป
-                </Button>
-              </div>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
+                disabled={isFetching || page <= 1}
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+              >
+                ก่อนหน้า
+              </Button>
+              <span className="text-sm text-gray-700">หน้า {page} / {Math.max(1, totalPages)}</span>
+              <Button
+                size="sm"
+                className="btn-theme hover:!brightness-95 rounded-full px-3"
+                disabled={isFetching || page >= totalPages}
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              >
+                ถัดไป
+              </Button>
             </div>
           </div>
         </div>

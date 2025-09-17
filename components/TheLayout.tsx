@@ -27,9 +27,8 @@ export function TheLayout({ children }: LayoutProps) {
     <div className="min-h-screen bg-background antialiased">
       <div className={`min-h-screen flex ${darkMode ? 'dark' : ''}`}>
         {/* Sidebar - Fixed Position */}
-        <div className="flex">
-          <TheSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
-        </div>
+
+        <TheSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
         {/* Main Content - Adjusted for fixed sidebar */}
         <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300`}>
@@ -42,7 +41,8 @@ export function TheLayout({ children }: LayoutProps) {
           />
 
           {/* Main Content Area - Adjusted for fixed header */}
-          <main className="md:pt-20 bg-transparent p-2 md:p-4 w-full overflow-y-auto min-h-full">
+          
+          <main className={`md:pt-20 bg-transparent p-2 md:p-4 w-full overflow-y-auto min-h-full transition-all duration-300 ${collapsed ? 'pl-20 md:pl-20' : 'pl-60 md:pl-60'}`}>
             <div className="animate-fade-in max-w-full">
               {children}
             </div>

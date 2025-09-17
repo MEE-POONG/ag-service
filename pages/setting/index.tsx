@@ -108,7 +108,7 @@ export default function SettingPage() {
         gradient={true}
       />
       <div className="mx-auto">
-        <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
+        <div className="bg-white rounded-lg shadow-md pl-1 sm:p-2 mb-6 sm:mb-8">
           {/* <form onSubmit={handleSubmit}> */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>

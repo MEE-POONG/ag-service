@@ -89,7 +89,7 @@ export default function ViewAdminPage() {
 
   return (
     <TheLayout>
-      <div className="max-w-4xl mx-auto p1-1 sm:p-2">
+      <div className="max-w-4xl mx-auto pl-1 sm:p-2">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <div className="flex items-center mb-4 sm:mb-0">

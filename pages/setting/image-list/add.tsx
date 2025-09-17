@@ -71,7 +71,7 @@ const ImageAdd: React.FC = () => {
                 }
             />
             <div className="mx-auto">
-                <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
+                <div className="bg-white rounded-lg shadow-md pl-1 sm:p-2 mb-6 sm:mb-8">
                     <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 sm:mb-4">ระบุรายละเอียดรูปภาพ</h2>
 
                     <form onSubmit={handleSubmit} className="space-y-4">

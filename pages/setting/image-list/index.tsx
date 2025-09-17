@@ -60,7 +60,7 @@ export default function ImagePage() {
         }));
     };
 
-    useEffect(() => {       
+    useEffect(() => {
         console.log(`imageResp : `, imageResp);
     }, [imageResp]);
 
@@ -80,8 +80,8 @@ export default function ImagePage() {
                     </Link>
                 }
             />
-            <div className="mx-auto">
-                <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
+            <div className="max-w-6xl mx-auto lg:max-w-full">
+                <div className="bg-white rounded-lg shadow-md pl-1 sm:p-2 mb-6 sm:mb-8">
                     <div className="overflow-x-auto">
                         <Table>
                             <TableHeader>
