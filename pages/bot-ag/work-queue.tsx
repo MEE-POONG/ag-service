@@ -7,6 +7,7 @@ import { Params } from '@/data/interfaceDefault'
 import { ExtendedAgQueueJobDB } from '@/data/interface'
 import { usePermissions } from '@/hooks/usePermissions'
 import { useQuery } from '@tanstack/react-query'
+import PageHeader from '@/components/PageHeader'
 
 type WorkQueueListResp = {
   success: boolean
@@ -105,17 +106,14 @@ export default function WorkQueuePage() {
 
   return (
     <TheLayout>
+      <PageHeader
+        title="จัดการ Work Queue"
+        icon='FaList'
+        description="ระบบจัดการจัดการ Work Queue"
+        gradient={true}
+      />
       <div className="mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 m-2 sm:mb-4">
-          <div>
-            <h1 className="flex items-center text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900">
-              จัดการ Work Queue
-            </h1>
-            {isSuperAdmin && <p className="text-sm text-blue-600 mt-1">🔑 Super Admin - สิทธิ์เต็ม</p>}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+        <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
           {isLoading ? (
             <div className="text-sm text-gray-500">กำลังโหลดข้อมูล...</div>
           ) : isError ? (

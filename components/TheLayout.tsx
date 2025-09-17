@@ -27,12 +27,12 @@ export function TheLayout({ children }: LayoutProps) {
     <div className="min-h-screen bg-background antialiased">
       <div className={`min-h-screen flex ${darkMode ? 'dark' : ''}`}>
         {/* Sidebar - Fixed Position */}
-        <div className="fixed inset-y-0 left-0 z-50">
+        <div className="flex">
           <TheSidebar collapsed={collapsed} setCollapsed={setCollapsed} />
         </div>
 
         {/* Main Content - Adjusted for fixed sidebar */}
-        <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ${collapsed ? 'ml-16' : 'ml-56'}`}>
+        <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300`}>
           {/* Header - Fixed Position */}
           <TheHeader
             collapsed={collapsed}

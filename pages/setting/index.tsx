@@ -10,9 +10,10 @@ import Page404 from '@/components/Page404'
 import { SettingDB } from '@prisma/client'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
+import PageHeader from '@/components/PageHeader'
 
 export default function SettingPage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   const [settingData, setSettingData] = useState<Partial<SettingDB>>({});
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -68,7 +69,7 @@ export default function SettingPage() {
       if (res.status === 200 || res.status === 201) {
         toast.success(settingData?.id ? 'อัปเดตข้อมูลเรียบร้อยแล้ว' : 'เพิ่มข้อมูลเรียบร้อยแล้ว')
         if (selectedFile && settingData.logo) {
-          try { await axios.delete('/api/upload/searchDel', { data: { imageUrl: settingData.logo } }) } catch {}
+          try { await axios.delete('/api/upload/searchDel', { data: { imageUrl: settingData.logo } }) } catch { }
         }
         await queryClient.invalidateQueries({ queryKey: qk.settings.root })
         await refetch()
@@ -100,13 +101,14 @@ export default function SettingPage() {
 
   return (
     <TheLayout>
+      <PageHeader
+        title="ตั้งค่าเว็บไซต์"
+        icon='FaGlobe'
+        description="ระบบจัดการตั้งค่าเว็บไซต์ของระบบ"
+        gradient={true}
+      />
       <div className="mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 m-2 sm:mb-4">
-          <h1 className="flex items-center text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900">
-            🖼️ ตั้งค่าเว็บไซต์
-          </h1>
-        </div>
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+        <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
           {/* <form onSubmit={handleSubmit}> */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>

@@ -14,6 +14,7 @@ import { ImageList } from '@prisma/client';
 import ImageModalDelete from '@/container/image-list/ModalDelete';
 import { useQuery } from '@tanstack/react-query';
 import { qk } from '@/lib/queryKeys';
+import PageHeader from '@/components/PageHeader';
 
 type ImageResp = {
     success: boolean;
@@ -65,20 +66,22 @@ export default function ImagePage() {
 
     return (
         <TheLayout>
-            <div className="mx-auto">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 m-2 sm:mb-4">
-                    <h1 className="flex items-center text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900">
-                        🖼️ รายการรูปภาพ
-                    </h1>
+            <PageHeader
+                title="รายการรูปภาพ"
+                icon='FaImages'
+                description="ระบบจัดการรูปภาพของระบบ"
+                gradient={true}
+                actions={
                     <Link
                         href="/setting/image-list/add"
                         className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
                     >
                         <FaPlus className="mr-2" /> เพิ่มรูปภาพ
                     </Link>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+                }
+            />
+            <div className="mx-auto">
+                <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
                     <div className="overflow-x-auto">
                         <Table>
                             <TableHeader>

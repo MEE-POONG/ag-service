@@ -13,6 +13,7 @@ import { usePermissions } from '@/hooks/usePermissions'
 import { useQuery } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
 import { useAuth } from '@/hooks/useAuth'
+import PageHeader from '@/components/PageHeader'
 
 type AdminListResp = {
   success: boolean
@@ -77,7 +78,6 @@ export default function AdminPage() {
 
   // ✅ อัปเดต state เมื่อ data เปลี่ยน (ไม่ผูกกับ router)
   useEffect(() => {
-    console.log('admin data : ', queryData)
     if (queryData?.data) setAdmins(queryData.data)
     if (queryData?.pagination?.totalPages) {
       setParams((prev) => ({ ...prev, totalPages: queryData.pagination!.totalPages! }))
@@ -103,27 +103,28 @@ export default function AdminPage() {
 
   return (
     <TheLayout>
+      <PageHeader
+        title="จัดการผู้ดูแลระบบ"
+        icon='FaShieldAlt'
+        description="ระบบจัดการผู้ดูแลระบบ"
+        gradient={true}
+        actions={(headPermissions.canAdvance || supportPermissions.canCreate || (user?.username === 'superadmin' || user?.username === 'admin')) ? (
+          <Link
+            href="/admin/add"
+            className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
+          >
+            <FaPlus className="mr-2" /> เพิ่มผู้ดูแล
+          </Link>
+        ) : null}
+      />
       <div className="mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 m-2 sm:mb-4">
-          <div>
-            <h1 className="flex items-center text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900">
-              จัดการผู้ดูแลระบบ
-            </h1>
-            {isSuperAdmin && <p className="text-sm text-blue-600 mt-1">🔑 Super Admin - สิทธิ์เต็ม</p>}
-          </div>
 
-          {/* ✅ จัดวงเล็บเงื่อนไขให้ชัดเจน */}
-          {(headPermissions.canAdvance || supportPermissions.canCreate || (user?.username === 'superadmin' || user?.username === 'admin')) ? (
-            <Link
-              href="/admin/add"
-              className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
-            >
-              <FaPlus className="mr-2" /> เพิ่มผู้ดูแล
-            </Link>
-          ) : null}
-        </div>
 
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+        {/* ✅ จัดวงเล็บเงื่อนไขให้ชัดเจน */}
+        {/*
+        </div> */}
+
+        <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
           {isLoading ? (
             <div className="text-sm text-gray-500">กำลังโหลดข้อมูล...</div>
           ) : isError ? (

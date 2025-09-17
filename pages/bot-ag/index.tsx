@@ -9,6 +9,7 @@ import CommandWorkModalCredit from '@/container/bot-ag/CommandWork/ModalCredit'
 import { AgUserAccountDB } from '@prisma/client'
 import CommandWorkModalCreateC from '@/container/bot-ag/CommandWork/ModalCreateC'
 import CommandWorkModalLockUnLockC from '@/container/bot-ag/CommandWork/ModalLockUnLockC'
+import PageHeader from '@/components/PageHeader'
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -194,25 +195,14 @@ export default function CommandWorkPage() {
 
   return (
     <TheLayout>
-      <div className={`p-4 sm:p-6`}>
+      <PageHeader
+        title="คำสั่งหน้างาน AG"
+        icon='FaRobot'
+        description="ระบบจัดการตั้งค่าเว็บไซต์ของระบบ"
+        gradient={true}
+      />
+      <div className={`p1-1 sm:p-2`}>
         <div className="mx-auto ">
-          <div className="relative overflow-hidden rounded-[1.5rem] p-5 sm:p-8 mb-6 sm:mb-8 bg-gradient-to-r from-[#A78BFA] via-[#A78BFA] to-[#34D399] shadow-lg shadow-gray-900/10">
-            <div className="flex relative z-10 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 drop-shadow-sm sm:text-3xl md:text-4xl">
-                คำสั่งหน้างาน AG
-              </h1>
-              <Button
-                size="sm"
-                className="btn-theme hover:!brightness-95 rounded-full shadow-md shadow-gray-900/10 px-4"
-                onClick={startAdd}
-              >
-                + เพิ่ม AG User
-              </Button>
-            </div>
-            <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full blur-2xl pointer-events-none bg-white/15" />
-            <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-3xl pointer-events-none bg-gray-800/10" />
-          </div>
-
           <div className="p-4 mb-6 rounded-2xl ring-1 ring-gray-200 shadow-lg backdrop-blur shadow-gray-900/5 sm:p-6 sm:mb-8 bg-white/90">
             {isFetching && (
               <div className="mb-3 text-sm text-gray-500">กำลังโหลดข้อมูล...</div>

@@ -15,13 +15,17 @@ interface TheSidebarProps {
 export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   const { user } = useAuth();
   const { menuWeb, menuLoading } = useMenuWeb(); // <- ได้ "เมนูกรองแล้ว"
+console.log('18 menuWeb : ', menuWeb);
 
   const isDev =
     (user?.username || '').toLowerCase() === 'superadmin' ||
     (user?.username || '').toLowerCase() === 'admin';
 
   return (
-    <div className={`h-screen bg-white/70 backdrop-blur-xl border-r border-gray-200/60 shadow-sm transition-all duration-300 ${collapsed ? "w-16" : "w-56"}`}>
+    <div
+      className={`h-screen bg-white/70 backdrop-blur-xl border-r border-gray-200/60 shadow-sm transition-all duration-300 ${collapsed ? "w-16" : "w-56"
+        } relative z-50 shrink-0`}  // ⬅️ เพิ่มตรงนี้
+    >
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="p-4 border-b border-gray-200">

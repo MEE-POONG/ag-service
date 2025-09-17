@@ -113,22 +113,23 @@ const AdjustBetPage: React.FC = () => {
 
   return (
     <TheLayout>
+      <PageHeader
+        title="จัดการ Adjust Bet"
+        icon='FaAdjust'
+        description="ระบบจัดการการปรับเบทสำหรับลูกค้า"
+        gradient={true}
+        actions={
+          <Button
+            onClick={() => openModal('create')}
+            className="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <ReactIconComponent icon="FaPlus" setClass="w-4 h-4 mr-2" />
+            สร้างใหม่
+          </Button>
+        }
+      />
       <div className="space-y-6">
-        <PageHeader
-          title="จัดการ Adjust Bet"
-          icon='FaAdjust'
-          description="ระบบจัดการการปรับเบทสำหรับลูกค้า"
-          gradient={true}
-          actions={
-            <Button
-              onClick={() => openModal('create')}
-              className="inline-flex items-center px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <ReactIconComponent icon="FaPlus" setClass="w-4 h-4 mr-2" />
-              สร้างใหม่
-            </Button>
-          }
-        />
+
         {/* Adjust Bets List */}
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="px-6 py-4 border-b border-gray-200">

@@ -5,6 +5,7 @@ import { FaArrowLeft, FaPlus, FaUpload } from "react-icons/fa";
 import { TheLayout } from "@/components/TheLayout";
 import ImageUploader from "@/components/ui/input/ImageUploader";
 import Link from "next/link";
+import PageHeader from '@/components/PageHeader';
 
 const ImageAdd: React.FC = () => {
     const router = useRouter();
@@ -55,20 +56,22 @@ const ImageAdd: React.FC = () => {
 
     return (
         <TheLayout>
-            <div className="mx-auto">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 m-2 sm:mb-4">
-                    <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
-                        🖼️ เพิ่มรูปภาพ
-                    </h1>
+            <PageHeader
+                title="รายการรูปภาพ"
+                icon='FaImages'
+                description="ระบบจัดการรูปภาพของระบบ"
+                gradient={true}
+                actions={
                     <Link
                         href="/setting/image-list"
-                        className="text-md font-medium text-gray-300 hover:text-white px-4 rounded-full bg-gray-700 hover:bg-gray-500 w-max h-8 flex items-center justify-center"
+                        className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
                     >
                         <FaArrowLeft className="mr-2" /> กลับไปหน้ารายการ
                     </Link>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+                }
+            />
+            <div className="mx-auto">
+                <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
                     <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 sm:mb-4">ระบุรายละเอียดรูปภาพ</h2>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -100,7 +103,7 @@ const ImageAdd: React.FC = () => {
                             <div className="flex-1">
                                 <label className="block font-semibold text-gray-700 mb-2">อัปโหลดรูปภาพ:</label>
                                 <ImageUploader
-                    
+
                                     setSelectedFile={setSelectedFile}
                                     setClass="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 lg:w-64 lg:h-64"
                                 />

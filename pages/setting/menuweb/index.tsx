@@ -13,6 +13,7 @@ import MenuWebModalDelete from '@/container/menuweb/ModalDelete';
 import MenuWebModalPosition from '@/container/menuweb/ModalSwitchPosition';
 import { useQuery } from '@tanstack/react-query';
 import { qk } from '@/lib/queryKeys';
+import PageHeader from '@/components/PageHeader';
 
 type MenusResp = {
   success: boolean;
@@ -91,17 +92,19 @@ export default function MenuPage() {
 
   return (
     <TheLayout>
-      <div className="mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 m-2 sm:mb-4">
-          <h1 className="flex items-center text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900">
-            📋 รายการเมนู
-          </h1>
+      <PageHeader
+        title="รายการเมนู"
+        icon='FaList'
+        description="ระบบจัดการเมนูของระบบ"
+        gradient={true}
+        actions={
           <div className="flex flex-row gap-2">
             <MenuWebModalAdd onSuccess={() => refetch()} />
             <MenuWebModalPosition onSuccess={() => refetch()} data={menusResp?.data ?? []} />
           </div>
-        </div>
-
+        }
+      />
+      <div className="mx-auto">
         <div className="bg-white rounded-lg shadow-md p-4">
           {/* ถ้าต้องการแสดงโหลดเบา ๆ ตอนเปลี่ยนหน้า ใช้ isFetching ได้ */}
           {!isMounted || isLoading ? (

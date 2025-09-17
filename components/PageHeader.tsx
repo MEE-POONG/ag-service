@@ -24,7 +24,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   gradient = false
 }) => {
   return (
-    <div className={`bg-white shadow-sm rounded-lg px-4 sm:px-6 sm:py-3 mb-6 border border-purple-500 ${gradient ? 'bg-gradient-to-r from-purple-50 to-white' : ''}`}>
+    <div className={`bg-white shadow-sm rounded-lg px-2 sm:px-3 sm:py-3 mb-6 border border-purple-500 ${gradient ? 'bg-gradient-to-r from-purple-50 to-white' : ''}`}>
       {/* Header Content */}
       <div className="flex flex-col gap-4 items-center sm:flex-row sm:justify-between">
         <div className="flex items-center space-x-3 text-purple-500 sm:space-x-4">
@@ -37,7 +37,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <h1 className="mb-1 text-lg font-bold sm:text-xl md:text-2xl lg:text-3xl sm:mb-2">
+            <h1 className="text-lg font-bold sm:text-xl md:text-2xl lg:text-3xl sm:mb-2">
               {title}
             </h1>
             {description && (

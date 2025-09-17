@@ -189,7 +189,7 @@ export default function PermissionsPage() {
 
   return (
     <TheLayout>
-      <div className="bg-white shadow-sm rounded-lg p-4 sm:p-6">
+      <div className="bg-white shadow-sm rounded-lg p1-1 sm:p-2">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-4 sm:mb-6">
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">จัดการสิทธิ์การเข้าถึง</h1>
           <button
@@ -219,7 +219,7 @@ export default function PermissionsPage() {
                   enter="ease-out duration-300" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100"
                   leave="ease-in duration-200" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95"
                 >
-                  <Dialog.Panel className="w-full max-w-sm sm:max-w-2xl transform overflow-hidden rounded-2xl bg-white p-4 sm:p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Panel className="w-full max-w-sm sm:max-w-2xl transform overflow-hidden rounded-2xl bg-white p1-1 sm:p-2 text-left align-middle shadow-xl transition-all">
                     <Dialog.Title as="h3" className="text-base sm:text-lg md:text-xl font-bold leading-6 text-gray-900 mb-3 sm:mb-4">
                       {editId ? 'แก้ไขสิทธิ์' : 'เพิ่มสิทธิ์ใหม่'}
                     </Dialog.Title>

@@ -3,6 +3,7 @@ import MemberModalAdd from '@/container/partner/ModalAddMember'
 import MemberModalEdit from '@/container/partner/ModalEditMember'
 import { useState } from 'react'
 import { ExtendedPartnerDB, usePartners } from '@/hooks/usePartners'
+import PageHeader from '@/components/PageHeader'
 
 
 export default function MembersPage() {
@@ -51,44 +52,22 @@ export default function MembersPage() {
   }
   return (
     <TheLayout>
-      <div className="p-3 sm:p-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 m-2 sm:mb-4">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
-              👥 จัดการสมาชิก
-            </h1>
-            <MemberModalAdd onSuccess={handleRefresh} />
-          </div>
-
-          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+      <PageHeader
+        title="จัดการสมาชิก"
+        icon='FaUsers'
+        description="ระบบจัดการข้อมูลสมาชิกและสิทธิ์การใช้งาน"
+        gradient={true}
+        actions={
+          <MemberModalAdd onSuccess={handleRefresh} />
+        }
+      />
+      <div className="p1-1 sm:p-2">
+        <div className="max-w-6xl mx-auto lg:max-w-full">
+          <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
             <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 sm:mb-4">รายการสมาชิก</h2>
             <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
               ระบบจัดการข้อมูลสมาชิกและสิทธิ์การใช้งาน
             </p>
-
-            {/* Search and Filter */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
-              <div className="flex-1">
-                <input
-                  type="text"
-                  placeholder="ค้นหาสมาชิก (ชื่อ, เบอร์โทร, เลขบัญชี)..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                />
-              </div>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-              >
-                <option value="all">สถานะทั้งหมด</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="suspended">Suspended</option>
-              </select>
-            </div>
-
             {/* Stats Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
               <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
@@ -116,6 +95,30 @@ export default function MembersPage() {
                 <div className="text-xs sm:text-sm text-red-700">ถูกระงับ</div>
               </div>
             </div>
+            {/* Search and Filter */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <div className="flex-1">
+                <input
+                  type="text"
+                  placeholder="ค้นหาสมาชิก (ชื่อ, เบอร์โทร, เลขบัญชี)..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+              </div>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+              >
+                <option value="all">สถานะทั้งหมด</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="suspended">Suspended</option>
+              </select>
+            </div>
+
+
 
             {/* Table */}
             <div className="overflow-x-auto">

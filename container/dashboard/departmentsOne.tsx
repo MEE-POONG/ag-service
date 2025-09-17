@@ -15,7 +15,7 @@ export default function DepartmentsPage() {
             </button>
           </div>
           
-          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
             <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 sm:mb-4">รายการแผนกงาน</h2>
             <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
               จัดการข้อมูลแผนกงานและโครงสร้างองค์กร
@@ -59,7 +59,7 @@ export default function DepartmentsPage() {
             
             {/* Department Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 rounded-lg border border-blue-200">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p1-1 sm:p-2 rounded-lg border border-blue-200">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <h3 className="text-base sm:text-lg font-semibold text-blue-800">IT</h3>
                   <span className="px-1 sm:px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
@@ -93,7 +93,7 @@ export default function DepartmentsPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 sm:p-6 rounded-lg border border-green-200">
+              <div className="bg-gradient-to-br from-green-50 to-green-100 p1-1 sm:p-2 rounded-lg border border-green-200">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <h3 className="text-base sm:text-lg font-semibold text-green-800">การตลาด</h3>
                   <span className="px-1 sm:px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
@@ -127,7 +127,7 @@ export default function DepartmentsPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 sm:p-6 rounded-lg border border-purple-200">
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p1-1 sm:p-2 rounded-lg border border-purple-200">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <h3 className="text-base sm:text-lg font-semibold text-purple-800">บัญชี</h3>
                   <span className="px-1 sm:px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
@@ -161,7 +161,7 @@ export default function DepartmentsPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-red-50 to-red-100 p-4 sm:p-6 rounded-lg border border-red-200">
+              <div className="bg-gradient-to-br from-red-50 to-red-100 p1-1 sm:p-2 rounded-lg border border-red-200">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <h3 className="text-base sm:text-lg font-semibold text-red-800">ทรัพยากรบุคคล</h3>
                   <span className="px-1 sm:px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
@@ -195,7 +195,7 @@ export default function DepartmentsPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 sm:p-6 rounded-lg border border-yellow-200">
+              <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p1-1 sm:p-2 rounded-lg border border-yellow-200">
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <h3 className="text-base sm:text-lg font-semibold text-yellow-800">ขาย</h3>
                   <span className="px-1 sm:px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">

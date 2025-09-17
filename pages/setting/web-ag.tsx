@@ -9,6 +9,7 @@ import WebBaseModalEdit from '@/container/web-ag/ModalEdit'
 import { ExtendedWebBaseDB } from '@/data/interface'
 import WebBaseModalDelete from '@/container/web-ag/ModalDelete'
 import WebBaseModalView from '@/container/web-ag/ModalView'
+import PageHeader from '@/components/PageHeader'
 
 type WebBaseResp = {
   success: boolean;
@@ -74,18 +75,17 @@ export default function WebAgPage() {
 
   return (
     <TheLayout>
-      <div className="mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 m-2 sm:mb-4">
-          <h1 className="flex items-center text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900">
-            📋 Web Base Management
-          </h1>
+      <PageHeader
+        title="รายการ Web Base"
+        icon='FaServer'
+        description="ระบบจัดการข้อมูลฐานเว็บและการเข้าถึงระบบ"
+        gradient={true}
+        actions={
           <WebBaseModalAdd onSuccess={() => refetch()} />
-        </div>
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
-          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
-            ระบบจัดการข้อมูลฐานเว็บและการเข้าถึงระบบ
-          </p>
-
+        }
+      />
+      <div className="mx-auto">
+        <div className="bg-white rounded-lg shadow-md p1-1 sm:p-2 mb-6 sm:mb-8">
           {/* Search and Filter */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6">
             <div className="flex-1">

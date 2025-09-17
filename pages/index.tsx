@@ -2,6 +2,9 @@ import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { TheLayout } from '@/components/TheLayout'
 import { useAuth } from '@/hooks/useAuth'
+import { Button } from '@/components/ui/button'
+import ReactIconComponent from '@/components/ReactIconComponent'
+import PageHeader from '@/components/PageHeader'
 
 export default function DashboardPage() {
   const { user, userLoading, logout } = useAuth()
@@ -30,24 +33,20 @@ export default function DashboardPage() {
   return (
     <TheLayout >
       {/* Themed Header */}
-      <div className="relative overflow-hidden rounded-[1.5rem] p-5 sm:p-8 mb-6 sm:mb-8 bg-gradient-to-r from-[#A78BFA] via-[#A78BFA] to-[#34D399] shadow-lg shadow-gray-900/10">
-        <div className="flex relative z-10 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 drop-shadow-sm sm:text-3xl md:text-4xl">แดชบอร์ด</h1>
-            <p className="mt-1 text-sm text-gray-900/90 sm:text-base drop-shadow">
-              ยินดีต้อนรับ, {user.name || user.username} ({user.role})
-            </p>
-          </div>
-          <button
+      <PageHeader
+        title="แดชบอร์ด"
+        icon='FaHome'
+        description={`ยินดีต้อนรับ, ${user.name || user.username} (${user.role})`}
+        gradient={true}
+        actions={
+          <Button
             onClick={logout}
-            className="btn-theme hover:!brightness-95 rounded-full shadow-md shadow-gray-900/10 px-4 py-2 text-sm sm:text-base"
+            className="inline-flex items-center px-4 py-2 text-sm font-medium  text-red-500 hover:bg-red-500/50 focus:outline-none focus:ring-2 focus:ring-red-500 bg-white shadow-sm rounded-lg  border-1 border-red-500"
           >
             ออกจากระบบ
-          </button>
-        </div>
-        <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full blur-2xl pointer-events-none bg-white/15" />
-        <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full blur-3xl pointer-events-none bg-gray-800/10" />
-      </div>
+          </Button>
+        }
+      />
 
       {/* Dashboard Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
