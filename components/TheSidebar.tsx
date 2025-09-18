@@ -15,7 +15,6 @@ interface TheSidebarProps {
 export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   const { user } = useAuth();
   const { menuWeb, menuLoading } = useMenuWeb(); // <- ได้ "เมนูกรองแล้ว"
-  console.log('18 menuWeb : ', menuWeb);
 
   const isDev =
     (user?.username || '').toLowerCase() === 'superadmin' ||

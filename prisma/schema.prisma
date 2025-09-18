@@ -542,3 +542,30 @@ model creditTopUp {
 model user {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 }
+
+model ResetAgUserPasswordDB {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  v            Int       @map("__v")
+  adviser      String
+  createdAt    DateTime  @db.Date
+  errorMessage String?
+  newPassword  String
+  position     String
+  processedAt  DateTime? @db.Date
+  status       String
+  updatedAt    DateTime  @db.Date
+  usernameAG   String
+}
+
+model CreateResetMasterJobsDB {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @map("__v")
+  adviser       String
+  createdAt     DateTime @db.Date
+  insertedCount Int
+  limit         Int
+  newPassword   String
+  processedAt   DateTime @db.Date
+  status        String
+  updatedAt     DateTime @db.Date
+}

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import Modal, { ModalBody, ModalFooter, ModalHeader, ModalTitle, ModalDescription } from '@/components/form/Modal'
 import ReactIconComponent from '@/components/ReactIconComponent'
 import PageHeader from '@/components/PageHeader'
+import PartnerModalFuctionSetting from '@/container/partner/ModalFuctionSetting'
 
 type AgUserAccountDB = {
   id?: string
@@ -349,6 +350,9 @@ export default function AgUserAccountPage() {
                               </span>
                             ) : 'ลบ'}
                           </Button>
+                          {u.position === 'senior' && (
+                            <PartnerModalFuctionSetting data={u} />
+                          )}
                         </div>
                       </td>
                     </tr>

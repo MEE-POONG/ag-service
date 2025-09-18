@@ -10,6 +10,8 @@ import { AgUserAccountDB } from '@prisma/client'
 import CommandWorkModalCreateC from '@/container/bot-ag/CommandWork/ModalCreateC'
 import CommandWorkModalLockUnLockC from '@/container/bot-ag/CommandWork/ModalLockUnLockC'
 import PageHeader from '@/components/PageHeader'
+import PaginationSelect from '@/components/PaginationSelect'
+import { Params } from '@/data/interfaceDefault'
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -21,6 +23,13 @@ function useAgUserAccounts() {
 }
 
 export default function CommandWorkPage() {
+  const [params, setParams] = useState<Params>({
+    page: 1,
+    pageSize: 10,
+    keyword: '',
+    totalPages: 1,
+  })
+
   const queryClient = useQueryClient()
   const { items, add, update, remove, setItems } = useAgUserAccounts()
   const [keyword, setKeyword] = useState('')
@@ -72,126 +81,36 @@ export default function CommandWorkPage() {
     setPage(1)
   }, [debouncedKeyword])
 
-  const listKey = qk.agUsers.listPaged(debouncedKeyword, page, pageSize)
+  // Synchronize params with actual pagination state
+  useEffect(() => {
+    setParams(prev => ({
+      ...prev,
+      page,
+      pageSize,
+      totalPages,
+      keyword: debouncedKeyword,
+    }))
+  }, [page, pageSize, totalPages, debouncedKeyword])
+
+  // Handle params changes from PaginationSelect
+  useEffect(() => {
+    if (params.page !== page) {
+      setPage(params.page)
+    }
+    if (params.pageSize !== pageSize) {
+      setPageSize(params.pageSize)
+    }
+    if (params.keyword !== keyword) {
+      setKeyword(params.keyword)
+    }
+  }, [params.page, params.pageSize, params.keyword, page, pageSize, keyword])
+
 
   // Mutations: create, update, delete (with optimistic updates on current page)
-  const createMutation = useMutation({
-    onMutate: async (val: AgUserAccountDB) => {
-      await queryClient.cancelQueries({ queryKey: listKey })
-      const prev = queryClient.getQueryData<any>(listKey)
-      const tempId = `temp-${Date.now()}`
-      queryClient.setQueryData(listKey, (old: any) => {
-        const items = old?.items ?? []
-        const pagination = old?.pagination
-        return {
-          items: [{ ...val, id: tempId }, ...items].slice(0, pageSize),
-          pagination,
-        }
-      })
-      return { prev }
-    },
-    mutationFn: async (val: AgUserAccountDB) => {
-      const res = await axios.post('/api/aguseraccounts', val)
-      if (!res.data?.success) throw new Error(res.data?.error || 'บันทึกไม่สำเร็จ')
-      return res.data.data as AgUserAccountDB
-    },
-    onError: (e: any, _vars, ctx) => {
-      if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
-      toast.error(e?.message || 'เกิดข้อผิดพลาด')
-    },
-    onSuccess: async (created) => {
-      // Replace temp with real if present
-      queryClient.setQueryData(listKey, (old: any) => {
-        const items = old?.items ?? []
-        const withWeb = {
-          ...created, webname: (created as any).webname ?? (() => {
-            try {
-              const m = (created as any)?.meta ? JSON.parse((created as any).meta) : null
-              return m?.webname
-            } catch {
-              return undefined
-            }
-          })()
-        }
-        const idx = items.findIndex((x: any) => String(x.id || '').startsWith('temp-'))
-        if (idx >= 0) {
-          items[idx] = withWeb
-        } else {
-          items.unshift(withWeb)
-        }
-        return { ...old, items }
-      })
-      await queryClient.invalidateQueries({ queryKey: qk.agUsers.base })
-      toast.success('เพิ่ม AG User สำเร็จ')
-    },
-  })
+  
 
-  const updateMutation = useMutation({
-    onMutate: async (payload: AgUserAccountDB & { id: string }) => {
-      await queryClient.cancelQueries({ queryKey: listKey })
-      const prev = queryClient.getQueryData<any>(listKey)
-      queryClient.setQueryData(listKey, (old: any) => {
-        const items = (old?.items ?? []).map((x: any) => (x.id === payload.id ? { ...x, ...payload } : x))
-        return { ...old, items }
-      })
-      return { prev }
-    },
-    mutationFn: async (payload: AgUserAccountDB & { id: string }) => {
-      const res = await axios.put('/api/aguseraccounts', payload)
-      if (!res.data?.success) throw new Error(res.data?.error || 'อัปเดตไม่สำเร็จ')
-      return res.data.data as AgUserAccountDB
-    },
-    onError: (e: any, _vars, ctx) => {
-      if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
-      toast.error(e?.message || 'เกิดข้อผิดพลาด')
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: qk.agUsers.base })
-      toast.success('แก้ไข AG User สำเร็จ')
-    },
-  })
-
-  const deleteMutation = useMutation({
-    onMutate: async (id: string) => {
-      await queryClient.cancelQueries({ queryKey: listKey })
-      const prev = queryClient.getQueryData<any>(listKey)
-      queryClient.setQueryData(listKey, (old: any) => {
-        const items = (old?.items ?? []).filter((x: any) => x.id !== id)
-        return { ...old, items }
-      })
-      return { prev }
-    },
-    mutationFn: async (id: string) => {
-      const res = await axios.delete('/api/aguseraccounts', { data: { id } })
-      if (!res.data?.success) throw new Error(res.data?.error || 'ลบไม่สำเร็จ')
-      return true
-    },
-    onError: (e: any, _vars, ctx) => {
-      if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
-      toast.error(e?.message || 'เกิดข้อผิดพลาด')
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: qk.agUsers.base })
-      toast.success('ลบ AG User สำเร็จ')
-    },
-  })
 
   const list = items
-
-  const startAdd = () => {
-    setSelectedIndex(null)
-    setOpenAdd(true)
-  }
-
-  const startEdit = (idx: number) => {
-    setSelectedIndex(idx)
-    setOpenEdit(true)
-  }
-
-  const startDelete = (idx: number) => {
-    setSelectedIndex(idx)
-    setOpenDelete(true)
-  }
 
   return (
     <TheLayout>
@@ -254,40 +173,7 @@ export default function CommandWorkPage() {
             </table>
           </div>
           <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center gap-2">
-              ทั้งหมด {totalItems} รายการ
-              <span className="text-sm text-gray-600">แสดง</span>
-              <select
-                value={pageSize}
-                onChange={e => setPageSize(parseInt(e.target.value, 10) || 10)}
-                className="px-3 py-1 text-end rounded-md border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-                disabled={isFetching}
-              >
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={50}>50</option>
-              </select>
-              <span className="text-sm text-gray-600">ต่อหน้า</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
-                disabled={isFetching || page <= 1}
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-              >
-                ก่อนหน้า
-              </Button>
-              <span className="text-sm text-gray-700">หน้า {page} / {Math.max(1, totalPages)}</span>
-              <Button
-                size="sm"
-                className="btn-theme hover:!brightness-95 rounded-full px-3"
-                disabled={isFetching || page >= totalPages}
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-              >
-                ถัดไป
-              </Button>
-            </div>
+            <PaginationSelect params={params} setParams={setParams} />
           </div>
         </div>
       </div>
