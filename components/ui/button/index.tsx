@@ -86,7 +86,7 @@ const getSizeClass = (size?: ButtonProps["size"]) => {
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = "", variant = "", size = "", title, ...props }, ref) => {
+  ({ className = "", variant = "", size = "", title, type = "button", ...props }, ref) => {
     const variantClass = getVariantClass(variant)
     const sizeClass = getSizeClass(size)
 

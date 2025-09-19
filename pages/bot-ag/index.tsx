@@ -1,7 +1,6 @@
 import axios from '@/lib/axios'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
-import toast from 'react-hot-toast'
 import { TheLayout } from '@/components/TheLayout'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -10,8 +9,6 @@ import { AgUserAccountDB } from '@prisma/client'
 import CommandWorkModalCreateC from '@/container/bot-ag/CommandWork/ModalCreateC'
 import CommandWorkModalLockUnLockC from '@/container/bot-ag/CommandWork/ModalLockUnLockC'
 import PageHeader from '@/components/PageHeader'
-import PaginationSelect from '@/components/PaginationSelect'
-import { Params } from '@/data/interfaceDefault'
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -23,14 +20,6 @@ function useAgUserAccounts() {
 }
 
 export default function CommandWorkPage() {
-  const [params, setParams] = useState<Params>({
-    page: 1,
-    pageSize: 10,
-    keyword: '',
-    totalPages: 1,
-  })
-
-  const queryClient = useQueryClient()
   const { items, add, update, remove, setItems } = useAgUserAccounts()
   const [keyword, setKeyword] = useState('')
   const debouncedKeyword = useDebouncedValue(keyword, 300)
@@ -38,10 +27,6 @@ export default function CommandWorkPage() {
   const [pageSize, setPageSize] = useState(10)
   const [totalPages, setTotalPages] = useState(1)
   const [totalItems, setTotalItems] = useState(0)
-  const [openAdd, setOpenAdd] = useState(false)
-  const [openEdit, setOpenEdit] = useState(false)
-  const [openDelete, setOpenDelete] = useState(false)
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   // Fetch list via react-query (server-side filter by keyword)
   const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: { totalItems: number; totalPages: number; currentPage: number; pageSize: number } }>({
@@ -81,34 +66,12 @@ export default function CommandWorkPage() {
     setPage(1)
   }, [debouncedKeyword])
 
-  // Synchronize params with actual pagination state
-  useEffect(() => {
-    setParams(prev => ({
-      ...prev,
-      page,
-      pageSize,
-      totalPages,
-      keyword: debouncedKeyword,
-    }))
-  }, [page, pageSize, totalPages, debouncedKeyword])
-
-  // Handle params changes from PaginationSelect
-  useEffect(() => {
-    if (params.page !== page) {
-      setPage(params.page)
-    }
-    if (params.pageSize !== pageSize) {
-      setPageSize(params.pageSize)
-    }
-    if (params.keyword !== keyword) {
-      setKeyword(params.keyword)
-    }
-  }, [params.page, params.pageSize, params.keyword, page, pageSize, keyword])
-
 
   // Mutations: create, update, delete (with optimistic updates on current page)
   
 
+  
+  
 
   const list = items
 
@@ -173,7 +136,40 @@ export default function CommandWorkPage() {
             </table>
           </div>
           <div className="flex items-center justify-between mt-4">
-            <PaginationSelect params={params} setParams={setParams} />
+            <div className="flex items-center gap-2">
+              ทั้งหมด {totalItems} รายการ
+              <span className="text-sm text-gray-600">แสดง</span>
+              <select
+                value={pageSize}
+                onChange={e => setPageSize(parseInt(e.target.value, 10) || 10)}
+                className="px-3 py-1 text-end rounded-md border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
+                disabled={isFetching}
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+              <span className="text-sm text-gray-600">ต่อหน้า</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
+                disabled={isFetching || page <= 1}
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+              >
+                ก่อนหน้า
+              </Button>
+              <span className="text-sm text-gray-700">หน้า {page} / {Math.max(1, totalPages)}</span>
+              <Button
+                size="sm"
+                className="btn-theme hover:!brightness-95 rounded-full px-3"
+                disabled={isFetching || page >= totalPages}
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              >
+                ถัดไป
+              </Button>
+            </div>
           </div>
         </div>
       </div>

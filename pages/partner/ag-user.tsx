@@ -224,20 +224,29 @@ export default function AgUserAccountPage() {
         gradient={true}
         actions={
           <Button
-            size="sm"
-            className="btn-theme hover:!brightness-95 rounded-full shadow-md shadow-gray-900/10 px-4"
-            onClick={startAdd}
+            size="xs"
+            className="!bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-3 disabled:opacity-60"
+            onClick={() => startAdd()}
+            type="button"
           >
             + เพิ่ม AG User
           </Button>
         }
       />
-      <div className={`pl-1 sm:p-2`}>
+      <div className={`py-2`}>
         <div className="mx-auto">
           <div className="p-4 mb-6 rounded-2xl ring-1 ring-gray-200 shadow-lg backdrop-blur shadow-gray-900/5 sm:p-6 sm:mb-8 bg-white/90">
             {isFetching && (
               <div className="mb-3 text-sm text-gray-500">กำลังโหลดข้อมูล...</div>
             )}
+            <Button
+              size="xs"
+              className="!bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-3 disabled:opacity-60"
+              onClick={() => startAdd()}
+              type="button"
+            >
+              + เพิ่ม AG User
+            </Button>
             <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:gap-4 sm:mb-6">
               <input
                 value={keyword}

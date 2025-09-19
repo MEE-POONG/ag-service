@@ -15,8 +15,7 @@ interface PageHeaderProps {
   icon?: string;
   gradient?: boolean;
 }
-
-const PageHeader: React.FC<PageHeaderProps> = ({
+ const PageHeader: React.FC<PageHeaderProps> = ({
   title,
   description,
   actions,
@@ -24,16 +23,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   gradient = false
 }) => {
   return (
-    <div className={`bg-white shadow-sm rounded-lg px-2 sm:px-3 sm:py-3 mb-6 mt-20 md:mt-0 border border-purple-500 ${gradient ? 'bg-gradient-to-r from-purple-50 to-white' : ''}`}>
-      {/* Header Content */}
+    <div className={`relative z-20 pointer-events-autobg-white shadow-sm rounded-lg px-2 sm:px-3 sm:py-3 mb-6mt-20 border border-purple-500 ${gradient ? 'bg-gradient-to-r from-purple-50 to-white' : ''}`}>
       <div className="flex flex-col gap-4 items-center sm:flex-row sm:justify-between">
         <div className="flex items-center space-x-3 text-purple-500 sm:space-x-4">
           {icon && (
-            <div className={`flex-shrink-0 rounded-lg`}>
-              <ReactIconComponent
-                icon={icon}
-                setClass="w-8 h-8"
-              />
+            <div className="flex-shrink-0 rounded-lg">
+              <ReactIconComponent icon={icon} setClass="w-8 h-8" />
             </div>
           )}
           <div className="flex-1 min-w-0">
@@ -48,9 +43,10 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           </div>
         </div>
 
-        {/* Actions */}
         {actions && (
-          <div className="flex flex-col items-stretch space-y-2 w-full sm:flex-row sm:items-center sm:space-y-0 sm:space-x-3 sm:w-auto">
+          <div className="relative z-20 pointer-events-auto
+                          flex flex-col items-stretch space-y-2 w-full
+                          sm:flex-row sm:items-center sm:space-y-0 sm:space-x-3 sm:w-auto">
             {actions}
           </div>
         )}
@@ -59,4 +55,4 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   );
 };
 
-export default PageHeader; 
+export default PageHeader;
