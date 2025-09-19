@@ -9,7 +9,7 @@ import PaginationSelect from '@/components/PaginationSelect';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button, ButtonProps } from "@/components/ui/button"
 
-import Tooltip from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import ImageModalView from '@/container/image-list/ModalView';
 import { ImageList } from '@prisma/client';
 import ImageModalDelete from '@/container/image-list/ModalDelete';
@@ -66,7 +66,8 @@ export default function ImagePage() {
     }, [imageResp]);
 
     return (
-        <TheLayout>
+        <TooltipProvider>
+            <TheLayout>
             <PageHeader
                 title="รายการรูปภาพ"
                 icon='FaImages'
@@ -106,20 +107,30 @@ export default function ImagePage() {
                                         <TableCell>{item.modelName}</TableCell>
                                         <TableCell>{new Date(item.createdAt).toLocaleDateString()}</TableCell>
                                         <TableCell className="text-right space-x-1">
-                                            <Tooltip content="ดูรูปภาพ">
-                                                <ImageModalView list={item} />
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <ImageModalView list={item} />
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>ดูรูปภาพ</p>
+                                                </TooltipContent>
                                             </Tooltip>
                                             {/* <Tooltip content="แก้ไขรูปภาพ">
                                                 <Button className="bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-300" variant="ghost" size="sm">
                                                     <FaEdit className="h-4 w-4" />
                                                 </Button>
                                             </Tooltip> */}
-                                            <Tooltip content="ลบรูปภาพ">
-                                                <ImageModalDelete list={item} onSuccess={() => refetch()} />
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <ImageModalDelete list={item} onSuccess={() => refetch()} />
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>ลบรูปภาพ</p>
+                                                </TooltipContent>
+                                            </Tooltip>
                                                 {/* <Button className="bg-red-100 text-red-700 rounded hover:bg-red-300" variant="ghost" size="sm">
                                                     <FaTrash className="h-4 w-4" />
                                                 </Button> */}
-                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -136,5 +147,6 @@ export default function ImagePage() {
                 </div>
             </div>
         </TheLayout>
+        </TooltipProvider>
     );
 }
