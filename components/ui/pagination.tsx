@@ -1,7 +1,7 @@
 import * as React from "react"
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
+import ReactIconComponent from "../ReactIconComponent"
 
-import { ButtonProps, buttonVariants } from "@/components/ui/button"
+import { ButtonProps } from "@/components/ui/button"
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
@@ -46,12 +46,12 @@ const PaginationLink = ({
 }: PaginationLinkProps) => (
   <a
     aria-current={isActive ? "page" : undefined}
-    className={buttonVariants({
-        variant: isActive ? "outline" : "ghost",
-        size,
-      },
-      className
-    )}
+    // className={buttonVariants({
+    //     variant: isActive ? "outline" : "ghost",
+    //     size,
+    //   },
+    //   className
+    // )}
     {...props}
   />
 )
@@ -63,11 +63,11 @@ const PaginationPrevious = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to previous page"
-    size="default"
+    size="icon"
     className={`gap-1 pl-2.5 ${className || ''}`}
     {...props}
   >
-    <ChevronLeft className="h-4 w-4" />
+    <ReactIconComponent icon="FaChevronLeft" setClass="h-4 w-4" />
     <span>Previous</span>
   </PaginationLink>
 )
@@ -79,12 +79,12 @@ const PaginationNext = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to next page"
-    size="default"
+    size="icon"
     className={`gap-1 pr-2.5 ${className || ''}`}
     {...props}
   >
     <span>Next</span>
-    <ChevronRight className="h-4 w-4" />
+    <ReactIconComponent icon="FaChevronRight" setClass="h-4 w-4" />
   </PaginationLink>
 )
 PaginationNext.displayName = "PaginationNext"
@@ -98,7 +98,7 @@ const PaginationEllipsis = ({
     className={`flex h-9 w-9 items-center justify-center ${className || ''}`}
     {...props}
   >
-    <MoreHorizontal className="h-4 w-4" />
+    <ReactIconComponent icon="FaEllipsisH" setClass="h-4 w-4" />
     <span className="sr-only">More pages</span>
   </span>
 )

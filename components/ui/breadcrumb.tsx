@@ -1,7 +1,6 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { ChevronRight, MoreHorizontal } from "lucide-react"
-
+import ReactIconComponent from "../ReactIconComponent"
 const Breadcrumb = React.forwardRef<
   HTMLElement,
   React.ComponentPropsWithoutRef<"nav"> & {
@@ -78,7 +77,7 @@ const BreadcrumbSeparator = ({
     className={`[&>svg]:size-3.5 ${className || ''}`}
     {...props}
   >
-    {children ?? <ChevronRight />}
+    {children ?? <ReactIconComponent icon="FaChevronRight" setClass="h-4 w-4" />}
   </li>
 )
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator"
@@ -93,7 +92,7 @@ const BreadcrumbEllipsis = ({
     className={`flex h-9 w-9 items-center justify-center ${className || ''}`}
     {...props}
   >
-    <MoreHorizontal className="h-4 w-4" />
+    <ReactIconComponent icon="FaEllipsisH" setClass="h-4 w-4" />
     <span className="sr-only">More</span>
   </span>
 )

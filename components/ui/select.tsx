@@ -1,7 +1,6 @@
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
-import { Check, ChevronDown, ChevronUp } from "lucide-react"
-
+import ReactIconComponent from "../ReactIconComponent"
 const Select = SelectPrimitive.Root
 
 const SelectGroup = SelectPrimitive.Group
@@ -19,7 +18,7 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
+      <ReactIconComponent icon="FaChevronDown" setClass="h-4 w-4 opacity-50" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))
@@ -34,7 +33,7 @@ const SelectScrollUpButton = React.forwardRef<
     className={`flex cursor-default items-center justify-center py-1 ${className || ''}`}
     {...props}
   >
-    <ChevronUp className="h-4 w-4" />
+    <ReactIconComponent icon="FaChevronUp" setClass="h-4 w-4" />
   </SelectPrimitive.ScrollUpButton>
 ))
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName
@@ -48,7 +47,7 @@ const SelectScrollDownButton = React.forwardRef<
     className={`flex cursor-default items-center justify-center py-1 ${className || ''}`}
     {...props}
   >
-    <ChevronDown className="h-4 w-4" />
+    <ReactIconComponent icon="FaChevronDown" setClass="h-4 w-4" />
   </SelectPrimitive.ScrollDownButton>
 ))
 SelectScrollDownButton.displayName =
@@ -68,9 +67,9 @@ const SelectContent = React.forwardRef<
     >
       <SelectScrollUpButton />
       <SelectPrimitive.Viewport
-        className={`"p-1" ${position === "popper" &&
-            "h-[var(--radix-select-trigger-height || ''}`] w-full min-w-[var(--radix-select-trigger-width)]"
-        )}
+        // className={`"p-1" ${position === "popper" &&
+        //     "h-[var(--radix-select-trigger-height || ''}`] w-full min-w-[var(--radix-select-trigger-width)]"
+        // )}
       >
         {children}
       </SelectPrimitive.Viewport>
@@ -103,7 +102,7 @@ const SelectItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <Check className="h-4 w-4" />
+                                <ReactIconComponent icon="FaCheck" setClass="h-4 w-4" />
       </SelectPrimitive.ItemIndicator>
     </span>
 
