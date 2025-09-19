@@ -1,4 +1,5 @@
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import { WebBaseDB } from '@prisma/client';
 import axios from '@/lib/axios';
 import React, { useState } from 'react';

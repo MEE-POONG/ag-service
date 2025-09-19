@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { TheLayout } from '@/components/TheLayout';
 import PageHeader from '@/components/PageHeader';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import ReactIconComponent from '@/components/ReactIconComponent';
 import ModalAdJustBet from '@/container/bot-ag/ModalAdJustBet';
 import { useAdjustBet } from '@/hooks/useAdjustBet';

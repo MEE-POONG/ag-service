@@ -1,4 +1,5 @@
 // components/ui/modal.tsx
+
 import { Button, ButtonProps } from "@/components/ui/button"
 import * as React from "react"
 import { createPortal } from "react-dom"
@@ -29,6 +30,8 @@ export interface ModalProps {
 }
 
 export interface ModalCloseProps extends ButtonProps {
+  className?: string
+  onClick?: () => void
   "aria-label"?: string
 }
 
@@ -241,22 +244,22 @@ export const ModalFooter = ({ className = "", ...props }: DivProps) => (
 export const ModalClose = ({
   className = "text-red-500 hover:text-red-900 ml-auto",
   onClick,
-  "aria-label": ariaLabel = "Close",
+  "aria-label": ariaLabel,
   variant = "", // ตั้งค่าเริ่มต้นให้เป็น ghost
-  size = "",     // ตั้งค่าเริ่มต้นให้เป็นปุ่ม icon
+  size = "icon",     // ตั้งค่าเริ่มต้นให้เป็นปุ่ม icon
   children = "✕",    // ถ้าไม่ส่ง children มา ให้แสดง ✕
   ...props
 }: ModalCloseProps) => (
   <Button
     type="button"
-    aria-label={ariaLabel}
+    aria-label={ariaLabel ?? "Close"}
     onClick={onClick}
-    variant={variant}
-    size={size}
+    variant={variant ?? "ghost"}
+    size={size ?? "icon"}
     className={className}
     {...props}
   >
-    {children}
+    {children ?? "✕"}
   </Button>
 )
 

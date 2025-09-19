@@ -1,4 +1,5 @@
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Modal from '@/components/form/Modal';

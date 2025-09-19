@@ -7,7 +7,8 @@ import { FaEdit, FaEllipsisH, FaEye, FaPlus, FaTrash, FaUserCog } from 'react-ic
 import ImgIndex from '@/components/ui/img';
 import PaginationSelect from '@/components/PaginationSelect';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import Tooltip from '@/components/ui/tooltip';
 import ImageModalView from '@/container/image-list/ModalView';
 import { ImageList } from '@prisma/client';

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from '@/lib/axios';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { AdminPositionDB } from '@prisma/client';
 import { ExtendedAdminDepartment } from '@/data/interface';

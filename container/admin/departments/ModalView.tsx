@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import { AdminDepartmentDB } from '@prisma/client';
 import Modal from '@/components/form/Modal';
 import { FaTimes } from 'react-icons/fa';

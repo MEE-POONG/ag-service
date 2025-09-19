@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from '@/lib/axios';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import Modal from '@/components/form/Modal';
 import { ExtendedWebBaseDB } from '@/data/interface';
 

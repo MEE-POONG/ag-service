@@ -1,4 +1,5 @@
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import { useAuth } from '@/hooks/useAuth';
 import { MenuWebDB } from '@prisma/client';
 import axios from '@/lib/axios';

@@ -48,7 +48,7 @@ export function TheHeader({
   };
 
   return (
-    <header className={` fixed top-0 right-0 z-40 text-white bg-gradient-to-r from-[#A78BFA] to-[#34D399] shadow-lg ${collapsed ? 'left-16' : 'left-56'} transition-all duration-300`}>
+    <header className={` fixed top-0 right-0 z-40 text-white bg-gradient-to-r from-[#A78BFA] to-[#34D399] shadow-lg ${collapsed ? 'left-0' : 'left-56'} transition-all duration-300`}>
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Mobile menu button & Sidebar toggle */}

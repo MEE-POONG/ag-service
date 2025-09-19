@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from '@/lib/axios';
 import { ExtendedAdminDepartment } from '@/data/interface';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { useAuth } from '@/hooks/useAuth';

@@ -1,4 +1,5 @@
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import { AdminDepartmentDB } from '@prisma/client';
 import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';

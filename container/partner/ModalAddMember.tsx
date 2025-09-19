@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '@/lib/axios';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import ReactIconComponent from '@/components/ReactIconComponent';
 import Modal from '@/components/form/Modal';
 import { AgUserAccount } from '@/types/adjustBet';

@@ -1,4 +1,5 @@
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from "@/components/ui/button"
+
 import { ExtendedWebBaseDB } from '@/data/interface';
 import React, { useState } from 'react';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
