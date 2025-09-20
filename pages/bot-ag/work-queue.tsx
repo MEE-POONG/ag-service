@@ -206,7 +206,7 @@ export default function WorkQueuePage() {
                 </Table>
               </div>
 
-              <div className="mt-4 sm:mt-6">
+              <div className="my-2 sm:mt-3">
                 <PaginationSelect
                   params={params}
                   setParams={setParams}

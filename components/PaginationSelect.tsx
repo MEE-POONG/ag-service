@@ -1,7 +1,7 @@
 // PaginationSelect.tsx
 import { Params } from '@/data/interfaceDefault';
 import React from 'react';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 
 interface PaginationSelectProps {
     params: Params;
@@ -32,6 +32,19 @@ const PaginationSelect: React.FC<PaginationSelectProps> = ({ params, setParams }
         end = totalPages;
     }
 
+    // Add skip backward button (...) if there's a gap
+    // if (start > 1) {
+    //     const skipBackPage = Math.max(1, start - 5);
+    //     paginationItems.push(
+    //         <li key="skip-back">
+    //             <a href="#" onClick={() => handleChange('page', skipBackPage)}
+    //                 className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+    //                 ...
+    //             </a>
+    //         </li>
+    //     );
+    // }
+
     for (let i = start; i <= end; i++) {
         if (i > 0) {
             paginationItems.push(
@@ -47,11 +60,24 @@ const PaginationSelect: React.FC<PaginationSelectProps> = ({ params, setParams }
         }
     }
 
+    // Add skip forward button (...) if there's a gap
+    // if (end < totalPages) {
+    //     const skipForwardPage = Math.min(totalPages, end + 5);
+    //     paginationItems.push(
+    //         <li key="skip-forward">
+    //             <a href="#" onClick={() => handleChange('page', skipForwardPage)}
+    //                 className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+    //                 ...
+    //             </a>
+    //         </li>
+    //     );
+    // }
+
     return (
-        <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between" aria-label="Table navigation">
+        <nav className="relative flex items-center flex-column flex-wrap md:flex-row justify-between" aria-label="Table navigation">
             <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
                 Showing
-                <span className="font-semibold text-gray-900 dark:text-white mx-2">1 - {pageSize}</span>
+                <span className="font-semibold text-gray-900 mx-2">1 - {pageSize}</span>
                 of
                 <select
                     value={pageSize}
@@ -69,14 +95,24 @@ const PaginationSelect: React.FC<PaginationSelectProps> = ({ params, setParams }
             </span>
             <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                 <li>
-                    <a href="#" onClick={() => page > 1 && handleChange('page', page - 1)} className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <a href="#" onClick={() => page > 1 && handleChange('page', 1)} className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <FaAngleDoubleLeft />
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onClick={() => page > 1 && handleChange('page', page - 1)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                         <FaArrowLeft />
                     </a>
                 </li>
                 {paginationItems}
                 <li>
-                    <a href="#" onClick={() => page < totalPages && handleChange('page', page + 1)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    <a href="#" onClick={() => page < totalPages && handleChange('page', page + 1)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                         <FaArrowRight />
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onClick={() => page < totalPages && handleChange('page', totalPages)} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                        <FaAngleDoubleRight />
                     </a>
                 </li>
             </ul>

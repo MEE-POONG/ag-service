@@ -21,7 +21,7 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
     (user?.username || '').toLowerCase() === 'admin';
 
   return (
-    <div className="fixed top-0 left-0 right-0">
+    <div className="fixed top-0 left-0 right-0 w-max">
       <div
         className={`h-screen bg-white/70 backdrop-blur-xl border-r border-gray-200/60 shadow-sm transition-all duration-300 ${collapsed ? "w-16 ml-[-4rem]" : "w-56"
           } relative z-50 shrink-0`}  // ⬅️ เพิ่มตรงนี้
