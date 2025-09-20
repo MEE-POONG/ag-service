@@ -11,6 +11,7 @@ import CommandWorkModalLockUnLockC from '@/container/bot-ag/CommandWork/ModalLoc
 import PageHeader from '@/components/PageHeader'
 import PaginationSelect from '@/components/PaginationSelect'
 import { Params } from '@/data/interfaceDefault'
+import ModalAdJustBet from '@/container/bot-ag/ModalAdJustBet'
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -78,9 +79,6 @@ export default function CommandWorkPage() {
   // Mutations: create, update, delete (with optimistic updates on current page)
 
 
-
-
-
   const list = items
 
   return (
@@ -128,6 +126,7 @@ export default function CommandWorkPage() {
                         {u.position === 'agent' && <>
                           {/* <CommandWorkModalCreateC data={u} /> */}
                           <CommandWorkModalLockUnLockC data={u} />
+                          <ModalAdJustBet agUser={u} mode="create" />
                         </>}
                       </div>
                     </td>

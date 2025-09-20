@@ -4,7 +4,7 @@ import PageHeader from '@/components/PageHeader';
 import { Button, ButtonProps } from "@/components/ui/button"
 
 import ReactIconComponent from '@/components/ReactIconComponent';
-import ModalAdJustBet from '@/container/bot-ag/ModalAdJustBet';
+import ModalAdJustBetTest from '@/container/bot-ag/ModalAdJustBetTest';
 import { useAdjustBet } from '@/hooks/useAdjustBet';
 import { AdjustBet } from '@/types/adjustBet';
 import toast from 'react-hot-toast';
@@ -342,7 +342,7 @@ const AdjustBetPage: React.FC = () => {
         </div>
 
         {/* Modal */}
-        <ModalAdJustBet
+        <ModalAdJustBetTest
           data={modalState.data}
           isOpen={modalState.isOpen}
           onClose={closeModal}
