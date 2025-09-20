@@ -12,7 +12,7 @@ import PageHeader from '@/components/PageHeader'
 type WorkQueueListResp = {
   success: boolean
   data: ExtendedAgQueueJobDB[]
-  pagination?: { totalPages?: number }
+  pagination?: Params
   error?: string
 }
 
@@ -42,6 +42,7 @@ export default function WorkQueuePage() {
     pageSize: 10,
     keyword: '',
     totalPages: 1,
+    totalItems: 0,
   })
   const [workQueues, setWorkQueues] = useState<ExtendedAgQueueJobDB[]>([])
 
@@ -74,7 +75,7 @@ export default function WorkQueuePage() {
   useEffect(() => {
     if (queryData?.data) setWorkQueues(queryData.data)
     if (queryData?.pagination?.totalPages) {
-      setParams((prev) => ({ ...prev, totalPages: queryData.pagination!.totalPages! }))
+      setParams((prev) => ({ ...prev, totalPages: queryData.pagination!.totalPages!, totalItems: queryData.pagination?.totalItems || 0 }))
     }
   }, [queryData])
 
@@ -99,10 +100,6 @@ export default function WorkQueuePage() {
       second: '2-digit'
     })
   }
-
-  useEffect(() => {
-    console.log(`workQueues : `, workQueues);
-  }, [workQueues])
 
   return (
     <TheLayout>

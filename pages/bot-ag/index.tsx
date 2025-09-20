@@ -9,6 +9,8 @@ import { AgUserAccountDB } from '@prisma/client'
 import CommandWorkModalCreateC from '@/container/bot-ag/CommandWork/ModalCreateC'
 import CommandWorkModalLockUnLockC from '@/container/bot-ag/CommandWork/ModalLockUnLockC'
 import PageHeader from '@/components/PageHeader'
+import PaginationSelect from '@/components/PaginationSelect'
+import { Params } from '@/data/interfaceDefault'
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -21,22 +23,30 @@ function useAgUserAccounts() {
 
 export default function CommandWorkPage() {
   const { items, add, update, remove, setItems } = useAgUserAccounts()
-  const [keyword, setKeyword] = useState('')
-  const debouncedKeyword = useDebouncedValue(keyword, 300)
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
-  const [totalPages, setTotalPages] = useState(1)
-  const [totalItems, setTotalItems] = useState(0)
+  const [params, setParams] = useState<Params>({
+    page: 1,
+    pageSize: 10,
+    keyword: '',
+    totalPages: 1,
+    totalItems: 0,
+  })
+  const debouncedKeyword = useDebouncedValue(params.keyword, 300)
 
   // Fetch list via react-query (server-side filter by keyword)
-  const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: { totalItems: number; totalPages: number; currentPage: number; pageSize: number } }>({
-    queryKey: qk.agUsers.listPaged(debouncedKeyword, page, pageSize),
+  const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: Params }>({
+    queryKey: qk.agUsers.listPaged(debouncedKeyword, params.page, params.pageSize),
     queryFn: async () => {
-      const res = await axios.get('/api/aguseraccounts', { params: { keyword: debouncedKeyword, page, pageSize } })
+      const res = await axios.get('/api/aguseraccounts', {
+        params: {
+          keyword: debouncedKeyword,
+          page: params.page,
+          pageSize: params.pageSize
+        }
+      })
       if (!res.data?.success) throw new Error(res.data?.error || 'โหลดข้อมูลล้มเหลว')
       return {
         items: (res.data.data || []) as AgUserAccountDB[],
-        pagination: res.data.pagination as { totalItems: number; totalPages: number; currentPage: number; pageSize: number } | undefined,
+        pagination: res.data.pagination as Params | undefined,
       }
     },
     staleTime: 30 * 1000,
@@ -55,23 +65,21 @@ export default function CommandWorkPage() {
       })
       setItems(mapped)
       if (data.pagination) {
-        setTotalPages(data.pagination.totalPages || 1)
-        setTotalItems(data.pagination.totalItems || 0)
+        setParams((prev) => ({
+          ...prev,
+          totalPages: data.pagination!.totalPages || 1,
+          totalItems: data.pagination?.totalItems || 0
+        }))
       }
     }
   }, [data, setItems])
 
-  // Reset to first page when keyword changes
-  useEffect(() => {
-    setPage(1)
-  }, [debouncedKeyword])
-
 
   // Mutations: create, update, delete (with optimistic updates on current page)
-  
 
-  
-  
+
+
+
 
   const list = items
 
@@ -90,8 +98,8 @@ export default function CommandWorkPage() {
           )}
           <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:gap-4 sm:mb-6">
             <input
-              value={keyword}
-              onChange={e => setKeyword(e.target.value)}
+              value={params.keyword}
+              onChange={e => setParams(prev => ({ ...prev, keyword: e.target.value, page: 1 }))}
               placeholder="ค้นหา (รหัส/ล็อกอิน/ตำแหน่ง/ต้นทาง/สำรอง/Secret)"
               className="px-4 py-2 w-full text-sm sm:text-base rounded-xl bg-white/90 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#A78BFA] focus:border-transparent shadow-sm"
             />
@@ -135,41 +143,11 @@ export default function CommandWorkPage() {
               </tbody>
             </table>
           </div>
-          <div className="flex items-center justify-between mt-4">
-            <div className="flex items-center gap-2">
-              ทั้งหมด {totalItems} รายการ
-              <span className="text-sm text-gray-600">แสดง</span>
-              <select
-                value={pageSize}
-                onChange={e => setPageSize(parseInt(e.target.value, 10) || 10)}
-                className="px-3 py-1 text-end rounded-md border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
-                disabled={isFetching}
-              >
-                <option value={10}>10</option>
-                <option value={20}>20</option>
-                <option value={50}>50</option>
-              </select>
-              <span className="text-sm text-gray-600">ต่อหน้า</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
-                disabled={isFetching || page <= 1}
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-              >
-                ก่อนหน้า
-              </Button>
-              <span className="text-sm text-gray-700">หน้า {page} / {Math.max(1, totalPages)}</span>
-              <Button
-                size="sm"
-                className="btn-theme hover:!brightness-95 rounded-full px-3"
-                disabled={isFetching || page >= totalPages}
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-              >
-                ถัดไป
-              </Button>
-            </div>
+          <div className="my-2 sm:mt-3">
+            <PaginationSelect
+              params={params}
+              setParams={setParams}
+            />
           </div>
         </div>
       </div>

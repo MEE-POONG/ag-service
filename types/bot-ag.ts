@@ -70,10 +70,10 @@ export const botSections: BotSection[] = [
       },
       {
         key: 'Quest',
-        href: '/bot-ag/quest',
+        href: '/bot-ag/work-queue',
         icon: 'FaFlag',
-        title: 'Quest',
-        desc: 'จัดการระบบ Quest และรางวัลประจำวัน',
+        title: 'จัดการ Work Queue',
+        desc: 'ระบบจัดการจัดการ Work Queue',
         enabled: true,
         badge: 'new',
         requireRole: ['STAFF', 'MASTER', 'ADMIN'],

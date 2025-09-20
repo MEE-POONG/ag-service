@@ -9,7 +9,7 @@ interface PaginationSelectProps {
 }
 
 const PaginationSelect: React.FC<PaginationSelectProps> = ({ params, setParams }) => {
-    const { page, pageSize, totalPages } = params;
+    const { page, pageSize, totalPages, totalItems = 0 } = params;
 
     const handleChange = (field: keyof typeof params, value: string | number) => {
         setParams(prev => ({
@@ -18,6 +18,8 @@ const PaginationSelect: React.FC<PaginationSelectProps> = ({ params, setParams }
             [field]: value,
         }));
     };
+    const startIndex = totalItems > 0 ? (page - 1) * pageSize + 1 : 0;
+    const endIndex = totalItems > 0 ? Math.min(page * pageSize, totalItems) : 0;
 
     let paginationItems = [];
     let start = page - 2;
@@ -77,7 +79,9 @@ const PaginationSelect: React.FC<PaginationSelectProps> = ({ params, setParams }
         <nav className="relative flex items-center flex-column flex-wrap md:flex-row justify-between" aria-label="Table navigation">
             <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
                 Showing
-                <span className="font-semibold text-gray-900 mx-2">1 - {pageSize}</span>
+                <span className="font-semibold text-gray-900 mx-2">
+                    {startIndex} - {endIndex}
+                </span>
                 of
                 <select
                     value={pageSize}

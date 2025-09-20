@@ -10,37 +10,33 @@ import { ExtendedWebBaseDB } from '@/data/interface'
 import WebBaseModalDelete from '@/container/web-ag/ModalDelete'
 import WebBaseModalView from '@/container/web-ag/ModalView'
 import PageHeader from '@/components/PageHeader'
+import { Params } from '@/data/interfaceDefault'
 
 type WebBaseResp = {
   success: boolean;
   data: ExtendedWebBaseDB[];
-  total?: number;
+  pagination?: Params;
 };
 
 export default function WebAgPage() {
-  const [params, setParams] = useState({
+  const [params, setParams] = useState<Params>({
     page: 1,
     pageSize: 10,
     keyword: '',
     totalPages: 1,
+    totalItems: 0,
   });
   const [webBases, setWebBases] = useState<ExtendedWebBaseDB[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [totalItems, setTotalItems] = useState(0);
 
   // ✅ สร้าง query string จาก state (รวม page & pageSize ด้วย)
   const qs = React.useMemo(() => {
     const p = new URLSearchParams();
-    if (searchTerm) p.append('search', searchTerm);
-    if (statusFilter) p.append('status', statusFilter);
-    p.append('page', String(currentPage));
-    p.append('pageSize', String(pageSize));
+    if (params.keyword) p.append('search', params.keyword);
+    p.append('page', String(params.page));
+    p.append('pageSize', String(params.pageSize));
     return p.toString();
-  }, [searchTerm, statusFilter, currentPage, pageSize]);
+  }, [params.keyword, params.page, params.pageSize]);
 
   // ✅ ใส่ generic, ใช้ placeholderData แทน keepPreviousData (v5)
   const {
@@ -49,7 +45,7 @@ export default function WebAgPage() {
     isLoading,
     refetch,
   } = useQuery<WebBaseResp>({
-    queryKey: qk.webBase.list(searchTerm, statusFilter, currentPage, pageSize),
+    queryKey: qk.webBase.list(params.keyword, '', params.page, params.pageSize),
     queryFn: async () => {
       const res = await axios.get(`/api/web-base?${qs}`);
       return res.data as WebBaseResp;
@@ -65,10 +61,16 @@ export default function WebAgPage() {
     setLoading(false);
     if (webResp.success) {
       setWebBases(webResp.data);
-      setTotalItems(webResp.total ?? webResp.data.length);
+      if (webResp.pagination) {
+        setParams((prev) => ({
+          ...prev,
+          totalPages: webResp.pagination!.totalPages || 1,
+          totalItems: webResp.pagination?.totalItems || 0
+        }));
+      }
     } else {
       setWebBases([]);
-      setTotalItems(0);
+      setParams((prev) => ({ ...prev, totalItems: 0 }));
     }
   }, [webResp]);
 
@@ -92,26 +94,11 @@ export default function WebAgPage() {
               <input
                 type="text"
                 placeholder="ค้นหา Web Base..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1); // Reset to first page when searching
-                }}
+                value={params.keyword}
+                onChange={(e) => setParams(prev => ({ ...prev, keyword: e.target.value, page: 1 }))}
                 className="w-full px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                setCurrentPage(1); // Reset to first page when filtering
-              }}
-              className="px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">ทั้งหมด</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
           </div>
 
           {/* Table */}
@@ -179,16 +166,12 @@ export default function WebAgPage() {
               </table>
             </div>
           )}
-
-          {/* Pagination */}
-          {totalItems > 0 && (
-            <div className="mt-4 sm:mt-6">
-              <PaginationSelect
-                params={params}
-                setParams={setParams}
-              />
-            </div>
-          )}
+          <div className="my-2 sm:mt-3">
+            <PaginationSelect
+              params={params}
+              setParams={setParams}
+            />
+          </div>
         </div>
       </div>
     </TheLayout>

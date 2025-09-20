@@ -16,19 +16,21 @@ import ImageModalDelete from '@/container/image-list/ModalDelete';
 import { useQuery } from '@tanstack/react-query';
 import { qk } from '@/lib/queryKeys';
 import PageHeader from '@/components/PageHeader';
+import { Params } from '@/data/interfaceDefault';
 
 type ImageResp = {
     success: boolean;
     images: ImageList[];
-    pagination: { totalPages: number };
+    pagination?: Params;
 };
 
 export default function ImagePage() {
-    const [params, setParams] = useState({
+    const [params, setParams] = useState<Params>({
         page: 1,
         pageSize: 10,
         keyword: '',
         totalPages: 1,
+        totalItems: 0,
     });
 
     // ใช้ useMemo ให้ query string เสถียร
@@ -62,91 +64,97 @@ export default function ImagePage() {
     };
 
     useEffect(() => {
-        console.log(`imageResp : `, imageResp);
+        if (imageResp?.pagination) {
+            setParams((prev) => ({
+                ...prev,
+                totalPages: imageResp.pagination!.totalPages || 1,
+                totalItems: imageResp.pagination?.totalItems || 0
+            }))
+        }
     }, [imageResp]);
 
     return (
         <TooltipProvider>
             <TheLayout>
-            <PageHeader
-                title="รายการรูปภาพ"
-                icon='FaImages'
-                description="ระบบจัดการรูปภาพของระบบ"
-                gradient={true}
-                actions={
-                    <Link
-                        href="/setting/image-list/add"
-                        className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
-                    >
-                        <FaPlus className="mr-2" /> เพิ่มรูปภาพ
-                    </Link>
-                }
-            />
-            <div className="max-w-6xl mx-auto lg:max-w-full">
-                <div className="bg-white rounded-lg shadow-md pl-1 sm:p-2 mb-6 sm:mb-8">
-                    <div className="overflow-x-auto">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>No.</TableHead>
-                                    <TableHead>Preview</TableHead>
-                                    <TableHead>ชื่อไฟล์</TableHead>
-                                    <TableHead>Model Name</TableHead>
-                                    <TableHead>วันที่สร้าง</TableHead>
-                                    <TableHead className="text-right">การจัดการ</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {(imageResp?.images ?? []).map((item, index) => (
-                                    <TableRow key={item.id}>
-                                        <TableCell>{(params.page - 1) * params.pageSize + index + 1}</TableCell>
-                                        <TableCell>
-                                            <ImgIndex name={item.nameFile} imageValue={item.imageUrl} size="wsm" classValue="w-60 h-30 object-contain border border-gray-600" />
-                                        </TableCell>
-                                        <TableCell>{item.nameFile}</TableCell>
-                                        <TableCell>{item.modelName}</TableCell>
-                                        <TableCell>{new Date(item.createdAt).toLocaleDateString()}</TableCell>
-                                        <TableCell className="text-right space-x-1">
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <ImageModalView list={item} />
-                                                </TooltipTrigger>
-                                                <TooltipContent>
-                                                    <p>ดูรูปภาพ</p>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                            {/* <Tooltip content="แก้ไขรูปภาพ">
+                <PageHeader
+                    title="รายการรูปภาพ"
+                    icon='FaImages'
+                    description="ระบบจัดการรูปภาพของระบบ"
+                    gradient={true}
+                    actions={
+                        <Link
+                            href="/setting/image-list/add"
+                            className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
+                        >
+                            <FaPlus className="mr-2" /> เพิ่มรูปภาพ
+                        </Link>
+                    }
+                />
+                <div className="max-w-6xl mx-auto lg:max-w-full">
+                    <div className="bg-white rounded-lg shadow-md pl-1 sm:p-2 mb-6 sm:mb-8">
+                        <div className="overflow-x-auto">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>No.</TableHead>
+                                        <TableHead>Preview</TableHead>
+                                        <TableHead>ชื่อไฟล์</TableHead>
+                                        <TableHead>Model Name</TableHead>
+                                        <TableHead>วันที่สร้าง</TableHead>
+                                        <TableHead className="text-right">การจัดการ</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {(imageResp?.images ?? []).map((item, index) => (
+                                        <TableRow key={item.id}>
+                                            <TableCell>{(params.page - 1) * params.pageSize + index + 1}</TableCell>
+                                            <TableCell>
+                                                <ImgIndex name={item.nameFile} imageValue={item.imageUrl} size="wsm" classValue="w-60 h-30 object-contain border border-gray-600" />
+                                            </TableCell>
+                                            <TableCell>{item.nameFile}</TableCell>
+                                            <TableCell>{item.modelName}</TableCell>
+                                            <TableCell>{new Date(item.createdAt).toLocaleDateString()}</TableCell>
+                                            <TableCell className="text-right space-x-1">
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <ImageModalView list={item} />
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>ดูรูปภาพ</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                                {/* <Tooltip content="แก้ไขรูปภาพ">
                                                 <Button className="bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-300" variant="ghost" size="sm">
                                                     <FaEdit className="h-4 w-4" />
                                                 </Button>
                                             </Tooltip> */}
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <ImageModalDelete list={item} onSuccess={() => refetch()} />
-                                                </TooltipTrigger>
-                                                <TooltipContent>
-                                                    <p>ลบรูปภาพ</p>
-                                                </TooltipContent>
-                                            </Tooltip>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <ImageModalDelete list={item} onSuccess={() => refetch()} />
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <p>ลบรูปภาพ</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
                                                 {/* <Button className="bg-red-100 text-red-700 rounded hover:bg-red-300" variant="ghost" size="sm">
                                                     <FaTrash className="h-4 w-4" />
                                                 </Button> */}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
 
-                    <div className="mt-4 sm:mt-6">
-                        <PaginationSelect
-                            params={params}
-                            setParams={setParams}
-                        />
+                        <div className="my-2 sm:mt-3">
+                            <PaginationSelect
+                                params={params}
+                                setParams={setParams}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-        </TheLayout>
+            </TheLayout>
         </TooltipProvider>
     );
 }

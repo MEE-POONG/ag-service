@@ -14,23 +14,25 @@ import MenuWebModalPosition from '@/container/menuweb/ModalSwitchPosition';
 import { useQuery } from '@tanstack/react-query';
 import { qk } from '@/lib/queryKeys';
 import PageHeader from '@/components/PageHeader';
+import { Params } from '@/data/interfaceDefault';
 
 type MenusResp = {
   success: boolean;
   data: MenuWebDB[];
   head?: MenuWebDB;
-  pagination: { totalPages: number };
+  pagination?: Params;
 };
 
 export default function MenuPage() {
   const router = useRouter();
   const { parentId } = router.query;
 
-  const [params, setParams] = useState({
+  const [params, setParams] = useState<Params>({
     page: 1,
     pageSize: 10,
     keyword: '',
     totalPages: 1,
+    totalItems: 0,
   });
 
   const [headMenus, setHeadMenus] = useState<MenuWebDB | undefined>(undefined);
@@ -77,10 +79,13 @@ export default function MenuPage() {
   useEffect(() => {
     if (!menusResp) return;
     setHeadMenus(menusResp.head);
-    setParams((prev) => ({
-      ...prev,
-      totalPages: menusResp.pagination?.totalPages ?? 1,
-    }));
+    if (menusResp.pagination) {
+      setParams((prev) => ({
+        ...prev,
+        totalPages: menusResp.pagination!.totalPages || 1,
+        totalItems: menusResp.pagination?.totalItems || 0
+      }));
+    }
   }, [menusResp]);
 
   useEffect(() => {
@@ -155,13 +160,15 @@ export default function MenuPage() {
                   ))}
                 </TableBody>
               </Table>
-
-              <div className="mt-4">
-                <PaginationSelect params={params} setParams={setParams} />
-                {isFetching && (
-                  <div className="mt-2 text-xs text-gray-500">กำลังอัปเดตรายการ…</div>
-                )}
+              <div className="my-2 sm:mt-3">
+                <PaginationSelect
+                  params={params}
+                  setParams={setParams}
+                />
               </div>
+              {isFetching && (
+                <div className="mt-2 text-xs text-gray-500">กำลังอัปเดตรายการ…</div>
+              )}
             </>
           ) : (
             <div className="py-6 text-center text-sm text-gray-500">ไม่มีข้อมูลเมนู</div>

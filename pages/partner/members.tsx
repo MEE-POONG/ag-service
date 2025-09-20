@@ -1,18 +1,25 @@
 import { TheLayout } from '@/components/TheLayout'
 import MemberModalAdd from '@/container/partner/ModalAddMember'
 import MemberModalEdit from '@/container/partner/ModalEditMember'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ExtendedPartnerDB, usePartners } from '@/hooks/usePartners'
 import PageHeader from '@/components/PageHeader'
+import PaginationSelect from '@/components/PaginationSelect'
+import { Params } from '@/data/interfaceDefault'
 
 
 export default function MembersPage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
   const [editingPartner, setEditingPartner] = useState<ExtendedPartnerDB | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-
+  const [params, setParams] = useState<Params>({
+    page: 1,
+    pageSize: 10,
+    keyword: '',
+    status: 'all',
+    totalPages: 1,
+    totalItems: 0,
+  })
   const { partners, loading, error, stats, fetchPartners } = usePartners()
 
   const handleRefresh = () => {
@@ -33,15 +40,28 @@ export default function MembersPage() {
   // Filter partners based on search and status
   const filteredPartners = partners.filter(partner => {
     const matchesSearch =
-      partner?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      partner?.tel?.includes(searchTerm) ||
-      partner?.bankNumber?.includes(searchTerm) ||
-      partner?.agUserAccountDB?.username?.toLowerCase().includes(searchTerm.toLowerCase())
+      partner?.name?.toLowerCase().includes(params.keyword.toLowerCase()) ||
+      partner?.tel?.includes(params.keyword) ||
+      partner?.bankNumber?.includes(params.keyword) ||
+      partner?.agUserAccountDB?.username?.toLowerCase().includes(params.keyword.toLowerCase())
 
-    const matchesStatus = statusFilter === 'all' || partner?.status === statusFilter
+    const matchesStatus = params.status === 'all' || partner?.status === params.status
 
     return matchesSearch && matchesStatus
   })
+
+  // Update pagination when partners data changes
+  useEffect(() => {
+    const totalItems = filteredPartners.length
+    const totalPages = Math.ceil(totalItems / params.pageSize)
+    setParams(prev => ({ ...prev, totalPages, totalItems }))
+  }, [filteredPartners.length, params.pageSize])
+
+  // Get paginated partners
+  const paginatedPartners = filteredPartners.slice(
+    (params.page - 1) * params.pageSize,
+    params.page * params.pageSize
+  )
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('th-TH', {
@@ -100,14 +120,14 @@ export default function MembersPage() {
               <input
                 type="text"
                 placeholder="ค้นหาสมาชิก (ชื่อ, เบอร์โทร, เลขบัญชี)..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={params.keyword}
+                onChange={(e) => setParams(prev => ({ ...prev, keyword: e.target.value, page: 1 }))}
                 className="w-full px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               />
             </div>
             <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              value={params.status}
+              onChange={(e) => setParams(prev => ({ ...prev, status: e.target.value, page: 1 }))}
               className="px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
             >
               <option value="all">สถานะทั้งหมด</option>
@@ -147,17 +167,17 @@ export default function MembersPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredPartners.length === 0 ? (
+                  {paginatedPartners.length === 0 ? (
                     <tr>
                       <td colSpan={11} className="px-2 sm:px-4 py-8 text-center text-gray-500">
                         ไม่พบข้อมูลสมาชิก
                       </td>
                     </tr>
                   ) : (
-                    filteredPartners.map((partner, index) => (
+                    paginatedPartners.map((partner, index) => (
                       <tr key={partner.id}>
                         <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                          {index + 1}
+                          {(params.page - 1) * params.pageSize + index + 1}
                         </td>
                         <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
                           {partner?.agUserAccountDB?.username}
@@ -217,23 +237,11 @@ export default function MembersPage() {
           </div>
 
           {/* Pagination */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-4 sm:mt-6">
-            <div className="text-xs sm:text-sm text-gray-500">
-              {loading ? 'กำลังโหลด...' : `แสดง ${filteredPartners.length} จาก ${partners?.length} รายการ`}
-            </div>
-            {filteredPartners.length > 0 && (
-              <div className="flex space-x-1 sm:space-x-2">
-                <button className="px-2 sm:px-3 py-1 border border-gray-300 rounded text-xs sm:text-sm hover:bg-gray-50">
-                  ก่อนหน้า
-                </button>
-                <button className="px-2 sm:px-3 py-1 bg-green-500 text-white rounded text-xs sm:text-sm">
-                  1
-                </button>
-                <button className="px-2 sm:px-3 py-1 border border-gray-300 rounded text-xs sm:text-sm hover:bg-gray-50">
-                  ถัดไป
-                </button>
-              </div>
-            )}
+          <div className="my-2 sm:mt-3">
+            <PaginationSelect
+              params={params}
+              setParams={setParams}
+            />
           </div>
         </div>
       </div>
