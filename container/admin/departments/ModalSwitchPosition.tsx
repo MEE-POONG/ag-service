@@ -1,11 +1,11 @@
 import { Button, ButtonProps } from "@/components/ui/button"
 
-import { AdminDepartmentDB } from '@prisma/client';
 import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
 import { ExtendedAdminDepartment } from '@/data/interface';
+import { useAuth } from '@/hooks/useAuth';
 
 interface MenuWebModalSwitchPositionProps {
   onSuccess: () => void;
@@ -20,6 +20,7 @@ interface MenuWithOrder {
 }
 
 const MenuWebModalSwitchPosition: React.FC<MenuWebModalSwitchPositionProps> = ({ onSuccess, data }) => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuWithOrder[]>([]);
   const [loading, setLoading] = useState(false);
@@ -128,7 +129,7 @@ const MenuWebModalSwitchPosition: React.FC<MenuWebModalSwitchPositionProps> = ({
 
       const response = await axios.put('/api/admin-positions/showorder', {
         updates,
-        updatedBy: 'admin' // ควรได้จาก auth context
+        updatedBy: user?.id
       });
 
       if (response.data.success) {

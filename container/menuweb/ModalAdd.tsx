@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
+import { useAuth } from '@/hooks/useAuth';
 
 
 
@@ -16,6 +17,7 @@ interface MenuWebModalAddProps {
 const MenuWebModalAdd: React.FC<MenuWebModalAddProps> = ({
   onSuccess,
 }) => {
+  const { user } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [parentMenus, setParentMenus] = useState<MenuWebDB[]>([]);
@@ -114,8 +116,8 @@ const MenuWebModalAdd: React.FC<MenuWebModalAddProps> = ({
       const method = 'POST';
       const body = {
         ...formData,
-        createdBy: 'admin', // Replace with actual user ID
-        updatedBy: 'admin', // Replace with actual user ID
+        createdBy: user?.id,
+        updatedBy: user?.id,
       };
 
       const response = await axios({

@@ -5,6 +5,7 @@ import axios from '@/lib/axios';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
+import { useAuth } from '@/hooks/useAuth';
 
 interface MenuWebModalEditProps {
   onSuccess: () => void;
@@ -12,6 +13,7 @@ interface MenuWebModalEditProps {
 }
 
 const MenuWebModalEdit: React.FC<MenuWebModalEditProps> = ({ onSuccess, data }) => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [parentMenus, setParentMenus] = useState<MenuWebDB[]>([]);
 
@@ -76,8 +78,8 @@ const MenuWebModalEdit: React.FC<MenuWebModalEditProps> = ({ onSuccess, data }) 
       const method = 'PUT';
       const body = {
         ...formData,
-        createdBy: 'admin', // Replace with actual user ID
-        updatedBy: 'admin', // Replace with actual user ID
+        createdBy: user?.id,
+        updatedBy: user?.id,
       };
 
 

@@ -6,6 +6,7 @@ import ReactIconComponent from '@/components/ReactIconComponent';
 import Modal from '@/components/form/Modal';
 import { AgUserAccount } from '@/types/adjustBet';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 interface MemberModalAddProps {
   onSuccess: () => void;
@@ -35,6 +36,7 @@ interface MemberFormData {
 }
 
 const MemberModalAdd: React.FC<MemberModalAddProps> = ({ onSuccess }) => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [agUserAccounts, setAgUserAccounts] = useState<AgUserAccount[]>([]);
@@ -210,7 +212,7 @@ const MemberModalAdd: React.FC<MemberModalAddProps> = ({ onSuccess }) => {
         status: formData.status,
         method: formData.method,
         startDate: formData.startDate,
-        createdBy: 'system', // TODO: Get from auth context
+        createdBy: user?.id,
       };
       
       const res = await axios.post('/api/partners', partnerData);

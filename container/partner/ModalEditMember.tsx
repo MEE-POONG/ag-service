@@ -7,6 +7,7 @@ import ReactIconComponent from '@/components/ReactIconComponent';
 import Modal from '@/components/form/Modal';
 import { AgUserAccount } from '@/types/adjustBet';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 interface MemberModalEditProps {
   partner: any; // Partner data to edit
@@ -38,12 +39,13 @@ interface MemberFormData {
   startDate: string;
 }
 
-const MemberModalEdit: React.FC<MemberModalEditProps> = ({ 
-  partner, 
-  onSuccess, 
-  isOpen, 
-  onClose 
+const MemberModalEdit: React.FC<MemberModalEditProps> = ({
+  partner,
+  onSuccess,
+  isOpen,
+  onClose
 }) => {
+  const { user } = useAuth();
   const [saving, setSaving] = useState(false);
   const [loadingAgUsers, setLoadingAgUsers] = useState(false);
   const [agUserAccounts, setAgUserAccounts] = useState<AgUserAccount[]>([]);
@@ -248,7 +250,7 @@ const MemberModalEdit: React.FC<MemberModalEditProps> = ({
         status: formData.status,
         method: formData.method,
         startDate: formData.startDate,
-        updatedBy: 'system', // TODO: Get from auth context
+        updatedBy: user?.id,
       };
       
       const res = await axios.put('/api/partners', partnerData);

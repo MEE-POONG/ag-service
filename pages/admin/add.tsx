@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from '@/lib/axios'
 import { TheLayout } from '@/components/TheLayout'
 import { qk } from '@/lib/queryKeys'
+import { useAuth } from '@/hooks/useAuth'
 
 interface Position {
   id: string
@@ -20,6 +21,7 @@ interface Department {
 type PosDepResp = { positions: Position[]; departments: Department[] }
 
 export default function AdminAddPage() {
+  const { user } = useAuth();
   const [positions, setPositions] = useState<Position[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
   const [selectedDeptId, setSelectedDeptId] = useState('')
@@ -107,7 +109,7 @@ export default function AdminAddPage() {
       const res = await axios.post('/api/admin', {
         ...form,
         adminDepartmentId: selectedDeptId,
-        createdBy: 'admin',
+        createdBy: user?.id,
       })
       if (res.data?.success) {
         await queryClient.invalidateQueries({ queryKey: qk.admins.list, exact: false })

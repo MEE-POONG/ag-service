@@ -6,6 +6,7 @@ import ReactIconComponent from '@/components/ReactIconComponent';
 import { AdminPositionDB } from '@prisma/client';
 import { ExtendedAdminDepartment } from '@/data/interface';
 import Modal from '@/components/form/Modal';
+import { useAuth } from '@/hooks/useAuth';
 
 interface PositionModalEditProps {
   onSuccess: () => void;
@@ -16,6 +17,7 @@ interface PositionModalEditProps {
 type SimpleDepartment = { id: string; name: string };
 
 const PositionModalEdit: React.FC<PositionModalEditProps> = ({ list, position, onSuccess }) => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string>('');
@@ -79,7 +81,7 @@ const PositionModalEdit: React.FC<PositionModalEditProps> = ({ list, position, o
         id: position.id,
         name: name.trim(),
         adminDepartmentId: selectedDeptId,
-        updatedBy: 'admin', // TODO: ใช้ข้อมูลผู้ใช้จริง
+        updatedBy: user?.id,
       };
 
       // แปลง priorityPositionId เป็น priority number

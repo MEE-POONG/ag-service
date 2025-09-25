@@ -6,6 +6,7 @@ import ReactIconComponent from '@/components/ReactIconComponent';
 import Modal from '@/components/form/Modal';
 import { AdjustBet, AdjustBetFormData, AdjustBetData, AgUserAccount } from '@/types/adjustBet';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 /* =========================
  * DEFAULTS ต่อ section
@@ -71,6 +72,7 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
   data,
   mode
 }) => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -218,8 +220,8 @@ const ModalAdJustBet: React.FC<ModalAdJustBetProps> = ({
         cockfight: { ...formData.cockfight },
         muayStep: { ...formData.muayStep },
         virtualSports: { ...formData.virtualSports },
-        createdBy: 'current-user-id',
-        updatedBy: 'current-user-id'
+        createdBy: user?.id || '',
+        updatedBy: user?.id || ''
       };
 
       let response;
