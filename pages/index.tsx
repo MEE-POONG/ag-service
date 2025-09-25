@@ -41,9 +41,9 @@ export default function DashboardPage() {
         actions={
           <Button
             onClick={logout}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium  text-red-500 hover:bg-red-500/50 focus:outline-none focus:ring-2 focus:ring-red-500 bg-white shadow-sm rounded-lg  border-1 border-red-500"
+            className="border-2 border-red-500 inline-flex items-center px-4 py-2 text-sm font-medium  text-red-500 hover:bg-red-500/50 focus:outline-none focus:ring-2 focus:ring-red-500 bg-white shadow-sm rounded-lg"
           >
-            ออกจากระบบ
+            ออกจากระบบ <ReactIconComponent icon="FaSignOutAlt" setClass="ml-2 h-4 w-4" />
           </Button>
         }
       />

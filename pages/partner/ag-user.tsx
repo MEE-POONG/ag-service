@@ -544,7 +544,7 @@ function AgUserAccountFormModal({
 
   const handleSubmit = () => {
     // basic validation
-    if (!form.username || !form.userLogin || !form.position) {
+    if (!form.username || !form.position) {
       setError('กรอกข้อมูลให้ครบถ้วน (AgUserAccount, userLogin, position)')
       return
     }

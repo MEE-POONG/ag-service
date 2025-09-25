@@ -23,7 +23,7 @@ interface PageHeaderProps {
   gradient = false
 }) => {
   return (
-    <div className={`relative z-20 pointer-events-autobg-white shadow-sm rounded-lg px-2 sm:px-3 sm:py-3 mb-6mt-20 border border-purple-500 ${gradient ? 'bg-gradient-to-r from-purple-50 to-white' : ''}`}>
+    <div className={`relative z-20 mb-4 pointer-events-autobg-white shadow-sm rounded-lg px-2 sm:px-3 sm:py-3 mb-6mt-20 border border-purple-500 ${gradient ? 'bg-gradient-to-r from-purple-50 to-white' : ''}`}>
       <div className="flex flex-col gap-4 items-center sm:flex-row sm:justify-between">
         <div className="flex items-center space-x-3 text-purple-500 sm:space-x-4">
           {icon && (

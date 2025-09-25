@@ -154,7 +154,7 @@ model AGUserDB {
   updatedAt DateTime  @db.Date
   updatedBy String
   userAg    String    @unique
-  userLogin String    @unique
+  userLogin String?    @unique
   webBaseId String    @db.ObjectId
   webBase   WebBaseDB @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
 }

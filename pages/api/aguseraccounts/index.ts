@@ -31,15 +31,15 @@ async function getHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
   const where: Prisma.AgUserAccountDBWhereInput = {
     ...(kw
       ? {
-          OR: [
-            { username: { contains: kw, mode: 'insensitive' } },
-            { userLogin: { contains: kw, mode: 'insensitive' } },
-            { webname: { contains: kw, mode: 'insensitive' } },
-            { origin: { contains: kw, mode: 'insensitive' } },
-            { position: { contains: kw, mode: 'insensitive' } },
-            { reserve: { contains: kw, mode: 'insensitive' } },
-          ],
-        }
+        OR: [
+          { username: { contains: kw, mode: 'insensitive' } },
+          { userLogin: { contains: kw, mode: 'insensitive' } },
+          { webname: { contains: kw, mode: 'insensitive' } },
+          { origin: { contains: kw, mode: 'insensitive' } },
+          { position: { contains: kw, mode: 'insensitive' } },
+          { reserve: { contains: kw, mode: 'insensitive' } },
+        ],
+      }
       : {}),
     ...(statusServe ? { statusServe: String(statusServe).toUpperCase() } : {}),
   }
@@ -61,10 +61,10 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
   if (!admin) return
 
   const { username, reserve, userLogin, origin, position, gaSecretEnc, statusServe = 'PENDING', note, meta, webname } = req.body
-  if (!username || !userLogin) return res.status(400).json({ success: false, error: 'username and userLogin are required' })
+  if (!username) return res.status(400).json({ success: false, error: 'username are required' })
 
   const dup = await prisma.agUserAccountDB.findFirst({ where: { OR: [{ username }, { userLogin }] } })
-  if (dup) return res.status(400).json({ success: false, error: 'username or userLogin already exists' })
+  if (dup) return res.status(400).json({ success: false, error: 'username already exists' })
 
   const created = await prisma.$transaction(async (tx) => {
     const row = await tx.agUserAccountDB.create({
