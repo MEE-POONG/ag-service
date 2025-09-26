@@ -143,21 +143,7 @@ type CreditTopUpAdviserDetails {
   webname     String
 }
 
-model AGUserDB {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  adviser   String
-  createdAt DateTime  @db.Date
-  createdBy String
-  isActive  Boolean
-  isDeleted Boolean
-  password  String
-  updatedAt DateTime  @db.Date
-  updatedBy String
-  userAg    String    @unique
-  userLogin String?    @unique
-  webBaseId String    @db.ObjectId
-  webBase   WebBaseDB @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
-}
+
 
 model ActivityLogDB {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -445,7 +431,6 @@ model WebBaseDB {
   updatedAt DateTime   @db.Date
   updatedBy String
   AdminDB   AdminDB[]
-  AGUserDB  AGUserDB[]
 
   @@index([isActive], map: "isActive_1")
 }
