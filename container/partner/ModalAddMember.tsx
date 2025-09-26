@@ -212,7 +212,7 @@ const MemberModalAdd: React.FC<MemberModalAddProps> = ({ onSuccess }) => {
         status: formData.status,
         method: formData.method,
         startDate: formData.startDate,
-        createdBy: user?.id,
+        createdBy: user?.id || '',
       };
       
       const res = await axios.post('/api/partners', partnerData);

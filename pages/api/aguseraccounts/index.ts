@@ -63,15 +63,21 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
   const { username, reserve, userLogin, origin, position, gaSecretEnc, statusServe = 'PENDING', note, meta, webname } = req.body
   if (!username) return res.status(400).json({ success: false, error: 'username are required' })
 
-  const dup = await prisma.agUserAccountDB.findFirst({ where: { OR: [{ username }, { userLogin }] } })
-  if (dup) return res.status(400).json({ success: false, error: 'username already exists' })
+  const dup = await prisma.agUserAccountDB.findFirst({ where: { username } })
+  if (dup) return res.status(400).json({ success: false, error: `username already exists ${username} dup :  ${dup.username}` })
+
+  // Check userLogin uniqueness only if it's not empty
+  if (userLogin && userLogin !== '') {
+    const dupLogin = await prisma.agUserAccountDB.findFirst({ where: { userLogin } })
+    if (dupLogin) return res.status(400).json({ success: false, error: `userLogin already exists ${userLogin}` })
+  }
 
   const created = await prisma.$transaction(async (tx) => {
     const row = await tx.agUserAccountDB.create({
       data: {
         username,
         reserve,
-        userLogin,
+        userLogin: userLogin || '',
         webname,
         origin,
         position,
@@ -106,11 +112,13 @@ async function putHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
 
   if (username && username !== existing.username) {
     const du = await prisma.agUserAccountDB.findFirst({ where: { username } })
-    if (du) return res.status(400).json({ success: false, error: 'username already exists' })
+    if (du) return res.status(400).json({ success: false, error: `username already exists ${username} du :  ${du.username}` })
   }
-  if (userLogin && userLogin !== existing.userLogin) {
-    const du2 = await prisma.agUserAccountDB.findFirst({ where: { userLogin } })
-    if (du2) return res.status(400).json({ success: false, error: 'userLogin already exists' })
+
+  // Check userLogin uniqueness only if it's not empty and being changed
+  if (userLogin && userLogin !== '' && userLogin !== existing.userLogin) {
+    const duLogin = await prisma.agUserAccountDB.findFirst({ where: { userLogin } })
+    if (duLogin) return res.status(400).json({ success: false, error: `userLogin already exists ${userLogin}` })
   }
 
   const updated = await prisma.$transaction(async (tx) => {

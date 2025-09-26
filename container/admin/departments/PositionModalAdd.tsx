@@ -42,7 +42,7 @@ const PositionModalAdd: React.FC<PositionModalAddProps> = ({ list, onSuccess }) 
       const payload: any = {
         name: name.trim(),
         adminDepartmentId: list.id,
-        createdBy: user?.id,
+        createdBy: user?.id || '',
       };
       
       // แปลง priorityPositionId เป็น priority number

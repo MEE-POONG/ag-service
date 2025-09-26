@@ -250,7 +250,7 @@ const MemberModalEdit: React.FC<MemberModalEditProps> = ({
         status: formData.status,
         method: formData.method,
         startDate: formData.startDate,
-        updatedBy: user?.id,
+        updatedBy: user?.id || '',
       };
       
       const res = await axios.put('/api/partners', partnerData);

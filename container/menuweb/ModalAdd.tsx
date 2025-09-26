@@ -116,8 +116,8 @@ const MenuWebModalAdd: React.FC<MenuWebModalAddProps> = ({
       const method = 'POST';
       const body = {
         ...formData,
-        createdBy: user?.id,
-        updatedBy: user?.id,
+        createdBy: user?.id || '',
+        updatedBy: user?.id || '',
       };
 
       const response = await axios({

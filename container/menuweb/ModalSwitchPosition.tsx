@@ -134,7 +134,7 @@ const MenuWebModalSwitchPosition: React.FC<MenuWebModalSwitchPositionProps> = ({
 
       const response = await axios.put('/api/menu-web/showorder', {
         updates,
-        updatedBy: user?.id
+        updatedBy: user?.id || ''
       });
 
       if (response.data.success) {

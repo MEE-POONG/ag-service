@@ -279,7 +279,7 @@ model AgUserAccountDB {
   statusServe     String
   updatedAt       DateTime          @db.Date
   updatedBy       String
-  userLogin       String            @unique
+  userLogin       String?
   username        String            @unique
   webname         String
   CustomerAgentDB CustomerAgentDB[]

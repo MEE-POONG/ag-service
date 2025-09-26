@@ -29,7 +29,7 @@ const MenuWebModalDelete: React.FC<MenuWebModalDeleteProps> = ({ data, onSuccess
       const response = await axios.delete('/api/menu-web', {
         data: {
           id: data.id,          // ✅ ส่งผ่าน req.body ตาม API
-          deleteBy: user?.id,    // หรือใช้ user จาก context
+          deleteBy: user?.id || '',    // หรือใช้ user จาก context
         },
         headers: {
           'Content-Type': 'application/json',

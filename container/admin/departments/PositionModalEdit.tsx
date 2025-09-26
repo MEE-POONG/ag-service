@@ -81,7 +81,7 @@ const PositionModalEdit: React.FC<PositionModalEditProps> = ({ list, position, o
         id: position.id,
         name: name.trim(),
         adminDepartmentId: selectedDeptId,
-        updatedBy: user?.id,
+        updatedBy: user?.id || '',
       };
 
       // แปลง priorityPositionId เป็น priority number

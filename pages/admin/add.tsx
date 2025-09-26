@@ -109,7 +109,7 @@ export default function AdminAddPage() {
       const res = await axios.post('/api/admin', {
         ...form,
         adminDepartmentId: selectedDeptId,
-        createdBy: user?.id,
+        createdBy: user?.id || '',
       })
       if (res.data?.success) {
         await queryClient.invalidateQueries({ queryKey: qk.admins.list, exact: false })

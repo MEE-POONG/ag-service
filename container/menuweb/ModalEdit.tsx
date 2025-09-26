@@ -78,8 +78,8 @@ const MenuWebModalEdit: React.FC<MenuWebModalEditProps> = ({ onSuccess, data }) 
       const method = 'PUT';
       const body = {
         ...formData,
-        createdBy: user?.id,
-        updatedBy: user?.id,
+        createdBy: user?.id || '',
+        updatedBy: user?.id || '',
       };
 
 
