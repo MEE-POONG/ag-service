@@ -25,7 +25,7 @@ export default async function handler(
 // GET - ดึงข้อมูล WebBase ทั้งหมด หรือตาม ID
 async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { id, search, status } = req.query;
+    const { id, name, search, status } = req.query;
 
     if (id) {
       // ดึงข้อมูลเฉพาะ ID
@@ -55,9 +55,43 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
+
+    // ----- ดึงข้อมูลเฉพาะ Name (หารายการเดียว) -----
+    if (name) {
+      const webBase = await prisma.webBaseDB.findFirst({
+        where: {
+          name: {
+            equals: name as string,
+            mode: 'insensitive',
+          },
+        },
+        include: {
+          AdminDB: {
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              email: true,
+              tel: true,
+              isActive: true,
+            }
+          },
+        }
+      });
+
+      if (!webBase) {
+        return res.status(404).json({ error: 'WebBase not found' });
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: webBase
+      });
+    }
+
     // ดึงข้อมูลทั้งหมด (รองรับการค้นหาและกรอง)
     const where: any = {
-      
+
     };
 
     if (search) {

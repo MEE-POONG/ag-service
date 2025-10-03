@@ -1,9 +1,10 @@
-// PartnerModalConfirmReset.tsx
-import React, { useState, useCallback, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
+
+import React, { useEffect, useState } from "react";
 import Modal from "@/components/form/Modal";
 import ReactIconComponent from "@/components/ReactIconComponent";
 import toast from "react-hot-toast";
+import axios, { AxiosError } from "axios";
 
 type AgUserAccountDB = {
   id?: string;
@@ -11,123 +12,216 @@ type AgUserAccountDB = {
   reserve: string;
   userLogin: string;
   origin: string;
-  position: string;
+  position: string; // 'master' | 'agent'
   gaSecretEnc: string;
   meta?: string;
   webname?: string;
 };
 
+type Position = "master" | "agent";
+
 interface PartnerModalResetProps {
+  onSuccess?: () => void;
   data: AgUserAccountDB;
 }
 
-const PartnerModalReset: React.FC<PartnerModalResetProps> = ({
-  data,
-}) => {
-  const [open, setOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+/** เลือก endpoint ตามตำแหน่ง */
+function getEndpointByPosition(pos?: string) {
+  const p = (pos || "").toLowerCase();
+  if (p === "master") return "/api/unblock-master";
+  if (p === "agent") return "/api/unblock-agent";
+  throw new Error(`ไม่รองรับตำแหน่ง (position): ${pos}`);
+}
 
-  const handleConfirm = useCallback(async () => {
-    console.log('handleConfirm', data);
-    // try {
-    //   setSubmitting(true);
-    //   toast.success("ดำเนินการสำเร็จ");
-    // } catch (err: any) {
-    //   console.error("Confirm error:", err);
-    //   toast.error(err?.message || "เกิดข้อผิดพลาดในการดำเนินการ");
-    // } finally {
-    //   setSubmitting(false);
-    // }
-  }, [data]);
+const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // กด Enter = ยืนยัน / Esc = ปิด (Modal เดิมรองรับ Esc อยู่แล้ว)
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        if (!submitting) handleConfirm();
+  /** 
+   * NOTE:
+   * ใน flow เดิม newPassword ถูกใช้เป็น "suffix/รหัสต่อท้าย" เพื่อสร้าง usernameAG
+   * และถูก preload มาจาก /api/web-base?name= ด้วย passM/passA
+   */
+  const newPassword = useState("Ba123456+");
+
+  /** preload ค่าจาก web-base (passM/passA) ตามตำแหน่ง */
+  const fetchnewPassword = async () => {
+    setLoading(true);
+    try {
+      const webname = data.webname ?? "";
+      if (!webname) {
+        return;
       }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, submitting, handleConfirm]);
+
+      const response = await fetch(`/api/web-base?name=${encodeURIComponent(webname)}`);
+      const result = await response.json();
+
+      if (result?.success && result?.data) {
+        const isMaster = (data.position || "").toLowerCase() === "master";
+        const passValue = isMaster ? result.data?.passM : result.data?.passA;
+      } else {
+        toast.error("ไม่พบข้อมูล WebBase/OTP");
+      }
+    } catch (err) {
+      console.error("Failed to fetch OTP:", err);
+      toast.error("ดึงรหัสไม่สำเร็จ");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchnewPassword();
+    } else {
+      // ปิดแล้วเคลียร์ค่าถ้าต้องการ
+      // setNewPassword('');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+
+  /** ปลดล็อค (ส่งคำสั่งไปยัง endpoint ตามตำแหน่ง) */
+  const handleUnlock = async () => {
+
+
+    // เตรียมค่าที่จะใช้ และ log ให้ครบแบบไม่ error
+    const usernameAG = `${data.username}`;
+    const adviser = data.origin ?? "";
+    const position = data.position ?? "";
+
+    console.group("[handleUnlock] debug");
+    console.log("newPassword :", newPassword);
+    console.log("usernameAG :", usernameAG);
+    console.log("adviser :", adviser);
+    console.log("position :", position);
+    console.log("payload preview :", { adviser, usernameAG, position: data.position });
+    console.groupEnd();
+
+    try {
+      setLoading(true);
+
+      const endpoint = getEndpointByPosition(data.position);
+      console.log("endpoint :", endpoint);
+
+      const payload: {
+        adviser: string;
+        usernameAG: string;
+        position: Position | string;
+        newPassword?: string; // ถ้าต้องการให้เซิร์ฟเวอร์ตั้งรหัสใหม่ตามที่ระบุเอง ให้เปิดใช้งาน
+      } = {
+        adviser,
+        usernameAG,
+        position,
+      };
+
+      const res = await axios.post(endpoint, payload);
+
+      if (!res.data?.success) {
+        const apiErr = res.data?.error || res.data?.message || "ปลดล็อคไม่สำเร็จ";
+        throw new Error(apiErr);
+      }
+
+      toast.success(`ส่งคำสั่งปลดล็อคแล้ว (${(data.position || "").toUpperCase()})`);
+      onSuccess?.();
+      setIsOpen(false);
+    } catch (err) {
+      let message = "เกิดข้อผิดพลาด";
+      if ((err as Error)?.message) message = (err as Error).message;
+      if (axios.isAxiosError(err)) {
+        const axErr = err as AxiosError<any>;
+        message =
+          axErr.response?.data?.error ||
+          axErr.response?.data?.message ||
+          axErr.message ||
+          message;
+      }
+      console.error("❌ เกิดข้อผิดพลาดในการปลดล็อค:", err);
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <>
-      {/* ปุ่มเปิดโมดัล */}
       <Button
-        onClick={() => setOpen(true)}
-        className="px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-red-200 hover:bg-gradient-to-r from-[#fa8b8b50] to-[#d3343450] hover:shadow-md cursor-pointer"
+        onClick={() => setIsOpen(true)}
+        className="px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-red-200 hover:bg-gradient-to-r from-[#ff7878c2] to-[#69eeffc2] hover:shadow-md cursor-pointer"
       >
-        รีเซ็ตรหัสผ่าน
+        ปลดล็อคลูกค้า
       </Button>
 
-      <Modal
-        open={open}
-        onOpenChange={(v) => !submitting && setOpen(v)} // กันปิดระหว่างกำลังส่ง
-        size="md"
-        closeOnOverlayClick={!submitting}
-        closeOnEsc={!submitting}
-      >
+      <Modal open={isOpen} onOpenChange={setIsOpen} size="xl" closeOnOverlayClick closeOnEsc>
         <Modal.Header>
           <div>
             <Modal.Title>
-              ยืนยันการรีเซ็ตข้อมูล
-              <span className="ms-2 text-lg font-bold text-red-500">
-                {data?.username || "-"}
-              </span>
+              ปลดล็อคพันธมิตร
+              <span className="text-lg font-bold text-purple-500 ms-2">
+                {data.username}
+              </span>{" "}
+              {(data.position || "").toLowerCase() === "master" ? "Master" : "Agent"}
             </Modal.Title>
           </div>
-          <Modal.Close
-            onClick={() => !submitting && setOpen(false)}
-            size="sm"
-            disabled={submitting}
-          >
+          <Modal.Close onClick={() => setIsOpen(false)} size="sm">
             <ReactIconComponent icon="FaTimes" setClass="w-5 h-5" />
           </Modal.Close>
         </Modal.Header>
 
         <Modal.Body>
-          <p className="text-sm text-gray-700 leading-6">
-            `คุณต้องการรีเซ็ตรหัสผ่าน/ข้อมูลที่เกี่ยวข้องของผู้ใช้ "${data?.username ?? "-"}" ใช่หรือไม่?
-            การกระทำนี้อาจส่งผลกับการเข้าสู่ระบบและสิทธิ์การเข้าถึงที่เชื่อมโยง โปรดยืนยันเพื่อดำเนินการต่อ`
+          {/* ข้อความอธิบาย modal นี้ */}
+          {/* <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            รหัส/คำต่อท้ายเพื่อสร้าง <code>usernameAG</code>
+          </label> */}
+
+          {/* <input
+            type="text"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            placeholder="เช่น _01 หรือ 12345"
+            value={newPassword}
+            disabled={loading}
+            onChange={(e) => setNewPassword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleUnlock();
+            }}
+          /> */}
+
+          {/* แสดงตัวอย่าง usernameAG ที่จะถูกส่งไป */}
+          <p className="mt-2 text-xs text-gray-600">
+            จะใช้ชื่อผู้ใช้:{" "}
+            <span className="font-mono font-semibold">
+              {data.username}
+            </span>
           </p>
-          <div className="mt-3 rounded-lg bg-red-50 border border-red-200 p-3 text-xs text-red-700">
-            ⚠️ คำเตือน: การรีเซ็ตจะไม่สามารถย้อนกลับได้ กรุณาตรวจสอบให้แน่ใจก่อนยืนยัน
-          </div>
         </Modal.Body>
 
         <Modal.Footer>
-          <div className="flex justify-end space-x-2 w-full">
+          <div className="flex space-x-2">
             <Button
-              onClick={() => setOpen(false)}
-              disabled={submitting}
-              className="inline-flex items-center px-4 py-2 rounded text-sm bg-gray-100 text-gray-700 border border-solid border-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleUnlock}
+              disabled={loading}
+              className="inline-flex items-center px-4 py-2 text-sm text-blue-700 bg-blue-100 rounded border border-blue-700 border-solid hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ReactIconComponent icon="FaTimes" setClass="w-4 h-4 mr-2" />
-              ยกเลิก
-            </Button>
-
-            <Button
-              onClick={handleConfirm}
-              disabled={submitting}
-              className="inline-flex items-center px-4 py-2 rounded text-sm bg-red-600 text-white border border-solid border-red-700 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {submitting ? (
+              {loading ? (
                 <>
-                  <ReactIconComponent
-                    icon="FaSpinner"
-                    setClass="w-4 h-4 mr-2 animate-spin"
-                  />
-                  กำลังยืนยัน...
+                  <ReactIconComponent icon="FaSpinner" setClass="w-4 h-4 mr-2 animate-spin" />
+                  กำลังปลดล็อค...
                 </>
               ) : (
                 <>
-                  <ReactIconComponent icon="FaCheck" setClass="w-4 h-4 mr-2" />
-                  ยืนยัน
+                  <ReactIconComponent icon="FaUnlock" setClass="w-4 h-4 mr-2" />
+                  ปลดล็อค
                 </>
               )}
+            </Button>
+
+            <Button
+              onClick={() => setIsOpen(false)}
+              disabled={loading}
+              className="inline-flex items-center px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded border border-gray-700 border-solid hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ReactIconComponent icon="FaTimes" setClass="w-4 h-4 mr-2" />
+              ปิด
             </Button>
           </div>
         </Modal.Footer>

@@ -11,7 +11,6 @@ import PageHeader from '@/components/PageHeader'
 import PartnerModalFuctionSetting from '@/container/partner/ModalFuctionSetting'
 import PaginationSelect from '@/components/PaginationSelect'
 import { Params } from '@/data/interfaceDefault'
-import ModalReset from '@/container/partner/ModalReset'
 import PartnerModalReset from '@/container/partner/ModalReset'
 
 type AgUserAccountDB = {
