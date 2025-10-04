@@ -42,7 +42,7 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
    * ใน flow เดิม newPassword ถูกใช้เป็น "suffix/รหัสต่อท้าย" เพื่อสร้าง usernameAG
    * และถูก preload มาจาก /api/web-base?name= ด้วย passM/passA
    */
-  const newPassword = useState("Ba123456+");
+  const newPassword = "Ba123456+";
 
   /** preload ค่าจาก web-base (passM/passA) ตามตำแหน่ง */
   const fetchnewPassword = async () => {
@@ -112,6 +112,7 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
         adviser,
         usernameAG,
         position,
+        newPassword
       };
 
       const res = await axios.post(endpoint, payload);
