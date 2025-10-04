@@ -126,7 +126,7 @@ export default function CommandWorkPage() {
                         {u.position === 'agent' && <>
                           {/* <CommandWorkModalCreateC data={u} /> */}
                           <CommandWorkModalLockUnLockC data={u} />
-                          <ModalAdJustBet agUser={u} mode="create" />
+                          <ModalAdJustBet agUser={{ ...u, userLogin: u.userLogin ?? '' }} mode="create" />
                         </>}
                       </div>
                     </td>
