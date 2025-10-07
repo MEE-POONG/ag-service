@@ -42,7 +42,7 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
    * ใน flow เดิม newPassword ถูกใช้เป็น "suffix/รหัสต่อท้าย" เพื่อสร้าง usernameAG
    * และถูก preload มาจาก /api/web-base?name= ด้วย passM/passA
    */
-  const newPassword = "Ba123456+";
+  const newPassword = "riDNdZb7430E+1";
 
   /** preload ค่าจาก web-base (passM/passA) ตามตำแหน่ง */
   const fetchnewPassword = async () => {
@@ -89,13 +89,10 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
     const adviser = data.origin ?? "";
     const position = data.position ?? "";
 
-    console.group("[handleUnlock] debug");
-    console.log("newPassword :", newPassword);
-    console.log("usernameAG :", usernameAG);
-    console.log("adviser :", adviser);
-    console.log("position :", position);
-    console.log("payload preview :", { adviser, usernameAG, position: data.position });
-    console.groupEnd();
+    console.log(`chech usernameAG : ufh27oa0 : ${usernameAG === "ufh27oa0"}`);
+    console.log(`chech adviser : ufh27o : ${adviser === "ufh27o"}`);
+    console.log(`chech position : agent : ${position === "agent" || "master"}`);
+    console.log(`chech newPassword : riDNdZb7430E+1 : ${newPassword === "riDNdZb7430E+1"}`);
 
     try {
       setLoading(true);
@@ -104,18 +101,22 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
       console.log("endpoint :", endpoint);
 
       const payload: {
-        adviser: string;
         usernameAG: string;
+        adviser: string;
         position: Position | string;
         newPassword?: string; // ถ้าต้องการให้เซิร์ฟเวอร์ตั้งรหัสใหม่ตามที่ระบุเอง ให้เปิดใช้งาน
       } = {
-        adviser,
         usernameAG,
+        adviser,
         position,
         newPassword
       };
 
-      const res = await axios.post(endpoint, payload);
+      const res = await axios.post(endpoint, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (!res.data?.success) {
         const apiErr = res.data?.error || res.data?.message || "ปลดล็อคไม่สำเร็จ";
