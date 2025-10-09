@@ -1,17 +1,17 @@
 export interface Params {
-    page: number;
-    pageSize: number;
-    keyword: string;
-    totalPages: number;
-    typeKeyword?: string;
-    status?: string;
-    sortBy?: string;
-    sortOrder?: string;
-    search?: string;
-    typeSearch?: string;
-    totalItems?: number;
-    isActive?: boolean;
-    isDeleted?: boolean;
+    page: number;//หน้า
+    pageSize: number;//จำนวนข้อมูลต่อหน้า
+    keyword: string;//คำค้นหา
+    totalPages: number;//จำนวนหน้า
+    typeKeyword?: string;//ประเภทคำค้นหา
+    status?: string;//สถานะ
+    sortBy?: string;//ลำดับ
+    sortOrder?: string;//ลำดับ
+    search?: string;//คำค้นหา
+    typeSearch?: string;//ประเภทคำค้นหา
+    totalItems?: number;//จำนวนข้อมูล
+    isActive?: boolean;//สถานะ
+    isDeleted?: boolean;//ลบ
 }
 
 export interface ApiResponse<T> {

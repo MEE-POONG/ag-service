@@ -23,6 +23,8 @@ type AgUserAccountDB = {
   gaSecretEnc: string
   meta?: string
   webname?: string
+  partnerAG?: string
+  partnerLogin?: string
 }
 const WEBNAME_OPTIONS = ['psd99', 'ufa66'] as const
 function useAgUserAccounts() {
@@ -525,6 +527,8 @@ function AgUserAccountFormModal({
       position: 'agent',
       gaSecretEnc: '',
       webname: '',
+      partnerAG: '',
+      partnerLogin: '',
     }
   )
   const [error, setError] = useState('')
@@ -538,6 +542,8 @@ function AgUserAccountFormModal({
       position: 'agent',
       gaSecretEnc: '',
       webname: '',
+      partnerAG: '',
+      partnerLogin: '',
     })
     setError('')
   }
@@ -631,6 +637,24 @@ function AgUserAccountFormModal({
               <option value="master">master</option>
             </select>
           </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium">partnerAG</label>
+            <input
+              value={form.partnerAG || ''}
+              onChange={e => updateField('partnerAG', e.target.value)}
+              className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
+              placeholder="partnerAG"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium">partnerLogin</label>
+            <input
+              value={form.partnerLogin || ''}
+              onChange={e => updateField('partnerLogin', e.target.value)}
+              className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
+              placeholder="partnerLogin"
+            />
+          </div>
           <div className="sm:col-span-2">
             <label className="block mb-1 text-sm font-medium">gaSecretEnc</label>
             <input
@@ -640,6 +664,7 @@ function AgUserAccountFormModal({
               placeholder="รหัส 2FA ของ AG"
             />
           </div>
+
         </div>
         {error && (
           <p className="mt-3 text-sm text-red-600">{error}</p>

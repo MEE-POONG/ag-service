@@ -16,6 +16,8 @@ type AgUserAccountDB = {
   gaSecretEnc: string;
   meta?: string;
   webname?: string;
+  partnerAG?: string;
+  partnerLogin?: string;
 };
 
 type Position = "master" | "agent";

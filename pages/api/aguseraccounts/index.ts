@@ -38,6 +38,8 @@ async function getHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
           { origin: { contains: kw, mode: 'insensitive' } },
           { position: { contains: kw, mode: 'insensitive' } },
           { reserve: { contains: kw, mode: 'insensitive' } },
+          { partnerAG: { contains: kw, mode: 'insensitive' } },
+          { partnerLogin: { contains: kw, mode: 'insensitive' } },
         ],
       }
       : {}),
@@ -60,7 +62,7 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
   const admin = await requireAuth(req, res)
   if (!admin) return
 
-  const { username, reserve, userLogin, origin, position, gaSecretEnc, statusServe = 'PENDING', note, meta, webname } = req.body
+  const { username, reserve, userLogin, origin, position, gaSecretEnc, statusServe = 'PENDING', note, meta, webname, partnerAG, partnerLogin } = req.body
   if (!username) return res.status(400).json({ success: false, error: 'username are required' })
 
   const dup = await prisma.agUserAccountDB.findFirst({ where: { username } })
@@ -85,6 +87,8 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
         statusServe: String(statusServe).toUpperCase() || 'PENDING',
         note,
         meta,
+        partnerAG: partnerAG || null,
+        partnerLogin: partnerLogin || null,
         isActive: true,
         createdAt: new Date(),
         createdBy: admin.username,
@@ -104,7 +108,7 @@ async function putHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
   const admin = await requireAuth(req, res)
   if (!admin) return
 
-  const { id, username, reserve, userLogin, origin, position, gaSecretEnc, statusServe, note, meta, webname, isActive } = req.body
+  const { id, username, reserve, userLogin, origin, position, gaSecretEnc, statusServe, note, meta, webname, isActive, partnerAG, partnerLogin } = req.body
   if (!id) return res.status(400).json({ success: false, error: 'id is required' })
 
   const existing = await prisma.agUserAccountDB.findFirst({ where: { id } })
@@ -136,6 +140,8 @@ async function putHandler(req: NextApiRequest, res: NextApiResponse<Resp>) {
         ...(note !== undefined && { note }),
         ...(meta !== undefined && { meta }),
         ...(isActive !== undefined && { isActive }),
+        ...(partnerAG !== undefined && { partnerAG }),
+        ...(partnerLogin !== undefined && { partnerLogin }),
         updatedBy: admin.username,
         updatedAt: new Date(),
       },

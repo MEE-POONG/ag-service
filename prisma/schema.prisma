@@ -266,8 +266,8 @@ model AgUserAccountDB {
   userLogin        String?
   username         String            @unique
   webname          String
-  userPartner      String?
-  userPartnerLogin String?
+  partnerAG      String?
+  partnerLogin String?
   CustomerAgentDB  CustomerAgentDB[]
   PartnerDB        PartnerDB[]
 }

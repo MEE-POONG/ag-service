@@ -28,6 +28,8 @@ type AgUserAccountDB = {
   gaSecretEnc: string
   meta?: string
   webname?: string
+  partnerAG?: string
+  partnerLogin?: string
 }
 
 interface ModalFuctionSettingProps {
