@@ -248,26 +248,28 @@ model AgQueueJobDB {
 }
 
 model AgUserAccountDB {
-  id              String            @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt       DateTime          @db.Date
-  createdBy       String
-  gaSecretEnc     String
-  isActive        Boolean
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt        DateTime          @db.Date
+  createdBy        String
+  gaSecretEnc      String
+  isActive         Boolean
   /// Could not determine type: the field only had null or empty values in the sample set.
-  meta            Json?
+  meta             Json?
   /// Could not determine type: the field only had null or empty values in the sample set.
-  note            Json?
-  origin          String
-  position        String
-  reserve         String
-  statusServe     String
-  updatedAt       DateTime          @db.Date
-  updatedBy       String
-  userLogin       String?
-  username        String            @unique
-  webname         String
-  CustomerAgentDB CustomerAgentDB[]
-  PartnerDB       PartnerDB[]
+  note             Json?
+  origin           String
+  position         String
+  reserve          String
+  statusServe      String
+  updatedAt        DateTime          @db.Date
+  updatedBy        String
+  userLogin        String?
+  username         String            @unique
+  webname          String
+  userPartner      String?
+  userPartnerLogin String?
+  CustomerAgentDB  CustomerAgentDB[]
+  PartnerDB        PartnerDB[]
 }
 
 model CustomerAgentDB {
