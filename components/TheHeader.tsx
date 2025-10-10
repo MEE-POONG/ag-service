@@ -63,6 +63,14 @@ export function TheHeader({
 
           {/* Right side */}
           <div className="flex items-center space-x-4">
+            {/* Agent Inbox */}
+            <Link href="/agent/inbox">
+              <button className="relative p-2 text-white/80 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#A78BFA] rounded-md transition-colors group">
+                <ReactIconComponent icon="FaInbox" setClass="h-6 w-6" />
+                <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-green-400 ring-2 ring-white dark:ring-gray-900 group-hover:scale-110 transition-transform"></span>
+              </button>
+            </Link>
+
             {/* Notifications */}
             <button className="relative p-2 text-white/80 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#A78BFA] rounded-md">
               <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">

@@ -177,6 +177,8 @@ model AdminDB {
   updatedAt       DateTime        @db.Date
   updatedBy       String
   username        String          @unique
+  // Chat system relations
+  assignedConversations ChatConversationDB[]
 }
 
 model AdminDefaultPermissionDB {
@@ -611,4 +613,310 @@ model AgentChangePasswordDB {
   status       String
   updatedAt    DateTime @db.Date
   usernameAG   String
+}
+
+// ==================== Customer Chat System Models ====================
+
+// Chat Customer - represents customers who use the chat system
+model ChatCustomerDB {
+  id            String              @id @default(auto()) @map("_id") @db.ObjectId
+  customerId    String              @unique // External customer ID
+  name          String?
+  email         String?
+  phone         String?
+  avatarUrl     String?
+  // Custom fields for segmentation
+  language      String              @default("th") // th, en
+  timezone      String              @default("Asia/Bangkok")
+  metadata      Json?               // Additional custom fields
+  // Status
+  isActive      Boolean             @default(true)
+  isBlocked     Boolean             @default(false)
+  blockedReason String?
+  // Timestamps
+  createdAt     DateTime            @default(now()) @db.Date
+  updatedAt     DateTime            @updatedAt @db.Date
+  lastSeenAt    DateTime?           @db.Date
+  // Relations
+  conversations ChatConversationDB[]
+  messages      ChatMessageDB[]
+  tags          ChatCustomerTagDB[]
+  segments      ChatCustomerSegmentDB[]
+
+  @@index([email])
+  @@index([phone])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+// Chat Conversation - represents individual chat threads
+model ChatConversationDB {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  customerId      String           @db.ObjectId
+  customer        ChatCustomerDB   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  // Agent assignment
+  assignedAdminId String?          @db.ObjectId
+  assignedAdmin   AdminDB?         @relation(fields: [assignedAdminId], references: [id], onDelete: SetNull)
+  // Status
+  status          String           @default("open") // open, assigned, resolved, closed
+  priority        String           @default("normal") // low, normal, high, urgent
+  // Content
+  subject         String?
+  lastMessage     String?
+  lastMessageAt   DateTime?        @db.Date
+  // Flags
+  isUnread        Boolean          @default(true)
+  unreadCount     Int              @default(0)
+  // Timestamps
+  createdAt       DateTime         @default(now()) @db.Date
+  updatedAt       DateTime         @updatedAt @db.Date
+  resolvedAt      DateTime?        @db.Date
+  closedAt        DateTime?        @db.Date
+  // Relations
+  messages        ChatMessageDB[]
+
+  @@index([customerId])
+  @@index([assignedAdminId])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([lastMessageAt])
+}
+
+// Chat Message - individual messages in conversations
+model ChatMessageDB {
+  id             String              @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId String              @db.ObjectId
+  conversation   ChatConversationDB  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  customerId     String              @db.ObjectId
+  customer       ChatCustomerDB      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  // Sender info
+  senderType     String              // customer, agent, system
+  senderId       String?             @db.ObjectId // AdminDB id if agent
+  senderName     String?
+  // Message content
+  messageType    String              @default("text") // text, image, file, video, audio, location, card, richMenu
+  content        String              // Text content or JSON for rich messages
+  attachments    Json?               // Array of attachment objects
+  metadata       Json?               // Additional metadata
+  // Status
+  isRead         Boolean             @default(false)
+  readAt         DateTime?           @db.Date
+  isSent         Boolean             @default(true)
+  sentAt         DateTime            @default(now()) @db.Date
+  // Auto-reply tracking
+  isAutoReply    Boolean             @default(false)
+  autoReplyId    String?             @db.ObjectId
+  // Timestamps
+  createdAt      DateTime            @default(now()) @db.Date
+  updatedAt      DateTime            @updatedAt @db.Date
+
+  @@index([conversationId])
+  @@index([customerId])
+  @@index([senderType])
+  @@index([messageType])
+  @@index([createdAt])
+  @@index([isRead])
+}
+
+// Chat Tag - for categorizing customers
+model ChatTagDB {
+  id          String              @id @default(auto()) @map("_id") @db.ObjectId
+  name        String              @unique
+  color       String              @default("#3B82F6") // Hex color code
+  description String?
+  isActive    Boolean             @default(true)
+  createdAt   DateTime            @default(now()) @db.Date
+  createdBy   String
+  updatedAt   DateTime            @updatedAt @db.Date
+  updatedBy   String
+  // Relations
+  customers   ChatCustomerTagDB[]
+
+  @@index([isActive])
+}
+
+// Join table for Customer-Tag relationship
+model ChatCustomerTagDB {
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String         @db.ObjectId
+  customer   ChatCustomerDB @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tagId      String         @db.ObjectId
+  tag        ChatTagDB      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt  DateTime       @default(now()) @db.Date
+  createdBy  String
+
+  @@unique([customerId, tagId])
+  @@index([customerId])
+  @@index([tagId])
+}
+
+// Chat Segment - for dynamic customer grouping
+model ChatSegmentDB {
+  id          String                  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String                  @unique
+  description String?
+  // Segment rules (stored as JSON)
+  rules       Json                    // Filter conditions
+  isActive    Boolean                 @default(true)
+  createdAt   DateTime                @default(now()) @db.Date
+  createdBy   String
+  updatedAt   DateTime                @updatedAt @db.Date
+  updatedBy   String
+  // Relations
+  customers   ChatCustomerSegmentDB[]
+  broadcasts  ChatBroadcastDB[]
+
+  @@index([isActive])
+}
+
+// Join table for Customer-Segment relationship
+model ChatCustomerSegmentDB {
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String         @db.ObjectId
+  customer   ChatCustomerDB @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  segmentId  String         @db.ObjectId
+  segment    ChatSegmentDB  @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  createdAt  DateTime       @default(now()) @db.Date
+  updatedAt  DateTime       @updatedAt @db.Date
+
+  @@unique([customerId, segmentId])
+  @@index([customerId])
+  @@index([segmentId])
+}
+
+// Auto Reply - automated responses
+model ChatAutoReplyDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  // Trigger conditions
+  triggerType String   // keyword, welcome, away, default
+  keywords    String[] // For keyword triggers
+  // Response
+  messageType String   @default("text") // text, image, card, richMenu
+  message     String   // Text or JSON content
+  attachments Json?    // Optional attachments
+  // Scheduling
+  isActive    Boolean  @default(true)
+  startTime   String?  // HH:mm format
+  endTime     String?  // HH:mm format
+  daysOfWeek  String[] // ["monday", "tuesday", ...]
+  // Priority (higher number = higher priority)
+  priority    Int      @default(0)
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Date
+  createdBy   String
+  updatedAt   DateTime @updatedAt @db.Date
+  updatedBy   String
+
+  @@index([triggerType])
+  @@index([isActive])
+  @@index([priority])
+}
+
+// Rich Menu - interactive menu for chat widget
+model ChatRichMenuDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  // Menu structure (JSON)
+  menuData    Json     // Contains buttons, actions, layout
+  imageUrl    String?  // Optional background image
+  // Status
+  isActive    Boolean  @default(false)
+  isDefault   Boolean  @default(false) // Only one can be default
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Date
+  createdBy   String
+  updatedAt   DateTime @updatedAt @db.Date
+  updatedBy   String
+
+  @@index([isActive])
+  @@index([isDefault])
+}
+
+// Broadcast - mass messaging
+model ChatBroadcastDB {
+  id           String                     @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  description  String?
+  // Target audience
+  targetType   String                     // all, segment, tag, custom
+  segmentId    String?                    @db.ObjectId
+  segment      ChatSegmentDB?             @relation(fields: [segmentId], references: [id], onDelete: SetNull)
+  customFilter Json?                      // Custom filter conditions
+  // Message content
+  messageType  String                     @default("text") // text, image, card
+  message      String
+  attachments  Json?
+  // Scheduling
+  status       String                     @default("draft") // draft, scheduled, sending, sent, failed
+  scheduledAt  DateTime?                  @db.Date
+  sentAt       DateTime?                  @db.Date
+  // Statistics
+  totalTarget  Int                        @default(0)
+  totalSent    Int                        @default(0)
+  totalFailed  Int                        @default(0)
+  // Timestamps
+  createdAt    DateTime                   @default(now()) @db.Date
+  createdBy    String
+  updatedAt    DateTime                   @updatedAt @db.Date
+  updatedBy    String
+  // Relations
+  recipients   ChatBroadcastRecipientDB[]
+
+  @@index([status])
+  @@index([scheduledAt])
+  @@index([createdAt])
+}
+
+// Broadcast Recipient - tracking individual broadcast sends
+model ChatBroadcastRecipientDB {
+  id           String          @id @default(auto()) @map("_id") @db.ObjectId
+  broadcastId  String          @db.ObjectId
+  broadcast    ChatBroadcastDB @relation(fields: [broadcastId], references: [id], onDelete: Cascade)
+  customerId   String          @db.ObjectId
+  // Status
+  status       String          @default("pending") // pending, sent, failed, read
+  errorMessage String?
+  sentAt       DateTime?       @db.Date
+  readAt       DateTime?       @db.Date
+  // Timestamps
+  createdAt    DateTime        @default(now()) @db.Date
+  updatedAt    DateTime        @updatedAt @db.Date
+
+  @@unique([broadcastId, customerId])
+  @@index([broadcastId])
+  @@index([customerId])
+  @@index([status])
+}
+
+// Chat Widget Settings
+model ChatWidgetSettingsDB {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  // Appearance
+  primaryColor      String   @default("#3B82F6")
+  accentColor       String   @default("#10B981")
+  headerTitle       String   @default("Chat with us")
+  headerSubtitle    String?  @default("We're here to help")
+  welcomeMessage    String?  @default("Hello! How can we help you today?")
+  placeholderText   String   @default("Type a message...")
+  // Widget behavior
+  position          String   @default("bottom-right") // bottom-right, bottom-left
+  autoOpen          Boolean  @default(false)
+  showAgentAvatar   Boolean  @default(true)
+  showTimestamp     Boolean  @default(true)
+  enableFileUpload  Boolean  @default(true)
+  enableEmoji       Boolean  @default(true)
+  // Business hours
+  businessHours     Json?    // {monday: {start: "09:00", end: "18:00"}, ...}
+  offlineMessage    String?  @default("We're currently offline. Leave a message and we'll get back to you.")
+  // Rich menu
+  richMenuId        String?  @db.ObjectId
+  // Timestamps
+  createdAt         DateTime @default(now()) @db.Date
+  createdBy         String
+  updatedAt         DateTime @updatedAt @db.Date
+  updatedBy         String
 }
