@@ -114,9 +114,9 @@ export default function DepartmentsPage() {
                         {/* <PositionModalChange list={list} onSuccess={() => refetch()} /> */}
                         <DepartmentsModalPosition onSuccess={() => refetch()} data={list ?? []} />
                       </div>
-                      {Array.isArray(list.AdminPositionDB) &&
+                      {Array.isArray(list.adminPositions) &&
                         // ถ้าอยากให้ชัวร์ว่าเรียงตาม priority
-                        list.AdminPositionDB.slice().sort((a, b) => Number(a.priority) - Number(b.priority)).map((pos) => (
+                        list.adminPositions.slice().sort((a, b) => Number(a.priority) - Number(b.priority)).map((pos) => (
                           <div
                             key={pos.id}
                             className={`flex items-center justify-between bg-gray-50 px-2 sm:px-3 py-1 sm:py-2 rounded-lg border-l-4 ${priorityLeftBorder(Number(pos.priority))} ${priorityDot(Number(pos.priority))}`}

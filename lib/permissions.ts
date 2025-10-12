@@ -62,14 +62,14 @@ export async function checkUserPermissions(
 
     },
     include: {
-      AdminPositionDB: {
+      adminPosition: {
         include: {
           AdminDefaultPermissionDB: {
             where: {
               isDeleted: false,
             },
             include: {
-              MenuPageWebDB: true,
+              menuPage: true,
             },
           },
         },
@@ -77,7 +77,7 @@ export async function checkUserPermissions(
     },
   }) as any
 
-  if (!admin || !admin.AdminPositionDB) {
+  if (!admin || !admin.adminPosition) {
     return {
       user,
       permissions: {
@@ -91,8 +91,8 @@ export async function checkUserPermissions(
   }
 
   // Get permissions from AdminDefaultPermissionDB
-  const permission = admin.AdminPositionDB?.AdminDefaultPermissionDB?.find(
-    (p: any) => p.MenuPageWebDB?.name === menuPageName
+  const permission = admin.adminPosition?.AdminDefaultPermissionDB?.find(
+    (p: any) => p.menuPage?.name === menuPageName
   )
 
   const permissions: PermissionContext = {
@@ -141,7 +141,7 @@ export async function getAdminFromCookie(req: NextApiRequest): Promise<any | nul
 
     },
     include: {
-      AdminPositionDB: {
+      adminPosition: {
         include: {
           adminDepartment: true,
           AdminDefaultPermissionDB: {
@@ -149,12 +149,12 @@ export async function getAdminFromCookie(req: NextApiRequest): Promise<any | nul
               isDeleted: false,
             },
             include: {
-              MenuPageWebDB: true,
+              menuPage: true,
             },
           },
         },
       },
-      WebBaseDB: {
+      webBase: {
         include: {}
       },
     },

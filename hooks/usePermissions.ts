@@ -16,8 +16,8 @@ export function usePermissions() {
   const permissionsMap = useMemo(() => {
     const map = new Map<string, any>()
     
-    if (user?.AdminPositionDB?.AdminDefaultPermissionDB) {
-      user.AdminPositionDB.AdminDefaultPermissionDB.forEach((permission: any) => {
+    if (user?.adminPosition?.AdminDefaultPermissionDB) {
+      user.adminPosition.AdminDefaultPermissionDB.forEach((permission: any) => {
         if (permission.MenuPageWebDB?.name) {
           map.set(permission.MenuPageWebDB.name, permission)
         }

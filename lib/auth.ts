@@ -175,16 +175,16 @@ export async function authenticateAdmin(
       isActive: true, // เฉพาะบัญชีที่เปิดใช้งาน
     },
     include: {
-      AdminPositionDB: {
+      adminPosition: {
         include: {
           adminDepartment: true, // ข้อมูลแผนก
           AdminDefaultPermissionDB: {
             where: { isDeleted: false }, // เฉพาะสิทธิ์ที่ยังใช้งาน
-            include: { MenuPageWebDB: true } // รายละเอียดหน้าเมนู
+            include: { menuPage: true } // รายละเอียดหน้าเมนู
           },
         },
       },
-      WebBaseDB: true, // ข้อมูล website base
+      webBase: true, // ข้อมูล website base
     },
   })
 

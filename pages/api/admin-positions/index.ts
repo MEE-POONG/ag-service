@@ -421,7 +421,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<ApiResp>) 
 
     // ป้องกันการลบถ้ามีผู้ดูแลระบบใช้งานอยู่ (เอาออกได้ถ้าอยาก force delete)
     const inUse = await prisma.adminDB.findFirst({
-      where: { AdminPositionDB: { id } },
+      where: { adminPositionId: id },
       select: { id: true },
     });
     if (inUse) {

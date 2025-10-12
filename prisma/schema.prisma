@@ -8,13 +8,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/**
- * ---------- TYPES (คงตามของเก่า ไม่แก้ฟิลด์ย่อย) ----------
- */
-
 type AdjustbetsCockfight {
-  /// Multiple data types found: Int: 26.2%, Int: 73.8% out of 65 sampled entries
-  commissionRBG Json
+  commissionRBG Int
   enabled       Boolean
   lastError     String?
   lastSavedAt   DateTime? @db.Date
@@ -50,8 +45,7 @@ type AdjustbetsMuayStep {
 }
 
 type AdjustbetsSa {
-  /// Multiple data types found: Int: 26.2%, Int: 73.8% out of 65 sampled entries
-  commissionRAR Json
+  commissionRAR Int
   enabled       Boolean
   lastError     String?
   lastSavedAt   DateTime? @db.Date
@@ -92,7 +86,8 @@ type AdjustbetsSlotPlaystar {
 
 type AdjustbetsSportsbook {
   commission  AdjustbetsSportsbookCommission
-  lastError   String?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  lastError   Json?
   lastSavedAt DateTime?                      @db.Date
   limits      AdjustbetsSportsbookLimits
   statusServe String?
@@ -127,96 +122,6 @@ type AdjustbetsVirtualSports {
   work        Boolean
 }
 
-type AgentWinLoseReportDbMetadata {
-  columnKeys     String[]
-  completedAt    String
-  masterHeaders  String[]
-  masterRecords  AgentWinLoseReportDbMetadataMasterRecords[]
-  masterRowCount Int
-  masterRows     Json
-}
-
-type AgentWinLoseReportDbMetadataMasterRecords {
-  account                      String
-  betAmount                    String
-  betCount                     String
-  commissionTotal              String
-  companyCommission            String
-  companyRollingAmount         String
-  companyWinLose               String
-  companyWinLoseWithCommission String
-  contact                      String
-  currency                     String
-  memberCommission             String
-  memberCount                  String
-  memberWinLose                String
-  memberWinLoseWithCommission  String
-  rollingAmount                String
-  seniorCommission             String
-  seniorRollingAmount          String
-  seniorWinLose                String
-  seniorWinLoseWithCommission  String
-}
-
-type AgentWinLoseReportDbResults {
-  headers        String[]
-  masterAccount  String
-  metadata       AgentWinLoseReportDbResultsMetadata
-  records        AgentWinLoseReportDbResultsRecords[]
-  reportUrl      String
-  rowCount       Int
-  rows           Json?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  summaryHeaders Json?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  summaryRecords Json?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  summaryRows    Json?
-}
-
-type AgentWinLoseReportDbResultsMetadata {
-  capturedAt String?
-  columnKeys String[]
-  error      String?
-}
-
-type AgentWinLoseReportDbResultsRecords {
-  account                      String
-  betAmount                    String
-  betCount                     String
-  commissionTotal              String
-  companyCommission            String
-  companyRollingAmount         String
-  companyWinLose               String
-  companyWinLoseWithCommission String
-  contact                      String
-  currency                     String
-  memberCommission             String
-  memberCount                  String
-  memberWinLose                String
-  memberWinLoseWithCommission  String
-  rollingAmount                String
-  seniorCommission             String
-  seniorRollingAmount          String
-  seniorWinLose                String
-  seniorWinLoseWithCommission  String
-}
-
-type ChatWidgetKeyDbSettings {
-  accentColor      String
-  autoOpen         Boolean
-  enableEmoji      Boolean
-  enableFileUpload Boolean
-  headerSubtitle   String
-  headerTitle      String
-  placeholderText  String
-  position         String
-  primaryColor     String
-  showAgentAvatar  Boolean
-  showTimestamp    Boolean
-  welcomeMessage   String
-}
-
 type CreditTopUpAdviserDetails {
   createdAt   String
   createdBy   String
@@ -238,177 +143,6 @@ type CreditTopUpAdviserDetails {
   webname     String
 }
 
-type CustomerWinLoseReportDbMetadata {
-  agentOverview         CustomerWinLoseReportDbMetadataAgentOverview[]
-  agentSummaryCount     Int
-  columnKeys            String[]
-  completedAt           String
-  customerSummaryCount  Int
-  filters               CustomerWinLoseReportDbMetadataFilters
-  masterHeaders         String[]
-  masterRecords         CustomerWinLoseReportDbMetadataMasterRecords[]
-  masterRowCount        Int
-  masterRows            Json
-  reportUrl             String
-  totalAgentAccounts    Int
-  totalCustomerRowCount Int
-}
-
-type CustomerWinLoseReportDbMetadataAgentOverview {
-  agentCount    Int
-  masterAccount String
-  rowCount      Int
-}
-
-type CustomerWinLoseReportDbMetadataFilters {
-  appliedButtons String[]
-  endDate        String
-  raw            CustomerWinLoseReportDbMetadataFiltersRaw
-  startDate      String
-}
-
-type CustomerWinLoseReportDbMetadataFiltersRaw {
-  categorySelectors String
-  endSelectors      String
-  selectedAll       String
-  startSelectors    String
-  submitSelector    String
-}
-
-type CustomerWinLoseReportDbMetadataMasterRecords {
-  account                      String
-  betAmount                    String
-  betCount                     String
-  commissionTotal              String
-  companyCommission            String
-  companyRollingAmount         String
-  companyWinLose               String
-  companyWinLoseWithCommission String
-  contact                      String
-  currency                     String
-  memberCommission             String
-  memberCount                  String
-  memberWinLose                String
-  memberWinLoseWithCommission  String
-  rollingAmount                String
-  seniorCommission             String
-  seniorRollingAmount          String
-  seniorWinLose                String
-  seniorWinLoseWithCommission  String
-}
-
-type CustomerWinLoseReportDbResults {
-  agentAccount   String
-  headers        String[]
-  masterAccount  String
-  metadata       CustomerWinLoseReportDbResultsMetadata
-  records        CustomerWinLoseReportDbResultsRecords[]
-  reportUrl      String
-  rowCount       Int
-  rows           Json
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  summaryHeaders Json?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  summaryRecords Json?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  summaryRows    Json?
-}
-
-type CustomerWinLoseReportDbResultsMetadata {
-  capturedAt     String
-  columnKeys     String[]
-  seniorUsername String
-}
-
-type CustomerWinLoseReportDbResultsRecords {
-  account                      String
-  betAmount                    String
-  betCount                     String
-  commissionTotal              String
-  companyCommission            String
-  companyRollingAmount         String
-  companyWinLose               String
-  companyWinLoseWithCommission String
-  contact                      String
-  currency                     String
-  memberCommission             String
-  memberCount                  String
-  memberWinLose                String
-  memberWinLoseWithCommission  String
-  rollingAmount                String
-  seniorCommission             String
-  seniorRollingAmount          String
-  seniorWinLose                String
-  seniorWinLoseWithCommission  String
-}
-
-type MasterWinLoseReportDbFilters {
-  appliedButtons String[]
-  endDate        String
-  raw            MasterWinLoseReportDbFiltersRaw
-  startDate      String
-}
-
-type MasterWinLoseReportDbFiltersRaw {
-  categorySelectors String
-  endSelectors      String
-  selectedAll       String
-  startSelectors    String
-  submitSelector    String
-}
-
-type MasterWinLoseReportDbMetadata {
-  columnKeys      String[]
-  dataRowCount    Int?
-  loginUsername   String
-  selectedAccount String
-  summaryRowCount Int?
-  timestamp       String
-  totalTables     Int
-  webname         String
-}
-
-type MasterWinLoseReportDbRecords {
-  account                      String
-  betAmount                    String
-  betCount                     String
-  commissionTotal              String
-  companyCommission            String?
-  companyRollingAmount         String?
-  companyWinLose               String?
-  companyWinLoseWithCommission String?
-  contact                      String
-  currency                     String
-  memberCommission             String
-  memberCount                  String
-  memberWinLose                String
-  memberWinLoseWithCommission  String?
-  rollingAmount                String
-  seniorCommission             String?
-  seniorRollingAmount          String?
-  seniorWinLose                String?
-  seniorWinLoseWithCommission  String?
-}
-
-/**
- * ---------- MODELS (อิงของเก่า + คง/รวมจากของใหม่ เฉพาะที่ไม่ซ้ำ) ----------
- */
-
-model AGUserDB {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  adviser   String
-  createdAt DateTime @db.Date
-  createdBy String
-  isActive  Boolean
-  isDeleted Boolean
-  password  String
-  updatedAt DateTime @db.Date
-  updatedBy String
-  userAg    String   @unique
-  userLogin String   @unique
-  webBaseId String   @db.ObjectId
-}
-
 model ActivityLogDB {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   action    String
@@ -423,26 +157,26 @@ model ActivityLogDB {
 }
 
 model AdminDB {
-  id              String           @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt       DateTime         @db.Date
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  adminPositionId String          @db.ObjectId
+  adminPosition   AdminPositionDB @relation(fields: [adminPositionId], references: [id], onDelete: Cascade)
+  webBaseId       String?         @db.ObjectId
+  webBase         WebBaseDB?      @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
+  createdAt       DateTime        @db.Date
   createdBy       String
-  deleteAt        DateTime?        @db.Date
+  deleteAt        DateTime?       @db.Date
   /// Could not determine type: the field only had null or empty values in the sample set.
   deleteBy        Json?
-  email           String           @unique
+  email           String          @unique
   isActive        Boolean
   name            String
   password        String
   /// Could not determine type: the field only had null or empty values in the sample set.
   profile         Json?
   tel             String
-  updatedAt       DateTime         @db.Date
+  updatedAt       DateTime        @db.Date
   updatedBy       String
-  username        String           @unique
-  AdminPositionDB AdminPositionDB? @relation(fields: [AdminPositionDBId], references: [id])
-  AdminPositionDBId String?          @db.ObjectId
-  WebBaseDB       WebBaseDB?       @relation(fields: [webBaseDBId], references: [id])
-  webBaseDBId     String?          @db.ObjectId
+  username        String          @unique
   // Chat system relations
   assignedConversations ChatConversationDB[]
   // Widget keys relations
@@ -457,7 +191,8 @@ model AdminDB {
 
 model AdminDefaultPermissionDB {
   id                String          @id @default(auto()) @map("_id") @db.ObjectId
-  AdminPositionDBId String          @db.ObjectId
+  adminPositionDBId String          @db.ObjectId
+  adminPosition     AdminPositionDB @relation(fields: [adminPositionDBId], references: [id], onDelete: Cascade)
   canAdvance        Boolean
   canCreate         Boolean
   canDelete         Boolean
@@ -467,31 +202,30 @@ model AdminDefaultPermissionDB {
   createdBy         String
   isDeleted         Boolean
   menuPageWebId     String?         @db.ObjectId
+  menuPage          MenuPageWebDB?  @relation(fields: [menuPageWebId], references: [id], onDelete: Cascade)
   updatedAt         DateTime        @db.Date
   updatedBy         String
-  AdminPositionDB   AdminPositionDB @relation(fields: [AdminPositionDBId], references: [id])
-  MenuPageWebDB     MenuPageWebDB?  @relation(fields: [menuPageWebDBId], references: [id])
-  menuPageWebDBId   String?         @db.ObjectId
 
-  @@unique([AdminPositionDBId, menuPageWebId])
+  @@unique([adminPositionDBId, menuPageWebId])
 }
 
 model AdminDepartmentDB {
-  id              String            @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt       DateTime          @db.Date
-  createdBy       String
-  description     String
-  isActive        Boolean
-  isDeleted       Boolean
-  name            String            @unique
-  updatedAt       DateTime          @db.Date
-  updatedBy       String
-  AdminPositionDB AdminPositionDB[]
+  id             String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt      DateTime          @db.Date
+  createdBy      String
+  description    String
+  isActive       Boolean
+  isDeleted      Boolean
+  name           String            @unique
+  updatedAt      DateTime          @db.Date
+  updatedBy      String
+  adminPositions AdminPositionDB[]
 }
 
 model AdminPositionDB {
   id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
   adminDepartmentId        String                     @db.ObjectId
+  adminDepartment          AdminDepartmentDB          @relation(fields: [adminDepartmentId], references: [id], onDelete: Cascade)
   createdAt                DateTime                   @db.Date
   createdBy                String
   isActive                 Boolean
@@ -500,7 +234,6 @@ model AdminPositionDB {
   priority                 Int
   updatedAt                DateTime                   @db.Date
   updatedBy                String
-  adminDepartment          AdminDepartmentDB          @relation(fields: [adminDepartmentId], references: [id], onDelete: Cascade)
   AdminDB                  AdminDB[]
   AdminDefaultPermissionDB AdminDefaultPermissionDB[]
 
@@ -513,365 +246,40 @@ model AgQueueJobDB {
   v            Int      @map("__v")
   adviser      String?
   createdAt    DateTime @db.Date
-  credit       Int?
-  creditBy     String?
-  customer     String?
-  endDate      String?
   errorMessage String?
-  errorStack   String?
   eventDocId   String
   jobId        String   @unique(map: "jobId_1")
-  partnerAG    String?
-  partnerLogin String?
   priority     Int
   queueSize    Int
-  reportUrl    String?
-  rowCount     Int?
-  startDate    String?
   status       String
-  statusAG     String?
   type         String
   updatedAt    DateTime @db.Date
-  userLogin    String?
   username     String?
 }
 
 model AgUserAccountDB {
-  id              String            @id @default(auto()) @map("_id") @db.ObjectId
-  v               Int?              @map("__v")
-  createdAt       DateTime          @db.Date
-  createdBy       String
-  gaSecretEnc     String
-  isActive        Boolean
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt        DateTime          @db.Date
+  createdBy        String
+  gaSecretEnc      String
+  isActive         Boolean
   /// Could not determine type: the field only had null or empty values in the sample set.
-  meta            Json?
+  meta             Json?
   /// Could not determine type: the field only had null or empty values in the sample set.
-  note            Json?
-  origin          String
-  partnerAG       String?
-  partnerLogin    String?
-  position        String
-  reserve         String
-  statusServe     String
-  updatedAt       DateTime          @db.Date
-  updatedBy       String
-  userLogin       String
-  username        String            @unique
-  webname         String
-  CustomerAgentDB CustomerAgentDB[]
-  PartnerDB       PartnerDB[]
-}
-
-model AgentChangePasswordDB {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  v           Int      @map("__v")
-  adviser     String
-  agentLogin  String
-  createdAt   DateTime @db.Date
-  newPassword String
-  oldPassword String
-  processedAt DateTime @db.Date
-  status      String
-  updatedAt   DateTime @db.Date
-  usernameAG  String
-}
-
-model AgentWinLoseReportDB {
-  id           String                        @id @default(auto()) @map("_id") @db.ObjectId
-  adviser      String
-  endDate      String
-  errorMessage String?
-  metadata     AgentWinLoseReportDbMetadata?
-  position     String
-  processedAt  DateTime?                     @db.Date
-  results      AgentWinLoseReportDbResults[]
-  startDate    String
-  status       String
-  updatedAt    DateTime?                     @db.Date
-  usernameAG   String
-  webname      String
-}
-
-model ChatAutoReplyDB {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  isActive    Json?
-  /// Field referred in an index, but found no data to define the type.
-  priority    Json?
-  /// Field referred in an index, but found no data to define the type.
-  triggerType Json?
-
-  @@index([triggerType])
-  @@index([isActive])
-  @@index([priority])
-}
-
-model ChatBroadcastDB {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  createdAt   Json?
-  /// Field referred in an index, but found no data to define the type.
-  scheduledAt Json?
-  /// Field referred in an index, but found no data to define the type.
-  status      Json?
-
-  @@index([status])
-  @@index([scheduledAt])
-  @@index([createdAt])
-}
-
-model ChatBroadcastRecipientDB {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  broadcastId Json?
-  /// Field referred in an index, but found no data to define the type.
-  customerId  Json?
-  /// Field referred in an index, but found no data to define the type.
-  status      Json?
-
-  @@unique([broadcastId, customerId])
-  @@index([broadcastId])
-  @@index([customerId])
-  @@index([status])
-}
-
-model ChatConversationDB {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  assignedAdminId Json?
-  createdAt       DateTime  @db.Date
-  customerId      String    @db.ObjectId
-  isUnread        Boolean
-  lastMessage     String?
-  lastMessageAt   DateTime? @db.Date
-  priority        String
-  status          String
-  subject         String
-  unreadCount     Int
-  updatedAt       DateTime  @db.Date
-  widgetKeyId     String?   @db.ObjectId
-
-  @@index([customerId])
-  @@index([assignedAdminId])
-  @@index([widgetKeyId])
-  @@index([status])
-  @@index([priority])
-  @@index([createdAt])
-  @@index([lastMessageAt])
-}
-
-model ChatCustomerDB {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime @db.Date
-  customerId  String   @unique
-  email       String?
-  isActive    Boolean
-  isBlocked   Boolean
-  language    String
-  /// Field referred in an index, but found no data to define the type.
-  lastLoginAt Json?
-  /// Nested objects had no data in the sample dataset to introspect a nested type.
-  metadata    Json
-  name        String
-  /// Field referred in an index, but found no data to define the type.
-  phone       Json?
-  /// Field referred in an index, but found no data to define the type.
-  source      Json?
-  timezone    String
-  updatedAt   DateTime @db.Date
-
-  @@index([email])
-  @@index([phone])
-  @@index([isActive])
-  @@index([createdAt])
-  @@index([source])
-  @@index([lastLoginAt])
-}
-
-model ChatCustomerSegmentDB {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  customerId Json?
-  /// Field referred in an index, but found no data to define the type.
-  segmentId  Json?
-
-  @@unique([customerId, segmentId])
-  @@index([customerId])
-  @@index([segmentId])
-}
-
-model ChatCustomerTagDB {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  customerId Json?
-  /// Field referred in an index, but found no data to define the type.
-  tagId      Json?
-
-  @@unique([customerId, tagId])
-  @@index([customerId])
-  @@index([tagId])
-}
-
-model ChatMessageDB {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  attachments    Json?
-  content        String
-  conversationId String   @db.ObjectId
-  createdAt      DateTime @db.Date
-  customerId     String   @db.ObjectId
-  isAutoReply    Boolean
-  isRead         Boolean
-  isSent         Boolean
-  messageType    String
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  metadata       Json?
-  senderId       String   @db.ObjectId
-  senderName     String
-  senderType     String
-  sentAt         DateTime @db.Date
-  updatedAt      DateTime @db.Date
-  widgetKeyId    String?  @db.ObjectId
-
-  @@index([conversationId])
-  @@index([customerId])
-  @@index([widgetKeyId])
-  @@index([senderType])
-  @@index([messageType])
-  @@index([createdAt])
-  @@index([isRead])
-}
-
-model ChatMessageReadDB {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  adminId   Json?
-  /// Field referred in an index, but found no data to define the type.
-  messageId Json?
-  /// Field referred in an index, but found no data to define the type.
-  readAt    Json?
-
-  @@unique([messageId, adminId])
-  @@index([messageId])
-  @@index([adminId])
-  @@index([readAt])
-}
-
-model ChatRichMenuDB {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  isActive  Json?
-  /// Field referred in an index, but found no data to define the type.
-  isDefault Json?
-  /// Field referred in an index, but found no data to define the type.
-  name      Json?  @unique
-
-  @@index([isActive])
-  @@index([isDefault])
-}
-
-model ChatSegmentDB {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  isActive Json?
-  /// Field referred in an index, but found no data to define the type.
-  name     Json?  @unique
-
-  @@index([isActive])
-}
-
-model ChatTagDB {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  isActive Json?
-  /// Field referred in an index, but found no data to define the type.
-  name     Json?  @unique
-
-  @@index([isActive])
-}
-
-model ChatWidgetKeyDB {
-  id          String                  @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt   DateTime                @db.Date
-  createdBy   String                  @db.ObjectId
-  description String
-  domain      String
-  isActive    Boolean
-  key         String                  @unique
-  lastUsedAt  DateTime                @db.Date
-  name        String
-  settings    ChatWidgetKeyDbSettings
-  updatedAt   DateTime                @db.Date
-
-  @@index([domain])
-  @@index([isActive])
-  @@index([createdAt])
-}
-
-model ChatWidgetSettingsDB {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-}
-
-model CreateAgentDB {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  v            Int      @map("__v")
-  adviser      String
-  createdAt    DateTime @db.Date
-  errorMessage String?
-  errorStack   String?
-  position     String
-  processedAt  DateTime @db.Date
-  status       String
-  updatedAt    DateTime @db.Date
-  usernameAG   String
-}
-
-model CreateMasterAgentDB {
-  id           String    @id @default(auto()) @map("_id") @db.ObjectId
-  v            Int       @map("__v")
-  adviser      String
-  createdAt    DateTime  @db.Date
-  errorMessage String?
-  errorStack   String?
-  position     String
-  processedAt  DateTime? @db.Date
-  status       String
-  updatedAt    DateTime  @db.Date
-  usernameAG   String
-}
-
-model CreatePartnerDB {
-  id                     String   @id @default(auto()) @map("_id") @db.ObjectId
-  v                      Int      @map("__v")
-  adviser                String
-  createdAt              DateTime @db.Date
-  createdPartnerNickname String?
-  createdPartnerPassword String?
-  createdPartnerUsername String?
-  errorMessage           String
-  parentUsername         String
-  position               String
-  processedAt            DateTime @db.Date
-  status                 String
-  updatedAt              DateTime @db.Date
-  usernameAG             String
-}
-
-model CreateResetMasterJobsDB {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  /// Multiple data types found: Int: 31.6%, Int: 68.4% out of 19 sampled entries
-  v             Json     @map("__v")
-  adviser       String
-  createdAt     DateTime @db.Date
-  errorMessage  String?
-  errorStack    String?
-  insertedCount Int
-  /// Multiple data types found: Int: 31.6%, Int: 68.4% out of 19 sampled entries
-  limit         Json
-  newPassword   String
-  processedAt   DateTime @db.Date
-  status        String
-  updatedAt     DateTime @db.Date
+  note             Json?
+  origin           String
+  position         String
+  reserve          String
+  statusServe      String
+  updatedAt        DateTime          @db.Date
+  updatedBy        String
+  userLogin        String?
+  username         String            @unique
+  webname          String
+  partnerAG      String?
+  partnerLogin String?
+  CustomerAgentDB  CustomerAgentDB[]
+  PartnerDB        PartnerDB[]
 }
 
 model CustomerAgentDB {
@@ -887,21 +295,6 @@ model CustomerAgentDB {
   updatedBy       String
 }
 
-model CustomerWinLoseReportDB {
-  id          String                           @id @default(auto()) @map("_id") @db.ObjectId
-  adviser     String
-  endDate     String
-  metadata    CustomerWinLoseReportDbMetadata
-  position    String
-  processedAt DateTime                         @db.Date
-  results     CustomerWinLoseReportDbResults[]
-  startDate   String
-  status      String
-  updatedAt   DateTime                         @db.Date
-  usernameAG  String
-  webname     String
-}
-
 model ImageList {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @db.Date
@@ -915,50 +308,6 @@ model ImageList {
   updatedBy String
 }
 
-model MasterChangePasswordDB {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  v            Int      @map("__v")
-  adviser      String
-  createdAt    DateTime @db.Date
-  errorMessage String?
-  errorStack   String?
-  masterLogin  String
-  newPassword  String
-  oldPassword  String
-  processedAt  DateTime @db.Date
-  status       String
-  updatedAt    DateTime @db.Date
-  usernameAG   String
-}
-
-model MasterWinLoseReportDB {
-  id             String                         @id @default(auto()) @map("_id") @db.ObjectId
-  v              Int?                           @map("__v")
-  adviser        String
-  createdAt      DateTime?                      @db.Date
-  endDate        String
-  filters        MasterWinLoseReportDbFilters?
-  headers        String[]
-  metadata       MasterWinLoseReportDbMetadata?
-  position       String
-  processedAt    DateTime?                      @db.Date
-  records        MasterWinLoseReportDbRecords[]
-  reportUrl      String?
-  rowCount       Int?
-  rows           Json?
-  startDate      String
-  status         String?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  summaryHeaders Json?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  summaryRecords Json?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  summaryRows    Json?
-  updatedAt      DateTime?                      @db.Date
-  usernameAG     String
-  webname        String
-}
-
 model MenuPageWebDB {
   id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
   /// Field referred in an index, but found no data to define the type.
@@ -969,13 +318,13 @@ model MenuPageWebDB {
 }
 
 model MenuWebDB {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   canAdvance  Boolean
   canCreate   Boolean
   canDelete   Boolean
   canUpdate   Boolean
   canViews    Boolean
-  createdAt   DateTime    @db.Date
+  createdAt   DateTime @db.Date
   createdBy   String
   description String
   head        Boolean
@@ -984,99 +333,33 @@ model MenuWebDB {
   isVisible   Boolean
   link        String
   manager     String[]
-  name        String      @unique
-  parentId    String?     @db.ObjectId
+  name        String   @unique
+  parentId    String?  @db.ObjectId
   showOrder   Int
-  updatedAt   DateTime    @db.Date
+  updatedAt   DateTime @db.Date
   updatedBy   String
+
   // Self-referential relations for menu hierarchy
-  parent      MenuWebDB?  @relation("MenuParentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children    MenuWebDB[] @relation("MenuParentChildren")
-}
-
-model NotificationDB {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  createdAt Json?
-  /// Field referred in an index, but found no data to define the type.
-  isRead    Json?
-  /// Field referred in an index, but found no data to define the type.
-  type      Json?
-  /// Field referred in an index, but found no data to define the type.
-  userId    Json?
-
-  @@index([userId])
-  @@index([isRead])
-  @@index([createdAt])
-  @@index([type])
-}
-
-model NotificationPreferencesDB {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  userId Json?  @unique
+  parent   MenuWebDB?  @relation("MenuParentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children MenuWebDB[] @relation("MenuParentChildren")
 }
 
 model PartnerDB {
-  id                String           @id @default(auto()) @map("_id") @db.ObjectId
-  agentId           String           @db.ObjectId
-  bankName          String
-  bankNumber        String
-  createdAt         DateTime         @db.Date
-  createdBy         String
-  line              String
-  method            String
-  name              String
-  startDate         DateTime         @db.Date
-  status            String
-  tel               String
-  updatedAt         DateTime         @db.Date
-  updatedBy         String
-  AgUserAccountDB   AgUserAccountDB? @relation(fields: [agUserAccountDBId], references: [id])
-  agUserAccountDBId String?          @db.ObjectId
-}
-
-model PushSubscriptionDB {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  endpoint Json?  @unique
-  /// Field referred in an index, but found no data to define the type.
-  isActive Json?
-  /// Field referred in an index, but found no data to define the type.
-  userId   Json?
-
-  @@index([userId])
-  @@index([isActive])
-}
-
-model ResetAccountPartnerDB {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  v            Int      @map("__v")
-  adviser      String
-  createdAt    DateTime @db.Date
-  errorMessage String
-  errorStack   String?
-  partnerAG    String
-  partnerLogin String
-  position     String
-  processedAt  DateTime @db.Date
-  status       String
-  updatedAt    DateTime @db.Date
-  usernameAG   String
-}
-
-model ResetAgUserPasswordDB {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  v            Int      @map("__v")
-  adviser      String
-  createdAt    DateTime @db.Date
-  errorMessage String?
-  newPassword  String
-  position     String
-  processedAt  DateTime @db.Date
-  status       String
-  updatedAt    DateTime @db.Date
-  usernameAG   String
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  agentId         String          @db.ObjectId
+  agUserAccountDB AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  bankName        String
+  bankNumber      String
+  createdAt       DateTime        @db.Date
+  createdBy       String
+  line            String
+  method          String
+  name            String
+  startDate       DateTime        @db.Date
+  status          String
+  tel             String
+  updatedAt       DateTime        @db.Date
+  updatedBy       String
 }
 
 model SetZero {
@@ -1106,21 +389,6 @@ model SettingDB {
   updatedBy         String
 }
 
-model UnblockAgentDB {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  /// Multiple data types found: Int: 71.4%, Int: 28.6% out of 7 sampled entries
-  v            Json     @map("__v")
-  adviser      String
-  createdAt    DateTime @db.Date
-  errorMessage String
-  newPassword  String
-  position     String
-  processedAt  DateTime @db.Date
-  status       String
-  updatedAt    DateTime @db.Date
-  usernameAG   String
-}
-
 model UnblockCustomerDB {
   id               String   @id @default(auto()) @map("_id") @db.ObjectId
   adviser          String
@@ -1139,21 +407,6 @@ model UnblockCustomerDB {
   updatedAt        DateTime @db.Date
   userAgent        String
   usernameAG       String
-}
-
-model UnblockMasterDB {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  /// Multiple data types found: Int: 21.4%, Int: 78.6% out of 28 sampled entries
-  v            Json     @map("__v")
-  adviser      String
-  createdAt    DateTime @db.Date
-  errorMessage String
-  newPassword  String
-  position     String
-  processedAt  DateTime @db.Date
-  status       String
-  updatedAt    DateTime @db.Date
-  usernameAG   String
 }
 
 model UserDB {
@@ -1217,8 +470,7 @@ model WorkHistoryDB {
 model adjustbets {
   id            String                  @id @default(auto()) @map("_id") @db.ObjectId
   agBaseUrl     String
-  /// Multiple data types found: Int: 26.2%, Int: 73.8% out of 65 sampled entries
-  attemptCount  Json
+  attemptCount  Int
   cockfight     AdjustbetsCockfight
   createdAt     DateTime                @db.Date
   createdBy     String
@@ -1275,9 +527,552 @@ model creditTopUp {
   statusFlag     String
   statusServe    String
   type           String
-  /// Multiple data types found: String: 3.5%, DateTime (Date): 96.5% out of 141 sampled entries
+  /// Multiple data types found: String: 20%, DateTime (Date): 80% out of 5 sampled entries
   updatedAt      Json
   updatedBy      String
   usernameAG     String
   webname        String
+}
+
+model user {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
+model ResetAgUserPasswordDB {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  v            Int       @map("__v")
+  adviser      String
+  createdAt    DateTime  @db.Date
+  errorMessage String?
+  newPassword  String
+  position     String
+  processedAt  DateTime? @db.Date
+  status       String
+  updatedAt    DateTime  @db.Date
+  usernameAG   String
+}
+
+model CreateResetMasterJobsDB {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @map("__v")
+  adviser       String
+  createdAt     DateTime @db.Date
+  insertedCount Int
+  limit         Int
+  newPassword   String
+  processedAt   DateTime @db.Date
+  status        String
+  updatedAt     DateTime @db.Date
+}
+
+model UnblockMasterDB {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  v            Int      @map("__v")
+  adviser      String
+  createdAt    DateTime @db.Date
+  errorMessage String
+  newPassword  String
+  position     String
+  processedAt  DateTime @db.Date
+  status       String
+  updatedAt    DateTime @db.Date
+  usernameAG   String
+}
+
+model MasterChangePasswordDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  v           Int      @map("__v")
+  adviser     String
+  createdAt   DateTime @db.Date
+  masterLogin String
+  newPassword String
+  oldPassword String
+  processedAt DateTime @db.Date
+  status      String
+  updatedAt   DateTime @db.Date
+  usernameAG  String
+}
+
+model UnblockAgentDB {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  v            Int      @map("__v")
+  adviser      String
+  createdAt    DateTime @db.Date
+  errorMessage String
+  newPassword  String
+  position     String
+  processedAt  DateTime @db.Date
+  status       String
+  updatedAt    DateTime @db.Date
+  usernameAG   String
+}
+
+model AgentChangePasswordDB {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  v            Int      @map("__v")
+  adviser      String
+  agentLogin   String?
+  createdAt    DateTime @db.Date
+  errorMessage String?
+  errorStack   String?
+  newPassword  String
+  oldPassword  String
+  processedAt  DateTime @db.Date
+  status       String
+  updatedAt    DateTime @db.Date
+  usernameAG   String
+}
+
+// ==================== Customer Chat System Models ====================
+
+// Chat Customer - represents customers who use the chat system
+model ChatCustomerDB {
+  id            String              @id @default(auto()) @map("_id") @db.ObjectId
+  customerId    String              @unique // External customer ID
+  name          String?
+  email         String?
+  phone         String?
+  password      String?             // Hashed password for widget auth
+  avatarUrl     String?
+  // Custom fields for segmentation
+  language      String              @default("th") // th, en
+  timezone      String              @default("Asia/Bangkok")
+  metadata      Json?               // Additional custom fields
+  // Status
+  isActive      Boolean             @default(true)
+  isBlocked     Boolean             @default(false)
+  blockedReason String?
+  source        String?             // Registration source (widget_registration, manual, etc.)
+  // Timestamps
+  createdAt     DateTime            @default(now()) @db.Date
+  updatedAt     DateTime            @updatedAt @db.Date
+  lastSeenAt    DateTime?           @db.Date
+  lastLoginAt   DateTime?           @db.Date
+  // Relations
+  conversations ChatConversationDB[]
+  messages      ChatMessageDB[]
+  tags          ChatCustomerTagDB[]
+  segments      ChatCustomerSegmentDB[]
+
+  @@index([email])
+  @@index([phone])
+  @@index([isActive])
+  @@index([source])
+  @@index([createdAt])
+  @@index([lastLoginAt])
+}
+
+// Chat Conversation - represents individual chat threads
+model ChatConversationDB {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  customerId      String           @db.ObjectId
+  customer        ChatCustomerDB   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  // Agent assignment
+  assignedAdminId String?          @db.ObjectId
+  assignedAdmin   AdminDB?         @relation(fields: [assignedAdminId], references: [id], onDelete: SetNull)
+  // Widget key reference
+  widgetKeyId     String?          @db.ObjectId
+  widgetKey       ChatWidgetKeyDB? @relation(fields: [widgetKeyId], references: [id], onDelete: SetNull)
+  // Status
+  status          String           @default("open") // open, assigned, resolved, closed
+  priority        String           @default("normal") // low, normal, high, urgent
+  // Content
+  subject         String?
+  lastMessage     String?
+  lastMessageAt   DateTime?        @db.Date
+  // Flags
+  isUnread        Boolean          @default(true)
+  unreadCount     Int              @default(0)
+  // Timestamps
+  createdAt       DateTime         @default(now()) @db.Date
+  updatedAt       DateTime         @updatedAt @db.Date
+  resolvedAt      DateTime?        @db.Date
+  closedAt        DateTime?        @db.Date
+  // Relations
+  messages        ChatMessageDB[]
+
+  @@index([customerId])
+  @@index([assignedAdminId])
+  @@index([widgetKeyId])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([lastMessageAt])
+}
+
+// Chat Message - individual messages in conversations
+model ChatMessageDB {
+  id             String              @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId String              @db.ObjectId
+  conversation   ChatConversationDB  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  customerId     String              @db.ObjectId
+  customer       ChatCustomerDB      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  // Widget key reference
+  widgetKeyId    String?             @db.ObjectId
+  widgetKey      ChatWidgetKeyDB?    @relation(fields: [widgetKeyId], references: [id], onDelete: SetNull)
+  // Sender info
+  senderType     String              // customer, agent, system
+  senderId       String?             @db.ObjectId // AdminDB id if agent
+  senderName     String?
+  // Message content
+  messageType    String              @default("text") // text, image, file, video, audio, location, card, richMenu
+  content        String              // Text content or JSON for rich messages
+  attachments    Json?               // Array of attachment objects
+  metadata       Json?               // Additional metadata
+  // Status
+  isRead         Boolean             @default(false)
+  readAt         DateTime?           @db.Date
+  isSent         Boolean             @default(true)
+  sentAt         DateTime            @default(now()) @db.Date
+  // Auto-reply tracking
+  isAutoReply    Boolean             @default(false)
+  autoReplyId    String?             @db.ObjectId
+  // Timestamps
+  createdAt      DateTime            @default(now()) @db.Date
+  updatedAt      DateTime            @updatedAt @db.Date
+  // Read tracking
+  readBy         ChatMessageReadDB[]
+
+  @@index([conversationId])
+  @@index([customerId])
+  @@index([widgetKeyId])
+  @@index([senderType])
+  @@index([messageType])
+  @@index([createdAt])
+  @@index([isRead])
+}
+
+// Message Read Tracking - Track which admin read which messages
+model ChatMessageReadDB {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  messageId   String      @db.ObjectId
+  message     ChatMessageDB @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  adminId     String      @db.ObjectId
+  admin       AdminDB     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  readAt      DateTime    @default(now()) @db.Date
+  
+  @@unique([messageId, adminId])
+  @@index([messageId])
+  @@index([adminId])
+  @@index([readAt])
+}
+
+// Chat Tag - for categorizing customers
+model ChatTagDB {
+  id          String              @id @default(auto()) @map("_id") @db.ObjectId
+  name        String              @unique
+  color       String              @default("#3B82F6") // Hex color code
+  description String?
+  isActive    Boolean             @default(true)
+  createdAt   DateTime            @default(now()) @db.Date
+  createdBy   String
+  updatedAt   DateTime            @updatedAt @db.Date
+  updatedBy   String
+  // Relations
+  customers   ChatCustomerTagDB[]
+
+  @@index([isActive])
+}
+
+// Join table for Customer-Tag relationship
+model ChatCustomerTagDB {
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String         @db.ObjectId
+  customer   ChatCustomerDB @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tagId      String         @db.ObjectId
+  tag        ChatTagDB      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  createdAt  DateTime       @default(now()) @db.Date
+  createdBy  String
+
+  @@unique([customerId, tagId])
+  @@index([customerId])
+  @@index([tagId])
+}
+
+// Chat Segment - for dynamic customer grouping
+model ChatSegmentDB {
+  id          String                  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String                  @unique
+  description String?
+  // Segment rules (stored as JSON)
+  rules       Json                    // Filter conditions
+  isActive    Boolean                 @default(true)
+  createdAt   DateTime                @default(now()) @db.Date
+  createdBy   String
+  updatedAt   DateTime                @updatedAt @db.Date
+  updatedBy   String
+  // Relations
+  customers   ChatCustomerSegmentDB[]
+  broadcasts  ChatBroadcastDB[]
+
+  @@index([isActive])
+}
+
+// Join table for Customer-Segment relationship
+model ChatCustomerSegmentDB {
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String         @db.ObjectId
+  customer   ChatCustomerDB @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  segmentId  String         @db.ObjectId
+  segment    ChatSegmentDB  @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+  createdAt  DateTime       @default(now()) @db.Date
+  updatedAt  DateTime       @updatedAt @db.Date
+
+  @@unique([customerId, segmentId])
+  @@index([customerId])
+  @@index([segmentId])
+}
+
+// Auto Reply - automated responses
+model ChatAutoReplyDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  // Trigger conditions
+  triggerType String   // keyword, welcome, away, default
+  keywords    String[] // For keyword triggers
+  // Response
+  messageType String   @default("text") // text, image, card, richMenu
+  message     String   // Text or JSON content
+  attachments Json?    // Optional attachments
+  // Scheduling
+  isActive    Boolean  @default(true)
+  startTime   String?  // HH:mm format
+  endTime     String?  // HH:mm format
+  daysOfWeek  String[] // ["monday", "tuesday", ...]
+  // Priority (higher number = higher priority)
+  priority    Int      @default(0)
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Date
+  createdBy   String
+  updatedAt   DateTime @updatedAt @db.Date
+  updatedBy   String
+
+  @@index([triggerType])
+  @@index([isActive])
+  @@index([priority])
+}
+
+// Rich Menu - interactive menu for chat widget
+model ChatRichMenuDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  // Menu structure (JSON)
+  menuData    Json     // Contains buttons, actions, layout
+  imageUrl    String?  // Optional background image
+  // Status
+  isActive    Boolean  @default(false)
+  isDefault   Boolean  @default(false) // Only one can be default
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Date
+  createdBy   String
+  updatedAt   DateTime @updatedAt @db.Date
+  updatedBy   String
+
+  @@index([isActive])
+  @@index([isDefault])
+}
+
+// Broadcast - mass messaging
+model ChatBroadcastDB {
+  id           String                     @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  description  String?
+  // Target audience
+  targetType   String                     // all, segment, tag, custom
+  segmentId    String?                    @db.ObjectId
+  segment      ChatSegmentDB?             @relation(fields: [segmentId], references: [id], onDelete: SetNull)
+  customFilter Json?                      // Custom filter conditions
+  // Message content
+  messageType  String                     @default("text") // text, image, card
+  message      String
+  attachments  Json?
+  // Scheduling
+  status       String                     @default("draft") // draft, scheduled, sending, sent, failed
+  scheduledAt  DateTime?                  @db.Date
+  sentAt       DateTime?                  @db.Date
+  // Statistics
+  totalTarget  Int                        @default(0)
+  totalSent    Int                        @default(0)
+  totalFailed  Int                        @default(0)
+  // Timestamps
+  createdAt    DateTime                   @default(now()) @db.Date
+  createdBy    String
+  updatedAt    DateTime                   @updatedAt @db.Date
+  updatedBy    String
+  // Relations
+  recipients   ChatBroadcastRecipientDB[]
+
+  @@index([status])
+  @@index([scheduledAt])
+  @@index([createdAt])
+}
+
+// Broadcast Recipient - tracking individual broadcast sends
+model ChatBroadcastRecipientDB {
+  id           String          @id @default(auto()) @map("_id") @db.ObjectId
+  broadcastId  String          @db.ObjectId
+  broadcast    ChatBroadcastDB @relation(fields: [broadcastId], references: [id], onDelete: Cascade)
+  customerId   String          @db.ObjectId
+  // Status
+  status       String          @default("pending") // pending, sent, failed, read
+  errorMessage String?
+  sentAt       DateTime?       @db.Date
+  readAt       DateTime?       @db.Date
+  // Timestamps
+  createdAt    DateTime        @default(now()) @db.Date
+  updatedAt    DateTime        @updatedAt @db.Date
+
+  @@unique([broadcastId, customerId])
+  @@index([broadcastId])
+  @@index([customerId])
+  @@index([status])
+}
+
+// Chat Widget Settings
+model ChatWidgetSettingsDB {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  // Appearance
+  primaryColor      String   @default("#3B82F6")
+  accentColor       String   @default("#10B981")
+  headerTitle       String   @default("Chat with us")
+  headerSubtitle    String?  @default("We're here to help")
+  welcomeMessage    String?  @default("Hello! How can we help you today?")
+  placeholderText   String   @default("Type a message...")
+  // Widget behavior
+  position          String   @default("bottom-right") // bottom-right, bottom-left
+  autoOpen          Boolean  @default(false)
+  showAgentAvatar   Boolean  @default(true)
+  showTimestamp     Boolean  @default(true)
+  enableFileUpload  Boolean  @default(true)
+  enableEmoji       Boolean  @default(true)
+  // Business hours
+  businessHours     Json?    // {monday: {start: "09:00", end: "18:00"}, ...}
+  offlineMessage    String?  @default("We're currently offline. Leave a message and we'll get back to you.")
+  // Rich menu
+  richMenuId        String?  @db.ObjectId
+  // Timestamps
+  createdAt         DateTime @default(now()) @db.Date
+  createdBy         String
+  updatedAt         DateTime @updatedAt @db.Date
+  updatedBy         String
+}
+
+// Widget Keys - สำหรับให้เว็บอื่นใช้งาน chat widget
+model ChatWidgetKeyDB {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String   // ชื่อ widget key
+  key             String   @unique // Widget key ที่ unique
+  domain          String   // Domain ที่อนุญาตให้ใช้
+  description     String?  // คำอธิบาย
+  isActive        Boolean  @default(true)
+  // Widget settings (JSON)
+  settings        Json     @default("{}") // การตั้งค่า widget
+  // Usage tracking
+  lastUsedAt      DateTime? @db.Date
+  // Relations
+  createdBy       String   @db.ObjectId
+  creator         AdminDB  @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  conversations   ChatConversationDB[]
+  messages        ChatMessageDB[]
+  // Timestamps
+  createdAt       DateTime @default(now()) @db.Date
+  updatedAt       DateTime @updatedAt @db.Date
+
+  @@index([domain])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+// ==================== Notification System ====================
+
+// In-app Notifications
+model NotificationDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  // Recipient
+  userId      String   @db.ObjectId
+  user        AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Content
+  type        String   // info, success, warning, error, message, conversation, assignment
+  title       String
+  message     String
+  icon        String?  // Icon name or emoji
+  // Action
+  actionUrl   String?  // URL to navigate when clicked
+  actionLabel String?  // Button label
+  // Metadata
+  metadata    Json?    // Additional data (conversationId, messageId, etc.)
+  // Status
+  isRead      Boolean  @default(false)
+  readAt      DateTime? @db.Date
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Date
+  expiresAt   DateTime? @db.Date
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@index([type])
+}
+
+// Web Push Subscriptions
+model PushSubscriptionDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  // User
+  userId      String   @db.ObjectId
+  user        AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Subscription data (from browser)
+  endpoint    String   @unique
+  keys        Json     // { p256dh: string, auth: string }
+  // Metadata
+  userAgent   String?
+  deviceName  String?  // Browser/Device info
+  // Status
+  isActive    Boolean  @default(true)
+  failCount   Int      @default(0) // Track failed push attempts
+  lastUsedAt  DateTime @default(now()) @db.Date
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Date
+  updatedAt   DateTime @updatedAt @db.Date
+
+  @@index([userId])
+  @@index([isActive])
+}
+
+// Notification Preferences
+model NotificationPreferencesDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  // User
+  userId      String   @unique @db.ObjectId
+  user        AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // In-app notification settings
+  enableInApp        Boolean @default(true)
+  inAppMessages      Boolean @default(true)
+  inAppConversations Boolean @default(true)
+  inAppAssignments   Boolean @default(true)
+  inAppSystem        Boolean @default(true)
+  
+  // Push notification settings
+  enablePush         Boolean @default(false)
+  pushMessages       Boolean @default(true)
+  pushConversations  Boolean @default(true)
+  pushAssignments    Boolean @default(true)
+  pushSystem         Boolean @default(false)
+  
+  // Notification behavior
+  soundEnabled       Boolean @default(true)
+  desktopOnly        Boolean @default(false) // Only show on desktop
+  quietHoursEnabled  Boolean @default(false)
+  quietHoursStart    String? // HH:mm format
+  quietHoursEnd      String? // HH:mm format
+  
+  // Frequency control
+  groupSimilar       Boolean @default(true) // Group similar notifications
+  maxPerHour         Int?    @default(20)   // Max notifications per hour
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Date
+  updatedAt   DateTime @updatedAt @db.Date
 }

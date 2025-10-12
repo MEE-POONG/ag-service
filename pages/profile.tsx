@@ -184,7 +184,7 @@ export default function ViewAdminPage() {
             </div>
 
             {/* ข้อมูล Web Base */}
-            {admin.WebBaseDB && (
+            {admin.webBase && (
               <div className="bg-white shadow rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">ข้อมูล Web Base</h3>
                 <div className="space-y-3">
@@ -193,17 +193,17 @@ export default function ViewAdminPage() {
                       <FaBuilding className="inline mr-2" />
                       ชื่อ Web Base
                     </label>
-                    <p className="text-lg font-medium text-gray-900">{admin.WebBaseDB.name}</p>
+                    <p className="text-lg font-medium text-gray-900">{admin.webBase.name}</p>
                   </div>
-                  {(admin.WebBaseDB as any)?._count && (
+                  {(admin.webBase as any)?._count && (
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <span className="text-gray-500">แอดมิน:</span>
-                        <span className="ml-2 font-medium">{(admin.WebBaseDB as any)._count.AdminDB}</span>
+                        <span className="ml-2 font-medium">{(admin.webBase as any)._count.AdminDB}</span>
                       </div>
                       <div>
                         <span className="text-gray-500">AG User:</span>
-                        <span className="ml-2 font-medium">{(admin.WebBaseDB as any)._count.AGUserDB}</span>
+                        <span className="ml-2 font-medium">{(admin.webBase as any)._count.AGUserDB}</span>
                       </div>
                     </div>
                   )}
@@ -215,30 +215,30 @@ export default function ViewAdminPage() {
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">ตำแหน่งงาน</h3>
 
-              {admin.AdminPositionDB?.adminDepartment && (
+              {admin.adminPosition?.adminDepartment && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-500 mb-1">
                     <FaBuilding className="inline mr-2" />
                     แผนก
                   </label>
                   <span className="inline-flex px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 border border-blue-400">
-                    {admin.AdminPositionDB.adminDepartment.name}
+                    {admin.adminPosition.adminDepartment.name}
                   </span>
                 </div>
               )}
 
-              {admin.AdminPositionDB && (
+              {admin.adminPosition && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-500 mb-1">
                     <FaUserTag className="inline mr-2" />
                     ตำแหน่ง
                   </label>
-                  <span className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${getPriorityColor(Number(admin.AdminPositionDB.priority))}`}>
-                    {admin.AdminPositionDB.name}
+                  <span className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${getPriorityColor(Number(admin.adminPosition.priority))}`}>
+                    {admin.adminPosition.name}
                   </span>
-                  {admin.AdminPositionDB.priority && (
+                  {admin.adminPosition.priority && (
                     <div className="text-xs text-gray-500 mt-1">
-                      ลำดับความสำคัญ: {Number(admin.AdminPositionDB.priority)}
+                      ลำดับความสำคัญ: {Number(admin.adminPosition.priority)}
                     </div>
                   )}
                 </div>
@@ -315,7 +315,7 @@ export default function ViewAdminPage() {
         )}
 
         {/* รายละเอียดสิทธิ์ตามตำแหน่ง */}
-        {admin.AdminPositionDB?.AdminDefaultPermissionDB && admin.AdminPositionDB.AdminDefaultPermissionDB.length > 0 && (
+        {admin.adminPosition?.AdminDefaultPermissionDB && admin.adminPosition.AdminDefaultPermissionDB.length > 0 && (
           <div className="mt-6">
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -323,7 +323,7 @@ export default function ViewAdminPage() {
                 รายละเอียดสิทธิ์ตามตำแหน่ง
               </h3>
               <div className="space-y-4">
-                {admin.AdminPositionDB.AdminDefaultPermissionDB.filter((permission: any) => permission.MenuPageWebDB).map((permission: any, index) => (
+                {admin.adminPosition.AdminDefaultPermissionDB.filter((permission: any) => permission.MenuPageWebDB).map((permission: any, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-medium text-gray-900">{permission.MenuPageWebDB?.name}</h4>

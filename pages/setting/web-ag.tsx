@@ -45,7 +45,7 @@ export default function WebAgPage() {
     isLoading,
     refetch,
   } = useQuery<WebBaseResp>({
-    queryKey: qk.WebBaseDB.list(params.keyword, '', params.page, params.pageSize),
+    queryKey: qk.webBase.list(params.keyword, '', params.page, params.pageSize),
     queryFn: async () => {
       const res = await axios.get(`/api/web-base?${qs}`);
       return res.data as WebBaseResp;

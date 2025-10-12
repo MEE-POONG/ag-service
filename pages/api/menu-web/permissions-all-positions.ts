@@ -43,8 +43,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const updates = positions.map((position) =>
       prisma.adminDefaultPermissionDB.upsert({
         where: {
-          AdminPositionDBId_menuPageWebId: {
-            AdminPositionDBId: position.id,
+          adminPositionDBId_menuPageWebId: {
+            adminPositionDBId: position.id,
             menuPageWebId,
           },
         },
@@ -57,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           updatedBy: 'system',
         },
         create: {
-          AdminPositionDBId: position.id,
+          adminPositionDBId: position.id,
           menuPageWebId,
           canAdvance: Boolean(canAdvance),
           canViews: Boolean(canViews),

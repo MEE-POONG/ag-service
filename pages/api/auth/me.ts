@@ -44,15 +44,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const user = await prisma.adminDB.findUnique({
     where: { id: payload.sub }, // ใช้ User ID จาก Token Payload
     include: {
-      AdminPositionDB: {
+      adminPosition: {
         include: {
           adminDepartment: true, // ข้อมูลแผนก
           AdminDefaultPermissionDB: { // สิทธิ์การใช้งาน
-            include: { MenuPageWebDB: true } // รายละเอียดเมนูที่มีสิทธิ์
+            include: { menuPage: true } // รายละเอียดเมนูที่มีสิทธิ์
           },
         },
       },
-      WebBaseDB: {
+      webBase: {
         include: {} // ข้อมูล Website Base (ถ้ามี)
       },
     },
@@ -78,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const merged = {
     ...user, // ข้อมูลผู้ใช้ทั้งหมด
     role: payload.role, // บทบาทจาก Token
-    permissions: (user.AdminPositionDB?.AdminDefaultPermissionDB ?? [])
+    permissions: (user.adminPosition?.AdminDefaultPermissionDB ?? [])
       .map((p: any) => p?.MenuPageWebDB?.name) // แปลงเป็นรายชื่อเมนูที่มีสิทธิ์
       .filter(Boolean), // กรองค่า null/undefined ออก
     tokenVersion: payload.tokenVersion ?? 0, // เวอร์ชั่น Token (สำหรับ revoke)

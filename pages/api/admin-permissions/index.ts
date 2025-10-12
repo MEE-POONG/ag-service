@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       const { AdminPositionDBId } = req.query
       const where: any = {  }
       if (typeof AdminPositionDBId === 'string' && AdminPositionDBId) {
-        where.AdminPositionDBId = AdminPositionDBId
+        where.adminPositionDBId = AdminPositionDBId
       }
 
       const rows = await prisma.adminDefaultPermissionDB.findMany({ where })
@@ -42,8 +42,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         items.map((it) =>
           prisma.adminDefaultPermissionDB.upsert({
             where: {
-              AdminPositionDBId_menuPageWebId: {
-                AdminPositionDBId: it.AdminPositionDBId,
+              adminPositionDBId_menuPageWebId: {
+                adminPositionDBId: it.AdminPositionDBId,
                 menuPageWebId: it.menuPageWebId,
               },
             },
@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
               updatedBy: 'system',
             },
             create: {
-              AdminPositionDBId: it.AdminPositionDBId,
+              adminPositionDBId: it.AdminPositionDBId,
               menuPageWebId: it.menuPageWebId,
               canAdvance: Boolean(it.canAdvance),
               canViews: Boolean(it.canViews),
@@ -84,8 +84,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
       const row = await prisma.adminDefaultPermissionDB.upsert({
         where: {
-          AdminPositionDBId_menuPageWebId: {
-            AdminPositionDBId: it.AdminPositionDBId,
+          adminPositionDBId_menuPageWebId: {
+            adminPositionDBId: it.AdminPositionDBId,
             menuPageWebId: it.menuPageWebId,
           },
         },
@@ -98,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           updatedBy: 'system',
         },
         create: {
-          AdminPositionDBId: it.AdminPositionDBId,
+          adminPositionDBId: it.AdminPositionDBId,
           menuPageWebId: it.menuPageWebId,
           canAdvance: Boolean(it.canAdvance),
           canViews: Boolean(it.canViews),

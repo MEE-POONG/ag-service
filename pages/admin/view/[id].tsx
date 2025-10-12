@@ -172,30 +172,30 @@ export default function ViewAdminPage() {
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">ตำแหน่งงาน</h3>
               
-              {admin.AdminPositionDB?.adminDepartment && (
+              {admin.adminPosition?.adminDepartment && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-500 mb-1">
                     <FaBuilding className="inline mr-2" />
                     แผนก
                   </label>
                   <span className="inline-flex px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 border border-blue-400">
-                    {admin.AdminPositionDB.adminDepartment.name}
+                    {admin.adminPosition.adminDepartment.name}
                   </span>
                 </div>
               )}
 
-              {admin.AdminPositionDB && (
+              {admin.adminPosition && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-500 mb-1">
                     <FaUserTag className="inline mr-2" />
                     ตำแหน่ง
                   </label>
-                  <span className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${getPriorityColor(Number(admin.AdminPositionDB.priority))}`}>
-                    {admin.AdminPositionDB.name}
+                  <span className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${getPriorityColor(Number(admin.adminPosition.priority))}`}>
+                    {admin.adminPosition.name}
                   </span>
-                  {admin.AdminPositionDB.priority && (
+                  {admin.adminPosition.priority && (
                     <div className="text-xs text-gray-500 mt-1">
-                      ลำดับความสำคัญ: {Number(admin.AdminPositionDB.priority)}
+                      ลำดับความสำคัญ: {Number(admin.adminPosition.priority)}
                     </div>
                   )}
                 </div>
