@@ -9,7 +9,7 @@ import { AgUserAccountDB } from "@prisma/client";
 
 type Position = "master" | "agent";
 
-interface PartnerModalResetProps {
+interface ModalUnlockParterProps {
   onSuccess?: () => void;
   data: AgUserAccountDB;
 }
@@ -22,7 +22,7 @@ function getEndpointByPosition(pos?: string) {
   throw new Error(`ไม่รองรับตำแหน่ง (position): ${pos}`);
 }
 
-const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }) => {
+const ModalUnlockParter: React.FC<ModalUnlockParterProps> = ({ data, onSuccess }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -160,8 +160,8 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
         </Modal.Header>
 
         <Modal.Body>
-          <h2 className=" text-2xl text-purple-600">
-            Reset {data.username}
+          <h2 className=" text-2xl text-gray-600">
+              {data.username}sssssssss
           </h2>
         </Modal.Body>
 
@@ -200,4 +200,4 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
   );
 };
 
-export default PartnerModalReset;
+export default ModalUnlockParter;

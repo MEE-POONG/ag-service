@@ -524,10 +524,6 @@ model creditTopUp {
   webname        String
 }
 
-model user {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-}
-
 model ResetAgUserPasswordDB {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   v            Int       @map("__v")

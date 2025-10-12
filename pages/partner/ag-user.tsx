@@ -12,20 +12,20 @@ import PartnerModalFuctionSetting from '@/container/partner/ModalFuctionSetting'
 import PaginationSelect from '@/components/PaginationSelect'
 import { Params } from '@/data/interfaceDefault'
 import PartnerModalReset from '@/container/partner/ModalReset'
+import { AgUserAccountDB } from '@prisma/client'
 
-type AgUserAccountDB = {
-  id?: string
+type AgUserAccountFormData = {
   username: string
   reserve: string
-  userLogin: string
+  userLogin: string | null
   origin: string
   position: string
   gaSecretEnc: string
-  meta?: string
-  webname?: string
-  partnerAG?: string
-  partnerLogin?: string
+  webname: string
+  partnerAG: string | null
+  partnerLogin: string | null
 }
+
 const WEBNAME_OPTIONS = ['psd99', 'ufa66'] as const
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -109,7 +109,7 @@ export default function AgUserAccountPage() {
 
   // Mutations: create, update, delete (with optimistic updates on current page)
   const createMutation = useMutation({
-    onMutate: async (val: AgUserAccountDB) => {
+    onMutate: async (val: AgUserAccountFormData) => {
       await queryClient.cancelQueries({ queryKey: listKey })
       const prev = queryClient.getQueryData<any>(listKey)
       const tempId = `temp-${Date.now()}`
@@ -123,7 +123,7 @@ export default function AgUserAccountPage() {
       })
       return { prev }
     },
-    mutationFn: async (val: AgUserAccountDB) => {
+    mutationFn: async (val: AgUserAccountFormData) => {
       const res = await axios.post('/api/aguseraccounts', val)
       if (!res.data?.success) throw new Error(res.data?.error || 'บันทึกไม่สำเร็จ')
       return res.data.data as AgUserAccountDB
@@ -160,7 +160,7 @@ export default function AgUserAccountPage() {
   })
 
   const updateMutation = useMutation({
-    onMutate: async (payload: AgUserAccountDB & { id: string }) => {
+    onMutate: async (payload: AgUserAccountFormData & { id: string }) => {
       await queryClient.cancelQueries({ queryKey: listKey })
       const prev = queryClient.getQueryData<any>(listKey)
       queryClient.setQueryData(listKey, (old: any) => {
@@ -169,7 +169,7 @@ export default function AgUserAccountPage() {
       })
       return { prev }
     },
-    mutationFn: async (payload: AgUserAccountDB & { id: string }) => {
+    mutationFn: async (payload: AgUserAccountFormData & { id: string }) => {
       const res = await axios.put('/api/aguseraccounts', payload)
       if (!res.data?.success) throw new Error(res.data?.error || 'อัปเดตไม่สำเร็จ')
       return res.data.data as AgUserAccountDB
@@ -514,21 +514,31 @@ function AgUserAccountFormModal({
   title: string
   open: boolean
   onOpenChange: (v: boolean) => void
-  onSubmit: (val: AgUserAccountDB, helpers: FormHelpers) => void
+  onSubmit: (val: AgUserAccountFormData, helpers: FormHelpers) => void
   initialValue?: AgUserAccountDB
   loading?: boolean
 }) {
-  const [form, setForm] = useState<AgUserAccountDB>(
-    initialValue ?? {
+  const [form, setForm] = useState<AgUserAccountFormData>(
+    initialValue ? {
+      username: initialValue.username,
+      reserve: initialValue.reserve,
+      userLogin: initialValue.userLogin,
+      origin: initialValue.origin,
+      position: initialValue.position,
+      gaSecretEnc: initialValue.gaSecretEnc,
+      webname: initialValue.webname,
+      partnerAG: initialValue.partnerAG,
+      partnerLogin: initialValue.partnerLogin,
+    } : {
       username: '',
       reserve: '',
-      userLogin: '',
+      userLogin: null,
       origin: '',
       position: 'agent',
       gaSecretEnc: '',
       webname: '',
-      partnerAG: '',
-      partnerLogin: '',
+      partnerAG: null,
+      partnerLogin: null,
     }
   )
   const [error, setError] = useState('')
@@ -537,18 +547,18 @@ function AgUserAccountFormModal({
     setForm({
       username: '',
       reserve: '',
-      userLogin: '',
+      userLogin: null,
       origin: '',
       position: 'agent',
       gaSecretEnc: '',
       webname: '',
-      partnerAG: '',
-      partnerLogin: '',
+      partnerAG: null,
+      partnerLogin: null,
     })
     setError('')
   }
 
-  const updateField = (k: keyof AgUserAccountDB, v: string) => {
+  const updateField = (k: keyof AgUserAccountFormData, v: string) => {
     setForm(prev => ({ ...prev, [k]: v }))
   }
 
@@ -588,7 +598,7 @@ function AgUserAccountFormModal({
           <div>
             <label className="block mb-1 text-sm font-medium">userLogin</label>
             <input
-              value={form.userLogin}
+              value={form.userLogin ?? ''}
               onChange={e => updateField('userLogin', e.target.value)}
               className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#A78BFA]"
               placeholder="ล็อกอินสำหรับเข้าระบบ AG"

@@ -3,15 +3,15 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
 import { TheLayout } from '@/components/TheLayout'
 import { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
 import CommandWorkModalCredit from '@/container/bot-ag/CommandWork/ModalCredit'
 import { AgUserAccountDB } from '@prisma/client'
-import CommandWorkModalCreateC from '@/container/bot-ag/CommandWork/ModalCreateC'
 import CommandWorkModalLockUnLockC from '@/container/bot-ag/CommandWork/ModalLockUnLockC'
 import PageHeader from '@/components/PageHeader'
 import PaginationSelect from '@/components/PaginationSelect'
 import { Params } from '@/data/interfaceDefault'
 import ModalAdJustBet from '@/container/bot-ag/ModalAdJustBet'
+import ModalReset from '@/container/partner/ModalReset'
+import ModalUnlockParter from '@/container/partner/ModalUnlockParter'
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -127,7 +127,10 @@ export default function CommandWorkPage() {
                           {/* <CommandWorkModalCreateC data={u} /> */}
                           <CommandWorkModalLockUnLockC data={u} />
                           <ModalAdJustBet agUser={{ ...u, userLogin: u.userLogin ?? '' }} mode="create" />
+
                         </>}
+                        <ModalReset data={u} />
+                        <ModalUnlockParter data={u} />
                       </div>
                     </td>
                   </tr>
