@@ -8,7 +8,7 @@ export const config = {
   },
 }
 
-interface NextApiResponseServerIO extends NextApiResponse {
+type NextApiResponseServerIO = NextApiResponse & {
   socket: {
     server: NetServer & {
       io?: ServerIO
