@@ -140,14 +140,14 @@ const ModalUnlockParter: React.FC<ModalUnlockParterProps> = ({ data, onSuccess }
         onClick={() => setIsOpen(true)}
         className="px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-red-200 hover:bg-gradient-to-r from-[#ff7878c2] to-[#69eeffc2] hover:shadow-md cursor-pointer"
       >
-        ปลดล็อค {data.position === "master" ? "Master" : "Agent"}
+        ปลดล็อคพาร์ทเนอร์ {data.position === "master" ? "Master" : "Agent"}
       </Button>
 
       <Modal open={isOpen} onOpenChange={setIsOpen} size="xl" closeOnOverlayClick closeOnEsc>
         <Modal.Header>
           <div>
             <Modal.Title>
-              ปลดล็อคพันธมิตร
+              ปลดล็อคพาร์ทเนอร์
               <span className="text-lg font-bold text-purple-500 ms-2">
                 {data.username}
               </span>{" "}
