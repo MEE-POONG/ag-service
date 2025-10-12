@@ -3,15 +3,20 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
 import { TheLayout } from '@/components/TheLayout'
 import { useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
 import CommandWorkModalCredit from '@/container/bot-ag/CommandWork/ModalCredit'
 import { AgUserAccountDB } from '@prisma/client'
-import CommandWorkModalCreateC from '@/container/bot-ag/CommandWork/ModalCreateC'
 import CommandWorkModalLockUnLockC from '@/container/bot-ag/CommandWork/ModalLockUnLockC'
 import PageHeader from '@/components/PageHeader'
 import PaginationSelect from '@/components/PaginationSelect'
 import { Params } from '@/data/interfaceDefault'
 import ModalAdJustBet from '@/container/bot-ag/ModalAdJustBet'
+import ModalReset from '@/container/partner/ModalReset'
+import ModalCreateAgent from '@/container/partner/ModalCreateAgent'
+import ModalResetAgUserPassword from '@/container/partner/ModalResetAgUserPassword'
+import ModalResetPartner from '@/container/partner/ModalResetPartner'
+import ModalCreateMaster from '@/container/partner/ModalCreateMaster'
+import { usePermissions } from '@/hooks/usePermissions'
+import { useAuth } from '@/hooks/useAuth'
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -24,6 +29,7 @@ function useAgUserAccounts() {
 
 export default function CommandWorkPage() {
   const { items, add, update, remove, setItems } = useAgUserAccounts()
+  const { user } = useAuth()
   const [params, setParams] = useState<Params>({
     page: 1,
     pageSize: 10,
@@ -32,6 +38,9 @@ export default function CommandWorkPage() {
     totalItems: 0,
   })
   const debouncedKeyword = useDebouncedValue(params.keyword, 300)
+  const { checkPermission } = usePermissions()
+  const headPermissions = checkPermission('ระบบผู้ดูแล')
+  const supportPermissions = checkPermission('แอดมิน')
 
   // Fetch list via react-query (server-side filter by keyword)
   const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: Params }>({
@@ -127,6 +136,19 @@ export default function CommandWorkPage() {
                           {/* <CommandWorkModalCreateC data={u} /> */}
                           <CommandWorkModalLockUnLockC data={u} />
                           <ModalAdJustBet agUser={{ ...u, userLogin: u.userLogin ?? '' }} mode="create" />
+
+                        </>}
+                        {/* ปลดล็อคMaster Agent*/}
+                      </div>
+                      {/* เฉพาะสิทธิ advance */}
+                      <div className={`flex gap-2 mt-2 ${headPermissions.canAdvance || supportPermissions.canAdvance || (user?.username === 'superadmin' || user?.username === 'admin') ? 'block' : 'hidden'}`}>
+                        <ModalReset data={u} />
+                        <ModalResetPartner data={u} onSuccess={() => console.log('Success!')} />
+                        {u.position === 'master' && <>
+                          <ModalCreateAgent data={u} onSuccess={() => console.log('Success!')} />
+                        </>}
+                        {u.position === 'senior' && <>
+                          <ModalCreateMaster data={u} onSuccess={() => console.log('Success!')} />
                         </>}
                       </div>
                     </td>

@@ -32,7 +32,7 @@ export default function AdminAddPage() {
     name: '',
     email: '',
     tel: '',
-    adminPositionId: '',
+    AdminPositionDBId: '',
   })
   const [loading, setLoading] = useState(false)
 
@@ -85,7 +85,7 @@ export default function AdminAddPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setForm(prev => ({ ...prev, [name]: value }))
-    if (name === 'adminPositionId') {
+    if (name === 'AdminPositionDBId') {
       const pos = positions.find(p => p.id === value)
       const depId = pos?.adminDepartmentId ?? pos?.adminDepartment?.id ?? ''
       if (depId && depId !== selectedDeptId) setSelectedDeptId(depId)
@@ -95,12 +95,12 @@ export default function AdminAddPage() {
   const handleDeptChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const depId = e.target.value
     setSelectedDeptId(depId)
-    setForm(prev => ({ ...prev, adminPositionId: '' }))
+    setForm(prev => ({ ...prev, AdminPositionDBId: '' }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.username || !form.email || !form.password || !selectedDeptId || !form.adminPositionId) {
+    if (!form.username || !form.email || !form.password || !selectedDeptId || !form.AdminPositionDBId) {
       alert('กรุณากรอกข้อมูลให้ครบถ้วน')
       return
     }
@@ -174,8 +174,8 @@ export default function AdminAddPage() {
           <div>
             <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">ตำแหน่ง *</label>
             <select
-              name="adminPositionId"
-              value={form.adminPositionId}
+              name="AdminPositionDBId"
+              value={form.AdminPositionDBId}
               onChange={handleChange}
               required
               disabled={!selectedDeptId}

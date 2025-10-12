@@ -39,7 +39,7 @@ export function useMenuWeb(): UseMenuReturn {
     if (isAdmin) return Array.isArray(menus) ? menus : []
 
     const perms: Array<{ menuPageWebId: string; canViews: boolean }> =
-      currentUser?.adminPosition?.AdminDefaultPermissionDB ?? []
+      currentUser?.AdminPositionDB?.AdminDefaultPermissionDB ?? []
 
     if (!Array.isArray(perms) || perms.length === 0 || !Array.isArray(menus)) {
       return []

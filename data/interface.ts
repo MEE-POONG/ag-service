@@ -18,18 +18,18 @@ export interface PageParams {
 
 // AdminDB ที่มีการขยายความ
 export interface ExtendedAdminDB extends AdminDB {
-    adminPosition?: AdminPositionDB & {
+    AdminPositionDB?: AdminPositionDB & {
         adminDepartment?: {
             name: string;
         } | null;
         AdminDefaultPermissionDB?: {
-            menuPage: {
+            MenuPageWebDB: {
                 name: string;
                 id: string;
             };
         }[];
     } | null;
-    webBase?: {
+    WebBaseDB?: {
         id: string;
         name: string;
     } | null;
@@ -47,7 +47,7 @@ export interface ExtendedWebBaseDB extends WebBaseDB {
 
 // ตำแหน่งที่มีการขยายความ
 export interface ExtendedAdminDepartment extends AdminDepartmentDB {
-    adminPositions: AdminPositionDB[];
+    AdminPositionDB: AdminPositionDB[];
 }
 
 // AgQueueJobDB interface

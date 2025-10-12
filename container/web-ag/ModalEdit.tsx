@@ -49,7 +49,7 @@ const WebBaseModalEdit: React.FC<WebBaseModalEditProps> = ({
   const handleSave = async () => {
     try {
       if (!formData.name.trim()) {
-        alert('กรุณากรอกชื่อ WebBase');
+        alert('กรุณากรอกชื่อ WebBaseDB');
         return;
       }
 

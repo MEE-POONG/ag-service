@@ -68,7 +68,7 @@ const WebBaseModalDelete: React.FC<WebBaseModalDeleteProps> = ({
         </Modal.Header>
         <Modal.Body>
           <p className="text-sm mb-2 text-gray-700">
-            คุณต้องการลบ WebBase <strong>{data.name}</strong> หรือไม่?
+            คุณต้องการลบ WebBaseDB <strong>{data.name}</strong> หรือไม่?
           </p>
         </Modal.Body>
         <Modal.Footer>

@@ -33,7 +33,7 @@ async function main() {
   console.log('✅ สร้างแผนกสำเร็จ')
 
   // สร้างตำแหน่งเริ่มต้น
-  // const superAdminPosition = await prisma.adminPositionDB.upsert({
+  // const superAdminPositionDB = await prisma.adminPositionDB.upsert({
   //   where: { name: 'Super Admin' },
   //   update: {},
   //   create: {
@@ -46,7 +46,7 @@ async function main() {
   //   },
   // })
 
-  // const adminPosition = await prisma.adminPositionDB.upsert({
+  // const AdminPositionDB = await prisma.adminPositionDB.upsert({
   //   where: { name: 'Admin' },
   //   update: {},
   //   create: {
@@ -168,8 +168,8 @@ async function main() {
   // for (const permission of superAdminPermissions) {
   //   await prisma.adminDefaultPermissionDB.upsert({
   //     where: {
-  //       adminPositionDBId_menuPageWebId: {
-  //         adminPositionDBId: superAdminPosition.id,
+  //       AdminPositionDBId_menuPageWebId: {
+  //         AdminPositionDBId: superAdminPositionDB.id,
   //         menuPageWebId: permission.menuPageId,
   //       },
   //     },
@@ -182,7 +182,7 @@ async function main() {
   //       updatedBy: 'system',
   //     },
   //     create: {
-  //       adminPositionDBId: superAdminPosition.id,
+  //       AdminPositionDBId: superAdminPositionDB.id,
   //       menuPageWebId: permission.menuPageId,
   //       canAdvance: permission.canAdvance,
   //       canViews: permission.canViews,
@@ -205,8 +205,8 @@ async function main() {
   // for (const permission of adminPermissions) {
   //   await prisma.adminDefaultPermissionDB.upsert({
   //     where: {
-  //       adminPositionDBId_menuPageWebId: {
-  //         adminPositionDBId: adminPosition.id,
+  //       AdminPositionDBId_menuPageWebId: {
+  //         AdminPositionDBId: AdminPositionDB.id,
   //         menuPageWebId: permission.menuPageId,
   //       },
   //     },
@@ -219,7 +219,7 @@ async function main() {
   //       updatedBy: 'system',
   //     },
   //     create: {
-  //       adminPositionDBId: adminPosition.id,
+  //       AdminPositionDBId: AdminPositionDB.id,
   //       menuPageWebId: permission.menuPageId,
   //       canAdvance: permission.canAdvance,
   //       canViews: permission.canViews,
@@ -235,7 +235,7 @@ async function main() {
   console.log('✅ สร้างสิทธิ์เริ่มต้นสำเร็จ')
 
   // สร้างฐานข้อมูลเว็บเริ่มต้น
-  // const webBase = await prisma.webBaseDB.upsert({
+  // const WebBaseDB = await prisma.webBaseDB.upsert({
   //   where: { name: 'AG Main Database' },
   //   update: {},
   //   create: {
@@ -266,8 +266,8 @@ async function main() {
   //     name: 'Super Administrator',
   //     email: 'superadmin@ag-db.com',
   //     tel: '0812345678',
-  //     adminPositionId: superAdminPosition.id,
-  //     webBaseId: webBase.id,
+  //     AdminPositionDBId: superAdminPositionDB.id,
+  //     webBaseId: WebBaseDB.id,
   //     isActive: true,
   //     createdBy: 'system',
   //     updatedBy: 'system',
@@ -284,8 +284,8 @@ async function main() {
   //     name: 'Administrator',
   //     email: 'admin@ag-db.com',
   //     tel: '0812345679',
-  //     adminPositionId: adminPosition.id,
-  //     webBaseId: webBase.id,
+  //     AdminPositionDBId: AdminPositionDB.id,
+  //     webBaseId: WebBaseDB.id,
   //     isActive: true,
   //     createdBy: 'system',
   //     updatedBy: 'system',
@@ -321,7 +321,7 @@ async function main() {
   //     userLogin: 'aguser',
   //     password: hashedPassword,
   //     adviser: 'Adviser 1',
-  //     webBaseId: webBase.id,
+  //     webBaseId: WebBaseDB.id,
   //     createdBy: 'system',
   //     updatedBy: 'system',
   //   },

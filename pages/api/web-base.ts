@@ -22,14 +22,14 @@ export default async function handler(
   }
 }
 
-// GET - ดึงข้อมูล WebBase ทั้งหมด หรือตาม ID
+// GET - ดึงข้อมูล WebBaseDB ทั้งหมด หรือตาม ID
 async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { id, name, search, status } = req.query;
 
     if (id) {
       // ดึงข้อมูลเฉพาะ ID
-      const webBase = await prisma.webBaseDB.findUnique({
+      const WebBaseDB = await prisma.webBaseDB.findUnique({
         where: { id: id as string },
         include: {
           AdminDB: {
@@ -45,20 +45,20 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
         }
       });
 
-      if (!webBase) {
-        return res.status(404).json({ error: 'WebBase not found' });
+      if (!WebBaseDB) {
+        return res.status(404).json({ error: 'WebBaseDB not found' });
       }
 
       return res.status(200).json({
         success: true,
-        data: webBase
+        data: WebBaseDB
       });
     }
 
 
     // ----- ดึงข้อมูลเฉพาะ Name (หารายการเดียว) -----
     if (name) {
-      const webBase = await prisma.webBaseDB.findFirst({
+      const WebBaseDB = await prisma.webBaseDB.findFirst({
         where: {
           name: {
             equals: name as string,
@@ -79,13 +79,13 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
         }
       });
 
-      if (!webBase) {
-        return res.status(404).json({ error: 'WebBase not found' });
+      if (!WebBaseDB) {
+        return res.status(404).json({ error: 'WebBaseDB not found' });
       }
 
       return res.status(200).json({
         success: true,
-        data: webBase
+        data: WebBaseDB
       });
     }
 
@@ -129,13 +129,13 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      error: 'Failed to fetch WebBase data',
+      error: 'Failed to fetch WebBaseDB data',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 }
 
-// POST - สร้าง WebBase ใหม่
+// POST - สร้าง WebBaseDB ใหม่
 async function handlePost(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { name, passS, passM, passA, otpS, otpM, otpA, isActive = true, createdBy = 'system' } = req.body;
@@ -150,7 +150,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (existingWebBase) {
-      return res.status(400).json({ error: 'WebBase name already exists' });
+      return res.status(400).json({ error: 'WebBaseDB name already exists' });
     }
 
     const newWebBase = await prisma.webBaseDB.create({
@@ -174,19 +174,19 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
     return res.status(201).json({
       success: true,
       data: newWebBase,
-      message: 'WebBase created successfully'
+      message: 'WebBaseDB created successfully'
     });
 
   } catch (error) {
     return res.status(500).json({
       success: false,
-      error: 'Failed to create WebBase',
+      error: 'Failed to create WebBaseDB',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 }
 
-// PUT - อัพเดท WebBase
+// PUT - อัพเดท WebBaseDB
 async function handlePut(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { id, name, passS, passM, passA, otpS, otpM, otpA, isActive, updatedBy = 'system' } = req.body;
@@ -195,13 +195,13 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
       return res.status(400).json({ error: 'ID is required' });
     }
 
-    // ตรวจสอบว่า WebBase มีอยู่หรือไม่
+    // ตรวจสอบว่า WebBaseDB มีอยู่หรือไม่
     const existingWebBase = await prisma.webBaseDB.findUnique({
       where: { id }
     });
 
     if (!existingWebBase) {
-      return res.status(404).json({ error: 'WebBase not found' });
+      return res.status(404).json({ error: 'WebBaseDB not found' });
     }
 
     // ตรวจสอบชื่อซ้ำ (ยกเว้นตัวเอง)
@@ -211,7 +211,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
       });
 
       if (duplicateName) {
-        return res.status(400).json({ error: 'WebBase name already exists' });
+        return res.status(400).json({ error: 'WebBaseDB name already exists' });
       }
     }
 
@@ -233,19 +233,19 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json({
       success: true,
       data: updatedWebBase,
-      message: 'WebBase updated successfully'
+      message: 'WebBaseDB updated successfully'
     });
 
   } catch (error) {
     return res.status(500).json({
       success: false,
-      error: 'Failed to update WebBase',
+      error: 'Failed to update WebBaseDB',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 }
 
-// DELETE - ลบ WebBase (Soft delete)
+// DELETE - ลบ WebBaseDB (Soft delete)
 async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { id, deleteBy = 'system' } = req.body;
@@ -254,13 +254,13 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
       return res.status(400).json({ error: 'ID is required' });
     }
 
-    // ตรวจสอบว่า WebBase มีอยู่หรือไม่
+    // ตรวจสอบว่า WebBaseDB มีอยู่หรือไม่
     const existingWebBase = await prisma.webBaseDB.findUnique({
       where: { id }
     });
 
     if (!existingWebBase) {
-      return res.status(404).json({ error: 'WebBase not found' });
+      return res.status(404).json({ error: 'WebBaseDB not found' });
     }
 
     // Soft delete
@@ -271,13 +271,13 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json({
       success: true,
       data: deleteWebBase,
-      message: 'WebBase delete successfully'
+      message: 'WebBaseDB delete successfully'
     });
 
   } catch (error) {
     return res.status(500).json({
       success: false,
-      error: 'Failed to delete WebBase',
+      error: 'Failed to delete WebBaseDB',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }

@@ -12,25 +12,13 @@ import qs from 'qs';
 import { useAuth } from '@/hooks/useAuth';
 // import { AgUserAccountDB } from '@prisma/client';
 
+import { AgUserAccountDB } from "@prisma/client";
+
 type WebBaseResp = {
   success: boolean;
   data: ExtendedWebBaseDB[];
   total?: number;
 };
-
-type AgUserAccountDB = {
-  id?: string
-  username: string
-  reserve: string
-  userLogin: string
-  origin: string
-  position: string
-  gaSecretEnc: string
-  meta?: string
-  webname?: string
-  partnerAG?: string
-  partnerLogin?: string
-}
 
 interface ModalFuctionSettingProps {
   onSuccess?: () => void;

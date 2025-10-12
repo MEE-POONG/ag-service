@@ -1,11 +1,11 @@
 import { menuDev } from "@/data";
 import { Dispatch, SetStateAction } from "react";
 import { MdDashboard as LayoutDashboard } from "react-icons/md";
-import MenuPage from "./MenuPage";
 import UserInfo from "@/components/UserInfo";
 import { useAuth } from "@/hooks/useAuth";
 import { useMenuWeb } from "@/hooks/useMenuWeb";
 import ReactIconComponent from "./ReactIconComponent";
+import MenuPageWebDB from "./MenuPageWeb";
 
 interface TheSidebarProps {
   collapsed: boolean;
@@ -56,12 +56,12 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
                     <div className="animate-pulse">กำลังโหลดเมนู...</div>
                   </li>
                 ) : (
-                  menuWeb && <MenuPage dataList={menuWeb} collapsed={collapsed} />
+                  menuWeb && <MenuPageWebDB dataList={menuWeb} collapsed={collapsed} />
                 )}
 
                 {/* เมนูสำหรับผู้พัฒนา */}
                 {isDev && (
-                  <MenuPage dataList={menuDev} collapsed={collapsed} />
+                  <MenuPageWebDB dataList={menuDev} collapsed={collapsed} />
                 )}
               </ul>
             </nav>

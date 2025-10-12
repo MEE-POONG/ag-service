@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 
 type PermissionItem = {
-  adminPositionDBId: string
+  AdminPositionDBId: string
   menuPageWebId: string
   canAdvance?: boolean
   canViews?: boolean
@@ -22,10 +22,10 @@ type ResponseData = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   try {
     if (req.method === 'GET') {
-      const { adminPositionDBId } = req.query
+      const { AdminPositionDBId } = req.query
       const where: any = {  }
-      if (typeof adminPositionDBId === 'string' && adminPositionDBId) {
-        where.adminPositionDBId = adminPositionDBId
+      if (typeof AdminPositionDBId === 'string' && AdminPositionDBId) {
+        where.AdminPositionDBId = AdminPositionDBId
       }
 
       const rows = await prisma.adminDefaultPermissionDB.findMany({ where })
@@ -42,8 +42,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         items.map((it) =>
           prisma.adminDefaultPermissionDB.upsert({
             where: {
-              adminPositionDBId_menuPageWebId: {
-                adminPositionDBId: it.adminPositionDBId,
+              AdminPositionDBId_menuPageWebId: {
+                AdminPositionDBId: it.AdminPositionDBId,
                 menuPageWebId: it.menuPageWebId,
               },
             },
@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
               updatedBy: 'system',
             },
             create: {
-              adminPositionDBId: it.adminPositionDBId,
+              AdminPositionDBId: it.AdminPositionDBId,
               menuPageWebId: it.menuPageWebId,
               canAdvance: Boolean(it.canAdvance),
               canViews: Boolean(it.canViews),
@@ -78,14 +78,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     if (req.method === 'POST') {
       const it = req.body as PermissionItem
-      if (!it?.adminPositionDBId || !it?.menuPageWebId) {
-        return res.status(400).json({ success: false, error: 'ต้องระบุ adminPositionDBId และ menuPageWebId' })
+      if (!it?.AdminPositionDBId || !it?.menuPageWebId) {
+        return res.status(400).json({ success: false, error: 'ต้องระบุ AdminPositionDBId และ menuPageWebId' })
       }
 
       const row = await prisma.adminDefaultPermissionDB.upsert({
         where: {
-          adminPositionDBId_menuPageWebId: {
-            adminPositionDBId: it.adminPositionDBId,
+          AdminPositionDBId_menuPageWebId: {
+            AdminPositionDBId: it.AdminPositionDBId,
             menuPageWebId: it.menuPageWebId,
           },
         },
@@ -98,7 +98,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           updatedBy: 'system',
         },
         create: {
-          adminPositionDBId: it.adminPositionDBId,
+          AdminPositionDBId: it.AdminPositionDBId,
           menuPageWebId: it.menuPageWebId,
           canAdvance: Boolean(it.canAdvance),
           canViews: Boolean(it.canViews),

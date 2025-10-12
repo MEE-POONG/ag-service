@@ -150,7 +150,7 @@ export default async function handler(
       }
     }
   } catch (err) {
-    console.error('AdminPosition ShowOrder API Error:', err);
+    console.error('AdminPositionDB ShowOrder API Error:', err);
     return res.status(500).json({
       success: false,
       error: err instanceof Error ? err.message : 'เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์',

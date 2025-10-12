@@ -28,7 +28,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
     } = req.query
 
     if (id) {
-      const record = await prisma.agentChangePasswordDB.findFirst({
+      const record = await prisma.resetAccountPartnerDB.findFirst({
         where: { id: String(id) },
       })
       if (!record) {
@@ -47,7 +47,9 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
       where.OR = [
         { adviser: { contains: String(keyword), mode: 'insensitive' } },
         { usernameAG: { contains: String(keyword), mode: 'insensitive' } },
-        { agentLogin: { contains: String(keyword), mode: 'insensitive' } },
+        { partnerAG: { contains: String(keyword), mode: 'insensitive' } },
+        { partnerLogin: { contains: String(keyword), mode: 'insensitive' } },
+        { position: { contains: String(keyword), mode: 'insensitive' } },
       ]
     }
 
@@ -60,13 +62,13 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
     }
 
     const [records, total] = await Promise.all([
-      prisma.agentChangePasswordDB.findMany({
+      prisma.resetAccountPartnerDB.findMany({
         where,
         orderBy: { createdAt: 'desc' },
         skip,
         take: pageSizeNum,
       }),
-      prisma.agentChangePasswordDB.count({ where }),
+      prisma.resetAccountPartnerDB.count({ where }),
     ])
 
     return res.status(200).json({
@@ -80,7 +82,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
       },
     })
   } catch (error) {
-    console.error('GET agent-change-password error:', error)
+    console.error('GET reset-partner error:', error)
     return res.status(500).json({ success: false, error: 'เกิดข้อผิดพลาดในการดึงข้อมูล' })
   }
 }
@@ -90,24 +92,29 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
     const {
       adviser,
       usernameAG,
-      agentLogin,
-      oldPassword,
-      newPassword,
+      partnerAG,
+      partnerLogin,
+      position,
       userId,
     } = req.body
 
-    if (!adviser || !usernameAG || !oldPassword || !newPassword) {
-      return res.status(400).json({ success: false, error: 'กรุณากรอกข้อมูลให้ครบถ้วน' })
+    if (!adviser || !usernameAG || !partnerAG || !partnerLogin || !position) {
+      return res.status(400).json({ 
+        success: false, 
+        error: `กรุณากรอกข้อมูลให้ครบถ้วน (adviser: ${adviser}, usernameAG: ${usernameAG}, partnerAG: ${partnerAG}, partnerLogin: ${partnerLogin}, position: ${position})` 
+      })
     }
 
     const created = await prisma.$transaction(async (tx) => {
-      const record = await tx.agentChangePasswordDB.create({
+      const record = await tx.resetAccountPartnerDB.create({
         data: {
           adviser: String(adviser),
           usernameAG: String(usernameAG),
-          agentLogin: agentLogin ? String(agentLogin) : '',
-          oldPassword: String(oldPassword),
-          newPassword: String(newPassword),
+          partnerAG: String(partnerAG),
+          partnerLogin: String(partnerLogin),
+          position: String(position),
+          errorMessage: String(''),
+          errorStack: null,
           status: String('PENDING'),
           v: 0,
           createdAt: new Date(),
@@ -119,7 +126,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
       const userInfo = extractUserInfo(req)
       await recordWorkHistory(
         tx,
-        'AgentChangePasswordDB',
+        'ResetAccountPartnerDB',
         userId,
         'CREATE',
         null,
@@ -138,10 +145,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
     return res.status(201).json({
       success: true,
       data: serializeBigIntToNumber(created),
-      message: 'สร้างคำขอเปลี่ยนรหัสผ่าน Agent สำเร็จ',
+      message: 'สร้างคำขอรีเซ็ตพาร์ทเนอร์สำเร็จ',
     })
   } catch (error) {
-    console.error('POST agent-change-password error:', error)
+    console.error('POST reset-partner error:', error)
     return res.status(500).json({ success: false, error: 'เกิดข้อผิดพลาดในการสร้างคำขอ' })
   }
 }
@@ -152,9 +159,9 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
       id,
       adviser,
       usernameAG,
-      agentLogin,
-      oldPassword,
-      newPassword,
+      partnerAG,
+      partnerLogin,
+      position,
       errorMessage,
       errorStack,
       status,
@@ -165,7 +172,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
       return res.status(400).json({ success: false, error: 'กรุณาระบุ id' })
     }
 
-    const existing = await prisma.agentChangePasswordDB.findFirst({
+    const existing = await prisma.resetAccountPartnerDB.findFirst({
       where: { id },
     })
     if (!existing) {
@@ -173,16 +180,16 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
     }
 
     const updated = await prisma.$transaction(async (tx) => {
-      const record = await tx.agentChangePasswordDB.update({
+      const record = await tx.resetAccountPartnerDB.update({
         where: { id },
         data: {
           ...(adviser && { adviser: String(adviser) }),
           ...(usernameAG && { usernameAG: String(usernameAG) }),
-          ...(agentLogin !== undefined && { agentLogin: agentLogin ? String(agentLogin) : null }),
-          ...(oldPassword && { oldPassword: String(oldPassword) }),
-          ...(newPassword && { newPassword: String(newPassword) }),
-          ...(errorMessage !== undefined && { errorMessage: errorMessage ? String(errorMessage) : null }),
-          ...(errorStack !== undefined && { errorStack: errorStack ? String(errorStack) : null }),
+          ...(partnerAG && { partnerAG: String(partnerAG) }),
+          ...(partnerLogin && { partnerLogin: String(partnerLogin) }),
+          ...(position && { position: String(position) }),
+          ...(errorMessage !== undefined && { errorMessage: String(errorMessage) }),
+          ...(errorStack !== undefined && { errorStack: errorStack }),
           ...(status && { status: String(status) }),
           updatedAt: new Date(),
           ...(status === 'completed' && { processedAt: new Date() }),
@@ -192,7 +199,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
       const userInfo = extractUserInfo(req)
       await recordWorkHistory(
         tx,
-        'AgentChangePasswordDB',
+        'ResetAccountPartnerDB',
         id,
         'UPDATE',
         existing,
@@ -211,10 +218,10 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
     return res.status(200).json({
       success: true,
       data: serializeBigIntToNumber(updated),
-      message: 'แก้ไขคำขอเปลี่ยนรหัสผ่าน Agent สำเร็จ',
+      message: 'แก้ไขคำขอรีเซ็ตพาร์ทเนอร์สำเร็จ',
     })
   } catch (error) {
-    console.error('PUT agent-change-password error:', error)
+    console.error('PUT reset-partner error:', error)
     return res.status(500).json({ success: false, error: 'เกิดข้อผิดพลาดในการแก้ไขคำขอ' })
   }
 }
@@ -227,7 +234,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<ApiResp>) 
       return res.status(400).json({ success: false, error: 'กรุณาระบุ id' })
     }
 
-    const existing = await prisma.agentChangePasswordDB.findFirst({
+    const existing = await prisma.resetAccountPartnerDB.findFirst({
       where: { id },
     })
     if (!existing) {
@@ -238,7 +245,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<ApiResp>) 
       const userInfo = extractUserInfo(req)
       await recordWorkHistory(
         tx,
-        'AgentChangePasswordDB',
+        'ResetAccountPartnerDB',
         id,
         'DELETE',
         existing,
@@ -251,14 +258,14 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<ApiResp>) 
         userInfo.userAgent
       )
 
-      await tx.agentChangePasswordDB.delete({
+      await tx.resetAccountPartnerDB.delete({
         where: { id },
       })
     })
 
-    return res.status(200).json({ success: true, message: 'ลบคำขอเปลี่ยนรหัสผ่าน Agent สำเร็จ' })
+    return res.status(200).json({ success: true, message: 'ลบคำขอรีเซ็ตพาร์ทเนอร์สำเร็จ' })
   } catch (error) {
-    console.error('DELETE agent-change-password error:', error)
+    console.error('DELETE reset-partner error:', error)
     return res.status(500).json({ success: false, error: 'เกิดข้อผิดพลาดในการลบคำขอ' })
   }
 }
@@ -277,3 +284,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return res.status(405).json({ success: false, error: 'Method not allowed' })
   }
 }
+

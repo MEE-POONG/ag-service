@@ -279,7 +279,7 @@ const PositionModalPermission: React.FC<PositionModalPermissionProps> = ({ onSuc
 
   //โหลดสิทธิ์เริ่มต้นของตำแหน่งนี้
   const fetchPositionPerms = async () => {
-    const res = await axios.get('/api/admin-permissions', { params: { adminPositionDBId: position.id } });
+    const res = await axios.get('/api/admin-permissions', { params: { AdminPositionDBId: position.id } });
     const filtered: any[] = res.data?.data || [];
 
     const mapped: Perms = {};
@@ -337,7 +337,7 @@ const PositionModalPermission: React.FC<PositionModalPermissionProps> = ({ onSuc
       setIsSaving(true);
 
       const items = Object.entries(perms).map(([menuId, p]) => ({
-        adminPositionDBId: position.id,
+        AdminPositionDBId: position.id,
         menuPageWebId: menuId,
         canAdvance: p.advance,
         canViews: p.view,

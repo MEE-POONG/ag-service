@@ -5,20 +5,7 @@ import Modal from "@/components/form/Modal";
 import ReactIconComponent from "@/components/ReactIconComponent";
 import toast from "react-hot-toast";
 import axios, { AxiosError } from "axios";
-
-type AgUserAccountDB = {
-  id?: string;
-  username: string;
-  reserve: string;
-  userLogin: string;
-  origin: string;
-  position: string; // 'master' | 'agent'
-  gaSecretEnc: string;
-  meta?: string;
-  webname?: string;
-  partnerAG?: string;
-  partnerLogin?: string;
-};
+import { AgUserAccountDB } from "@prisma/client";
 
 type Position = "master" | "agent";
 
@@ -62,7 +49,7 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
         const isMaster = (data.position || "").toLowerCase() === "master";
         const passValue = isMaster ? result.data?.passM : result.data?.passA;
       } else {
-        toast.error("ไม่พบข้อมูล WebBase/OTP");
+        toast.error("ไม่พบข้อมูล WebBaseDB/OTP");
       }
     } catch (err) {
       console.error("Failed to fetch OTP:", err);
@@ -173,30 +160,9 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
         </Modal.Header>
 
         <Modal.Body>
-          {/* ข้อความอธิบาย modal นี้ */}
-          {/* <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            รหัส/คำต่อท้ายเพื่อสร้าง <code>usernameAG</code>
-          </label> */}
-
-          {/* <input
-            type="text"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-            placeholder="เช่น _01 หรือ 12345"
-            value={newPassword}
-            disabled={loading}
-            onChange={(e) => setNewPassword(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleUnlock();
-            }}
-          /> */}
-
-          {/* แสดงตัวอย่าง usernameAG ที่จะถูกส่งไป */}
-          <p className="mt-2 text-xs text-gray-600">
-            จะใช้ชื่อผู้ใช้:{" "}
-            <span className="font-mono font-semibold">
-              {data.username}
-            </span>
-          </p>
+          <h2 className=" text-2xl text-purple-600">
+            Reset {data.username}
+          </h2>
         </Modal.Body>
 
         <Modal.Footer>
