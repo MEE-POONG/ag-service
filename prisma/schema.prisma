@@ -157,56 +157,57 @@ model ActivityLogDB {
 }
 
 model AdminDB {
-  id              String          @id @default(auto()) @map("_id") @db.ObjectId
-  adminPositionId String          @db.ObjectId
-  adminPosition   AdminPositionDB @relation(fields: [adminPositionId], references: [id], onDelete: Cascade)
-  webBaseId       String?         @db.ObjectId
-  webBase         WebBaseDB?      @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
-  createdAt       DateTime        @db.Date
-  createdBy       String
-  deleteAt        DateTime?       @db.Date
+  id                      String                     @id @default(auto()) @map("_id") @db.ObjectId
+  adminPositionId         String                     @db.ObjectId
+  adminPosition           AdminPositionDB            @relation(fields: [adminPositionId], references: [id], onDelete: Cascade)
+  webBaseId               String?                    @db.ObjectId
+  webBase                 WebBaseDB?                 @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
+  createdAt               DateTime                   @db.Date
+  createdBy               String
+  deleteAt                DateTime?                  @db.Date
   /// Could not determine type: the field only had null or empty values in the sample set.
-  deleteBy        Json?
-  email           String          @unique
-  isActive        Boolean
-  name            String
-  password        String
+  deleteBy                Json?
+  email                   String                     @unique
+  isActive                Boolean
+  name                    String
+  password                String
   /// Could not determine type: the field only had null or empty values in the sample set.
-  profile         Json?
-  tel             String
-  updatedAt       DateTime        @db.Date
-  updatedBy       String
-  username        String          @unique
+  profile                 Json?
+  tel                     String
+  updatedAt               DateTime                   @db.Date
+  updatedBy               String
+  username                String                     @unique
   // Chat system relations
-  assignedConversations ChatConversationDB[]
+  assignedConversations   ChatConversationDB[]
   // Widget keys relations
-  widgetKeys        ChatWidgetKeyDB[]
+  widgetKeys              ChatWidgetKeyDB[]
   // Message read tracking
-  messageReads      ChatMessageReadDB[]
+  messageReads            ChatMessageReadDB[]
   // Notification system relations
-  notifications     NotificationDB[]
-  pushSubscriptions PushSubscriptionDB[]
+  notifications           NotificationDB[]
+  pushSubscriptions       PushSubscriptionDB[]
   notificationPreferences NotificationPreferencesDB?
 }
 
 model AdminDefaultPermissionDB {
-  id                String          @id @default(auto()) @map("_id") @db.ObjectId
-  adminPositionDBId String          @db.ObjectId
-  adminPosition     AdminPositionDB @relation(fields: [adminPositionDBId], references: [id], onDelete: Cascade)
-  canAdvance        Boolean
-  canCreate         Boolean
-  canDelete         Boolean
-  canUpdate         Boolean
-  canViews          Boolean
-  createdAt         DateTime        @db.Date
-  createdBy         String
-  isDeleted         Boolean
-  menuPageWebId     String?         @db.ObjectId
-  menuPage          MenuPageWebDB?  @relation(fields: [menuPageWebId], references: [id], onDelete: Cascade)
-  updatedAt         DateTime        @db.Date
-  updatedBy         String
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  adminPositionId String?          @db.ObjectId
+  menuWebId       String?          @db.ObjectId
+  canAdvance      Boolean          @default(false)
+  canViews        Boolean          @default(false)
+  canCreate       Boolean          @default(false)
+  canUpdate       Boolean          @default(false)
+  canDelete       Boolean          @default(false)
+  isDeleted       Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  createdBy       String?
+  updatedAt       DateTime         @updatedAt
+  updatedBy       String?
+  adminPositionDB AdminPositionDB? @relation(fields: [adminPositionId], references: [id])
+  menuWebDB       MenuWebDB?       @relation(fields: [menuWebId], references: [id])
 
-  @@unique([adminPositionDBId, menuPageWebId])
+  // 🧩 เพิ่มบรรทัดนี้
+  @@unique([adminPositionId, menuWebId])
 }
 
 model AdminDepartmentDB {
@@ -219,7 +220,7 @@ model AdminDepartmentDB {
   name           String            @unique
   updatedAt      DateTime          @db.Date
   updatedBy      String
-  adminPositions AdminPositionDB[]
+  adminPositionDB AdminPositionDB[]
 }
 
 model AdminPositionDB {
@@ -258,28 +259,28 @@ model AgQueueJobDB {
 }
 
 model AgUserAccountDB {
-  id               String            @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt        DateTime          @db.Date
-  createdBy        String
-  gaSecretEnc      String
-  isActive         Boolean
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime          @db.Date
+  createdBy       String
+  gaSecretEnc     String
+  isActive        Boolean
   /// Could not determine type: the field only had null or empty values in the sample set.
-  meta             Json?
+  meta            Json?
   /// Could not determine type: the field only had null or empty values in the sample set.
-  note             Json?
-  origin           String
-  position         String
-  reserve          String
-  statusServe      String
-  updatedAt        DateTime          @db.Date
-  updatedBy        String
-  userLogin        String?
-  username         String            @unique
-  webname          String
-  partnerAG      String?
-  partnerLogin String?
-  CustomerAgentDB  CustomerAgentDB[]
-  PartnerDB        PartnerDB[]
+  note            Json?
+  origin          String
+  position        String
+  reserve         String
+  statusServe     String
+  updatedAt       DateTime          @db.Date
+  updatedBy       String
+  userLogin       String?
+  username        String            @unique
+  webname         String
+  partnerAG       String?
+  partnerLogin    String?
+  CustomerAgentDB CustomerAgentDB[]
+  PartnerDB       PartnerDB[]
 }
 
 model CustomerAgentDB {
@@ -308,40 +309,31 @@ model ImageList {
   updatedBy String
 }
 
-model MenuPageWebDB {
-  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
-  /// Field referred in an index, but found no data to define the type.
-  link                     Json?                      @unique
-  /// Field referred in an index, but found no data to define the type.
-  name                     Json?                      @unique
-  AdminDefaultPermissionDB AdminDefaultPermissionDB[]
-}
-
 model MenuWebDB {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  canAdvance  Boolean
-  canCreate   Boolean
-  canDelete   Boolean
-  canUpdate   Boolean
-  canViews    Boolean
-  createdAt   DateTime @db.Date
-  createdBy   String
-  description String
-  head        Boolean
-  icon        String?
-  isDeleted   Boolean?
-  isVisible   Boolean
-  link        String
-  manager     String[]
-  name        String   @unique
-  parentId    String?  @db.ObjectId
-  showOrder   Int
-  updatedAt   DateTime @db.Date
-  updatedBy   String
-
+  id                       String                     @id @default(auto()) @map("_id") @db.ObjectId
+  canAdvance               Boolean
+  canCreate                Boolean
+  canDelete                Boolean
+  canUpdate                Boolean
+  canViews                 Boolean
+  createdAt                DateTime                   @db.Date
+  createdBy                String
+  description              String
+  head                     Boolean
+  icon                     String?
+  isDeleted                Boolean?
+  isVisible                Boolean
+  link                     String
+  manager                  String[]
+  name                     String                     @unique
+  parentId                 String?                    @db.ObjectId
+  showOrder                Int
+  updatedAt                DateTime                   @db.Date
+  updatedBy                String
+  AdminDefaultPermissionDB AdminDefaultPermissionDB[]
   // Self-referential relations for menu hierarchy
-  parent   MenuWebDB?  @relation("MenuParentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children MenuWebDB[] @relation("MenuParentChildren")
+  parent                   MenuWebDB?                 @relation("MenuParentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children                 MenuWebDB[]                @relation("MenuParentChildren")
 }
 
 model PartnerDB {
@@ -493,25 +485,6 @@ model adjustbets {
   virtualSports AdjustbetsVirtualSports
 }
 
-model admin {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  bankName   String
-  bankNumber String
-  createdAt  DateTime @db.Date
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  deleted_at Json?
-  firstname  String
-  lastname   String
-  line       String
-  nickname   String
-  password   String
-  position   String
-  team       String
-  tel        String
-  updatedAt  DateTime @db.Date
-  username   String
-}
-
 model creditTopUp {
   id             String                     @id @default(auto()) @map("_id") @db.ObjectId
   adviser        String
@@ -532,10 +505,6 @@ model creditTopUp {
   updatedBy      String
   usernameAG     String
   webname        String
-}
-
-model user {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
 }
 
 model ResetAgUserPasswordDB {
@@ -627,27 +596,27 @@ model AgentChangePasswordDB {
 
 // Chat Customer - represents customers who use the chat system
 model ChatCustomerDB {
-  id            String              @id @default(auto()) @map("_id") @db.ObjectId
-  customerId    String              @unique // External customer ID
+  id            String                  @id @default(auto()) @map("_id") @db.ObjectId
+  customerId    String                  @unique // External customer ID
   name          String?
   email         String?
   phone         String?
-  password      String?             // Hashed password for widget auth
+  password      String? // Hashed password for widget auth
   avatarUrl     String?
   // Custom fields for segmentation
-  language      String              @default("th") // th, en
-  timezone      String              @default("Asia/Bangkok")
-  metadata      Json?               // Additional custom fields
+  language      String                  @default("th") // th, en
+  timezone      String                  @default("Asia/Bangkok")
+  metadata      Json? // Additional custom fields
   // Status
-  isActive      Boolean             @default(true)
-  isBlocked     Boolean             @default(false)
+  isActive      Boolean                 @default(true)
+  isBlocked     Boolean                 @default(false)
   blockedReason String?
-  source        String?             // Registration source (widget_registration, manual, etc.)
+  source        String? // Registration source (widget_registration, manual, etc.)
   // Timestamps
-  createdAt     DateTime            @default(now()) @db.Date
-  updatedAt     DateTime            @updatedAt @db.Date
-  lastSeenAt    DateTime?           @db.Date
-  lastLoginAt   DateTime?           @db.Date
+  createdAt     DateTime                @default(now()) @db.Date
+  updatedAt     DateTime                @updatedAt @db.Date
+  lastSeenAt    DateTime?               @db.Date
+  lastLoginAt   DateTime?               @db.Date
   // Relations
   conversations ChatConversationDB[]
   messages      ChatMessageDB[]
@@ -711,14 +680,14 @@ model ChatMessageDB {
   widgetKeyId    String?             @db.ObjectId
   widgetKey      ChatWidgetKeyDB?    @relation(fields: [widgetKeyId], references: [id], onDelete: SetNull)
   // Sender info
-  senderType     String              // customer, agent, system
+  senderType     String // customer, agent, system
   senderId       String?             @db.ObjectId // AdminDB id if agent
   senderName     String?
   // Message content
   messageType    String              @default("text") // text, image, file, video, audio, location, card, richMenu
-  content        String              // Text content or JSON for rich messages
-  attachments    Json?               // Array of attachment objects
-  metadata       Json?               // Additional metadata
+  content        String // Text content or JSON for rich messages
+  attachments    Json? // Array of attachment objects
+  metadata       Json? // Additional metadata
   // Status
   isRead         Boolean             @default(false)
   readAt         DateTime?           @db.Date
@@ -744,13 +713,13 @@ model ChatMessageDB {
 
 // Message Read Tracking - Track which admin read which messages
 model ChatMessageReadDB {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
-  messageId   String      @db.ObjectId
-  message     ChatMessageDB @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  adminId     String      @db.ObjectId
-  admin       AdminDB     @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  readAt      DateTime    @default(now()) @db.Date
-  
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  messageId String        @db.ObjectId
+  message   ChatMessageDB @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  adminId   String        @db.ObjectId
+  admin     AdminDB       @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  readAt    DateTime      @default(now()) @db.Date
+
   @@unique([messageId, adminId])
   @@index([messageId])
   @@index([adminId])
@@ -795,7 +764,7 @@ model ChatSegmentDB {
   name        String                  @unique
   description String?
   // Segment rules (stored as JSON)
-  rules       Json                    // Filter conditions
+  rules       Json // Filter conditions
   isActive    Boolean                 @default(true)
   createdAt   DateTime                @default(now()) @db.Date
   createdBy   String
@@ -829,16 +798,16 @@ model ChatAutoReplyDB {
   name        String
   description String?
   // Trigger conditions
-  triggerType String   // keyword, welcome, away, default
+  triggerType String // keyword, welcome, away, default
   keywords    String[] // For keyword triggers
   // Response
   messageType String   @default("text") // text, image, card, richMenu
-  message     String   // Text or JSON content
-  attachments Json?    // Optional attachments
+  message     String // Text or JSON content
+  attachments Json? // Optional attachments
   // Scheduling
   isActive    Boolean  @default(true)
-  startTime   String?  // HH:mm format
-  endTime     String?  // HH:mm format
+  startTime   String? // HH:mm format
+  endTime     String? // HH:mm format
   daysOfWeek  String[] // ["monday", "tuesday", ...]
   // Priority (higher number = higher priority)
   priority    Int      @default(0)
@@ -859,8 +828,8 @@ model ChatRichMenuDB {
   name        String   @unique
   description String?
   // Menu structure (JSON)
-  menuData    Json     // Contains buttons, actions, layout
-  imageUrl    String?  // Optional background image
+  menuData    Json // Contains buttons, actions, layout
+  imageUrl    String? // Optional background image
   // Status
   isActive    Boolean  @default(false)
   isDefault   Boolean  @default(false) // Only one can be default
@@ -880,10 +849,10 @@ model ChatBroadcastDB {
   name         String
   description  String?
   // Target audience
-  targetType   String                     // all, segment, tag, custom
+  targetType   String // all, segment, tag, custom
   segmentId    String?                    @db.ObjectId
   segment      ChatSegmentDB?             @relation(fields: [segmentId], references: [id], onDelete: SetNull)
-  customFilter Json?                      // Custom filter conditions
+  customFilter Json? // Custom filter conditions
   // Message content
   messageType  String                     @default("text") // text, image, card
   message      String
@@ -932,53 +901,53 @@ model ChatBroadcastRecipientDB {
 
 // Chat Widget Settings
 model ChatWidgetSettingsDB {
-  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
   // Appearance
-  primaryColor      String   @default("#3B82F6")
-  accentColor       String   @default("#10B981")
-  headerTitle       String   @default("Chat with us")
-  headerSubtitle    String?  @default("We're here to help")
-  welcomeMessage    String?  @default("Hello! How can we help you today?")
-  placeholderText   String   @default("Type a message...")
+  primaryColor     String   @default("#3B82F6")
+  accentColor      String   @default("#10B981")
+  headerTitle      String   @default("Chat with us")
+  headerSubtitle   String?  @default("We're here to help")
+  welcomeMessage   String?  @default("Hello! How can we help you today?")
+  placeholderText  String   @default("Type a message...")
   // Widget behavior
-  position          String   @default("bottom-right") // bottom-right, bottom-left
-  autoOpen          Boolean  @default(false)
-  showAgentAvatar   Boolean  @default(true)
-  showTimestamp     Boolean  @default(true)
-  enableFileUpload  Boolean  @default(true)
-  enableEmoji       Boolean  @default(true)
+  position         String   @default("bottom-right") // bottom-right, bottom-left
+  autoOpen         Boolean  @default(false)
+  showAgentAvatar  Boolean  @default(true)
+  showTimestamp    Boolean  @default(true)
+  enableFileUpload Boolean  @default(true)
+  enableEmoji      Boolean  @default(true)
   // Business hours
-  businessHours     Json?    // {monday: {start: "09:00", end: "18:00"}, ...}
-  offlineMessage    String?  @default("We're currently offline. Leave a message and we'll get back to you.")
+  businessHours    Json? // {monday: {start: "09:00", end: "18:00"}, ...}
+  offlineMessage   String?  @default("We're currently offline. Leave a message and we'll get back to you.")
   // Rich menu
-  richMenuId        String?  @db.ObjectId
+  richMenuId       String?  @db.ObjectId
   // Timestamps
-  createdAt         DateTime @default(now()) @db.Date
-  createdBy         String
-  updatedAt         DateTime @updatedAt @db.Date
-  updatedBy         String
+  createdAt        DateTime @default(now()) @db.Date
+  createdBy        String
+  updatedAt        DateTime @updatedAt @db.Date
+  updatedBy        String
 }
 
 // Widget Keys - สำหรับให้เว็บอื่นใช้งาน chat widget
 model ChatWidgetKeyDB {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  name            String   // ชื่อ widget key
-  key             String   @unique // Widget key ที่ unique
-  domain          String   // Domain ที่อนุญาตให้ใช้
-  description     String?  // คำอธิบาย
-  isActive        Boolean  @default(true)
+  id            String               @id @default(auto()) @map("_id") @db.ObjectId
+  name          String // ชื่อ widget key
+  key           String               @unique // Widget key ที่ unique
+  domain        String // Domain ที่อนุญาตให้ใช้
+  description   String? // คำอธิบาย
+  isActive      Boolean              @default(true)
   // Widget settings (JSON)
-  settings        Json     @default("{}") // การตั้งค่า widget
+  settings      Json                 @default("{}") // การตั้งค่า widget
   // Usage tracking
-  lastUsedAt      DateTime? @db.Date
+  lastUsedAt    DateTime?            @db.Date
   // Relations
-  createdBy       String   @db.ObjectId
-  creator         AdminDB  @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  conversations   ChatConversationDB[]
-  messages        ChatMessageDB[]
+  createdBy     String               @db.ObjectId
+  creator       AdminDB              @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  conversations ChatConversationDB[]
+  messages      ChatMessageDB[]
   // Timestamps
-  createdAt       DateTime @default(now()) @db.Date
-  updatedAt       DateTime @updatedAt @db.Date
+  createdAt     DateTime             @default(now()) @db.Date
+  updatedAt     DateTime             @updatedAt @db.Date
 
   @@index([domain])
   @@index([isActive])
@@ -989,25 +958,25 @@ model ChatWidgetKeyDB {
 
 // In-app Notifications
 model NotificationDB {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
   // Recipient
-  userId      String   @db.ObjectId
-  user        AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String    @db.ObjectId
+  user        AdminDB   @relation(fields: [userId], references: [id], onDelete: Cascade)
   // Content
-  type        String   // info, success, warning, error, message, conversation, assignment
+  type        String // info, success, warning, error, message, conversation, assignment
   title       String
   message     String
-  icon        String?  // Icon name or emoji
+  icon        String? // Icon name or emoji
   // Action
-  actionUrl   String?  // URL to navigate when clicked
-  actionLabel String?  // Button label
+  actionUrl   String? // URL to navigate when clicked
+  actionLabel String? // Button label
   // Metadata
-  metadata    Json?    // Additional data (conversationId, messageId, etc.)
+  metadata    Json? // Additional data (conversationId, messageId, etc.)
   // Status
-  isRead      Boolean  @default(false)
+  isRead      Boolean   @default(false)
   readAt      DateTime? @db.Date
   // Timestamps
-  createdAt   DateTime @default(now()) @db.Date
+  createdAt   DateTime  @default(now()) @db.Date
   expiresAt   DateTime? @db.Date
 
   @@index([userId])
@@ -1018,23 +987,23 @@ model NotificationDB {
 
 // Web Push Subscriptions
 model PushSubscriptionDB {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   // User
-  userId      String   @db.ObjectId
-  user        AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String   @db.ObjectId
+  user       AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
   // Subscription data (from browser)
-  endpoint    String   @unique
-  keys        Json     // { p256dh: string, auth: string }
+  endpoint   String   @unique
+  keys       Json // { p256dh: string, auth: string }
   // Metadata
-  userAgent   String?
-  deviceName  String?  // Browser/Device info
+  userAgent  String?
+  deviceName String? // Browser/Device info
   // Status
-  isActive    Boolean  @default(true)
-  failCount   Int      @default(0) // Track failed push attempts
-  lastUsedAt  DateTime @default(now()) @db.Date
+  isActive   Boolean  @default(true)
+  failCount  Int      @default(0) // Track failed push attempts
+  lastUsedAt DateTime @default(now()) @db.Date
   // Timestamps
-  createdAt   DateTime @default(now()) @db.Date
-  updatedAt   DateTime @updatedAt @db.Date
+  createdAt  DateTime @default(now()) @db.Date
+  updatedAt  DateTime @updatedAt @db.Date
 
   @@index([userId])
   @@index([isActive])
@@ -1042,37 +1011,37 @@ model PushSubscriptionDB {
 
 // Notification Preferences
 model NotificationPreferencesDB {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
   // User
-  userId      String   @unique @db.ObjectId
-  user        AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  userId String  @unique @db.ObjectId
+  user   AdminDB @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   // In-app notification settings
   enableInApp        Boolean @default(true)
   inAppMessages      Boolean @default(true)
   inAppConversations Boolean @default(true)
   inAppAssignments   Boolean @default(true)
   inAppSystem        Boolean @default(true)
-  
+
   // Push notification settings
-  enablePush         Boolean @default(false)
-  pushMessages       Boolean @default(true)
-  pushConversations  Boolean @default(true)
-  pushAssignments    Boolean @default(true)
-  pushSystem         Boolean @default(false)
-  
+  enablePush        Boolean @default(false)
+  pushMessages      Boolean @default(true)
+  pushConversations Boolean @default(true)
+  pushAssignments   Boolean @default(true)
+  pushSystem        Boolean @default(false)
+
   // Notification behavior
-  soundEnabled       Boolean @default(true)
-  desktopOnly        Boolean @default(false) // Only show on desktop
-  quietHoursEnabled  Boolean @default(false)
-  quietHoursStart    String? // HH:mm format
-  quietHoursEnd      String? // HH:mm format
-  
+  soundEnabled      Boolean @default(true)
+  desktopOnly       Boolean @default(false) // Only show on desktop
+  quietHoursEnabled Boolean @default(false)
+  quietHoursStart   String? // HH:mm format
+  quietHoursEnd     String? // HH:mm format
+
   // Frequency control
-  groupSimilar       Boolean @default(true) // Group similar notifications
-  maxPerHour         Int?    @default(20)   // Max notifications per hour
-  
+  groupSimilar Boolean @default(true) // Group similar notifications
+  maxPerHour   Int?    @default(20) // Max notifications per hour
+
   // Timestamps
-  createdAt   DateTime @default(now()) @db.Date
-  updatedAt   DateTime @updatedAt @db.Date
+  createdAt DateTime @default(now()) @db.Date
+  updatedAt DateTime @updatedAt @db.Date
 }

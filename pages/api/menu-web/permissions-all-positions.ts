@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 
 type Body = {
-  menuPageWebId: string;
+  menuWebDBId: string;
   canAdvance?: boolean;
   canViews?: boolean;
   canCreate?: boolean;
@@ -22,20 +22,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
-  const { menuPageWebId, canAdvance, canViews, canCreate, canUpdate, canDelete } = req.body as Body;
+  const { menuWebDBId, canAdvance, canViews, canCreate, canUpdate, canDelete } = req.body as Body;
 
-  if (!menuPageWebId || typeof menuPageWebId !== 'string') {
-    return res.status(400).json({ success: false, error: 'ต้องระบุ menuPageWebId' });
+  if (!menuWebDBId || typeof menuWebDBId !== 'string') {
+    return res.status(400).json({ success: false, error: 'ต้องระบุ menuWebDBId' });
   }
 
   try {
     // verify menu exists
-    const menu = await prisma.menuWebDB.findFirst({ where: { id: menuPageWebId,  } });
+    const menu = await prisma.menuWebDB.findFirst({ where: { id: menuWebDBId, } });
     if (!menu) {
       return res.status(404).json({ success: false, error: 'ไม่พบเมนู' });
     }
 
-    const positions = await prisma.adminPositionDB.findMany({ where: {  } });
+    const positions = await prisma.adminPositionDB.findMany({ where: {} });
     if (!positions.length) {
       return res.status(200).json({ success: true, updatedCount: 0, message: 'ไม่มีตำแหน่งสำหรับอัปเดต' });
     }
@@ -43,9 +43,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const updates = positions.map((position) =>
       prisma.adminDefaultPermissionDB.upsert({
         where: {
-          adminPositionDBId_menuPageWebId: {
-            adminPositionDBId: position.id,
-            menuPageWebId,
+          adminPositionId_menuWebId: {
+            adminPositionId: position.id,
+            menuWebId: menuWebDBId,
           },
         },
         update: {
@@ -57,8 +57,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           updatedBy: 'system',
         },
         create: {
-          adminPositionDBId: position.id,
-          menuPageWebId,
+          adminPositionDB: {
+            connect: {
+              id: position.id,
+            },
+          },
+          menuWebDB: {
+            connect: {
+              id: menuWebDBId,
+            },
+          },
           canAdvance: Boolean(canAdvance),
           canViews: Boolean(canViews),
           canCreate: Boolean(canCreate),

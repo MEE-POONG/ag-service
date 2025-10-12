@@ -47,8 +47,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       adminPosition: {
         include: {
           adminDepartment: true, // ข้อมูลแผนก
-          AdminDefaultPermissionDB: { // สิทธิ์การใช้งาน
-            include: { menuPage: true } // รายละเอียดเมนูที่มีสิทธิ์
+          AdminDefaultPermissionDB: {
+            include: { menuWebDB: true },
           },
         },
       },
@@ -57,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     },
   })
-  console.log('user', user)
+  console.log('60 user : ', JSON.stringify(user, null, 2), ' Ok ');
   // 🚫 ขั้นตอนที่ 4: ตรวจสอบสถานะของผู้ใช้
   if (!user || user.isActive === false) {
     // ไม่พบผู้ใช้หรือบัญชีถูกปิดใช้งาน
@@ -76,14 +76,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // 🔗 ขั้นตอนที่ 6: รวมข้อมูลผู้ใช้และสิทธิ์
   const merged = {
-    ...user, // ข้อมูลผู้ใช้ทั้งหมด
-    role: payload.role, // บทบาทจาก Token
-    permissions: (user.adminPosition?.AdminDefaultPermissionDB ?? [])
-      .map((p: any) => p?.MenuPageWebDB?.name) // แปลงเป็นรายชื่อเมนูที่มีสิทธิ์
-      .filter(Boolean), // กรองค่า null/undefined ออก
-    tokenVersion: payload.tokenVersion ?? 0, // เวอร์ชั่น Token (สำหรับ revoke)
+    ...user,
+    role: payload.role,
+    permissions: (user.adminPosition?.AdminDefaultPermissionDB ?? []).map((p: any) => ({
+      id: p.id,
+      menuWebDBId: p.menuWebId,
+      menuName: p.menuWebDB?.name ?? '',
+      canViews: p.canViews,
+      canCreate: p.canCreate,
+      canUpdate: p.canUpdate,
+      canDelete: p.canDelete,
+      canAdvance: p.canAdvance,
+    })),
+    tokenVersion: payload.tokenVersion ?? 0,
   }
-
   // 📤 ขั้นตอนที่ 7: ส่งข้อมูลกลับไปยัง Client
   return res.status(200).json({
     user: sanitizeAdminForClient(merged), // ลบข้อมูลที่ไม่ควรส่งไป Client

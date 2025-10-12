@@ -323,11 +323,11 @@ export default function ViewAdminPage() {
                 รายละเอียดสิทธิ์ตามตำแหน่ง
               </h3>
               <div className="space-y-4">
-                {admin.adminPosition.AdminDefaultPermissionDB.filter((permission: any) => permission.MenuPageWebDB).map((permission: any, index) => (
+                {admin.adminPosition.AdminDefaultPermissionDB.filter((permission: any) => permission.menuWebDB).map((permission: any, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-gray-900">{permission.MenuPageWebDB?.name}</h4>
-                      <span className="text-xs text-gray-500">{permission.MenuPageWebDB?.description}</span>
+                      <h4 className="font-medium text-gray-900">{permission.menuWebDB?.name}</h4>
+                      <span className="text-xs text-gray-500">{permission.menuWebDB?.description}</span>
                     </div>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
                       <div className={`flex items-center px-2 py-1 rounded ${permission.canViews ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
@@ -347,9 +347,9 @@ export default function ViewAdminPage() {
                         ลบ
                       </div>
                     </div>
-                    {permission.MenuPageWebDB.manager && permission.MenuPageWebDB.manager.length > 0 && (
+                    {permission.menuWebDB.manager && permission.menuWebDB.manager.length > 0 && (
                       <div className="mt-2 text-xs text-gray-500">
-                        <span className="font-medium">Manager Routes:</span> {permission.MenuPageWebDB.manager.join(', ')}
+                        <span className="font-medium">Manager Routes:</span> {permission.menuWebDB.manager.join(', ')}
                       </div>
                     )}
                   </div>

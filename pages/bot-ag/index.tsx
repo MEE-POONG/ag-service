@@ -39,8 +39,13 @@ export default function CommandWorkPage() {
   })
   const debouncedKeyword = useDebouncedValue(params.keyword, 300)
   const { checkPermission } = usePermissions()
-  const headPermissions = checkPermission('ระบบผู้ดูแล')
-  const supportPermissions = checkPermission('แอดมิน')
+  const headPermissions = checkPermission('bot-ag')
+  const supportPermissions = checkPermission('คำสั่งงาน')
+
+  useEffect(() => {
+    console.log('headPermissions : ', headPermissions);
+    console.log('supportPermissions : ', supportPermissions);
+  }, [headPermissions, supportPermissions])
 
   // Fetch list via react-query (server-side filter by keyword)
   const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: Params }>({

@@ -23,10 +23,10 @@ export interface ExtendedAdminDB extends AdminDB {
             name: string;
         } | null;
         AdminDefaultPermissionDB?: {
-            menuPage: {
+            menuWebDB: {
                 name: string;
                 id: string;
-            };
+            } | null;
         }[];
     } | null;
     webBase?: {

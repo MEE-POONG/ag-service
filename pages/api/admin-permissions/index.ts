@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 type PermissionItem = {
   AdminPositionDBId: string
-  menuPageWebId: string
+  menuWebDBId: string
   canAdvance?: boolean
   canViews?: boolean
   canCreate?: boolean
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     if (req.method === 'GET') {
       const { AdminPositionDBId } = req.query
-      const where: any = {  }
+      const where: any = {}
       if (typeof AdminPositionDBId === 'string' && AdminPositionDBId) {
         where.adminPositionDBId = AdminPositionDBId
       }
@@ -42,9 +42,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         items.map((it) =>
           prisma.adminDefaultPermissionDB.upsert({
             where: {
-              adminPositionDBId_menuPageWebId: {
-                adminPositionDBId: it.AdminPositionDBId,
-                menuPageWebId: it.menuPageWebId,
+              adminPositionId_menuWebId: {
+                adminPositionId: it.AdminPositionDBId,
+                menuWebId: it.menuWebDBId,  
               },
             },
             update: {
@@ -56,8 +56,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
               updatedBy: 'system',
             },
             create: {
-              adminPositionDBId: it.AdminPositionDBId,
-              menuPageWebId: it.menuPageWebId,
+              adminPositionDB: {
+                connect: {
+                  id: it.AdminPositionDBId,
+                },
+              },
+              menuWebDB: {
+                connect: {
+                  id: it.menuWebDBId,
+                },
+              },
               canAdvance: Boolean(it.canAdvance),
               canViews: Boolean(it.canViews),
               canCreate: Boolean(it.canCreate),
@@ -78,15 +86,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     if (req.method === 'POST') {
       const it = req.body as PermissionItem
-      if (!it?.AdminPositionDBId || !it?.menuPageWebId) {
-        return res.status(400).json({ success: false, error: 'ต้องระบุ AdminPositionDBId และ menuPageWebId' })
+      if (!it?.AdminPositionDBId || !it?.menuWebDBId) {
+        return res.status(400).json({ success: false, error: 'ต้องระบุ AdminPositionDBId และ menuWebDBId' })
       }
 
       const row = await prisma.adminDefaultPermissionDB.upsert({
         where: {
-          adminPositionDBId_menuPageWebId: {
-            adminPositionDBId: it.AdminPositionDBId,
-            menuPageWebId: it.menuPageWebId,
+          adminPositionId_menuWebId: {
+            adminPositionId: it.AdminPositionDBId,
+            menuWebId: it.menuWebDBId,
           },
         },
         update: {
@@ -98,8 +106,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           updatedBy: 'system',
         },
         create: {
-          adminPositionDBId: it.AdminPositionDBId,
-          menuPageWebId: it.menuPageWebId,
+          adminPositionDB: {
+            connect: {
+              id: it.AdminPositionDBId,
+            },
+          },
+          menuWebDB: {
+            connect: {
+              id: it.menuWebDBId,
+            },
+          },
           canAdvance: Boolean(it.canAdvance),
           canViews: Boolean(it.canViews),
           canCreate: Boolean(it.canCreate),

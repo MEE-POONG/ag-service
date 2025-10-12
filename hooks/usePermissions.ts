@@ -15,15 +15,16 @@ export function usePermissions() {
   // สร้าง map ของสิทธิ์จาก user data
   const permissionsMap = useMemo(() => {
     const map = new Map<string, any>()
-    
+    console.log('18 user : ', user, ' Ok ');
     if (user?.adminPosition?.AdminDefaultPermissionDB) {
       user.adminPosition.AdminDefaultPermissionDB.forEach((permission: any) => {
-        if (permission.MenuPageWebDB?.name) {
-          map.set(permission.MenuPageWebDB.name, permission)
+        console.log('21 permission : ', permission, ' Ok ');
+        if (permission.menuWebDB?.name) {
+          map.set(permission.menuWebDB.name, permission)
         }
       })
     }
-    
+
     return map
   }, [user])
 
@@ -41,7 +42,9 @@ export function usePermissions() {
     }
 
     const permission = permissionsMap.get(menuName)
-    
+    console.log('44 permissionsMap : ', permissionsMap, ' Ok ');
+    console.log('45 permission : ', permission, ' Ok ');
+
     // ถ้าไม่มีข้อมูลสิทธิ์ ให้ตรวจจาก basic permissions
     if (!permission) {
       const hasBasicPermission = user?.permissions?.includes(menuName) || false
@@ -72,11 +75,11 @@ export function usePermissions() {
   // ฟังก์ชันตรวจสอบสิทธิ์หลายเมนูพร้อมกัน
   const checkMultiplePermissions = (menuNames: string[]): Record<string, PermissionCheck> => {
     const result: Record<string, PermissionCheck> = {}
-    
+
     menuNames.forEach(menuName => {
       result[menuName] = checkPermission(menuName)
     })
-    
+
     return result
   }
 
@@ -86,10 +89,10 @@ export function usePermissions() {
     if (userLoading || !user) {
       return false
     }
-    
+
     // Check if user is the superadmin username or has superadmin role
     // console.log(84,`admin check user : user?.username: ${user?.username} : `,user?.username === 'superadmin' || user?.role === 'superadmin' || user?.isSuperAdmin || false);
-    
+
     return user?.username === 'superadmin' || user?.role === 'superadmin' || user?.isSuperAdmin || false
   }, [user, userLoading])
 

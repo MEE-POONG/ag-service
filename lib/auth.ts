@@ -143,7 +143,7 @@ export function sanitizeAdminForClient<T extends Record<string, any>>(admin: T):
  */
 function extractPermissionNames(admin: any): string[] {
   const list = admin?.AdminPositionDB?.AdminDefaultPermissionDB ?? []
-  return list.map((p: any) => p?.MenuPageWebDB?.name).filter(Boolean)
+  return list.map((p: any) => p?.menuWebDB?.name).filter(Boolean)
 }
 
 // 🔐 === ฟังก์ชันหลักสำหรับการตรวจสอบสิทธิ์ ===
@@ -180,7 +180,7 @@ export async function authenticateAdmin(
           adminDepartment: true, // ข้อมูลแผนก
           AdminDefaultPermissionDB: {
             where: { isDeleted: false }, // เฉพาะสิทธิ์ที่ยังใช้งาน
-            include: { menuPage: true } // รายละเอียดหน้าเมนู
+            include: { menuWebDB: true } // รายละเอียดหน้าเมนู
           },
         },
       },

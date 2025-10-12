@@ -69,7 +69,7 @@ export async function checkUserPermissions(
               isDeleted: false,
             },
             include: {
-              menuPage: true,
+              menuWebDB: true,
             },
           },
         },
@@ -92,7 +92,7 @@ export async function checkUserPermissions(
 
   // Get permissions from AdminDefaultPermissionDB
   const permission = admin.adminPosition?.AdminDefaultPermissionDB?.find(
-    (p: any) => p.menuPage?.name === menuPageName
+    (p: any) => p.menuWebDB?.name === menuPageName
   )
 
   const permissions: PermissionContext = {
@@ -149,7 +149,7 @@ export async function getAdminFromCookie(req: NextApiRequest): Promise<any | nul
               isDeleted: false,
             },
             include: {
-              menuPage: true,
+              menuWebDB: true,
             },
           },
         },
@@ -164,7 +164,7 @@ export async function getAdminFromCookie(req: NextApiRequest): Promise<any | nul
     return null
   }
 
-  const permissions = admin.AdminPositionDB?.AdminDefaultPermissionDB?.map((p: any) => p.MenuPageWebDB?.name).filter(Boolean) || []
+  const permissions = admin.AdminPositionDB?.AdminDefaultPermissionDB?.map((p: any) => p.menuWebDB?.name).filter(Boolean) || []
 
   return {
     ...admin,

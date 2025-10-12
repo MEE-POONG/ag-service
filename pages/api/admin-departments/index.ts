@@ -51,7 +51,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<DepartmentRes
       const department = await prisma.adminDepartmentDB.findUnique({
         where: { id: id as string },
         include: {
-          adminPositions: {
+          adminPositionDB: {
             where: {  },
             orderBy: [
               { priority: 'asc' },      // เรียงตาม priority
@@ -93,7 +93,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<DepartmentRes
       prisma.adminDepartmentDB.findMany({
         where: whereClause,
         include: {
-          adminPositions: {
+          adminPositionDB: {
             where: {  },
             orderBy: [{ priority: 'asc' }],
           },
@@ -282,7 +282,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<Department
 
     const existing = await prisma.adminDepartmentDB.findFirst({ 
       where: { id },
-      include: { adminPositions: true }
+      include: { adminPositionDB: true }
     });
     if (!existing) {
       return res.status(404).json({ success: false, error: 'ไม่พบแผนกที่ต้องการลบ' });
