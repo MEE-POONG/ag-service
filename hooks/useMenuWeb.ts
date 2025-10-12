@@ -32,6 +32,7 @@ export function useMenuWeb(): UseMenuReturn {
   // ฟังก์ชันกรองสิทธิ์ (ย้ายมาที่นี่)
   // =========================
   const filterMenusByPermissions = (menus: any[], currentUser: any): MenuNode[] => {
+    console.log('35 filterMenusByPermissions', menus, currentUser)
     // admin/superadmin เห็นทั้งหมด
     const isAdmin = ['admin', 'superadmin'].includes(
       (currentUser?.username || '').toLowerCase()
@@ -39,7 +40,7 @@ export function useMenuWeb(): UseMenuReturn {
     if (isAdmin) return Array.isArray(menus) ? menus : []
 
     const perms: Array<{ menuPageWebId: string; canViews: boolean }> =
-      currentUser?.AdminPositionDB?.AdminDefaultPermissionDB ?? []
+      currentUser?.adminPosition?.AdminDefaultPermissionDB ?? []
 
     if (!Array.isArray(perms) || perms.length === 0 || !Array.isArray(menus)) {
       return []
@@ -87,6 +88,7 @@ export function useMenuWeb(): UseMenuReturn {
     const result = walk(menus)
     return result
   }
+console.log();
 
   // 🔍 ดึงข้อมูลเมนูเว็บ + "กรองสิทธิ์" ตั้งแต่ชั้น queryFn
   const {
@@ -99,23 +101,49 @@ export function useMenuWeb(): UseMenuReturn {
     queryFn: async () => {
       const res = await axios.get('/api/auth/me')
       const rawMenu = res.data?.menuWeb ?? null
-      // กรองสิทธิ์ที่นี่เลย
-      const filtered = filterMenusByPermissions(Array.isArray(rawMenu) ? rawMenu : [], user)
+      const currentUser = res.data?.user ?? null
+      
+      console.log('🔍 API Response:', { currentUser, rawMenu })
+      
+      // ถ้าไม่มี user หรือไม่มี menu ให้ return []
+      if (!currentUser || !rawMenu) {
+        return []
+      }
+      
+      // กรองสิทธิ์โดยใช้ user จาก API response
+      const filtered = filterMenusByPermissions(
+        Array.isArray(rawMenu) ? rawMenu : [], 
+        currentUser
+      )
+      console.log('118 filtered', filtered)
       return filtered
     },
     staleTime: 5 * 60 * 1000,
     retry: 1,
     refetchOnWindowFocus: false,
-    // ถ้า user ยังไม่พร้อม อย่าเรียก queryFn
-    enabled: !!user,
   })
-
+  
+  console.log('📊 menuWebData:', menuWebData)
+  console.log('👤 user from useAuth:', user)
   // 🔄 refresh: ดึงใหม่ + "กรองสิทธิ์" แล้วค่อย setCache
   const refreshMutation = useMutation({
     mutationFn: async () => {
       const res = await axios.get('/api/auth/me')
       const rawMenu = res.data?.menuWeb ?? null
-      return filterMenusByPermissions(Array.isArray(rawMenu) ? rawMenu : [], user)
+      const currentUser = res.data?.user ?? null
+      
+      console.log('🔄 Refresh API Response:', { currentUser, rawMenu })
+      
+      // ถ้าไม่มี user หรือไม่มี menu ให้ return []
+      if (!currentUser || !rawMenu) {
+        return []
+      }
+      
+      // กรองสิทธิ์โดยใช้ user จาก API response
+      return filterMenusByPermissions(
+        Array.isArray(rawMenu) ? rawMenu : [], 
+        currentUser
+      )
     },
     onSuccess: (filtered) => {
       queryClient.setQueryData(qk.menus.all, filtered)
@@ -132,7 +160,7 @@ export function useMenuWeb(): UseMenuReturn {
 
   return {
     menuWeb: menuWebData ?? null,
-    menuLoading: (isPending || isFetching) && !!user,
+    menuLoading: isPending || isFetching,
     error: error ? (error as any)?.message ?? 'การโหลดเมนูล้มเหลว' : null,
     refreshMenu,
   }

@@ -1,5 +1,5 @@
 import { menuDev } from "@/data";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { MdDashboard as LayoutDashboard } from "react-icons/md";
 import UserInfo from "@/components/UserInfo";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,6 +16,9 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   const { user } = useAuth();
   const { menuWeb, menuLoading } = useMenuWeb(); // <- ได้ "เมนูกรองแล้ว"
 
+  useEffect(() => {
+    console.log('user', user)
+  }, [user])
   const isDev =
     (user?.username || '').toLowerCase() === 'superadmin' ||
     (user?.username || '').toLowerCase() === 'admin';

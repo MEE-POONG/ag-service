@@ -57,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     },
   })
-
+  console.log('user', user)
   // 🚫 ขั้นตอนที่ 4: ตรวจสอบสถานะของผู้ใช้
   if (!user || user.isActive === false) {
     // ไม่พบผู้ใช้หรือบัญชีถูกปิดใช้งาน
