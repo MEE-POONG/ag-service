@@ -7,6 +7,14 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 import { requireAuth } from '@/lib/permissions'
+import { 
+  emitNewMessage, 
+  emitMessageUpdated, 
+  emitMessageDeleted,
+  emitMessagesRead 
+} from '@/lib/socket'
+import { notifyNewMessage } from '@/lib/notifications'
+import { pushNewMessage } from '@/lib/pushNotifications'
 
 interface MessageResponse {
   success?: boolean
@@ -67,6 +75,17 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<MessageRespon
               customerId: true,
               name: true,
               avatarUrl: true
+            }
+          },
+          readBy: {
+            include: {
+              admin: {
+                select: {
+                  id: true,
+                  name: true,
+                  username: true
+                }
+              }
             }
           }
         },
@@ -165,18 +184,56 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<MessageRespo
         }
       })
 
+      // Get current unread count before updating
+      const currentUnreadCount = await tx.chatMessageDB.count({
+        where: {
+          conversationId,
+          senderType: 'customer',
+          isRead: false
+        }
+      })
+
       // Update conversation with last message info
       await tx.chatConversationDB.update({
         where: { id: conversationId },
         data: {
           lastMessage: content.substring(0, 200),
           lastMessageAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
+          status: 'active', // Set status to active when agent responds
+          isUnread: currentUnreadCount > 0,
+          unreadCount: currentUnreadCount
         }
       })
 
       return newMessage
     })
+
+    // Emit real-time event
+    emitNewMessage(conversationId, { ...message, customerId })
+
+    // Create in-app notification for assigned agent (if not sender)
+    if (conversation.assignedAdminId && conversation.assignedAdminId !== admin.id) {
+      try {
+        await notifyNewMessage({
+          userId: conversation.assignedAdminId,
+          senderName: message.senderName,
+          messagePreview: content.substring(0, 100),
+          conversationId
+        })
+
+        // Send push notification
+        await pushNewMessage({
+          userId: conversation.assignedAdminId,
+          senderName: message.senderName,
+          messagePreview: content.substring(0, 100),
+          conversationId
+        })
+      } catch (error) {
+        console.error('Failed to send notification:', error)
+        // Don't fail the request if notification fails
+      }
+    }
 
     return res.status(201).json({
       success: true,
@@ -239,15 +296,28 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<MessageRespon
         })
 
         // Update conversation unread count
+        const remainingUnreadCount = await tx.chatMessageDB.count({
+          where: {
+            conversationId,
+            senderType: 'customer',
+            isRead: false
+          }
+        })
+
         await tx.chatConversationDB.update({
           where: { id: conversationId },
           data: {
-            isUnread: false,
-            unreadCount: 0
+            isUnread: remainingUnreadCount > 0,
+            unreadCount: remainingUnreadCount
           }
         })
       }
     })
+
+    // Emit real-time event
+    if (conversationId) {
+      emitMessagesRead(conversationId, messageIds, admin.id, 'agent')
+    }
 
     return res.status(200).json({
       success: true,
@@ -295,6 +365,9 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<MessageRes
     await prisma.chatMessageDB.delete({
       where: { id }
     })
+
+    // Emit real-time event
+    emitMessageDeleted(existingMessage.conversationId, id)
 
     return res.status(200).json({
       success: true,

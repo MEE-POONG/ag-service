@@ -179,6 +179,14 @@ model AdminDB {
   username        String          @unique
   // Chat system relations
   assignedConversations ChatConversationDB[]
+  // Widget keys relations
+  widgetKeys        ChatWidgetKeyDB[]
+  // Message read tracking
+  messageReads      ChatMessageReadDB[]
+  // Notification system relations
+  notifications     NotificationDB[]
+  pushSubscriptions PushSubscriptionDB[]
+  notificationPreferences NotificationPreferencesDB?
 }
 
 model AdminDefaultPermissionDB {
@@ -624,6 +632,7 @@ model ChatCustomerDB {
   name          String?
   email         String?
   phone         String?
+  password      String?             // Hashed password for widget auth
   avatarUrl     String?
   // Custom fields for segmentation
   language      String              @default("th") // th, en
@@ -633,10 +642,12 @@ model ChatCustomerDB {
   isActive      Boolean             @default(true)
   isBlocked     Boolean             @default(false)
   blockedReason String?
+  source        String?             // Registration source (widget_registration, manual, etc.)
   // Timestamps
   createdAt     DateTime            @default(now()) @db.Date
   updatedAt     DateTime            @updatedAt @db.Date
   lastSeenAt    DateTime?           @db.Date
+  lastLoginAt   DateTime?           @db.Date
   // Relations
   conversations ChatConversationDB[]
   messages      ChatMessageDB[]
@@ -646,7 +657,9 @@ model ChatCustomerDB {
   @@index([email])
   @@index([phone])
   @@index([isActive])
+  @@index([source])
   @@index([createdAt])
+  @@index([lastLoginAt])
 }
 
 // Chat Conversation - represents individual chat threads
@@ -657,6 +670,9 @@ model ChatConversationDB {
   // Agent assignment
   assignedAdminId String?          @db.ObjectId
   assignedAdmin   AdminDB?         @relation(fields: [assignedAdminId], references: [id], onDelete: SetNull)
+  // Widget key reference
+  widgetKeyId     String?          @db.ObjectId
+  widgetKey       ChatWidgetKeyDB? @relation(fields: [widgetKeyId], references: [id], onDelete: SetNull)
   // Status
   status          String           @default("open") // open, assigned, resolved, closed
   priority        String           @default("normal") // low, normal, high, urgent
@@ -677,6 +693,7 @@ model ChatConversationDB {
 
   @@index([customerId])
   @@index([assignedAdminId])
+  @@index([widgetKeyId])
   @@index([status])
   @@index([priority])
   @@index([createdAt])
@@ -690,6 +707,9 @@ model ChatMessageDB {
   conversation   ChatConversationDB  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   customerId     String              @db.ObjectId
   customer       ChatCustomerDB      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  // Widget key reference
+  widgetKeyId    String?             @db.ObjectId
+  widgetKey      ChatWidgetKeyDB?    @relation(fields: [widgetKeyId], references: [id], onDelete: SetNull)
   // Sender info
   senderType     String              // customer, agent, system
   senderId       String?             @db.ObjectId // AdminDB id if agent
@@ -710,13 +730,31 @@ model ChatMessageDB {
   // Timestamps
   createdAt      DateTime            @default(now()) @db.Date
   updatedAt      DateTime            @updatedAt @db.Date
+  // Read tracking
+  readBy         ChatMessageReadDB[]
 
   @@index([conversationId])
   @@index([customerId])
+  @@index([widgetKeyId])
   @@index([senderType])
   @@index([messageType])
   @@index([createdAt])
   @@index([isRead])
+}
+
+// Message Read Tracking - Track which admin read which messages
+model ChatMessageReadDB {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  messageId   String      @db.ObjectId
+  message     ChatMessageDB @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  adminId     String      @db.ObjectId
+  admin       AdminDB     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  readAt      DateTime    @default(now()) @db.Date
+  
+  @@unique([messageId, adminId])
+  @@index([messageId])
+  @@index([adminId])
+  @@index([readAt])
 }
 
 // Chat Tag - for categorizing customers
@@ -919,4 +957,122 @@ model ChatWidgetSettingsDB {
   createdBy         String
   updatedAt         DateTime @updatedAt @db.Date
   updatedBy         String
+}
+
+// Widget Keys - สำหรับให้เว็บอื่นใช้งาน chat widget
+model ChatWidgetKeyDB {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  name            String   // ชื่อ widget key
+  key             String   @unique // Widget key ที่ unique
+  domain          String   // Domain ที่อนุญาตให้ใช้
+  description     String?  // คำอธิบาย
+  isActive        Boolean  @default(true)
+  // Widget settings (JSON)
+  settings        Json     @default("{}") // การตั้งค่า widget
+  // Usage tracking
+  lastUsedAt      DateTime? @db.Date
+  // Relations
+  createdBy       String   @db.ObjectId
+  creator         AdminDB  @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  conversations   ChatConversationDB[]
+  messages        ChatMessageDB[]
+  // Timestamps
+  createdAt       DateTime @default(now()) @db.Date
+  updatedAt       DateTime @updatedAt @db.Date
+
+  @@index([domain])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+// ==================== Notification System ====================
+
+// In-app Notifications
+model NotificationDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  // Recipient
+  userId      String   @db.ObjectId
+  user        AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Content
+  type        String   // info, success, warning, error, message, conversation, assignment
+  title       String
+  message     String
+  icon        String?  // Icon name or emoji
+  // Action
+  actionUrl   String?  // URL to navigate when clicked
+  actionLabel String?  // Button label
+  // Metadata
+  metadata    Json?    // Additional data (conversationId, messageId, etc.)
+  // Status
+  isRead      Boolean  @default(false)
+  readAt      DateTime? @db.Date
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Date
+  expiresAt   DateTime? @db.Date
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@index([type])
+}
+
+// Web Push Subscriptions
+model PushSubscriptionDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  // User
+  userId      String   @db.ObjectId
+  user        AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Subscription data (from browser)
+  endpoint    String   @unique
+  keys        Json     // { p256dh: string, auth: string }
+  // Metadata
+  userAgent   String?
+  deviceName  String?  // Browser/Device info
+  // Status
+  isActive    Boolean  @default(true)
+  failCount   Int      @default(0) // Track failed push attempts
+  lastUsedAt  DateTime @default(now()) @db.Date
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Date
+  updatedAt   DateTime @updatedAt @db.Date
+
+  @@index([userId])
+  @@index([isActive])
+}
+
+// Notification Preferences
+model NotificationPreferencesDB {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  // User
+  userId      String   @unique @db.ObjectId
+  user        AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // In-app notification settings
+  enableInApp        Boolean @default(true)
+  inAppMessages      Boolean @default(true)
+  inAppConversations Boolean @default(true)
+  inAppAssignments   Boolean @default(true)
+  inAppSystem        Boolean @default(true)
+  
+  // Push notification settings
+  enablePush         Boolean @default(false)
+  pushMessages       Boolean @default(true)
+  pushConversations  Boolean @default(true)
+  pushAssignments    Boolean @default(true)
+  pushSystem         Boolean @default(false)
+  
+  // Notification behavior
+  soundEnabled       Boolean @default(true)
+  desktopOnly        Boolean @default(false) // Only show on desktop
+  quietHoursEnabled  Boolean @default(false)
+  quietHoursStart    String? // HH:mm format
+  quietHoursEnd      String? // HH:mm format
+  
+  // Frequency control
+  groupSimilar       Boolean @default(true) // Group similar notifications
+  maxPerHour         Int?    @default(20)   // Max notifications per hour
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Date
+  updatedAt   DateTime @updatedAt @db.Date
 }

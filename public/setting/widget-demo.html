@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AG Chat Widget - Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .hero {
+      text-align: center;
+      color: white;
+      padding: 60px 20px;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .hero p {
+      font-size: 20px;
+      opacity: 0.9;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+
+    .card h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #667eea;
+    }
+
+    .card h3 {
+      font-size: 24px;
+      margin: 30px 0 15px;
+      color: #333;
+    }
+
+    .card p {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      margin: 20px 0;
+    }
+
+    .code-block code {
+      color: #ce9178;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .feature {
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 12px;
+      border: 2px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+
+    .feature:hover {
+      border-color: #667eea;
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .feature h4 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .feature p {
+      font-size: 14px;
+      color: #666;
+      margin: 0;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-outline {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-outline:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    .alert {
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .alert-info {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+
+    .footer {
+      text-align: center;
+      color: white;
+      padding: 40px 20px;
+      margin-top: 60px;
+    }
+
+    .footer p {
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      .card h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="container">
+      <h1>💬 AG Chat Widget Demo</h1>
+      <p>ระบบแชทแบบ Real-time สำหรับเว็บไซต์ของคุณ</p>
+      <div class="buttons">
+        <button class="btn btn-primary" onclick="AGChat.open()">🚀 เปิดแชททดสอบ</button>
+        <button class="btn btn-secondary" onclick="AGChat.close()">✖️ ปิดแชท</button>
+        <a href="#installation" class="btn btn-outline">📖 วิธีติดตั้ง</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Features Section -->
+    <div class="card">
+      <h2>✨ ฟีเจอร์หลัก</h2>
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">⚡</div>
+          <h4>Real-time Chat</h4>
+          <p>แชทแบบ real-time ด้วย WebSocket</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">📱</div>
+          <h4>Responsive Design</h4>
+          <p>ใช้งานได้ทุกขนาดหน้าจอ</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🎨</div>
+          <h4>Customizable</h4>
+          <p>ปรับแต่งสีและข้อความได้</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔔</div>
+          <h4>Unread Counter</h4>
+          <p>แสดงจำนวนข้อความใหม่</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🌙</div>
+          <h4>Dark Mode</h4>
+          <p>รองรับโหมดมืดอัตโนมัติ</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔐</div>
+          <h4>User Authentication</h4>
+          <p>ระบบ Login/Register ในตัว</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Installation Section -->
+    <div class="card" id="installation">
+      <h2>🚀 การติดตั้ง</h2>
+      
+      <div class="alert alert-info">
+        <span>💡</span>
+        <span>เพียงเพิ่มโค้ด 2-3 บรรทัดในเว็บไซต์ของคุณก็ใช้งานได้ทันที!</span>
+      </div>
+
+      <div class="alert alert-info">
+        <span>🔐</span>
+        <span><strong>สำคัญ:</strong> ผู้ใช้ต้องลงทะเบียนหรือเข้าสู่ระบบก่อนใช้งานแชท (ระบบจะแสดง Login/Register Form อัตโนมัติ)</span>
+      </div>
+
+      <h3>ขั้นตอนที่ 1: เพิ่ม Script</h3>
+      <p>เพิ่มโค้ดนี้ก่อนปิด <code>&lt;/body&gt;</code> tag:</p>
+      <div class="code-block">
+<pre><code>&lt;!-- Socket.io for real-time (optional) --&gt;
+&lt;script src="https://cdn.socket.io/4.8.1/socket.io.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- AG Chat Widget --&gt;
+&lt;script src="https://your-domain.com/chat-widget.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  AGChat.init({
+    widgetKey: 'YOUR_WIDGET_KEY',
+    apiUrl: 'https://your-domain.com'
+  });
+&lt;/script&gt;</code></pre>
+      </div>
+
+      <h3>ขั้นตอนที่ 2: ผู้ใช้ลงทะเบียนหรือเข้าสู่ระบบ</h3>
+      <p>ผู้ใช้จะต้องลงทะเบียนหรือเข้าสู่ระบบก่อนใช้งานแชท:</p>
+      <div class="code-block">
+<pre><code>&lt;!-- Widget จะแสดง Login/Register Form อัตโนมัติ --&gt;
+&lt;script&gt;
+  AGChat.init({
+    widgetKey: 'YOUR_WIDGET_KEY',
+    apiUrl: 'https://your-domain.com'
+    // ไม่ต้องส่ง customer - ผู้ใช้ต้อง login/register
+  });
+&lt;/script&gt;</code></pre>
+      </div>
+
+      <h3>ขั้นตอนที่ 3: ทดสอบการใช้งาน</h3>
+      <p>เมื่อผู้ใช้คลิกเปิด widget จะเห็น:</p>
+      <ul style="margin-left: 20px; color: #666;">
+        <li style="margin: 8px 0;">📝 <strong>ฟอร์มลงทะเบียน:</strong> สำหรับผู้ใช้ใหม่ (ชื่อ, อีเมล, รหัสผ่าน)</li>
+        <li style="margin: 8px 0;">🔑 <strong>ฟอร์มเข้าสู่ระบบ:</strong> สำหรับผู้ใช้เดิม (อีเมล, รหัสผ่าน)</li>
+        <li style="margin: 8px 0;">💬 <strong>หน้าแชท:</strong> หลังจาก login สำเร็จ</li>
+      </ul>
+
+      <div class="alert alert-success">
+        <span>✅</span>
+        <span>เสร็จแล้ว! Widget จะปรากฏที่มุมขวาล่างของเว็บไซต์</span>
+      </div>
+    </div>
+
+    <!-- API Reference -->
+    <div class="card">
+      <h2>📚 API Reference</h2>
+      
+      <h3>AGChat.init(config)</h3>
+      <p>เริ่มต้นใช้งาน widget</p>
+      <div class="code-block">
+<pre><code>AGChat.init({
+  widgetKey: 'YOUR_WIDGET_KEY',  // Required: Widget key from admin panel
+  apiUrl: 'https://your-domain.com'  // Required: Your API URL
+  // Note: ผู้ใช้ต้อง login/register ผ่าน widget
+});</code></pre>
+      </div>
+
+      <h3>AGChat.open()</h3>
+      <p>เปิดหน้าต่างแชท</p>
+      <div class="code-block">
+<pre><code>AGChat.open();</code></pre>
+      </div>
+
+      <h3>AGChat.close()</h3>
+      <p>ปิดหน้าต่างแชท</p>
+      <div class="code-block">
+<pre><code>AGChat.close();</code></pre>
+      </div>
+
+      <h3>AGChat.destroy()</h3>
+      <p>ลบ widget ออกจากหน้าเว็บ</p>
+      <div class="code-block">
+<pre><code>AGChat.destroy();</code></pre>
+      </div>
+
+      <div class="buttons">
+        <button class="btn btn-primary" onclick="testOpen()">ทดสอบ open()</button>
+        <button class="btn btn-secondary" onclick="testClose()">ทดสอบ close()</button>
+      </div>
+    </div>
+
+    <!-- Examples -->
+    <div class="card">
+      <h2>💡 ตัวอย่างการใช้งาน</h2>
+      
+      <h3>1. Basic HTML</h3>
+      <div class="code-block">
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="th"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;My Website&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;ยินดีต้อนรับ&lt;/h1&gt;
+
+  &lt;script src="https://cdn.socket.io/4.8.1/socket.io.min.js"&gt;&lt;/script&gt;
+  &lt;script src="https://your-domain.com/chat-widget.js"&gt;&lt;/script&gt;
+  &lt;script&gt;
+    AGChat.init({
+      widgetKey: 'YOUR_WIDGET_KEY',
+      apiUrl: 'https://your-domain.com'
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+      </div>
+
+      <h3>2. เปิด Widget ด้วยปุ่มของคุณเอง</h3>
+      <div class="code-block">
+<pre><code>&lt;button onclick="AGChat.open()"&gt;
+  💬 ติดต่อเรา
+&lt;/button&gt;</code></pre>
+      </div>
+      <button class="btn btn-primary" onclick="AGChat.open()">💬 ทดสอบปุ่มนี้</button>
+
+      <h3>3. Custom Colors</h3>
+      <div class="code-block">
+<pre><code>&lt;style&gt;
+  :root {
+    --ag-chat-primary: #8B5CF6 !important;
+    --ag-chat-accent: #F59E0B !important;
+  }
+&lt;/style&gt;</code></pre>
+      </div>
+    </div>
+
+    <!-- Authentication & Security -->
+    <div class="card">
+      <h2>🔐 Authentication & Security</h2>
+      
+      <h3>ระบบ Authentication ในตัว</h3>
+      <p>Widget มีระบบจัดการผู้ใช้แบบบูรณาการ:</p>
+      
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">📝</div>
+          <h4>การลงทะเบียน</h4>
+          <p>ผู้ใช้สร้างบัญชีด้วยอีเมลและรหัสผ่าน</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔑</div>
+          <h4>เข้าสู่ระบบ</h4>
+          <p>Login ด้วยอีเมลและรหัสผ่านที่สมัครไว้</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔒</div>
+          <h4>รหัสผ่านปลอดภัย</h4>
+          <p>รหัสผ่านถูก hash ด้วย bcrypt</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🎫</div>
+          <h4>JWT Token</h4>
+          <p>ใช้ JWT สำหรับ session management</p>
+        </div>
+      </div>
+
+      <h3>Widget Key Management</h3>
+      <p>สร้าง Widget Key ในหน้า Admin Panel:</p>
+      <div class="code-block">
+<pre><code>1. ไปที่ Admin Panel → Widget Keys
+2. คลิก "สร้าง Widget Key ใหม่"
+3. ตั้งชื่อและกำหนด domain ที่อนุญาต
+4. Copy Widget Key ไปใช้ใน AGChat.init()</code></pre>
+      </div>
+
+      <div class="alert alert-info">
+        <span>🔒</span>
+        <span><strong>Security:</strong> Widget Key จะถูก validate ทุกครั้งที่มีการเรียก API และสามารถปิดการใช้งานได้ทันทีจาก Admin Panel</span>
+      </div>
+    </div>
+
+    <!-- Support -->
+    <div class="card">
+      <h2>❓ ต้องการความช่วยเหลือ?</h2>
+      <p>หากมีปัญหาหรือคำถาม สามารถติดต่อเราได้ที่:</p>
+      <ul style="list-style: none; padding: 0; margin: 20px 0;">
+        <li style="padding: 8px 0;">📧 <strong>Email:</strong> support@your-domain.com</li>
+        <li style="padding: 8px 0;">💬 <strong>Live Chat:</strong> คลิกที่ปุ่มแชทด้านล่างขวา</li>
+        <li style="padding: 8px 0;">📚 <strong>Documentation:</strong> <a href="/docs/WIDGET_INTEGRATION.md" style="color: #667eea;">อ่านเอกสารฉบับเต็ม</a></li>
+      </ul>
+      <div class="buttons">
+        <button class="btn btn-primary" onclick="AGChat.open()">💬 เปิดแชททดสอบ</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="container">
+      <p>Powered by <strong>AG Chat</strong></p>
+      <p style="margin-top: 10px; font-size: 14px;">Version 1.0.0 | © 2025 All Rights Reserved</p>
+    </div>
+  </div>
+
+  <!-- AG Chat Widget Integration -->
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <script src="/chat-widget.js"></script>
+  <script>
+    // Initialize widget
+    AGChat.init({
+      widgetKey: 'wk_1736688000000_demo123', // Demo widget key
+      apiUrl: window.location.origin
+      // No customer config - users must login/register
+    });
+
+    // Test functions
+    function testOpen() {
+      AGChat.open();
+      console.log('Widget opened');
+    }
+
+    function testClose() {
+      AGChat.close();
+      console.log('Widget closed');
+    }
+
+    // Log initialization
+    console.log('%c🚀 AG Chat Widget Loaded!', 'color: #667eea; font-size: 16px; font-weight: bold;');
+    console.log('%cTry: AGChat.open(), AGChat.close(), AGChat.destroy()', 'color: #666; font-size: 12px;');
+  </script>
+</body>
+</html>
+

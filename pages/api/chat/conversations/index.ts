@@ -8,6 +8,14 @@ import { prisma } from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 import { requireAuth } from '@/lib/permissions'
 import { recordWorkHistory, extractUserInfo } from '@/utils/workHistoryUtils'
+import { 
+  emitNewConversation, 
+  emitConversationUpdated, 
+  emitConversationDeleted,
+  emitConversationAssigned 
+} from '@/lib/socket'
+import { notifyNewConversation, notifyConversationAssigned } from '@/lib/notifications'
+import { pushNewConversation, pushConversationAssigned } from '@/lib/pushNotifications'
 
 interface ConversationResponse {
   success?: boolean
@@ -274,6 +282,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<Conversation
       return newConversation
     })
 
+    // Emit real-time event
+    emitNewConversation(conversation)
+
     return res.status(201).json({
       success: true,
       data: conversation,
@@ -391,6 +402,40 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<ConversationR
       return updatedConversation
     })
 
+    // Emit real-time events
+    emitConversationUpdated(conversation)
+    
+    // If assignment changed, emit specific assignment event and send notifications
+    if (assignedAdminId !== undefined && assignedAdminId !== existingConversation.assignedAdminId) {
+      emitConversationAssigned(
+        conversation.id,
+        assignedAdminId,
+        conversation.assignedAdmin?.name,
+        admin.username
+      )
+
+      // Send notifications to newly assigned agent
+      if (assignedAdminId) {
+        try {
+          await notifyConversationAssigned({
+            userId: assignedAdminId,
+            assignedBy: admin.name || admin.username,
+            customerName: conversation.customer?.name || 'ลูกค้า',
+            conversationId: conversation.id
+          })
+
+          await pushConversationAssigned({
+            userId: assignedAdminId,
+            assignedBy: admin.name || admin.username,
+            customerName: conversation.customer?.name || 'ลูกค้า',
+            conversationId: conversation.id
+          })
+        } catch (error) {
+          console.error('Failed to send assignment notification:', error)
+        }
+      }
+    }
+
     return res.status(200).json({
       success: true,
       data: conversation,
@@ -458,6 +503,9 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<Conversati
         where: { id }
       })
     })
+
+    // Emit real-time event
+    emitConversationDeleted(id, existingConversation.customerId)
 
     return res.status(200).json({
       success: true,
