@@ -151,56 +151,79 @@ export default async function handler(
       // Widget key is not needed for message sending
       // const { widgetId } = JSON.parse(Buffer.from(token, 'base64').toString())
       
-      // Create message
-      const message = await prisma.$transaction(async (tx) => {
-        const newMessage = await tx.chatMessageDB.create({
-          data: {
-            conversationId,
-            customerId,
-            widgetKeyId: null, // Skip widget key for now
-            senderType: 'customer',
-            senderId: customerId,
-            senderName: customer.name || 'Guest',
-            messageType,
-            content,
-            attachments: attachments || null,
-            isRead: false,
-            isSent: true
-          },
-          include: {
-            customer: {
-              select: {
-                id: true,
-                name: true,
-                avatarUrl: true
+      // Create message with retry logic for P2034 conflicts
+      let message
+      let retries = 3
+      
+      while (retries > 0) {
+        try {
+          message = await prisma.$transaction(async (tx) => {
+            const newMessage = await tx.chatMessageDB.create({
+              data: {
+                conversationId,
+                customerId,
+                widgetKeyId: null, // Skip widget key for now
+                senderType: 'customer',
+                senderId: customerId,
+                senderName: customer.name || 'Guest',
+                messageType,
+                content,
+                attachments: attachments || null,
+                isRead: false,
+                isSent: true
+              },
+              include: {
+                customer: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true
+                  }
+                }
               }
-            }
-          }
-        })
+            })
 
-        // Update conversation
-        const currentUnreadCount = await tx.chatMessageDB.count({
-          where: {
-            conversationId,
-            senderType: 'customer',
-            isRead: false
-          }
-        })
+            // Update conversation
+            const currentUnreadCount = await tx.chatMessageDB.count({
+              where: {
+                conversationId,
+                senderType: 'customer',
+                isRead: false
+              }
+            })
 
-        await tx.chatConversationDB.update({
-          where: { id: conversationId },
-          data: {
-            lastMessage: content.substring(0, 200),
-            lastMessageAt: new Date(),
-            updatedAt: new Date(),
-            isUnread: true,
-            unreadCount: currentUnreadCount + 1, // +1 for the new message
-            status: 'pending' // Set status to pending when customer sends message
-          }
-        })
+            await tx.chatConversationDB.update({
+              where: { id: conversationId },
+              data: {
+                lastMessage: content.substring(0, 200),
+                lastMessageAt: new Date(),
+                updatedAt: new Date(),
+                isUnread: true,
+                unreadCount: currentUnreadCount + 1, // +1 for the new message
+                status: 'pending' // Set status to pending when customer sends message
+              }
+            })
 
-        return newMessage
-      })
+            return newMessage
+          })
+          
+          // Success - break retry loop
+          break
+        } catch (error: any) {
+          retries--
+          
+          // Check if it's a transaction conflict error
+          if (error?.code === 'P2034' && retries > 0) {
+            console.log(`[Widget Messages] Transaction conflict, retrying... (${retries} retries left)`)
+            // Wait a bit before retrying (exponential backoff)
+            await new Promise(resolve => setTimeout(resolve, 100 * (3 - retries)))
+            continue
+          }
+          
+          // Not a conflict error or no more retries - throw
+          throw error
+        }
+      }
 
       // Emit real-time event
       emitNewMessage(conversationId, message)

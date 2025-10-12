@@ -154,60 +154,83 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<MessageRespo
       })
     }
 
-    // Create message with transaction
-    const message = await prisma.$transaction(async (tx) => {
-      // Create the message
-      const newMessage = await tx.chatMessageDB.create({
-        data: {
-          conversationId,
-          customerId,
-          senderType: senderType || 'agent',
-          senderId: admin.id,
-          senderName: admin.name || admin.username,
-          messageType,
-          content,
-          attachments: attachments || null,
-          metadata: metadata || null,
-          isRead: false,
-          isSent: true,
-          isAutoReply: false
-        },
-        include: {
-          customer: {
-            select: {
-              id: true,
-              customerId: true,
-              name: true,
-              avatarUrl: true
+    // Create message with transaction (with retry logic for P2034 conflicts)
+    let message
+    let retries = 3
+    
+    while (retries > 0) {
+      try {
+        message = await prisma.$transaction(async (tx) => {
+          // Create the message
+          const newMessage = await tx.chatMessageDB.create({
+            data: {
+              conversationId,
+              customerId,
+              senderType: senderType || 'agent',
+              senderId: admin.id,
+              senderName: admin.name || admin.username,
+              messageType,
+              content,
+              attachments: attachments || null,
+              metadata: metadata || null,
+              isRead: false,
+              isSent: true,
+              isAutoReply: false
+            },
+            include: {
+              customer: {
+                select: {
+                  id: true,
+                  customerId: true,
+                  name: true,
+                  avatarUrl: true
+                }
+              }
             }
-          }
-        }
-      })
+          })
 
-      // Get current unread count before updating
-      const currentUnreadCount = await tx.chatMessageDB.count({
-        where: {
-          conversationId,
-          senderType: 'customer',
-          isRead: false
-        }
-      })
+          // Get current unread count before updating
+          const currentUnreadCount = await tx.chatMessageDB.count({
+            where: {
+              conversationId,
+              senderType: 'customer',
+              isRead: false
+            }
+          })
 
-      // Update conversation with last message info
-      await tx.chatConversationDB.update({
-        where: { id: conversationId },
-        data: {
-          lastMessage: content.substring(0, 200),
-          lastMessageAt: new Date(),
-          updatedAt: new Date(),
-          status: 'active', // Set status to active when agent responds
-          isUnread: currentUnreadCount > 0,
-          unreadCount: currentUnreadCount
-        }
-      })
+          // Update conversation with last message info
+          await tx.chatConversationDB.update({
+            where: { id: conversationId },
+            data: {
+              lastMessage: content.substring(0, 200),
+              lastMessageAt: new Date(),
+              updatedAt: new Date(),
+              status: 'active', // Set status to active when agent responds
+              isUnread: currentUnreadCount > 0,
+              unreadCount: currentUnreadCount
+            }
+          })
 
-      return newMessage
-    })
+          return newMessage
+        })
+        
+        // Success - break retry loop
+        break
+      } catch (error: any) {
+        retries--
+        
+        // Check if it's a transaction conflict error
+        if (error?.code === 'P2034' && retries > 0) {
+          console.log(`[Messages API] Transaction conflict, retrying... (${retries} retries left)`)
+          // Wait a bit before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 100 * (3 - retries)))
+          continue
+        }
+        
+        // Not a conflict error or no more retries - throw
+        throw error
+      }
+    }
 
     // Emit real-time event
     emitNewMessage(conversationId, { ...message, customerId })
@@ -217,7 +240,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<MessageRespo
       try {
         await notifyNewMessage({
           userId: conversation.assignedAdminId,
-          senderName: message.senderName || 'Unknown',
+          senderName: message?.senderName || 'Unknown',
           messagePreview: content.substring(0, 100),
           conversationId
         })
@@ -225,7 +248,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<MessageRespo
         // Send push notification
         await pushNewMessage({
           userId: conversation.assignedAdminId,
-          senderName: message.senderName || 'Unknown',
+          senderName: message?.senderName || 'Unknown',
           messagePreview: content.substring(0, 100),
           conversationId
         })
