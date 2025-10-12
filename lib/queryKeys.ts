@@ -50,4 +50,13 @@ export const qk = {
     list: (search: string, status: string, page: number, pageSize: number) =>
       ['web-base', { search, status, page, pageSize }] as const,
   },
+  chat: {
+    base: ['chat'] as const,
+    conversations: (keyword: string, status: string) =>
+      ['chat', 'conversations', { keyword, status }] as const,
+    messages: (conversationId: string) =>
+      ['chat', 'messages', conversationId] as const,
+    customers: (keyword: string, page: number, pageSize: number) =>
+      ['chat', 'customers', { keyword, page, pageSize }] as const,
+  },
 } as const

@@ -26,6 +26,7 @@ export function shouldSkipAuth(pathname: string): boolean {
     pathname.startsWith('/api/auth/logout') ||
     pathname.startsWith('/api/auth/me') ||
     pathname.startsWith('/api/debug') ||
+    pathname.startsWith('/api/widget') || // Widget APIs are public
     pathname === '/auth/login' ||
     pathname.startsWith('/uploads') ||
     pathname.startsWith('/public') ||

@@ -443,6 +443,16 @@ model AdminDB {
   AdminPositionDBId String?          @db.ObjectId
   WebBaseDB       WebBaseDB?       @relation(fields: [webBaseDBId], references: [id])
   webBaseDBId     String?          @db.ObjectId
+  // Chat system relations
+  assignedConversations ChatConversationDB[]
+  // Widget keys relations
+  widgetKeys        ChatWidgetKeyDB[]
+  // Message read tracking
+  messageReads      ChatMessageReadDB[]
+  // Notification system relations
+  notifications     NotificationDB[]
+  pushSubscriptions PushSubscriptionDB[]
+  notificationPreferences NotificationPreferencesDB?
 }
 
 model AdminDefaultPermissionDB {
