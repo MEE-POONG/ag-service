@@ -297,7 +297,7 @@ export default {
 AGChat.init({
   // Required
   widgetKey: 'YOUR_WIDGET_KEY',  // Widget key สำหรับยืนยันตัวตน
-  apiUrl: 'https://your-domain.com',  // URL ของ AG Chat API
+  apiUrl: 'https://meetanggroup.com',  // URL ของ AG Chat API
 
   // Optional - Customer info
   customer: {

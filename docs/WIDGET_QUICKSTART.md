@@ -15,11 +15,11 @@
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 
 <!-- AG Chat Widget -->
-<script src="https://your-domain.com/chat-widget.js"></script>
+<script src="https://meetanggroup.com/chat-widget.js"></script>
 <script>
   AGChat.init({
     widgetKey: 'YOUR_WIDGET_KEY',
-    apiUrl: 'https://your-domain.com'
+    apiUrl: 'https://meetanggroup.com'
   });
 </script>
 ```
@@ -43,7 +43,7 @@
 <script>
   AGChat.init({
     widgetKey: 'YOUR_WIDGET_KEY',
-    apiUrl: 'https://your-domain.com',
+    apiUrl: 'https://meetanggroup.com',
     customer: {
       customerId: 'user-12345',    // รหัสลูกค้าในระบบของคุณ
       name: 'สมชาย ใจดี',          // ชื่อ
@@ -80,11 +80,11 @@
 
   <!-- AG Chat Widget -->
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-  <script src="https://your-domain.com/chat-widget.js"></script>
+  <script src="https://meetanggroup.com/chat-widget.js"></script>
   <script>
     AGChat.init({
       widgetKey: 'YOUR_WIDGET_KEY',
-      apiUrl: 'https://your-domain.com',
+      apiUrl: 'https://meetanggroup.com',
       customer: {
         customerId: 'user-12345',
         name: 'สมชาย ใจดี',
@@ -106,11 +106,11 @@
 
 ```php
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-<script src="https://your-domain.com/chat-widget.js"></script>
+<script src="https://meetanggroup.com/chat-widget.js"></script>
 <script>
   AGChat.init({
     widgetKey: 'YOUR_WIDGET_KEY',
-    apiUrl: 'https://your-domain.com',
+    apiUrl: 'https://meetanggroup.com',
     <?php if (is_user_logged_in()): ?>
     customer: {
       customerId: '<?php echo get_current_user_id(); ?>',
@@ -135,11 +135,11 @@ function App() {
     document.body.appendChild(socketScript);
 
     const widgetScript = document.createElement('script');
-    widgetScript.src = 'https://your-domain.com/chat-widget.js';
+    widgetScript.src = 'https://meetanggroup.com/chat-widget.js';
     widgetScript.onload = () => {
       window.AGChat.init({
         widgetKey: 'YOUR_WIDGET_KEY',
-        apiUrl: 'https://your-domain.com'
+        apiUrl: 'https://meetanggroup.com'
       });
     };
     document.body.appendChild(widgetScript);
@@ -179,11 +179,11 @@ export default {
       document.body.appendChild(socketScript);
 
       const widgetScript = document.createElement('script');
-      widgetScript.src = 'https://your-domain.com/chat-widget.js';
+      widgetScript.src = 'https://meetanggroup.com/chat-widget.js';
       widgetScript.onload = () => {
         window.AGChat.init({
           widgetKey: 'YOUR_WIDGET_KEY',
-          apiUrl: 'https://your-domain.com'
+          apiUrl: 'https://meetanggroup.com'
         });
       };
       document.body.appendChild(widgetScript);
@@ -208,7 +208,7 @@ function MyApp({ Component, pageProps }) {
 
     // Load Widget
     const widgetScript = document.createElement('script');
-    widgetScript.src = 'https://your-domain.com/chat-widget.js';
+    widgetScript.src = 'https://meetanggroup.com/chat-widget.js';
     widgetScript.onload = () => {
       window.AGChat?.init({
         widgetKey: process.env.NEXT_PUBLIC_WIDGET_KEY,
@@ -309,7 +309,7 @@ if (window.location.pathname !== '/checkout') {
 ## ต้องการความช่วยเหลือ?
 
 - 📧 Email: support@your-domain.com
-- 💬 Live Chat: https://your-domain.com/support
+- 💬 Live Chat: https://meetanggroup.com/support
 - 📚 Docs: https://docs.your-domain.com
 
 ---

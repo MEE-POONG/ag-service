@@ -3,11 +3,11 @@
  * Embeddable chat widget for external websites
  * 
  * Usage:
- * <script src="https://your-domain.com/chat-widget.js"></script>
+ * <script src="https://meetanggroup.com/chat-widget.js"></script>
  * <script>
  *   AGChat.init({
  *     widgetKey: 'your-widget-key',
- *     apiUrl: 'https://your-domain.com',
+ *     apiUrl: 'https://meetanggroup.com',
  *     customer: {
  *       customerId: 'user-123',
  *       name: 'John Doe',

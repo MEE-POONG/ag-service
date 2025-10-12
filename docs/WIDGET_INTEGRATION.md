@@ -36,11 +36,11 @@ AG Chat Widget เป็น embeddable chat widget ที่ทำให้เ�
 
 ```html
 <!-- AG Chat Widget -->
-<script src="https://your-domain.com/chat-widget.js"></script>
+<script src="https://meetanggroup.com/chat-widget.js"></script>
 <script>
   AGChat.init({
     widgetKey: 'YOUR_WIDGET_KEY',
-    apiUrl: 'https://your-domain.com'
+    apiUrl: 'https://meetanggroup.com'
   });
 </script>
 ```
@@ -50,11 +50,11 @@ AG Chat Widget เป็น embeddable chat widget ที่ทำให้เ�
 หากคุณมีข้อมูลผู้ใช้ (เช่น หลังจาก Login แล้ว) สามารถส่งข้อมูลได้:
 
 ```html
-<script src="https://your-domain.com/chat-widget.js"></script>
+<script src="https://meetanggroup.com/chat-widget.js"></script>
 <script>
   AGChat.init({
     widgetKey: 'YOUR_WIDGET_KEY',
-    apiUrl: 'https://your-domain.com',
+    apiUrl: 'https://meetanggroup.com',
     customer: {
       customerId: 'user-12345',
       name: 'สมชาย ใจดี',
@@ -74,11 +74,11 @@ AG Chat Widget เป็น embeddable chat widget ที่ทำให้เ�
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 
 <!-- AG Chat Widget -->
-<script src="https://your-domain.com/chat-widget.js"></script>
+<script src="https://meetanggroup.com/chat-widget.js"></script>
 <script>
   AGChat.init({
     widgetKey: 'YOUR_WIDGET_KEY',
-    apiUrl: 'https://your-domain.com',
+    apiUrl: 'https://meetanggroup.com',
     customer: {
       customerId: 'user-12345',
       name: 'สมชาย ใจดี',
@@ -133,7 +133,7 @@ Widget settings สามารถกำหนดผ่าน Admin Dashboard �
 ```javascript
 AGChat.init({
   widgetKey: 'YOUR_WIDGET_KEY',
-  apiUrl: 'https://your-domain.com',
+  apiUrl: 'https://meetanggroup.com',
   customer: {
     customerId: 'user-123',
     name: 'John Doe',
@@ -188,11 +188,11 @@ AGChat.destroy();
 
   <!-- AG Chat Widget -->
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-  <script src="https://your-domain.com/chat-widget.js"></script>
+  <script src="https://meetanggroup.com/chat-widget.js"></script>
   <script>
     AGChat.init({
       widgetKey: 'demo-widget-key',
-      apiUrl: 'https://your-domain.com'
+      apiUrl: 'https://meetanggroup.com'
     });
   </script>
 </body>
@@ -213,11 +213,11 @@ function App() {
 
     // Load AG Chat Widget
     const widgetScript = document.createElement('script');
-    widgetScript.src = 'https://your-domain.com/chat-widget.js';
+    widgetScript.src = 'https://meetanggroup.com/chat-widget.js';
     widgetScript.onload = () => {
       window.AGChat.init({
         widgetKey: 'YOUR_WIDGET_KEY',
-        apiUrl: 'https://your-domain.com',
+        apiUrl: 'https://meetanggroup.com',
         customer: {
           customerId: 'user-123',
           name: 'สมชาย ใจดี',
@@ -276,11 +276,11 @@ export default {
 
       // Load widget
       const widgetScript = document.createElement('script');
-      widgetScript.src = 'https://your-domain.com/chat-widget.js';
+      widgetScript.src = 'https://meetanggroup.com/chat-widget.js';
       widgetScript.onload = () => {
         window.AGChat.init({
           widgetKey: 'YOUR_WIDGET_KEY',
-          apiUrl: 'https://your-domain.com',
+          apiUrl: 'https://meetanggroup.com',
           customer: {
             customerId: 'user-123',
             name: 'สมชาย ใจดี',
@@ -302,11 +302,11 @@ export default {
 ```php
 <!-- AG Chat Widget -->
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-<script src="https://your-domain.com/chat-widget.js"></script>
+<script src="https://meetanggroup.com/chat-widget.js"></script>
 <script>
   AGChat.init({
     widgetKey: '<?php echo get_option('ag_chat_widget_key'); ?>',
-    apiUrl: 'https://your-domain.com',
+    apiUrl: 'https://meetanggroup.com',
     <?php if (is_user_logged_in()): ?>
     customer: {
       customerId: '<?php echo get_current_user_id(); ?>',
@@ -350,12 +350,12 @@ export default {
   </button>
 
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-  <script src="https://your-domain.com/chat-widget.js"></script>
+  <script src="https://meetanggroup.com/chat-widget.js"></script>
   <script>
     // Initialize widget
     AGChat.init({
       widgetKey: 'YOUR_WIDGET_KEY',
-      apiUrl: 'https://your-domain.com'
+      apiUrl: 'https://meetanggroup.com'
     });
 
     // Custom function to open chat
@@ -406,7 +406,7 @@ export default {
   if (window.location.pathname !== '/checkout') {
     AGChat.init({
       widgetKey: 'YOUR_WIDGET_KEY',
-      apiUrl: 'https://your-domain.com'
+      apiUrl: 'https://meetanggroup.com'
     });
   }
 </script>
@@ -424,7 +424,7 @@ export default {
   if (isBusinessHours) {
     AGChat.init({
       widgetKey: 'YOUR_WIDGET_KEY',
-      apiUrl: 'https://your-domain.com'
+      apiUrl: 'https://meetanggroup.com'
     });
   }
 </script>
@@ -521,7 +521,7 @@ A: ใช่ มี REST API และ WebSocket API สำหรับการ
 หากมีปัญหาหรือต้องการความช่วยเหลือ:
 
 - 📧 Email: support@your-domain.com
-- 💬 Live Chat: https://your-domain.com/support
+- 💬 Live Chat: https://meetanggroup.com/support
 - 📚 Documentation: https://docs.your-domain.com
 - 🐛 Report Issues: https://github.com/your-repo/issues
 

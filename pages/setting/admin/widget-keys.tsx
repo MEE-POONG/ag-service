@@ -460,11 +460,11 @@ export default function WidgetKeysPage() {
               <strong>2. เพิ่มโค้ดในเว็บไซต์:</strong>
               <pre className="mt-2 p-3 bg-blue-100 rounded text-xs overflow-x-auto">
 {`<script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-<script src="https://your-domain.com/chat-widget.js"></script>
+<script src="https://meetanggroup.com/chat-widget.js"></script>
 <script>
   AGChat.init({
     widgetKey: 'YOUR_WIDGET_KEY',
-    apiUrl: 'https://your-domain.com'
+    apiUrl: 'https://meetanggroup.com'
   });
 </script>`}
               </pre>

@@ -25,11 +25,11 @@
 <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
 
 <!-- AG Chat Widget -->
-<script src="https://your-domain.com/chat-widget.js"></script>
+<script src="https://meetanggroup.com/chat-widget.js"></script>
 <script>
   AGChat.init({
     widgetKey: 'YOUR_WIDGET_KEY',
-    apiUrl: 'https://your-domain.com'
+    apiUrl: 'https://meetanggroup.com'
   });
 </script>
 ```
@@ -52,7 +52,7 @@ Widget จะปรากฏที่มุมขวาล่างของเ�
 <script>
   AGChat.init({
     widgetKey: 'YOUR_WIDGET_KEY',
-    apiUrl: 'https://your-domain.com'
+    apiUrl: 'https://meetanggroup.com'
   });
 </script>
 ```
@@ -63,7 +63,7 @@ Widget จะปรากฏที่มุมขวาล่างของเ�
 <script>
   AGChat.init({
     widgetKey: 'YOUR_WIDGET_KEY',
-    apiUrl: 'https://your-domain.com',
+    apiUrl: 'https://meetanggroup.com',
     customer: {
       customerId: 'user-12345',
       name: 'สมชาย ใจดี',
@@ -236,7 +236,7 @@ MIT License - see [LICENSE](LICENSE) file for details
 ## 💬 Support
 
 - 📧 Email: support@your-domain.com
-- 💬 Live Chat: https://your-domain.com/support
+- 💬 Live Chat: https://meetanggroup.com/support
 - 📚 Documentation: https://docs.your-domain.com
 - 🐛 Report Issues: https://github.com/your-repo/issues
 
@@ -263,7 +263,7 @@ Built with ❤️ by AG Chat Team
 
 **Made with ❤️ by AG Chat Team**
 
-[![Demo](https://img.shields.io/badge/demo-live-success)](https://your-domain.com/widget-demo.html)
+[![Demo](https://img.shields.io/badge/demo-live-success)](https://meetanggroup.com/widget-demo.html)
 [![Docs](https://img.shields.io/badge/docs-online-blue)](https://docs.your-domain.com)
-[![Support](https://img.shields.io/badge/support-available-green)](https://your-domain.com/support)
+[![Support](https://img.shields.io/badge/support-available-green)](https://meetanggroup.com/support)
 
