@@ -13,9 +13,8 @@ import ModalAdJustBet from '@/container/bot-ag/ModalAdJustBet'
 import ModalReset from '@/container/partner/ModalReset'
 import ModalCreateAgent from '@/container/partner/ModalCreateAgent'
 import ModalResetAgUserPassword from '@/container/partner/ModalResetAgUserPassword'
-import ModalCreatePartner from '@/container/partner/ModalCreatePartner'
-import ModalCreateMasterAgent from '@/container/partner/ModalCreateMasterAgent'
 import ModalResetPartner from '@/container/partner/ModalResetPartner'
+import ModalCreateMaster from '@/container/partner/ModalCreateMaster'
 import { usePermissions } from '@/hooks/usePermissions'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -145,10 +144,12 @@ export default function CommandWorkPage() {
                       <div className={`flex gap-2 mt-2 ${headPermissions.canAdvance || supportPermissions.canAdvance || (user?.username === 'superadmin' || user?.username === 'admin') ? 'block' : 'hidden'}`}>
                         <ModalReset data={u} />
                         <ModalResetPartner data={u} onSuccess={() => console.log('Success!')} />
-                        <ModalCreateAgent data={u} onSuccess={() => console.log('Success!')} />
-                        <ModalCreateMasterAgent data={u} onSuccess={() => console.log('Success!')} />
-                        <ModalCreatePartner data={u} onSuccess={() => console.log('Success!')} />
-                        <ModalResetAgUserPassword data={u} onSuccess={() => console.log('Success!')} />
+                        {u.position === 'master' && <>
+                          <ModalCreateAgent data={u} onSuccess={() => console.log('Success!')} />
+                        </>}
+                        {u.position === 'senior' && <>
+                          <ModalCreateMaster data={u} onSuccess={() => console.log('Success!')} />
+                        </>}
                       </div>
                     </td>
                   </tr>

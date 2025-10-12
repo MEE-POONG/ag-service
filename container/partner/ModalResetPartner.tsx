@@ -62,13 +62,6 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
       onSuccess?.();
       setIsOpen(false);
       // Reset form
-      setForm({
-        adviser: "",
-        usernameAG: "",
-        partnerAG: "",
-        partnerLogin: "",
-        position: "agent",
-      });
     } catch (err) {
       console.error("❌ เกิดข้อผิดพลาด:", err);
       toast.error("เกิดข้อผิดพลาด");
@@ -107,21 +100,9 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
               <strong>ข้อมูลจาก:</strong> {data.username} ({data.position})
             </p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Adviser <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={form.adviser}
-                onChange={(e) => setForm({ ...form, adviser: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="ระบุ adviser"
-              />
-            </div>
 
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Username AG <span className="text-red-500">*</span>
@@ -135,6 +116,20 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
                 disabled
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Adviser <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={form.adviser}
+                onChange={(e) => setForm({ ...form, adviser: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="ระบุ adviser"
+              />
+            </div>
+
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -4,7 +4,7 @@ import Modal from "@/components/form/Modal";
 import ReactIconComponent from "@/components/ReactIconComponent";
 import toast from "react-hot-toast";
 import { AgUserAccountDB } from "@prisma/client";
-// import axios, { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 
 interface ModalCreateAgentProps {
   onSuccess?: () => void;
@@ -15,17 +15,17 @@ const ModalCreateAgent: React.FC<ModalCreateAgentProps> = ({ data, onSuccess }) 
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    adviser: data.origin || "",
+    adviser: data.username || "",
     usernameAG: data.username || "",
-    position: "agent",
+    position: data.position || "",
   });
 
   // Update form when data changes
   useEffect(() => {
     setForm({
-      adviser: data.origin || "",
+      adviser: data.username || "",
       usernameAG: data.username || "",
-      position: "agent",
+      position: data.position || "",
     });
   }, [data]);
 
@@ -46,20 +46,16 @@ const ModalCreateAgent: React.FC<ModalCreateAgentProps> = ({ data, onSuccess }) 
       setLoading(true);
 
       // TODO: เปิดใช้งานเมื่อพร้อม
-      // const res = await axios.post('/api/create-agent', form);
-      // if (!res.data?.success) {
-      //   throw new Error(res.data?.error || 'สร้างคำขอไม่สำเร็จ');
-      // }
+      const res = await axios.post('/api/create-agent', form);
+      if (!res.data?.success) {
+        throw new Error(res.data?.error || 'สร้างคำขอไม่สำเร็จ');
+      }
 
       toast.success("สร้างคำขอสร้าง Agent สำเร็จ (Demo)");
       onSuccess?.();
       setIsOpen(false);
       // Reset form
-      setForm({
-        adviser: "",
-        usernameAG: "",
-        position: "agent",
-      });
+
     } catch (err) {
       console.error("❌ เกิดข้อผิดพลาด:", err);
       toast.error("เกิดข้อผิดพลาด");

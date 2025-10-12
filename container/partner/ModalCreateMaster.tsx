@@ -4,28 +4,30 @@ import Modal from "@/components/form/Modal";
 import ReactIconComponent from "@/components/ReactIconComponent";
 import toast from "react-hot-toast";
 import { AgUserAccountDB } from "@prisma/client";
+import axios from "axios";
 // import axios, { AxiosError } from "axios";
 
-interface ModalCreateMasterAgentProps {
+interface ModalCreateMasterProps {
   onSuccess?: () => void;
   data: AgUserAccountDB;
 }
 
-const ModalCreateMasterAgent: React.FC<ModalCreateMasterAgentProps> = ({ data, onSuccess }) => {
+const ModalCreateMaster: React.FC<ModalCreateMasterProps> = ({ data, onSuccess }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    adviser: data.origin || "",
+    adviser: data.username || "",
     usernameAG: data.username || "",
-    position: "master",
+    position: data.position || "",
   });
+
 
   // Update form when data changes
   useEffect(() => {
     setForm({
-      adviser: data.origin || "",
+      adviser: data.username || "",
       usernameAG: data.username || "",
-      position: "master",
+      position: data.position || "",
     });
   }, [data]);
 
@@ -46,20 +48,15 @@ const ModalCreateMasterAgent: React.FC<ModalCreateMasterAgentProps> = ({ data, o
       setLoading(true);
 
       // TODO: เปิดใช้งานเมื่อพร้อม
-      // const res = await axios.post('/api/create-master-agent', form);
-      // if (!res.data?.success) {
-      //   throw new Error(res.data?.error || 'สร้างคำขอไม่สำเร็จ');
-      // }
+      const res = await axios.post('/api/create-master-agent', form);
+      if (!res.data?.success) {
+        throw new Error(res.data?.error || 'สร้างคำขอไม่สำเร็จ');
+      }
 
       toast.success("สร้างคำขอสร้าง Master Agent สำเร็จ (Demo)");
       onSuccess?.();
       setIsOpen(false);
       // Reset form
-      setForm({
-        adviser: "",
-        usernameAG: "",
-        position: "master",
-      });
     } catch (err) {
       console.error("❌ เกิดข้อผิดพลาด:", err);
       toast.error("เกิดข้อผิดพลาด");
@@ -177,5 +174,5 @@ const ModalCreateMasterAgent: React.FC<ModalCreateMasterAgentProps> = ({ data, o
   );
 };
 
-export default ModalCreateMasterAgent;
+export default ModalCreateMaster;
 
