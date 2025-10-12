@@ -195,7 +195,12 @@
       }
 
       this.instance = window.io(apiUrl, {
-        transports: ['websocket', 'polling']
+        path: '/api/socket',
+        transports: ['polling', 'websocket'],
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: 5
       });
 
       this.instance.on('connect', () => {

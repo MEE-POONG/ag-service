@@ -1,6 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { Server as ServerIO } from 'socket.io'
-import { Server as NetServer } from 'http'
+
+/**
+ * Socket.IO API Route
+ * 
+ * NOTE: Socket.IO is now handled by the custom server (server.js)
+ * This route exists for compatibility but delegates to the custom server
+ * 
+ * The custom server initializes Socket.IO on app start and makes it
+ * available globally via global.io
+ */
 
 export const config = {
   api: {
@@ -8,43 +16,21 @@ export const config = {
   },
 }
 
-type NextApiResponseServerIO = NextApiResponse & {
-  socket: {
-    server: NetServer & {
-      io?: ServerIO
-    }
-  }
-}
-
-export default function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
-  if (!res.socket.server.io) {
-    console.log('Setting up Socket.IO server...')
-    
-    const io = new ServerIO(res.socket.server, {
-      path: '/api/socket',
-      addTrailingSlash: false,
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-      },
-      transports: ['polling', 'websocket']
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Socket.IO is handled by custom server.js
+  // This route just returns OK for compatibility
+  
+  if (global.io) {
+    res.status(200).json({ 
+      success: true, 
+      message: 'Socket.IO server is running',
+      connected: true 
     })
-
-    io.on('connection', (socket) => {
-      console.log('Client connected:', socket.id)
-
-      socket.on('authenticate', (data) => {
-        console.log('User authenticated:', data)
-        socket.data = data
-      })
-
-      socket.on('disconnect', () => {
-        console.log('Client disconnected:', socket.id)
-      })
+  } else {
+    res.status(503).json({ 
+      success: false, 
+      message: 'Socket.IO server not available. Make sure to run with custom server (npm run dev or npm start)',
+      connected: false 
     })
-
-    res.socket.server.io = io
   }
-
-  res.end()
 }
