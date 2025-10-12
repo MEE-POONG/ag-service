@@ -109,8 +109,8 @@ export default async function handler(
         user: {
           id: customer.id,
           name: customer.name || 'Guest',
-          email: customer.email,
-          phone: customer.phone
+          email: customer.email || '',
+          phone: customer.phone || undefined
         },
         token
       }
@@ -124,8 +124,7 @@ export default async function handler(
     })
     return res.status(500).json({
       success: false,
-      error: 'Registration failed',
-      details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
+      error: 'Registration failed'
     })
   }
 }

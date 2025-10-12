@@ -81,7 +81,7 @@ export default async function handler(
         select: { conversationId: true }
       })
 
-      const conversationIds = [...new Set(messages.map(msg => msg.conversationId))]
+      const conversationIds = Array.from(new Set(messages.map(msg => msg.conversationId)))
 
       // Update unread counts for each conversation
       for (const conversationId of conversationIds) {

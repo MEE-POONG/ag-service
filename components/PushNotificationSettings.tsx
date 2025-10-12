@@ -202,7 +202,7 @@ export function PushNotificationSettings() {
             <Button
               onClick={handleUnsubscribe}
               disabled={isPending}
-              variant="outline"
+              variant="ghost"
               className="flex-1 !border-red-300 !text-red-600 hover:!bg-red-50"
             >
               {isPending ? (

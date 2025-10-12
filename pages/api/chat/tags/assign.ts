@@ -56,8 +56,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AssignTagRes
             customerId,
             tagId,
             createdBy: admin.username
-          })),
-          skipDuplicates: true
+          }))
         })
       }
     })

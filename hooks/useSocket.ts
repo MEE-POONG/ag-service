@@ -87,22 +87,22 @@ export function useSocket(options: UseSocketOptions = {}): UseSocketReturn {
     socketRef.current = socket
 
     // Connection event handlers
-    socket.on(SocketEvent.CONNECT, () => {
+    socket.on('connect' as any, () => {
       console.log('[Socket] Connected:', socket.id)
       setIsConnected(true)
 
       // Authenticate user
       if (userId && userType && username) {
-        socket.emit('authenticate', { userId, userType, username })
+        socket.emit('authenticate' as any, { userId, userType, username })
       }
     })
 
-    socket.on(SocketEvent.DISCONNECT, () => {
+    socket.on('disconnect' as any, () => {
       console.log('[Socket] Disconnected')
       setIsConnected(false)
     })
 
-    socket.on(SocketEvent.ERROR, (error) => {
+    socket.on('error' as any, (error: any) => {
       console.error('[Socket] Error:', error)
       toast.error('เกิดข้อผิดพลาดในการเชื่อมต่อ')
     })
@@ -188,11 +188,11 @@ export function useSocket(options: UseSocketOptions = {}): UseSocketReturn {
     <T,>(event: SocketEvent, callback: (payload: T) => void) => {
       if (!socketRef.current) return () => {}
 
-      socketRef.current.on(event, callback as any)
+      socketRef.current.on(event as any, callback as any)
 
       // Return cleanup function
       return () => {
-        socketRef.current?.off(event, callback as any)
+        socketRef.current?.off(event as any, callback as any)
       }
     },
     []

@@ -217,7 +217,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<MessageRespo
       try {
         await notifyNewMessage({
           userId: conversation.assignedAdminId,
-          senderName: message.senderName,
+          senderName: message.senderName || 'Unknown',
           messagePreview: content.substring(0, 100),
           conversationId
         })
@@ -225,7 +225,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<MessageRespo
         // Send push notification
         await pushNewMessage({
           userId: conversation.assignedAdminId,
-          senderName: message.senderName,
+          senderName: message.senderName || 'Unknown',
           messagePreview: content.substring(0, 100),
           conversationId
         })

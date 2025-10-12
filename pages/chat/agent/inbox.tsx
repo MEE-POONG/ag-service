@@ -138,8 +138,7 @@ export default function AgentInboxPage() {
           badge: options.badge || '/icon-72x72.png',
           tag: options.tag,
           data: options.data,
-          requireInteraction: false, // Changed to false to auto-close
-          vibrate: [200, 100, 200]
+          requireInteraction: false // Changed to false to auto-close
         })
 
         notification.onclick = () => {

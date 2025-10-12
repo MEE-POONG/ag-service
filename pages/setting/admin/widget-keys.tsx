@@ -218,7 +218,6 @@ export default function WidgetKeysPage() {
     <TheLayout>
       <PageHeader
         title="Widget Keys"
-        subtitle="จัดการ Widget Keys สำหรับการใช้งาน Chat Widget"
       />
 
       <div className="space-y-6">
@@ -323,7 +322,7 @@ export default function WidgetKeysPage() {
                 </div>
 
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                  <Button variant="secondary" onClick={() => setIsCreateDialogOpen(false)}>
                     ยกเลิก
                   </Button>
                   <Button 
@@ -412,14 +411,14 @@ export default function WidgetKeysPage() {
                       />
                       <Button
                         size="sm"
-                        variant="outline"
+                        variant="secondary"
                         onClick={() => handleEdit(key)}
                       >
                         <ReactIconComponent icon="FaEdit" setClass="w-4 h-4" />
                       </Button>
                       <Button
                         size="sm"
-                        variant="outline"
+                        variant="danger"
                         onClick={() => handleDelete(key.id)}
                         className="text-red-600 hover:text-red-700"
                       >
@@ -509,7 +508,7 @@ export default function WidgetKeysPage() {
               />
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              <Button variant="secondary" onClick={() => setIsEditDialogOpen(false)}>
                 ยกเลิก
               </Button>
               <Button 

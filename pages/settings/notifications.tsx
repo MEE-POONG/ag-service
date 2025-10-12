@@ -372,7 +372,7 @@ export default function NotificationSettingsPage() {
           <Button
             onClick={handleReset}
             disabled={resetPrefsMutation.isPending}
-            variant="outline"
+            variant="secondary"
             className="!border-gray-300 !text-gray-700"
           >
             {resetPrefsMutation.isPending ? (

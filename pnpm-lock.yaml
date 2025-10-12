@@ -240,6 +240,9 @@ importers:
       '@types/react-dom':
         specifier: ^18
         version: 18.3.7(@types/react@18.3.24)
+      '@types/web-push':
+        specifier: ^3.6.4
+        version: 3.6.4
       eslint:
         specifier: ^8
         version: 8.57.1
@@ -1734,6 +1737,9 @@ packages:
 
   '@types/update-notifier@6.0.8':
     resolution: {integrity: sha512-IlDFnfSVfYQD+cKIg63DEXn3RFmd7W1iYtKQsJodcHK9R1yr8aKbKaPKfBxzPpcHCq2DU8zUq4PIPmy19Thjfg==}
+
+  '@types/web-push@3.6.4':
+    resolution: {integrity: sha512-GnJmSr40H3RAnj0s34FNTcJi1hmWFV5KXugE0mYWnYhgTAHLJ/dJKAwDmvPJYMke0RplY2XE9LnM4hqSqKIjhQ==}
 
   '@typescript-eslint/parser@6.21.0':
     resolution: {integrity: sha512-tbsV1jPne5CkFQCgPBcDOt30ItF7aJoZL997JSF7MhGQqOeT3svWRYxiqlfA5RUdlHN6Fi+EI9bxqbdyAUZjYQ==}
@@ -4979,11 +4985,11 @@ snapshots:
       glob: 10.4.5
       highlight.js: 11.11.1
       ink: 6.3.0(@types/react@18.3.24)(react@19.1.1)
-      ink-big-text: 2.0.0(ink@6.3.0(@types/react@18.3.24)(react@18.3.1))(react@19.1.1)
-      ink-gradient: 3.0.0(ink@6.3.0(@types/react@18.3.24)(react@18.3.1))
-      ink-link: 4.1.0(ink@6.3.0(@types/react@18.3.24)(react@18.3.1))
-      ink-select-input: 6.2.0(ink@6.3.0(@types/react@18.3.24)(react@18.3.1))(react@19.1.1)
-      ink-spinner: 5.0.0(ink@6.3.0(@types/react@18.3.24)(react@18.3.1))(react@19.1.1)
+      ink-big-text: 2.0.0(ink@6.3.0(@types/react@18.3.24)(react@19.1.1))(react@19.1.1)
+      ink-gradient: 3.0.0(ink@6.3.0(@types/react@18.3.24)(react@19.1.1))
+      ink-link: 4.1.0(ink@6.3.0(@types/react@18.3.24)(react@19.1.1))
+      ink-select-input: 6.2.0(ink@6.3.0(@types/react@18.3.24)(react@19.1.1))(react@19.1.1)
+      ink-spinner: 5.0.0(ink@6.3.0(@types/react@18.3.24)(react@19.1.1))(react@19.1.1)
       lowlight: 3.3.0
       mime-types: 3.0.1
       open: 10.2.0
@@ -6347,6 +6353,10 @@ snapshots:
     dependencies:
       '@types/configstore': 6.0.2
       boxen: 7.1.1
+
+  '@types/web-push@3.6.4':
+    dependencies:
+      '@types/node': 20.19.13
 
   '@typescript-eslint/parser@6.21.0(eslint@8.57.1)(typescript@5.9.2)':
     dependencies:
@@ -7888,14 +7898,14 @@ snapshots:
 
   ini@4.1.1: {}
 
-  ink-big-text@2.0.0(ink@6.3.0(@types/react@18.3.24)(react@18.3.1))(react@19.1.1):
+  ink-big-text@2.0.0(ink@6.3.0(@types/react@18.3.24)(react@19.1.1))(react@19.1.1):
     dependencies:
       cfonts: 3.3.1
       ink: 6.3.0(@types/react@18.3.24)(react@19.1.1)
       prop-types: 15.8.1
       react: 19.1.1
 
-  ink-gradient@3.0.0(ink@6.3.0(@types/react@18.3.24)(react@18.3.1)):
+  ink-gradient@3.0.0(ink@6.3.0(@types/react@18.3.24)(react@19.1.1)):
     dependencies:
       '@types/gradient-string': 1.1.6
       gradient-string: 2.0.2
@@ -7903,20 +7913,20 @@ snapshots:
       prop-types: 15.8.1
       strip-ansi: 7.1.2
 
-  ink-link@4.1.0(ink@6.3.0(@types/react@18.3.24)(react@18.3.1)):
+  ink-link@4.1.0(ink@6.3.0(@types/react@18.3.24)(react@19.1.1)):
     dependencies:
       ink: 6.3.0(@types/react@18.3.24)(react@19.1.1)
       prop-types: 15.8.1
       terminal-link: 3.0.0
 
-  ink-select-input@6.2.0(ink@6.3.0(@types/react@18.3.24)(react@18.3.1))(react@19.1.1):
+  ink-select-input@6.2.0(ink@6.3.0(@types/react@18.3.24)(react@19.1.1))(react@19.1.1):
     dependencies:
       figures: 6.1.0
       ink: 6.3.0(@types/react@18.3.24)(react@19.1.1)
       react: 19.1.1
       to-rotated: 1.0.0
 
-  ink-spinner@5.0.0(ink@6.3.0(@types/react@18.3.24)(react@18.3.1))(react@19.1.1):
+  ink-spinner@5.0.0(ink@6.3.0(@types/react@18.3.24)(react@19.1.1))(react@19.1.1):
     dependencies:
       cli-spinners: 2.9.2
       ink: 6.3.0(@types/react@18.3.24)(react@19.1.1)

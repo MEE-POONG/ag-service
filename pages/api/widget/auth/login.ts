@@ -107,8 +107,8 @@ export default async function handler(
         user: {
           id: customer.id,
           name: customer.name || 'Guest',
-          email: customer.email,
-          phone: customer.phone
+          email: customer.email || '',
+          phone: customer.phone || undefined
         },
         token
       }

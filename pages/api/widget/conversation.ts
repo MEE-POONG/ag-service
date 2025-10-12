@@ -195,8 +195,7 @@ export default async function handler(
     })
     return res.status(500).json({
       success: false,
-      error: 'Failed to process conversation',
-      details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
+      error: 'Failed to process conversation'
     })
   }
 }
