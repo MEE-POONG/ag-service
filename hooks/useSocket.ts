@@ -75,13 +75,14 @@ export function useSocket(options: UseSocketOptions = {}): UseSocketReturn {
   const connect = useCallback(() => {
     if (socketRef.current?.connected) return
 
-    // Create socket connection
+    // Create socket connection with API route
     const socket: SocketType = io({
-      path: '/socket.io/',
-      transports: ['websocket', 'polling'],
+      path: '/api/socket',
+      transports: ['polling', 'websocket'],
       reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 2000,
+      timeout: 30000
     })
 
     socketRef.current = socket
