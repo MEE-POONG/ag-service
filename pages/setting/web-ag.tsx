@@ -45,7 +45,7 @@ export default function WebAgPage() {
     isLoading,
     refetch,
   } = useQuery<WebBaseResp>({
-    queryKey: qk.webBase.list(params.keyword, '', params.page, params.pageSize),
+    queryKey: qk.WebBaseDB.list(params.keyword, '', params.page, params.pageSize),
     queryFn: async () => {
       const res = await axios.get(`/api/web-base?${qs}`);
       return res.data as WebBaseResp;
@@ -128,35 +128,35 @@ export default function WebAgPage() {
                       </td>
                     </tr>
                   ) : (
-                    webBases.map((webBase) => (
-                      <tr key={webBase.id}>
+                    webBases.map((WebBaseDB) => (
+                      <tr key={WebBaseDB.id}>
                         <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                          <div className="font-medium">{webBase.name}</div>
+                          <div className="font-medium">{WebBaseDB.name}</div>
                           <div className="text-xs text-gray-500 sm:hidden">
-                            Admin: {webBase._count?.AdminDB || 0} | AG User: {webBase._count?.AGUserDB || 0}
+                            Admin: {WebBaseDB._count?.AdminDB || 0} | AG User: {WebBaseDB._count?.AGUserDB || 0}
                           </div>
                           <div className="text-xs text-gray-500 md:hidden sm:block">
-                            {new Date(webBase.createdAt).toLocaleDateString('th-TH')}
+                            {new Date(WebBaseDB.createdAt).toLocaleDateString('th-TH')}
                           </div>
                         </td>
-                        <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm hidden sm:table-cell">{webBase._count?.AdminDB || 0}</td>
-                        <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm hidden md:table-cell">{webBase._count?.AGUserDB || 0}</td>
+                        <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm hidden sm:table-cell">{WebBaseDB._count?.AdminDB || 0}</td>
+                        <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm hidden md:table-cell">{WebBaseDB._count?.AGUserDB || 0}</td>
                         <td className="px-2 sm:px-4 py-3">
-                          <span className={`px-1 sm:px-2 py-1 text-xs rounded-full ${webBase.isActive
+                          <span className={`px-1 sm:px-2 py-1 text-xs rounded-full ${WebBaseDB.isActive
                             ? 'bg-green-100 text-green-800'
                             : 'bg-red-100 text-red-800'
                             }`}>
-                            {webBase.isActive ? 'Active' : 'Inactive'}
+                            {WebBaseDB.isActive ? 'Active' : 'Inactive'}
                           </span>
                         </td>
                         <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm hidden md:table-cell">
-                          {new Date(webBase.createdAt).toLocaleDateString('th-TH')}
+                          {new Date(WebBaseDB.createdAt).toLocaleDateString('th-TH')}
                         </td>
                         <td className="px-2 sm:px-4 py-3">
                           <div className='w-max ml-auto flex flex-row gap-1'>
-                            <WebBaseModalView data={webBase} />
-                            <WebBaseModalEdit data={webBase} onSuccess={() => refetch()} />
-                            <WebBaseModalDelete data={webBase} onSuccess={() => refetch()} />
+                            <WebBaseModalView data={WebBaseDB} />
+                            <WebBaseModalEdit data={WebBaseDB} onSuccess={() => refetch()} />
+                            <WebBaseModalDelete data={WebBaseDB} onSuccess={() => refetch()} />
                           </div>
                         </td>
                       </tr>

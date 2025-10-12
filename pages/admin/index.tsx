@@ -151,14 +151,14 @@ export default function AdminPage() {
                         <TableCell>
                           <div className="w-max text-center">
                             <span className="inline-flex px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-400">
-                              {item.adminPosition?.adminDepartment?.name || '-'}
+                              {item.AdminPositionDB?.adminDepartment?.name || '-'}
                             </span>
                             <br />
-                            {item.adminPosition?.name ? (
+                            {item.AdminPositionDB?.name ? (
                               <span
-                                className={`inline-flex px-2 py-1 mt-1 rounded-full text-xs font-semibold ${positionColorByPriority(Number(item.adminPosition?.priority))}`}
+                                className={`inline-flex px-2 py-1 mt-1 rounded-full text-xs font-semibold ${positionColorByPriority(Number(item.AdminPositionDB?.priority))}`}
                               >
-                                {item.adminPosition?.name}
+                                {item.AdminPositionDB?.name}
                               </span>
                             ) : null}
                           </div>

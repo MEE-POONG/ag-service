@@ -1,0 +1,181 @@
+import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from "react";
+import Modal from "@/components/form/Modal";
+import ReactIconComponent from "@/components/ReactIconComponent";
+import toast from "react-hot-toast";
+import { AgUserAccountDB } from "@prisma/client";
+// import axios, { AxiosError } from "axios";
+
+interface ModalCreateMasterAgentProps {
+  onSuccess?: () => void;
+  data: AgUserAccountDB;
+}
+
+const ModalCreateMasterAgent: React.FC<ModalCreateMasterAgentProps> = ({ data, onSuccess }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    adviser: data.origin || "",
+    usernameAG: data.username || "",
+    position: "master",
+  });
+
+  // Update form when data changes
+  useEffect(() => {
+    setForm({
+      adviser: data.origin || "",
+      usernameAG: data.username || "",
+      position: "master",
+    });
+  }, [data]);
+
+  const handleSubmit = async () => {
+    // Validation
+    if (!form.adviser || !form.usernameAG || !form.position) {
+      toast.error("กรุณากรอกข้อมูลให้ครบถ้วน");
+      return;
+    }
+
+    console.log("📝 Create Master Agent Data:", {
+      adviser: form.adviser,
+      usernameAG: form.usernameAG,
+      position: form.position,
+    });
+
+    try {
+      setLoading(true);
+
+      // TODO: เปิดใช้งานเมื่อพร้อม
+      // const res = await axios.post('/api/create-master-agent', form);
+      // if (!res.data?.success) {
+      //   throw new Error(res.data?.error || 'สร้างคำขอไม่สำเร็จ');
+      // }
+
+      toast.success("สร้างคำขอสร้าง Master Agent สำเร็จ (Demo)");
+      onSuccess?.();
+      setIsOpen(false);
+      // Reset form
+      setForm({
+        adviser: "",
+        usernameAG: "",
+        position: "master",
+      });
+    } catch (err) {
+      console.error("❌ เกิดข้อผิดพลาด:", err);
+      toast.error("เกิดข้อผิดพลาด");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <Button
+        onClick={() => setIsOpen(true)}
+        size="xs"
+        className="!bg-blue-600 !text-white hover:!bg-blue-700 rounded-full px-3"
+      >
+        สร้าง Master Agent
+      </Button>
+
+      <Modal open={isOpen} onOpenChange={setIsOpen} size="lg" closeOnOverlayClick closeOnEsc>
+        <Modal.Header>
+          <div>
+            <Modal.Title>
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                สร้างคำขอสร้าง Master Agent
+              </span>
+            </Modal.Title>
+          </div>
+          <Modal.Close onClick={() => setIsOpen(false)} size="sm">
+            <ReactIconComponent icon="FaTimes" setClass="w-5 h-5" />
+          </Modal.Close>
+        </Modal.Header>
+
+        <Modal.Body>
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-sm text-blue-800">
+              <strong>ข้อมูลจาก:</strong> {data.username} ({data.position})
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Adviser <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={form.adviser}
+                onChange={(e) => setForm({ ...form, adviser: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="ระบุ adviser"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Username AG <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={form.usernameAG}
+                onChange={(e) => setForm({ ...form, usernameAG: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="ระบุ username AG"
+                disabled
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Position <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={form.position}
+                onChange={(e) => setForm({ ...form, position: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="ระบุ position"
+              />
+            </div>
+          </div>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <div className="flex space-x-2">
+            <Button
+              onClick={() => setIsOpen(false)}
+              disabled={loading}
+              className="inline-flex items-center px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded border border-gray-300 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ReactIconComponent icon="FaTimes" setClass="w-4 h-4 mr-2" />
+              ยกเลิก
+            </Button>
+
+            <Button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="inline-flex items-center px-4 py-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <>
+                  <ReactIconComponent icon="FaSpinner" setClass="w-4 h-4 mr-2 animate-spin" />
+                  กำลังบันทึก...
+                </>
+              ) : (
+                <>
+                  <ReactIconComponent icon="FaSave" setClass="w-4 h-4 mr-2" />
+                  บันทึก
+                </>
+              )}
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+};
+
+export default ModalCreateMasterAgent;
+

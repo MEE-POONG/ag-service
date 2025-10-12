@@ -96,10 +96,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
     if (!adviser) {
       return res.status(400).json({ success: false, error: 'กรุณากรอก adviser และ newPassword' })
     }
-    const webBase = await prisma.webBaseDB.findUnique({
+    const WebBaseDB = await prisma.webBaseDB.findUnique({
       where: { name: webname },
     });
-    if (!webBase) {
+    if (!WebBaseDB) {
       return res.status(400).json({ success: false, error: 'ไม่เจอฐานข้อมูลของเว็บ' })
     }
 
@@ -107,10 +107,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
 
     switch (position) {
       case 'master':
-        password = webBase.passA ?? '';
+        password = WebBaseDB.passA ?? '';
         break;
       case 'senior':
-        password = webBase.passM ?? '';
+        password = WebBaseDB.passM ?? '';
         break;
     }
     const created = await prisma.$transaction(async (tx) => {

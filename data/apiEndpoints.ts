@@ -80,7 +80,7 @@ export const API_ENDPOINTS = {
     DELETE: (id: string) => `${API_BASE_URL}/ag-users/${id}`,
     GET_BY_ID: (id: string) => `${API_BASE_URL}/ag-users/${id}`,
     TOGGLE_STATUS: (id: string) => `${API_BASE_URL}/ag-users/${id}/toggle-status`,
-    BY_WEBBASE: (webBaseId: string) => `${API_BASE_URL}/ag-users/webbase/${webBaseId}`,
+    BY_WEBBASE: (webBaseId: string) => `${API_BASE_URL}/ag-users/WebBaseDB/${webBaseId}`,
   },
 
   // Partners Management

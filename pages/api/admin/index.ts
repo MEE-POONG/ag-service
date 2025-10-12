@@ -53,9 +53,9 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminResponse
           email: true,
           tel: true,
           isActive: true,
-          adminPositionId: true,      // ให้ฟอร์มรู้ตำแหน่งเดิม
+          AdminPositionDBId: true,      // ให้ฟอร์มรู้ตำแหน่งเดิม
           // ❌ ไม่ select password/passwordHash เพื่อความปลอดภัย + ลด payload
-          adminPosition: {
+          AdminPositionDB: {
             select: {
               id: true,
               name: true,
@@ -98,8 +98,8 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminResponse
           { username: { contains: searchKeyword, mode: 'insensitive' } },
           { name: { contains: searchKeyword, mode: 'insensitive' } },
           { email: { contains: searchKeyword, mode: 'insensitive' } },
-          { adminPosition: { name: { contains: searchKeyword, mode: 'insensitive' } } },
-          { adminPosition: { adminDepartment: { name: { contains: searchKeyword, mode: 'insensitive' } } } }
+          { AdminPositionDB: { name: { contains: searchKeyword, mode: 'insensitive' } } },
+          { AdminPositionDB: { adminDepartment: { name: { contains: searchKeyword, mode: 'insensitive' } } } }
         ]
       } : {})
     };
@@ -109,7 +109,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminResponse
       prisma.adminDB.findMany({
         where: whereClause,
         include: {
-          adminPosition: {
+          AdminPositionDB: {
             include: {
               adminDepartment: true,
             },
@@ -156,10 +156,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
   // }
 
   try {
-    const { username, password, name, email, tel, adminPositionId } = req.body;
+    const { username, password, name, email, tel, AdminPositionDBId } = req.body;
 
     // Validation
-    if (!username || !password || !name || !email || !adminPositionId) {
+    if (!username || !password || !name || !email || !AdminPositionDBId) {
       return res.status(400).json({
         success: false,
         error: 'กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน'
@@ -191,7 +191,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
           name,
           email,
           tel,
-          adminPositionId,
+          AdminPositionDB: {
+            connect: { id: AdminPositionDBId }
+          },
+          AdminPositionDBId: AdminPositionDBId,
           isActive: true,
           createdAt: new Date(),
           createdBy: currentAdmin.username,
@@ -199,7 +202,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
           updatedBy: currentAdmin.username,
         },
         include: {
-          adminPosition: {
+          AdminPositionDB: {
             include: { adminDepartment: true }
           },
         },
@@ -267,7 +270,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
   // }
 
   try {
-    const { id, username, name, email, tel, adminPositionId, isActive, updatedBy } = req.body;
+    const { id, username, name, email, tel, AdminPositionDBId, isActive, updatedBy } = req.body;
 
 
 
@@ -334,13 +337,13 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
           ...(name && { name }),
           ...(email && { email }),
           ...(tel !== undefined && { tel }),
-          ...(adminPositionId && { adminPositionId }),
+          ...(AdminPositionDBId && { AdminPositionDBId: AdminPositionDBId }),
           ...(isActive !== undefined && { isActive }),
           updatedBy: currentAdmin.username,
           updatedAt: new Date(),
         },
         include: {
-          adminPosition: {
+          AdminPositionDB: {
             include: { adminDepartment: true }
           },
         },
@@ -423,7 +426,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<AdminRespo
     const existingAdmin = await prisma.adminDB.findFirst({
       where: { id },
       include: {
-        adminPosition: {
+        AdminPositionDB: {
           include: { adminDepartment: true }
         },
       },

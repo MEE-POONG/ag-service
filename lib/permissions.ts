@@ -62,14 +62,14 @@ export async function checkUserPermissions(
 
     },
     include: {
-      adminPosition: {
+      AdminPositionDB: {
         include: {
           AdminDefaultPermissionDB: {
             where: {
               isDeleted: false,
             },
             include: {
-              menuPage: true,
+              MenuPageWebDB: true,
             },
           },
         },
@@ -77,7 +77,7 @@ export async function checkUserPermissions(
     },
   }) as any
 
-  if (!admin || !admin.adminPosition) {
+  if (!admin || !admin.AdminPositionDB) {
     return {
       user,
       permissions: {
@@ -91,8 +91,8 @@ export async function checkUserPermissions(
   }
 
   // Get permissions from AdminDefaultPermissionDB
-  const permission = admin.adminPosition?.AdminDefaultPermissionDB?.find(
-    (p: any) => p.menuPage?.name === menuPageName
+  const permission = admin.AdminPositionDB?.AdminDefaultPermissionDB?.find(
+    (p: any) => p.MenuPageWebDB?.name === menuPageName
   )
 
   const permissions: PermissionContext = {
@@ -141,7 +141,7 @@ export async function getAdminFromCookie(req: NextApiRequest): Promise<any | nul
 
     },
     include: {
-      adminPosition: {
+      AdminPositionDB: {
         include: {
           adminDepartment: true,
           AdminDefaultPermissionDB: {
@@ -149,12 +149,12 @@ export async function getAdminFromCookie(req: NextApiRequest): Promise<any | nul
               isDeleted: false,
             },
             include: {
-              menuPage: true,
+              MenuPageWebDB: true,
             },
           },
         },
       },
-      webBase: {
+      WebBaseDB: {
         include: {}
       },
     },
@@ -164,7 +164,7 @@ export async function getAdminFromCookie(req: NextApiRequest): Promise<any | nul
     return null
   }
 
-  const permissions = admin.adminPosition?.AdminDefaultPermissionDB?.map((p: any) => p.menuPage?.name).filter(Boolean) || []
+  const permissions = admin.AdminPositionDB?.AdminDefaultPermissionDB?.map((p: any) => p.MenuPageWebDB?.name).filter(Boolean) || []
 
   return {
     ...admin,

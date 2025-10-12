@@ -23,7 +23,7 @@ type MenusResp = {
   pagination?: Params;
 };
 
-export default function MenuPage() {
+export default function MenuPageWebDB() {
   const router = useRouter();
   const { parentId } = router.query;
 

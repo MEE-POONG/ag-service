@@ -46,7 +46,7 @@ export const qk = {
   images: {
     list: (page: number, pageSize: number, keyword: string) => ['image-list', { page, pageSize, keyword }] as const,
   },
-  webBase: {
+  WebBaseDB: {
     list: (search: string, status: string, page: number, pageSize: number) =>
       ['web-base', { search, status, page, pageSize }] as const,
   },

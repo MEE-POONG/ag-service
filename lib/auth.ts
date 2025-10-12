@@ -138,12 +138,12 @@ export function sanitizeAdminForClient<T extends Record<string, any>>(admin: T):
 
 /**
  * 📋 ดึงรายชื่อสิทธิ์ (permissions) จากความสัมพันธ์ตำแหน่งงาน
- * @param admin ข้อมูลผู้ใช้ที่มี adminPosition และ permissions
+ * @param admin ข้อมูลผู้ใช้ที่มี AdminPositionDB และ permissions
  * @returns array ของชื่อเมนูที่ผู้ใช้มีสิทธิ์เข้าถึง
  */
 function extractPermissionNames(admin: any): string[] {
-  const list = admin?.adminPosition?.AdminDefaultPermissionDB ?? []
-  return list.map((p: any) => p?.menuPage?.name).filter(Boolean)
+  const list = admin?.AdminPositionDB?.AdminDefaultPermissionDB ?? []
+  return list.map((p: any) => p?.MenuPageWebDB?.name).filter(Boolean)
 }
 
 // 🔐 === ฟังก์ชันหลักสำหรับการตรวจสอบสิทธิ์ ===
@@ -175,16 +175,16 @@ export async function authenticateAdmin(
       isActive: true, // เฉพาะบัญชีที่เปิดใช้งาน
     },
     include: {
-      adminPosition: {
+      AdminPositionDB: {
         include: {
           adminDepartment: true, // ข้อมูลแผนก
           AdminDefaultPermissionDB: {
             where: { isDeleted: false }, // เฉพาะสิทธิ์ที่ยังใช้งาน
-            include: { menuPage: true } // รายละเอียดหน้าเมนู
+            include: { MenuPageWebDB: true } // รายละเอียดหน้าเมนู
           },
         },
       },
-      webBase: true, // ข้อมูล website base
+      WebBaseDB: true, // ข้อมูล website base
     },
   })
 

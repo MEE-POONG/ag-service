@@ -49,7 +49,7 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
         const isMaster = (data.position || "").toLowerCase() === "master";
         const passValue = isMaster ? result.data?.passM : result.data?.passA;
       } else {
-        toast.error("ไม่พบข้อมูล WebBase/OTP");
+        toast.error("ไม่พบข้อมูล WebBaseDB/OTP");
       }
     } catch (err) {
       console.error("Failed to fetch OTP:", err);

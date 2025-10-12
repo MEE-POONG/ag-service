@@ -7,10 +7,10 @@ export interface Department {
   managerId?: string;
   isActive: boolean;
   createdAt: string;
-  adminPositions: AdminPosition[];
+  AdminPositionDB: AdminPositionDB[];
 }
 
-export interface AdminPosition {
+export interface AdminPositionDB {
   id: string;
   name: string;
   description?: string;
@@ -27,10 +27,10 @@ export interface Admin {
   name: string;
   email: string;
   tel?: string;
-  adminPositionId?: string;
-  adminPosition?: AdminPosition;
+  AdminPositionDBId?: string;
+  AdminPositionDB?: AdminPositionDB;
   webBaseId?: string;
-  webBase?: WebBase;
+  WebBaseDB?: WebBaseDB;
   isActive: boolean;
   createdAt: string;
 }
@@ -48,7 +48,7 @@ export interface User {
   createdAt: string;
 }
 
-export interface WebBase {
+export interface WebBaseDB {
   id: string;
   name: string;
   isActive: boolean;
@@ -61,7 +61,7 @@ export interface AGUser {
   userLogin: string;
   adviser?: string;
   webBaseId: string;
-  webBase: WebBase;
+  WebBaseDB: WebBaseDB;
   isActive: boolean;
   createdAt: string;
 }
@@ -74,7 +74,7 @@ export const mockDepartments: Department[] = [
     description: 'รับผิดชอบระบบเทคโนโลยีสารสนเทศและการพัฒนาระบบ',
     isActive: true,
     createdAt: '2024-01-15T08:00:00Z',
-    adminPositions: [
+    AdminPositionDB: [
       {
         id: '1',
         name: 'หัวหน้าแผนก IT',
@@ -110,7 +110,7 @@ export const mockDepartments: Department[] = [
     description: 'จัดการทรัพยากรบุคคลและสวัสดิการพนักงาน',
     isActive: true,
     createdAt: '2024-01-16T08:00:00Z',
-    adminPositions: [
+    AdminPositionDB: [
       {
         id: '4',
         name: 'หัวหน้าแผนก HR',
@@ -137,7 +137,7 @@ export const mockDepartments: Department[] = [
     description: 'จัดการด้านการเงินและบัญชี',
     isActive: true,
     createdAt: '2024-01-17T08:00:00Z',
-    adminPositions: [
+    AdminPositionDB: [
       {
         id: '6',
         name: 'หัวหน้าแผนกการเงิน',
@@ -161,7 +161,7 @@ export const mockDepartments: Department[] = [
 ];
 
 // Mock WebBases Data
-export const mockWebBases: WebBase[] = [
+export const mockWebBases: WebBaseDB[] = [
   {
     id: '1',
     name: 'เว็บไซต์หลัก',
@@ -190,7 +190,7 @@ export const mockAdmins: Admin[] = [
     name: 'สมชาย ใจดี',
     email: 'somchai@example.com',
     tel: '081-234-5678',
-    adminPositionId: '1',
+    AdminPositionDBId: '1',
     webBaseId: '1',
     isActive: true,
     createdAt: '2024-01-20T08:00:00Z'
@@ -201,7 +201,7 @@ export const mockAdmins: Admin[] = [
     name: 'สมหญิง รักงาน',
     email: 'somying@example.com',
     tel: '082-345-6789',
-    adminPositionId: '2',
+    AdminPositionDBId: '2',
     webBaseId: '1',
     isActive: true,
     createdAt: '2024-01-21T08:00:00Z'
@@ -212,7 +212,7 @@ export const mockAdmins: Admin[] = [
     name: 'วิไล สุขใจ',
     email: 'wilai@example.com',
     tel: '083-456-7890',
-    adminPositionId: '4',
+    AdminPositionDBId: '4',
     webBaseId: '1',
     isActive: true,
     createdAt: '2024-01-22T08:00:00Z'
@@ -264,7 +264,7 @@ export const mockAGUsers: AGUser[] = [
     userLogin: 'aguser001',
     adviser: 'สมชาย ใจดี',
     webBaseId: '1',
-    webBase: mockWebBases[0],
+    WebBaseDB: mockWebBases[0],
     isActive: true,
     createdAt: '2024-02-10T08:00:00Z'
   },
@@ -274,7 +274,7 @@ export const mockAGUsers: AGUser[] = [
     userLogin: 'aguser002',
     adviser: 'สมหญิง รักงาน',
     webBaseId: '1',
-    webBase: mockWebBases[0],
+    WebBaseDB: mockWebBases[0],
     isActive: true,
     createdAt: '2024-02-11T08:00:00Z'
   },
@@ -283,7 +283,7 @@ export const mockAGUsers: AGUser[] = [
     userAg: 'AG003',
     userLogin: 'aguser003',
     webBaseId: '2',
-    webBase: mockWebBases[1],
+    WebBaseDB: mockWebBases[1],
     isActive: false,
     createdAt: '2024-02-12T08:00:00Z'
   }

@@ -42,7 +42,7 @@ function useTotpRemaining(stepSec = 30) {
   useEffect(() => {
     const id = setInterval(() => setRemaining(calc()), 1000)
     return () => clearInterval(id)
-  }, [stepSec])
+  }, [stepSec, calc])
   return remaining
 }
 

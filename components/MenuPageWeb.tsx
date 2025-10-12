@@ -13,7 +13,7 @@ interface EnhancedMenuProps {
     collapsed?: boolean;
 }
 
-export default function MenuPage({ dataList, collapsed, }: EnhancedMenuProps) {
+export default function MenuPageWebDB({ dataList, collapsed, }: EnhancedMenuProps) {
     const router = useRouter();
     const [hierarchicalMenus, setHierarchicalMenus] = useState<MenuWebDBWithChildren[]>([]);
     const [openGroups, setOpenGroups] = useState<string[]>([]);
