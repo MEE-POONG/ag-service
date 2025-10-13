@@ -63,7 +63,7 @@ export default function DepartmentsPage() {
 
   // useEffect(() => {
   //   console.log('departments', departments);
-  //   console.log('departments.adminPositions', departments?.[0]?.adminPositionDB);
+  //   console.log('departments.adminPositionDB', departments?.[0]?.adminPositionDB);
 
   // }, [departments, depResp])
 
