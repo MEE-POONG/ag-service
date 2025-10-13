@@ -89,7 +89,7 @@ export function useSocket(options: UseSocketOptions = {}): UseSocketReturn {
 
     // Connection event handlers
     socket.on('connect' as any, () => {
-      console.log('[Socket] Connected:', socket.id)
+      // console.log('[Socket] Connected:', socket.id)
       setIsConnected(true)
 
       // Authenticate user

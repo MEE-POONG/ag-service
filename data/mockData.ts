@@ -27,7 +27,7 @@ export interface Admin {
   name: string;
   email: string;
   tel?: string;
-  AdminPositionDBId?: string;
+  AdminPositionId?: string;
   AdminPositionDB?: AdminPositionDB;
   webBaseId?: string;
   WebBaseDB?: WebBaseDB;
@@ -190,7 +190,7 @@ export const mockAdmins: Admin[] = [
     name: 'สมชาย ใจดี',
     email: 'somchai@example.com',
     tel: '081-234-5678',
-    AdminPositionDBId: '1',
+    AdminPositionId: '1',
     webBaseId: '1',
     isActive: true,
     createdAt: '2024-01-20T08:00:00Z'
@@ -201,7 +201,7 @@ export const mockAdmins: Admin[] = [
     name: 'สมหญิง รักงาน',
     email: 'somying@example.com',
     tel: '082-345-6789',
-    AdminPositionDBId: '2',
+    AdminPositionId: '2',
     webBaseId: '1',
     isActive: true,
     createdAt: '2024-01-21T08:00:00Z'
@@ -212,7 +212,7 @@ export const mockAdmins: Admin[] = [
     name: 'วิไล สุขใจ',
     email: 'wilai@example.com',
     tel: '083-456-7890',
-    AdminPositionDBId: '4',
+    AdminPositionId: '4',
     webBaseId: '1',
     isActive: true,
     createdAt: '2024-01-22T08:00:00Z'

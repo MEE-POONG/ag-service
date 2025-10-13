@@ -342,7 +342,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         return res.status(405).json({ success: false, error: 'Method not allowed' });
     }
   } catch (error) {
-    console.error('Departments API error:', error);
     return res.status(500).json({ success: false, error: 'เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์' });
   }
 }

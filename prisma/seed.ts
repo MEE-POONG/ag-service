@@ -168,9 +168,9 @@ async function main() {
   // for (const permission of superAdminPermissions) {
   //   await prisma.adminDefaultPermissionDB.upsert({
   //     where: {
-  //       AdminPositionDBId_menuPageWebId: {
-  //         AdminPositionDBId: superAdminPositionDB.id,
-  //         menuPageWebId: permission.menuPageId,
+  //       AdminPositionId_menuWebId: {
+  //         AdminPositionId: superAdminPositionDB.id,
+  //         menuWebId: permission.menuPageId,
   //       },
   //     },
   //     update: {
@@ -182,8 +182,8 @@ async function main() {
   //       updatedBy: 'system',
   //     },
   //     create: {
-  //       AdminPositionDBId: superAdminPositionDB.id,
-  //       menuPageWebId: permission.menuPageId,
+  //       AdminPositionId: superAdminPositionDB.id,
+  //       menuWebId: permission.menuPageId,
   //       canAdvance: permission.canAdvance,
   //       canViews: permission.canViews,
   //       canCreate: permission.canCreate,
@@ -205,9 +205,9 @@ async function main() {
   // for (const permission of adminPermissions) {
   //   await prisma.adminDefaultPermissionDB.upsert({
   //     where: {
-  //       AdminPositionDBId_menuPageWebId: {
-  //         AdminPositionDBId: AdminPositionDB.id,
-  //         menuPageWebId: permission.menuPageId,
+  //       AdminPositionId_menuWebId: {
+  //         AdminPositionId: AdminPositionDB.id,
+  //         menuWebId: permission.menuPageId,
   //       },
   //     },
   //     update: {
@@ -219,8 +219,8 @@ async function main() {
   //       updatedBy: 'system',
   //     },
   //     create: {
-  //       AdminPositionDBId: AdminPositionDB.id,
-  //       menuPageWebId: permission.menuPageId,
+  //       AdminPositionId: AdminPositionDB.id,
+  //       menuWebId: permission.menuPageId,
   //       canAdvance: permission.canAdvance,
   //       canViews: permission.canViews,
   //       canCreate: permission.canCreate,
@@ -266,7 +266,7 @@ async function main() {
   //     name: 'Super Administrator',
   //     email: 'superadmin@ag-db.com',
   //     tel: '0812345678',
-  //     AdminPositionDBId: superAdminPositionDB.id,
+  //     AdminPositionId: superAdminPositionDB.id,
   //     webBaseId: WebBaseDB.id,
   //     isActive: true,
   //     createdBy: 'system',
@@ -284,7 +284,7 @@ async function main() {
   //     name: 'Administrator',
   //     email: 'admin@ag-db.com',
   //     tel: '0812345679',
-  //     AdminPositionDBId: AdminPositionDB.id,
+  //     AdminPositionId: AdminPositionDB.id,
   //     webBaseId: WebBaseDB.id,
   //     isActive: true,
   //     createdBy: 'system',

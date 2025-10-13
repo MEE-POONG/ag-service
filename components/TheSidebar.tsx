@@ -17,8 +17,12 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   const { menuWeb, menuLoading } = useMenuWeb(); // <- ได้ "เมนูกรองแล้ว"
 
   useEffect(() => {
-    console.log('user', user)
-  }, [user])
+    // ถ้ามีข้อมูล ทั้งคุ๋ ให้แสดง
+    if (user && menuWeb) {
+      console.log('User:', user);
+      console.log('MenuWeb:', menuWeb);
+    }
+  }, [user, menuWeb])
   const isDev =
     (user?.username || '').toLowerCase() === 'superadmin' ||
     (user?.username || '').toLowerCase() === 'admin';
@@ -63,7 +67,7 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
                 )}
 
                 {/* เมนูสำหรับผู้พัฒนา */}
-                {isDev && (
+                {isDev || user?.adminPosition?.adminDepartment?.name === "IT Department" && (
                   <MenuPageWebDB dataList={menuDev} collapsed={collapsed} />
                 )}
               </ul>

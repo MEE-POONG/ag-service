@@ -28,9 +28,9 @@ const MenuWebModalSwitchPosition: React.FC<MenuWebModalSwitchPositionProps> = ({
 
   useEffect(() => {
     if (isOpen && data) {
-      console.log(data);
+      // console.log(data);
       // เรียงลำดับตาม showOrder และแปลงเป็น format ที่ใช้งาน
-      const sortedMenus = [...data.adminPositions]
+      const sortedMenus = [...data.adminPositionDB]
         .sort((a, b) => Number(a.priority) - Number(b.priority))
         .map(menu => ({
           id: menu.id,

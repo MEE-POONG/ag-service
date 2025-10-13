@@ -47,7 +47,7 @@ export interface ExtendedWebBaseDB extends WebBaseDB {
 
 // ตำแหน่งที่มีการขยายความ
 export interface ExtendedAdminDepartment extends AdminDepartmentDB {
-    adminPositions: AdminPositionDB[];
+    adminPositionDB: AdminPositionDB[];
 }
 
 // AgQueueJobDB interface

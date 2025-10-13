@@ -89,10 +89,7 @@ export default function CommandWorkPage() {
     }
   }, [data, setItems])
 
-
   // Mutations: create, update, delete (with optimistic updates on current page)
-
-
   const list = items
 
   return (
@@ -146,7 +143,7 @@ export default function CommandWorkPage() {
                         {/* ปลดล็อคMaster Agent*/}
                       </div>
                       {/* เฉพาะสิทธิ advance */}
-                      <div className={`flex gap-2 mt-2 ${headPermissions.canAdvance || supportPermissions.canAdvance || (user?.username === 'superadmin' || user?.username === 'admin') ? 'block' : 'hidden'}`}>
+                      <div className={`flex gap-2 mt-2 ${headPermissions.canAdvance || supportPermissions.canAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
                         <ModalReset data={u} />
                         <ModalResetPartner data={u} onSuccess={() => console.log('Success!')} />
                         {u.position === 'master' && <>

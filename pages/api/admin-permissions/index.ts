@@ -2,8 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 
 type PermissionItem = {
-  AdminPositionDBId: string
-  menuWebDBId: string
+  AdminPositionId: string
+  menuWebId?: string
+  menuWebDBId?: string
   canAdvance?: boolean
   canViews?: boolean
   canCreate?: boolean
@@ -22,10 +23,10 @@ type ResponseData = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
   try {
     if (req.method === 'GET') {
-      const { AdminPositionDBId } = req.query
+      const { AdminPositionId } = req.query
       const where: any = {}
-      if (typeof AdminPositionDBId === 'string' && AdminPositionDBId) {
-        where.adminPositionDBId = AdminPositionDBId
+      if (typeof AdminPositionId === 'string' && AdminPositionId) {
+        where.adminPositionId = AdminPositionId
       }
 
       const rows = await prisma.adminDefaultPermissionDB.findMany({ where })
@@ -39,12 +40,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
 
       await prisma.$transaction(
-        items.map((it) =>
-          prisma.adminDefaultPermissionDB.upsert({
+        items.map((it) => {
+          // รองรับทั้ง menuWebId และ menuWebDBId
+          const menuId = it.menuWebId || it.menuWebDBId;
+          if (!menuId) {
+            throw new Error('ต้องระบุ menuWebId หรือ menuWebDBId');
+          }
+
+          return prisma.adminDefaultPermissionDB.upsert({
             where: {
               adminPositionId_menuWebId: {
-                adminPositionId: it.AdminPositionDBId,
-                menuWebId: it.menuWebDBId,  
+                adminPositionId: it.AdminPositionId,
+                menuWebId: menuId,
               },
             },
             update: {
@@ -58,12 +65,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             create: {
               adminPositionDB: {
                 connect: {
-                  id: it.AdminPositionDBId,
+                  id: it.AdminPositionId,
                 },
               },
               menuWebDB: {
                 connect: {
-                  id: it.menuWebDBId,
+                  id: menuId,
                 },
               },
               canAdvance: Boolean(it.canAdvance),
@@ -78,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
               updatedBy: 'system',
             },
           })
-        )
+        })
       )
 
       return res.status(200).json({ success: true, message: 'บันทึกสิทธิ์สำเร็จ', updatedCount: items.length })
@@ -86,15 +93,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     if (req.method === 'POST') {
       const it = req.body as PermissionItem
-      if (!it?.AdminPositionDBId || !it?.menuWebDBId) {
-        return res.status(400).json({ success: false, error: 'ต้องระบุ AdminPositionDBId และ menuWebDBId' })
+      const menuId = it?.menuWebId || it?.menuWebDBId;
+
+      if (!it?.AdminPositionId || !menuId) {
+        return res.status(400).json({ success: false, error: 'ต้องระบุ AdminPositionId และ menuWebId' })
       }
 
       const row = await prisma.adminDefaultPermissionDB.upsert({
         where: {
           adminPositionId_menuWebId: {
-            adminPositionId: it.AdminPositionDBId,
-            menuWebId: it.menuWebDBId,
+            adminPositionId: it.AdminPositionId,
+            menuWebId: menuId,
           },
         },
         update: {
@@ -108,12 +117,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         create: {
           adminPositionDB: {
             connect: {
-              id: it.AdminPositionDBId,
+              id: it.AdminPositionId,
             },
           },
           menuWebDB: {
             connect: {
-              id: it.menuWebDBId,
+              id: menuId,
             },
           },
           canAdvance: Boolean(it.canAdvance),

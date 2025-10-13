@@ -24,10 +24,10 @@ export function useMenuWeb(): UseMenuReturn {
   // 🧩 ฟังก์ชันกรองสิทธิ์ (ปิดการกรองชั่วคราว)
   // =========================
   const filterMenusByPermissions = (menus: any[], currentUser: any) => {
-    console.group('🧠 filterMenusByPermissions (TEMP BYPASS MODE)')
-    console.log('📦 menus:', menus)
-    console.log('👤 currentUser:', currentUser)
-    console.log('⚠️ Permission filtering is temporarily DISABLED — all menus will be visible.')
+    // console.group('🧠 filterMenusByPermissions (TEMP BYPASS MODE)')
+    // console.log('📦 menus:', menus)
+    // console.log('👤 currentUser:', currentUser)
+    // console.log('⚠️ Permission filtering is temporarily DISABLED — all menus will be visible.')
     console.groupEnd()
 
     // ✅ คืนค่าทุกเมนูโดยไม่กรอง
@@ -49,10 +49,10 @@ export function useMenuWeb(): UseMenuReturn {
       const rawMenu = res.data?.menuWeb ?? null
       const currentUser = res.data?.user ?? null
 
-      console.group('🔍 useMenuWeb → API Response')
-      console.log('👤 currentUser:', currentUser)
-      console.log('📁 rawMenu:', rawMenu)
-      console.groupEnd()
+      // console.group('🔍 useMenuWeb → API Response')
+      // console.log('👤 currentUser:', currentUser)
+      // console.log('📁 rawMenu:', rawMenu)
+      // console.groupEnd()
 
       if (!currentUser || !rawMenu) {
         console.warn('⚠️ Missing user or menu data.')
@@ -65,7 +65,7 @@ export function useMenuWeb(): UseMenuReturn {
         currentUser
       )
 
-      console.log('✅ Filtered (bypass mode):', filtered)
+      // console.log('✅ Filtered (bypass mode):', filtered)
       return filtered
     },
     staleTime: 5 * 60 * 1000,
@@ -104,10 +104,10 @@ export function useMenuWeb(): UseMenuReturn {
     }
   }
 
-  useEffect(() => {
-    console.log('📊 menuWebData:', menuWebData)
-    console.log('👤 user from useAuth:', user)
-  }, [menuWebData, user])
+  // useEffect(() => {
+  //   console.log('📊 menuWebData:', menuWebData)
+  //   console.log('👤 user from useAuth:', user)
+  // }, [menuWebData, user])
 
   return {
     menuWeb: menuWebData ?? null,

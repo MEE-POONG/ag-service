@@ -642,9 +642,10 @@ function AgUserAccountFormModal({
               onChange={e => updateField('position', e.target.value)}
               className="px-3 py-2 w-full rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#34D399]"
             >
-              <option value="agent">agent</option>
+              <option value="" disabled>-เลือกตำแหน่ง-</option>
               <option value="senior">senior</option>
               <option value="master">master</option>
+              <option value="agent">agent</option>
             </select>
           </div>
           <div>
