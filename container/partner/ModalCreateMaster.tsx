@@ -70,7 +70,7 @@ const ModalCreateMaster: React.FC<ModalCreateMasterProps> = ({ data, onSuccess }
       <Button
         onClick={() => setIsOpen(true)}
         size="xs"
-        className="!bg-blue-600 !text-white hover:!bg-blue-700 rounded-full px-3"
+        className="px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-blue-400 hover:bg-gradient-to-r from-[#ff7878c2] to-[#69eeffc2] hover:shadow-md cursor-pointer"
       >
         สร้าง Master Agent
       </Button>

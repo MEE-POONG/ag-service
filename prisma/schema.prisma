@@ -1045,3 +1045,370 @@ model NotificationPreferencesDB {
   createdAt DateTime @default(now()) @db.Date
   updatedAt DateTime @updatedAt @db.Date
 }
+
+model ResetAccountPartnerDB {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  /// Multiple data types found: Int: 81%, BigInt: 19% out of 42 sampled entries
+  v            Json     @map("__v")
+  adviser      String
+  createdAt    DateTime @db.Date
+  errorMessage String
+  errorStack   String?
+  partnerAG    String
+  partnerLogin String
+  position     String
+  processedAt  DateTime @db.Date
+  status       String
+  updatedAt    DateTime @db.Date
+  usernameAG   String
+}
+
+type AgentWinLoseReportDbMetadata {
+  columnKeys     String[]
+  completedAt    String
+  masterHeaders  String[]
+  masterRecords  AgentWinLoseReportDbMetadataMasterRecords[]
+  masterRowCount Int
+  masterRows     Json
+}
+
+type AgentWinLoseReportDbMetadataMasterRecords {
+  account                      String
+  betAmount                    String
+  betCount                     String
+  commissionTotal              String
+  companyCommission            String
+  companyRollingAmount         String
+  companyWinLose               String
+  companyWinLoseWithCommission String
+  contact                      String
+  currency                     String
+  memberCommission             String
+  memberCount                  String
+  memberWinLose                String
+  memberWinLoseWithCommission  String
+  rollingAmount                String
+  seniorCommission             String
+  seniorRollingAmount          String
+  seniorWinLose                String
+  seniorWinLoseWithCommission  String
+}
+
+type AgentWinLoseReportDbResults {
+  headers        String[]
+  masterAccount  String
+  metadata       AgentWinLoseReportDbResultsMetadata
+  records        AgentWinLoseReportDbResultsRecords[]
+  reportUrl      String
+  rowCount       Int
+  rows           Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  summaryHeaders Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  summaryRecords Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  summaryRows    Json?
+}
+
+type AgentWinLoseReportDbResultsMetadata {
+  capturedAt String?
+  columnKeys String[]
+  error      String?
+}
+
+type AgentWinLoseReportDbResultsRecords {
+  account                      String
+  betAmount                    String
+  betCount                     String
+  commissionTotal              String
+  companyCommission            String
+  companyRollingAmount         String
+  companyWinLose               String
+  companyWinLoseWithCommission String
+  contact                      String
+  currency                     String
+  memberCommission             String
+  memberCount                  String
+  memberWinLose                String
+  memberWinLoseWithCommission  String
+  rollingAmount                String
+  seniorCommission             String
+  seniorRollingAmount          String
+  seniorWinLose                String
+  seniorWinLoseWithCommission  String
+}
+
+type ChatWidgetKeyDbSettings {
+  accentColor      String
+  autoOpen         Boolean
+  enableEmoji      Boolean
+  enableFileUpload Boolean
+  headerSubtitle   String
+  headerTitle      String
+  placeholderText  String
+  position         String
+  primaryColor     String
+  showAgentAvatar  Boolean
+  showTimestamp    Boolean
+  welcomeMessage   String
+}
+
+type CustomerWinLoseReportDbMetadata {
+  agentOverview         CustomerWinLoseReportDbMetadataAgentOverview[]
+  agentSummaryCount     Int
+  columnKeys            String[]
+  completedAt           String
+  customerSummaryCount  Int
+  filters               CustomerWinLoseReportDbMetadataFilters
+  masterHeaders         String[]
+  masterRecords         CustomerWinLoseReportDbMetadataMasterRecords[]
+  masterRowCount        Int
+  masterRows            Json
+  reportUrl             String
+  totalAgentAccounts    Int
+  totalCustomerRowCount Int
+}
+
+type CustomerWinLoseReportDbMetadataAgentOverview {
+  agentCount    Int
+  masterAccount String
+  rowCount      Int
+}
+
+type CustomerWinLoseReportDbMetadataFilters {
+  appliedButtons String[]
+  endDate        String
+  raw            CustomerWinLoseReportDbMetadataFiltersRaw
+  startDate      String
+}
+
+type CustomerWinLoseReportDbMetadataFiltersRaw {
+  categorySelectors String
+  endSelectors      String
+  selectedAll       String
+  startSelectors    String
+  submitSelector    String
+}
+
+type CustomerWinLoseReportDbMetadataMasterRecords {
+  account                      String
+  betAmount                    String
+  betCount                     String
+  commissionTotal              String
+  companyCommission            String
+  companyRollingAmount         String
+  companyWinLose               String
+  companyWinLoseWithCommission String
+  contact                      String
+  currency                     String
+  memberCommission             String
+  memberCount                  String
+  memberWinLose                String
+  memberWinLoseWithCommission  String
+  rollingAmount                String
+  seniorCommission             String
+  seniorRollingAmount          String
+  seniorWinLose                String
+  seniorWinLoseWithCommission  String
+}
+
+type CustomerWinLoseReportDbResults {
+  agentAccount   String
+  headers        String[]
+  masterAccount  String
+  metadata       CustomerWinLoseReportDbResultsMetadata
+  records        CustomerWinLoseReportDbResultsRecords[]
+  reportUrl      String
+  rowCount       Int
+  rows           Json
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  summaryHeaders Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  summaryRecords Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  summaryRows    Json?
+}
+
+type CustomerWinLoseReportDbResultsMetadata {
+  capturedAt     String
+  columnKeys     String[]
+  seniorUsername String
+}
+
+type CustomerWinLoseReportDbResultsRecords {
+  account                      String
+  betAmount                    String
+  betCount                     String
+  commissionTotal              String
+  companyCommission            String
+  companyRollingAmount         String
+  companyWinLose               String
+  companyWinLoseWithCommission String
+  contact                      String
+  currency                     String
+  memberCommission             String
+  memberCount                  String
+  memberWinLose                String
+  memberWinLoseWithCommission  String
+  rollingAmount                String
+  seniorCommission             String
+  seniorRollingAmount          String
+  seniorWinLose                String
+  seniorWinLoseWithCommission  String
+}
+
+type MasterWinLoseReportDbFilters {
+  appliedButtons String[]
+  endDate        String
+  raw            MasterWinLoseReportDbFiltersRaw
+  startDate      String
+}
+
+type MasterWinLoseReportDbFiltersRaw {
+  categorySelectors String
+  endSelectors      String
+  selectedAll       String
+  startSelectors    String
+  submitSelector    String
+}
+
+type MasterWinLoseReportDbMetadata {
+  columnKeys      String[]
+  dataRowCount    Int?
+  loginUsername   String
+  selectedAccount String
+  summaryRowCount Int?
+  timestamp       String
+  totalTables     Int
+  webname         String
+}
+
+type MasterWinLoseReportDbRecords {
+  account                      String
+  betAmount                    String
+  betCount                     String
+  commissionTotal              String
+  companyCommission            String?
+  companyRollingAmount         String?
+  companyWinLose               String?
+  companyWinLoseWithCommission String?
+  contact                      String
+  currency                     String
+  memberCommission             String
+  memberCount                  String
+  memberWinLose                String
+  memberWinLoseWithCommission  String?
+  rollingAmount                String
+  seniorCommission             String?
+  seniorRollingAmount          String?
+  seniorWinLose                String?
+  seniorWinLoseWithCommission  String?
+}
+
+model AGUserDB {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  adviser   String
+  createdAt DateTime @db.Date
+  createdBy String
+  isActive  Boolean
+  isDeleted Boolean
+  password  String
+  updatedAt DateTime @db.Date
+  updatedBy String
+  userAg    String   @unique
+  userLogin String   @unique
+  webBaseId String   @db.ObjectId
+}
+
+model AgentWinLoseReportDB {
+  id           String                        @id @default(auto()) @map("_id") @db.ObjectId
+  adviser      String
+  endDate      String
+  errorMessage String?
+  metadata     AgentWinLoseReportDbMetadata?
+  position     String
+  processedAt  DateTime?                     @db.Date
+  results      AgentWinLoseReportDbResults[]
+  startDate    String
+  status       String
+  updatedAt    DateTime?                     @db.Date
+  usernameAG   String
+  webname      String
+}
+
+
+model CreateAgentDB {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  /// Multiple data types found: Int: 85.7%, BigInt: 14.3% out of 21 sampled entries
+  v            Json     @map("__v")
+  adviser      String
+  createdAt    DateTime @db.Date
+  errorMessage String?
+  errorStack   String?
+  position     String
+  processedAt  DateTime @db.Date
+  status       String
+  updatedAt    DateTime @db.Date
+  usernameAG   String
+}
+
+model CreateMasterAgentDB {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  /// Multiple data types found: Int: 95.5%, BigInt: 4.5% out of 22 sampled entries
+  v            Json      @map("__v")
+  adviser      String
+  createdAt    DateTime  @db.Date
+  errorMessage String?
+  errorStack   String?
+  position     String
+  processedAt  DateTime? @db.Date
+  status       String
+  updatedAt    DateTime  @db.Date
+  usernameAG   String
+}
+
+model CreatePartnerDB {
+  id                     String   @id @default(auto()) @map("_id") @db.ObjectId
+  v                      Int      @map("__v")
+  adviser                String
+  createdAt              DateTime @db.Date
+  createdPartnerNickname String?
+  createdPartnerPassword String?
+  createdPartnerUsername String?
+  errorMessage           String
+  parentUsername         String
+  position               String
+  processedAt            DateTime @db.Date
+  status                 String
+  updatedAt              DateTime @db.Date
+  usernameAG             String
+}
+
+model MasterWinLoseReportDB {
+  id             String                         @id @default(auto()) @map("_id") @db.ObjectId
+  v              Int?                           @map("__v")
+  adviser        String
+  createdAt      DateTime?                      @db.Date
+  endDate        String
+  filters        MasterWinLoseReportDbFilters?
+  headers        String[]
+  metadata       MasterWinLoseReportDbMetadata?
+  position       String
+  processedAt    DateTime?                      @db.Date
+  records        MasterWinLoseReportDbRecords[]
+  reportUrl      String?
+  rowCount       Int?
+  rows           Json?
+  startDate      String
+  status         String?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  summaryHeaders Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  summaryRecords Json?
+  /// Could not determine type: the field only had null or empty values in the sample set.
+  summaryRows    Json?
+  updatedAt      DateTime?                      @db.Date
+  usernameAG     String
+  webname        String
+}
+

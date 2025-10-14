@@ -42,11 +42,11 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
     }
 
     console.log("📝 Reset Partner Data:", {
-      adviser: form.adviser,
-      usernameAG: form.usernameAG,
-      partnerAG: form.partnerAG,
-      partnerLogin: form.partnerLogin,
-      position: form.position,
+      adviser: form.adviser.trim(),
+      usernameAG: form.usernameAG.trim(),
+      partnerAG: form.partnerAG.trim(),
+      partnerLogin: form.partnerLogin.trim(),
+      position: form.position.trim(),
     });
 
     try {
@@ -75,7 +75,7 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
       <Button
         onClick={() => setIsOpen(true)}
         size="xs"
-        className="!bg-purple-600 !text-white hover:!bg-purple-700 rounded-full px-3"
+        className="px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-blue-400 hover:bg-gradient-to-r from-[#ff7878c2] to-[#69eeffc2] hover:shadow-md cursor-pointer"
       >
         รีเซ็ตพาร์ทเนอร์
       </Button>
@@ -127,6 +127,7 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
                 onChange={(e) => setForm({ ...form, adviser: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 placeholder="ระบุ adviser"
+                disabled
               />
             </div>
 
@@ -141,6 +142,7 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
                 onChange={(e) => setForm({ ...form, partnerAG: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 placeholder="ระบุ partner AG"
+                disabled
               />
             </div>
 
@@ -154,6 +156,7 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
                 onChange={(e) => setForm({ ...form, partnerLogin: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 placeholder="ระบุ partner login"
+                disabled
               />
             </div>
 
@@ -162,6 +165,7 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
                 Position <span className="text-red-500">*</span>
               </label>
               <select
+                disabled
                 value={form.position}
                 onChange={(e) => setForm({ ...form, position: e.target.value as "agent" | "master" })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
