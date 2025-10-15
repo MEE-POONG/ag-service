@@ -168,9 +168,9 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
       where: { name: name.trim(), adminDepartmentId },
       select: { id: true },
     });
-    console.log(`name : `, name);
-    console.log(`adminDepartmentId : `, adminDepartmentId);
-    console.log(`dup : `, dup);
+   // console.log(`name : `, name);
+   // console.log(`adminDepartmentId : `, adminDepartmentId);
+   // console.log(`dup : `, dup);
 
     if (dup) {
       return res.status(400).json({ success: false, error: 'ชื่อตำแหน่งซ้ำในแผนกนี้' });
@@ -193,7 +193,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
           ? clampPriority(priority, maxPlusOne)
           : maxPlusOne;
 
-      console.log(`insertPriority : `, insertPriority);
+     // console.log(`insertPriority : `, insertPriority);
 
       // สร้าง
       const row = await tx.adminPositionDB.create({
@@ -210,7 +210,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
         },
         include: { adminDepartment: true },
       });
-      console.log(`row : `, row);
+     // console.log(`row : `, row);
 
       // จัดลำดับ 1..N
       await resequenceDepartment(tx, adminDepartmentId);

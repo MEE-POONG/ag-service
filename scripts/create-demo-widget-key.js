@@ -45,14 +45,14 @@ async function createDemoWidgetKey() {
       }
     })
 
-    console.log('✅ Demo Widget Key created successfully!')
-    console.log(`Key: ${widgetKey.key}`)
-    console.log(`Domain: ${widgetKey.domain}`)
-    console.log(`Name: ${widgetKey.name}`)
+   // console.log('✅ Demo Widget Key created successfully!')
+   // console.log(`Key: ${widgetKey.key}`)
+   // console.log(`Domain: ${widgetKey.domain}`)
+   // console.log(`Name: ${widgetKey.name}`)
     
   } catch (error) {
     if (error.code === 'P2002') {
-      console.log('ℹ️  Demo Widget Key already exists')
+     // console.log('ℹ️  Demo Widget Key already exists')
     } else {
       console.error('❌ Error creating demo widget key:', error)
     }

@@ -88,7 +88,7 @@ const MemberModalAdd: React.FC<MemberModalAddProps> = ({ onSuccess }) => {
       customer: agUser.userLogin
     }));
     
-    console.log('Selected AG User:', agUser.username, 'for customer:', agUser.userLogin);
+   // console.log('Selected AG User:', agUser.username, 'for customer:', agUser.userLogin);
   };
 
   const filteredAgUsers = agUserAccounts.filter(agUser =>

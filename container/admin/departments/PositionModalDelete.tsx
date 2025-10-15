@@ -23,7 +23,7 @@ const PositionModalDelete: React.FC<PositionModalDeleteProps> = ({ position, lis
     try {
       setIsDeleting(true);
       setError('');
-      console.log(`ลบตำแหน่ง list.id `, position.id);
+      // console.log(`ลบตำแหน่ง list.id `, position.id);
 
       const res = await axios.delete('/api/admin-positions', {
         data: { 

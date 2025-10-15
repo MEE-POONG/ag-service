@@ -69,8 +69,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     if (req.method === 'POST') {
       const { customer, usernameAG, agBaseUrl, pinUsed, sportsbook, sexy, sa, slotItp, slotJoker, slotPlaystar, lottoRDC, lottoRCW, cockfight, muayStep, virtualSports, overallStatus, attemptCount, createdBy, updatedBy, lastError }: any = req.body.data;
-      console.log("req.body : ", req.body);
-      console.log(72, " : req.body : ", customer, usernameAG, agBaseUrl, pinUsed, sportsbook, sexy, sa, slotItp, slotJoker, slotPlaystar, cockfight, muayStep, virtualSports, overallStatus, attemptCount, createdBy, updatedBy, lastError);
+     // console.log("req.body : ", req.body);
+     // console.log(72, " : req.body : ", customer, usernameAG, agBaseUrl, pinUsed, sportsbook, sexy, sa, slotItp, slotJoker, slotPlaystar, cockfight, muayStep, virtualSports, overallStatus, attemptCount, createdBy, updatedBy, lastError);
       // Validation
       if (!customer || !usernameAG) {
         return res.status(400).json({
@@ -78,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           error: 'Customer, usernameAG are required'
         });
       }
-      console.log(80, " : customer, usernameAG : ", customer, usernameAG);
+     // console.log(80, " : customer, usernameAG : ", customer, usernameAG);
 
       // Create new adjust bet
       const newAdjustBet = await (prisma as any).adjustbets.create({

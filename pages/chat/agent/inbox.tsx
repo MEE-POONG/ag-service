@@ -85,11 +85,11 @@ export default function AgentInboxPage() {
       return false
     }
 
-    console.log('[Notification] Current permission:', Notification.permission)
+   // console.log('[Notification] Current permission:', Notification.permission)
 
     if (Notification.permission === 'granted') {
       setNotificationPermission('granted')
-      console.log('[Notification] Permission already granted')
+     // console.log('[Notification] Permission already granted')
       return true
     }
 
@@ -100,10 +100,10 @@ export default function AgentInboxPage() {
     }
 
     // Request permission
-    console.log('[Notification] Requesting permission...')
+   // console.log('[Notification] Requesting permission...')
     const permission = await Notification.requestPermission()
     setNotificationPermission(permission)
-    console.log('[Notification] Permission result:', permission)
+   // console.log('[Notification] Permission result:', permission)
     return permission === 'granted'
   }, [])
 
@@ -115,7 +115,7 @@ export default function AgentInboxPage() {
     tag?: string
     data?: any
   }) => {
-    console.log('[Notification] Attempting to send notification:', options.title)
+   // console.log('[Notification] Attempting to send notification:', options.title)
     
     if (typeof window === 'undefined') {
       console.warn('[Notification] Window is not available (SSR)')
@@ -127,10 +127,10 @@ export default function AgentInboxPage() {
       return
     }
 
-    console.log('[Notification] Current permission state:', notificationPermission)
+   // console.log('[Notification] Current permission state:', notificationPermission)
 
     if (notificationPermission === 'granted') {
-      console.log('[Notification] Creating notification...')
+     // console.log('[Notification] Creating notification...')
       try {
         const notification = new Notification(options.title, {
           body: options.body,
@@ -142,7 +142,7 @@ export default function AgentInboxPage() {
         })
 
         notification.onclick = () => {
-          console.log('[Notification] Clicked!')
+         // console.log('[Notification] Clicked!')
           window.focus()
           if (options.data?.conversationId) {
             setSelectedConversation(options.data.conversationId)
@@ -155,7 +155,7 @@ export default function AgentInboxPage() {
           notification.close()
         }, 5000)
 
-        console.log('[Notification] Notification sent successfully!')
+       // console.log('[Notification] Notification sent successfully!')
       } catch (error) {
         console.error('[Notification] Error creating notification:', error)
       }
@@ -289,7 +289,7 @@ export default function AgentInboxPage() {
     if (!socket.isConnected) return
     
     return socket.onConversationNew((payload) => {
-      console.log('[Real-time] New conversation:', payload)
+     // console.log('[Real-time] New conversation:', payload)
       queryClient.invalidateQueries({ queryKey: qk.chat.conversations(searchKeyword, filterStatus) })
       toast.success('มีการสนทนาใหม่')
       
@@ -314,7 +314,7 @@ export default function AgentInboxPage() {
     if (!socket.isConnected) return
     
     return socket.onConversationUpdated((payload) => {
-      console.log('[Real-time] Conversation updated:', payload)
+     // console.log('[Real-time] Conversation updated:', payload)
       queryClient.invalidateQueries({ queryKey: qk.chat.conversations(searchKeyword, filterStatus) })
     })
   }, [socket, queryClient, searchKeyword, filterStatus])
@@ -324,7 +324,7 @@ export default function AgentInboxPage() {
     if (!socket.isConnected) return
     
     return socket.onConversationDeleted((payload) => {
-      console.log('[Real-time] Conversation deleted:', payload)
+     // console.log('[Real-time] Conversation deleted:', payload)
       queryClient.invalidateQueries({ queryKey: qk.chat.conversations(searchKeyword, filterStatus) })
       
       if (selectedConversation === payload.conversationId) {
@@ -338,7 +338,7 @@ export default function AgentInboxPage() {
     if (!socket.isConnected) return
     
     return socket.onMessageNew((payload) => {
-      console.log('[Real-time] New message:', payload)
+     // console.log('[Real-time] New message:', payload)
       
       // Update messages list if viewing this conversation
       if (selectedConversation === payload.conversationId) {
@@ -377,7 +377,7 @@ export default function AgentInboxPage() {
     if (!socket.isConnected) return
     
     return socket.onMessageRead((payload) => {
-      console.log('[Real-time] Messages read:', payload)
+     // console.log('[Real-time] Messages read:', payload)
       
       if (selectedConversation === payload.conversationId) {
         queryClient.invalidateQueries({ queryKey: qk.chat.messages(payload.conversationId) })
@@ -534,7 +534,7 @@ export default function AgentInboxPage() {
           {isClient && notificationPermission === 'granted' && (
             <button
               onClick={() => {
-                console.log('[Test] Sending test notification...')
+               // console.log('[Test] Sending test notification...')
                 sendPushNotification({
                   title: '🧪 ทดสอบการแจ้งเตือน',
                   body: 'หากคุณเห็นข้อความนี้ แสดงว่าระบบแจ้งเตือนทำงานได้ปกติ!',

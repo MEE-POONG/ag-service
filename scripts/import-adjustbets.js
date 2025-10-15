@@ -11,7 +11,7 @@ async function importAdjustBets() {
     const jsonData = fs.readFileSync(jsonPath, 'utf8');
     const adjustBetsData = JSON.parse(jsonData);
 
-    console.log(`Found ${adjustBetsData.length} adjust bets to import`);
+   // console.log(`Found ${adjustBetsData.length} adjust bets to import`);
 
     // Import แต่ละ record
     for (const data of adjustBetsData) {
@@ -40,13 +40,13 @@ async function importAdjustBets() {
             updatedAt: new Date(data.updatedAt.$date)
           }
         });
-        console.log(`✅ Imported: ${adjustBet.customer} - ${adjustBet.usernameAG}`);
+       // console.log(`✅ Imported: ${adjustBet.customer} - ${adjustBet.usernameAG}`);
       } catch (error) {
         console.error(`❌ Failed to import ${data.customer}:`, error.message);
       }
     }
 
-    console.log('🎉 Import completed!');
+   // console.log('🎉 Import completed!');
   } catch (error) {
     console.error('❌ Import failed:', error);
   } finally {

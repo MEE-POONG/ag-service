@@ -16,13 +16,13 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   const { user } = useAuth();
   const { menuWeb, menuLoading } = useMenuWeb(); // <- ได้ "เมนูกรองแล้ว"
 
-  useEffect(() => {
-    // ถ้ามีข้อมูล ทั้งคุ๋ ให้แสดง
-    if (user && menuWeb) {
-      console.log('User:', user);
-      console.log('MenuWeb:', menuWeb);
-    }
-  }, [user, menuWeb])
+  // useEffect(() => {
+  //   // ถ้ามีข้อมูล ทั้งคุ๋ ให้แสดง
+  //   if (user && menuWeb) {
+  //     console.log('User:', user);
+  //     console.log('MenuWeb:', menuWeb);
+  //   }
+  // }, [user, menuWeb])
   const isDev =
     (user?.username || '').toLowerCase() === 'superadmin' ||
     (user?.username || '').toLowerCase() === 'admin';

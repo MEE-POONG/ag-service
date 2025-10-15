@@ -46,7 +46,7 @@ export default async function handler(
       jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret')
     } catch (error) {
       // Token is invalid or expired, but we still allow logout
-      console.log('Invalid token during logout:', error)
+     // console.log('Invalid token during logout:', error)
     }
 
     // For widget logout, we just return success
@@ -57,7 +57,7 @@ export default async function handler(
       message: 'Logged out successfully'
     })
   } catch (error) {
-    console.error('Widget logout error:', error)
+   // console.error('Widget logout error:', error)
     return res.status(500).json({
       success: false,
       error: 'Logout failed'

@@ -99,7 +99,7 @@ export function useSocket(options: UseSocketOptions = {}): UseSocketReturn {
     })
 
     socket.on('disconnect' as any, () => {
-      console.log('[Socket] Disconnected')
+     // console.log('[Socket] Disconnected')
       setIsConnected(false)
     })
 
@@ -110,7 +110,7 @@ export function useSocket(options: UseSocketOptions = {}): UseSocketReturn {
 
     // Reconnect handler
     socket.io.on('reconnect', (attempt) => {
-      console.log(`[Socket] Reconnected after ${attempt} attempts`)
+     // console.log(`[Socket] Reconnected after ${attempt} attempts`)
       toast.success('เชื่อมต่อสำเร็จ')
     })
 

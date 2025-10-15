@@ -78,16 +78,16 @@ const PartnerModalReset: React.FC<PartnerModalResetProps> = ({ data, onSuccess }
     const adviser = data.origin ?? "";
     const position = data.position ?? "";
 
-    console.log(`chech usernameAG : ufh27oa0 : ${usernameAG === "ufh27oa0"}`);
-    console.log(`chech adviser : ufh27o : ${adviser === "ufh27o"}`);
-    console.log(`chech position : agent : ${position === "agent" || "master"}`);
-    console.log(`chech newPassword : riDNdZb7430E+1 : ${newPassword === "riDNdZb7430E+1"}`);
+   // console.log(`chech usernameAG : ufh27oa0 : ${usernameAG === "ufh27oa0"}`);
+   // console.log(`chech adviser : ufh27o : ${adviser === "ufh27o"}`);
+   // console.log(`chech position : agent : ${position === "agent" || "master"}`);
+   // console.log(`chech newPassword : riDNdZb7430E+1 : ${newPassword === "riDNdZb7430E+1"}`);
 
     try {
       setLoading(true);
 
       const endpoint = getEndpointByPosition(data.position);
-      console.log("endpoint :", endpoint);
+     // console.log("endpoint :", endpoint);
 
       const payload: {
         usernameAG: string;

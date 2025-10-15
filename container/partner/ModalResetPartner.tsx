@@ -41,13 +41,13 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
       return;
     }
 
-    console.log("📝 Reset Partner Data:", {
-      adviser: form.adviser.trim(),
-      usernameAG: form.usernameAG.trim(),
-      partnerAG: form.partnerAG.trim(),
-      partnerLogin: form.partnerLogin.trim(),
-      position: form.position.trim(),
-    });
+    // console.log("📝 Reset Partner Data:", {
+    //   adviser: form.adviser.trim(),
+    //   usernameAG: form.usernameAG.trim(),
+    //   partnerAG: form.partnerAG.trim(),
+    //   partnerLogin: form.partnerLogin.trim(),
+    //   position: form.position.trim(),
+    // });
 
     try {
       setLoading(true);
@@ -63,7 +63,7 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
       setIsOpen(false);
       // Reset form
     } catch (err) {
-      console.error("❌ เกิดข้อผิดพลาด:", err);
+      // console.error("❌ เกิดข้อผิดพลาด:", err);
       toast.error("เกิดข้อผิดพลาด");
     } finally {
       setLoading(false);

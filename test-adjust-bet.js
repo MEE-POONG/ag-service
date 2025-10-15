@@ -49,8 +49,8 @@ const testData = {
 
 async function testAdjustBetAPI() {
   try {
-    console.log('Testing Adjust Bet API...');
-    console.log('Sending data:', JSON.stringify(testData, null, 2));
+   // console.log('Testing Adjust Bet API...');
+   // console.log('Sending data:', JSON.stringify(testData, null, 2));
     
     const response = await fetch('http://localhost:3000/api/adjust-bet', {
       method: 'POST',
@@ -62,13 +62,13 @@ async function testAdjustBetAPI() {
     
     const result = await response.json();
     
-    console.log('Response status:', response.status);
-    console.log('Response data:', JSON.stringify(result, null, 2));
+   // console.log('Response status:', response.status);
+   // console.log('Response data:', JSON.stringify(result, null, 2));
     
     if (response.ok) {
-      console.log('✅ Test PASSED: Adjust bet created successfully');
+     // console.log('✅ Test PASSED: Adjust bet created successfully');
     } else {
-      console.log('❌ Test FAILED:', result.error);
+     // console.log('❌ Test FAILED:', result.error);
     }
   } catch (error) {
     console.error('❌ Test ERROR:', error.message);

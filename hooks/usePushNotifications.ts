@@ -63,11 +63,11 @@ export function usePushNotifications(): UsePushNotificationsReturn {
         scope: '/'
       })
       
-      console.log('[Push] Service Worker registered:', registration.scope)
+     // console.log('[Push] Service Worker registered:', registration.scope)
       
       // Wait for service worker to be ready
       await navigator.serviceWorker.ready
-      console.log('[Push] Service Worker ready')
+     // console.log('[Push] Service Worker ready')
     } catch (error) {
       console.error('[Push] Service Worker registration failed:', error)
     }
@@ -143,7 +143,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       })
 
       setIsSubscribed(true)
-      console.log('[Push] Subscribed successfully')
+     // console.log('[Push] Subscribed successfully')
     } catch (error: any) {
       console.error('[Push] Subscription failed:', error)
       throw error
@@ -172,7 +172,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
         })
 
         setIsSubscribed(false)
-        console.log('[Push] Unsubscribed successfully')
+       // console.log('[Push] Unsubscribed successfully')
       }
     } catch (error) {
       console.error('[Push] Unsubscribe failed:', error)

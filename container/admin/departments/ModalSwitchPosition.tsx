@@ -115,7 +115,7 @@ const MenuWebModalSwitchPosition: React.FC<MenuWebModalSwitchPositionProps> = ({
   };
 
   const handleSave = async () => {
-    console.log("menuItems : ", menuItems);
+    // console.log("menuItems : ", menuItems);
     if (loading) return;
 
     try {
@@ -136,7 +136,7 @@ const MenuWebModalSwitchPosition: React.FC<MenuWebModalSwitchPositionProps> = ({
         setIsOpen(false);
         onSuccess();
         // แสดงข้อความสำเร็จ (อาจใช้ toast notification)
-        console.log('✅ อัปเดตลำดับการแสดงสำเร็จ');
+        // console.log('✅ อัปเดตลำดับการแสดงสำเร็จ');
       } else {
         console.error('❌ เกิดข้อผิดพลาด:', response.data.error);
       }

@@ -44,7 +44,7 @@ export async function sendPushToUser(userId: string, payload: PushPayload) {
     })
 
     if (subscriptions.length === 0) {
-      console.log(`[Push] No active subscriptions for user ${userId}`)
+     // console.log(`[Push] No active subscriptions for user ${userId}`)
       return { sent: 0, failed: 0 }
     }
 
@@ -106,9 +106,9 @@ async function sendPushToSubscription(subscription: any, payload: PushPayload) {
       }
     })
 
-    console.log(`[Push] Sent to subscription ${subscription.id}`)
+   // console.log(`[Push] Sent to subscription ${subscription.id}`)
   } catch (error: any) {
-    console.error(`[Push] Failed to send to subscription ${subscription.id}:`, error)
+    // console.error(`[Push] Failed to send to subscription ${subscription.id}:`, error)
 
     // Handle specific errors
     if (error.statusCode === 410 || error.statusCode === 404) {

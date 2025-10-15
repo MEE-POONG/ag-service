@@ -43,8 +43,8 @@ export default function CommandWorkPage() {
   const supportPermissions = checkPermission('คำสั่งงาน')
 
   useEffect(() => {
-    console.log('headPermissions : ', headPermissions);
-    console.log('supportPermissions : ', supportPermissions);
+   // console.log('headPermissions : ', headPermissions);
+   // console.log('supportPermissions : ', supportPermissions);
   }, [headPermissions, supportPermissions])
 
   // Fetch list via react-query (server-side filter by keyword)

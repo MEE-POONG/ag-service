@@ -42,8 +42,6 @@ export function usePermissions() {
     }
 
     const permission = permissionsMap.get(menuName)
-    console.log('44 permissionsMap : ', permissionsMap, ' Ok ');
-    console.log('45 permission : ', permission, ' Ok ');
 
     // ถ้าไม่มีข้อมูลสิทธิ์ ให้ตรวจจาก basic permissions
     if (!permission) {

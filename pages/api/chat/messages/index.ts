@@ -108,7 +108,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<MessageRespon
       message: 'Messages retrieved successfully'
     })
   } catch (error) {
-    console.error('Get messages error:', error)
+   // console.error('Get messages error:', error)
     return res.status(500).json({
       success: false,
       error: 'Failed to retrieve messages'
@@ -221,7 +221,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<MessageRespo
         
         // Check if it's a transaction conflict error
         if (error?.code === 'P2034' && retries > 0) {
-          console.log(`[Messages API] Transaction conflict, retrying... (${retries} retries left)`)
+         // console.log(`[Messages API] Transaction conflict, retrying... (${retries} retries left)`)
           // Wait a bit before retrying (exponential backoff)
           await new Promise(resolve => setTimeout(resolve, 100 * (3 - retries)))
           continue
@@ -253,7 +253,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<MessageRespo
           conversationId
         })
       } catch (error) {
-        console.error('Failed to send notification:', error)
+       // console.error('Failed to send notification:', error)
         // Don't fail the request if notification fails
       }
     }
@@ -264,7 +264,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<MessageRespo
       message: 'Message sent successfully'
     })
   } catch (error) {
-    console.error('Send message error:', error)
+   // console.error('Send message error:', error)
     return res.status(500).json({
       success: false,
       error: 'Failed to send message'
@@ -347,7 +347,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<MessageRespon
       message: 'Messages marked as read'
     })
   } catch (error) {
-    console.error('Mark messages read error:', error)
+   // console.error('Mark messages read error:', error)
     return res.status(500).json({
       success: false,
       error: 'Failed to mark messages as read'
@@ -397,7 +397,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<MessageRes
       message: 'Message deleted successfully'
     })
   } catch (error) {
-    console.error('Delete message error:', error)
+   // console.error('Delete message error:', error)
     return res.status(500).json({
       success: false,
       error: 'Failed to delete message'
@@ -426,7 +426,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         })
     }
   } catch (error) {
-    console.error('Chat messages API error:', error)
+   // console.error('Chat messages API error:', error)
     return res.status(500).json({
       success: false,
       error: 'Internal server error'

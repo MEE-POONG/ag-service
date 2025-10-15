@@ -391,7 +391,7 @@ const menuItems = [
 
 async function seedMenuItems() {
   try {
-    console.log('🌱 Starting menu items seeding...')
+   // console.log('🌱 Starting menu items seeding...')
 
     // Seed new menu items
     const createdItems = []
@@ -424,7 +424,7 @@ async function seedMenuItems() {
             }
           })
           createdItems.push({ action: 'updated', item: updatedItem })
-          console.log(`✅ Updated: ${item.name}`)
+         // console.log(`✅ Updated: ${item.name}`)
         } else {
           // Create new item
           const newItem = await prisma.menuWebDB.create({
@@ -449,7 +449,7 @@ async function seedMenuItems() {
             }
           })
           createdItems.push({ action: 'created', item: newItem })
-          console.log(`✨ Created: ${item.name}`)
+         // console.log(`✨ Created: ${item.name}`)
         }
       } catch (itemError) {
         console.error(`❌ Error processing item ${item.id}:`, itemError.message)
@@ -470,15 +470,15 @@ async function seedMenuItems() {
       where: {  }
     })
 
-    console.log(`\n🎉 Successfully processed ${menuItems.length} menu items`)
-    console.log(`📊 Total menus in database: ${finalMenus.length}`)
+   // console.log(`\n🎉 Successfully processed ${menuItems.length} menu items`)
+   // console.log(`📊 Total menus in database: ${finalMenus.length}`)
     
     const summary = createdItems.reduce((acc, item) => {
       acc[item.action] = (acc[item.action] || 0) + 1
       return acc
     }, {})
     
-    console.log('📈 Summary:', summary)
+   // console.log('📈 Summary:', summary)
 
   } catch (error) {
     console.error('❌ Seed error:', error)

@@ -55,7 +55,7 @@ export const resequencePositions = async (departmentId: string): Promise<boolean
     });
 
     if (response.data?.success) {
-      console.log('✅ Positions resequenced successfully:', response.data.message);
+     // console.log('✅ Positions resequenced successfully:', response.data.message);
       return true;
     } else {
       throw new Error(response.data?.error || 'เกิดข้อผิดพลาดในการจัดลำดับ');

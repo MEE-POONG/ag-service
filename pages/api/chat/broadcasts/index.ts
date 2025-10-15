@@ -131,7 +131,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<BroadcastResp
       message: 'Broadcasts retrieved successfully'
     })
   } catch (error) {
-    console.error('Get broadcasts error:', error)
+   // console.error('Get broadcasts error:', error)
     return res.status(500).json({
       success: false,
       error: 'Failed to retrieve broadcasts'
@@ -269,7 +269,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<BroadcastRes
     if (sendNow) {
       // TODO: Implement async broadcast sending
       // This would typically be handled by a background job
-      console.log('Broadcast sending initiated:', broadcast.id)
+     // console.log('Broadcast sending initiated:', broadcast.id)
     }
 
     return res.status(201).json({
@@ -278,7 +278,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<BroadcastRes
       message: 'Broadcast created successfully'
     })
   } catch (error) {
-    console.error('Create broadcast error:', error)
+   // console.error('Create broadcast error:', error)
     return res.status(500).json({
       success: false,
       error: 'Failed to create broadcast'
@@ -370,7 +370,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<BroadcastResp
       message: 'Broadcast updated successfully'
     })
   } catch (error) {
-    console.error('Update broadcast error:', error)
+   // console.error('Update broadcast error:', error)
     return res.status(500).json({
       success: false,
       error: 'Failed to update broadcast'
@@ -433,7 +433,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<BroadcastR
       message: 'Broadcast deleted successfully'
     })
   } catch (error) {
-    console.error('Delete broadcast error:', error)
+   // console.error('Delete broadcast error:', error)
     return res.status(500).json({
       success: false,
       error: 'Failed to delete broadcast'
@@ -459,7 +459,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         })
     }
   } catch (error) {
-    console.error('Chat broadcasts API error:', error)
+   // console.error('Chat broadcasts API error:', error)
     return res.status(500).json({
       success: false,
       error: 'Internal server error'

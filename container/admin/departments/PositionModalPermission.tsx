@@ -345,7 +345,7 @@ const PositionModalPermission: React.FC<PositionModalPermissionProps> = ({ onSuc
         canUpdate: p.update,
         canDelete: p.delete,
       }))
-      console.log(`348 items : `, items);
+     // console.log(`348 items : `, items);
 
       await axios.put('/api/admin-permissions', { items });
       onSuccess?.();

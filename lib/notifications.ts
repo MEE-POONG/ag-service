@@ -101,7 +101,7 @@ export async function deleteExpiredNotifications() {
       }
     })
 
-    console.log(`Deleted ${result.count} expired notifications`)
+   // console.log(`Deleted ${result.count} expired notifications`)
     return result.count
   } catch (error) {
     console.error('Delete expired notifications error:', error)
@@ -126,7 +126,7 @@ export async function deleteOldReadNotifications(daysOld: number = 30) {
       }
     })
 
-    console.log(`Deleted ${result.count} old read notifications`)
+   // console.log(`Deleted ${result.count} old read notifications`)
     return result.count
   } catch (error) {
     console.error('Delete old read notifications error:', error)

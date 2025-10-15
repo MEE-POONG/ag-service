@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+  import { NextApiRequest, NextApiResponse } from 'next'
 import { MenuWebDB, Prisma, PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
@@ -102,7 +102,7 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
 
 
     } catch (error) {
-      console.error('Error fetching single MenuWebDB:', error);
+     // console.error('Error fetching single MenuWebDB:', error);
       return res.status(500).json({
         success: false,
         error: '❌ เกิดข้อผิดพลาดในการดึงเมนูเดี่ยว'
@@ -162,7 +162,7 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
       },
     });
   } catch (error) {
-    console.error('Error fetching MenuWebDB:', error);
+   // console.error('Error fetching MenuWebDB:', error);
     res.status(500).json({
       success: false,
       error: '❌ Error fetching menu data'
@@ -172,7 +172,7 @@ async function handleGET(req: NextApiRequest, res: NextApiResponse) {
 
 // POST: สร้างเมนูใหม่
 async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebResponse>) {
-  console.log('Received data:', req.body);
+   // console.log('Received data:', req.body);
 
   const {
     name, description, isVisible, showOrder,
@@ -181,12 +181,12 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
     createdBy
   } = req.body;
 
-  console.log('Parsed data:', {
-    name, description, isVisible, showOrder,
-    link, icon, manager, head, parentId,
-    canAdvance, canViews, canCreate, canUpdate, canDelete,
-    createdBy
-  });
+  // console.log('Parsed data:', {
+  //   name, description, isVisible, showOrder,
+  //   link, icon, manager, head, parentId,
+  //   canAdvance, canViews, canCreate, canUpdate, canDelete,
+  //   createdBy
+  // });
 
   // ✅ 1. ตรวจสอบค่าว่างและประเภทข้อมูลเบื้องต้น
   if (!name || typeof name !== 'string' || name.trim() === '') {
@@ -201,7 +201,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
     return res.status(400).json({ success: false, error: '⚠️ กรุณาระบุผู้สร้าง' });
   }
 
-  console.log('Validation passed');
+   // console.log('Validation passed');
 
   // ✅ 2. ตรวจสอบชื่อเมนูซ้ำ (ทุกระดับ)
   const existingMenuByName = await prisma.menuWebDB.findFirst({
@@ -249,7 +249,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
 
     nextShowOrder = lastMenu ? Number(lastMenu.showOrder) + 1 : 1;
 
-    console.log(`📋 กำหนด showOrder สำหรับกลุ่ม ${parentId ? `แม่: ${parentId}` : 'ไม่มีแม่'}: ${nextShowOrder}`);
+     // console.log(`📋 กำหนด showOrder สำหรับกลุ่ม ${parentId ? `แม่: ${parentId}` : 'ไม่มีแม่'}: ${nextShowOrder}`);
   }
 
   // ✅ 5. เตรียมข้อมูลเพื่อบันทึกลงฐานข้อมูล
@@ -284,7 +284,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
       await updateParentHeadStatus(menuData.parentId, 'add');
     }
 
-    console.log('Menu created successfully:', newMenu);
+     // console.log('Menu created successfully:', newMenu);
 
     return res.status(201).json({
       success: true,
@@ -292,7 +292,7 @@ async function handlePOST(req: NextApiRequest, res: NextApiResponse<MenuWebRespo
       message: '✅ สร้างเมนูใหม่สำเร็จ'
     });
   } catch (error) {
-    console.error('❌ Error creating menu:', error);
+   // console.error('❌ Error creating menu:', error);
     return res.status(500).json({
       success: false,
       error: '❌ เกิดข้อผิดพลาดในการสร้างเมนู'

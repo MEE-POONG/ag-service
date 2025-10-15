@@ -62,7 +62,7 @@ export default function AdminAddPage() {
   })
 
   useEffect(() => {
-    console.log(`posDep: `, posDep);
+   // console.log(`posDep: `, posDep);
 
     if (!posDep) return
 

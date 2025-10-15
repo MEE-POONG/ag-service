@@ -36,11 +36,11 @@ const ModalCreateAgent: React.FC<ModalCreateAgentProps> = ({ data, onSuccess }) 
       return;
     }
 
-    console.log("📝 Create Agent Data:", {
-      adviser: form.adviser,
-      usernameAG: form.usernameAG,
-      position: form.position,
-    });
+    // console.log("📝 Create Agent Data:", {
+    //   adviser: form.adviser,
+    //   usernameAG: form.usernameAG,
+    //   position: form.position,
+    // });
 
     try {
       setLoading(true);

@@ -38,12 +38,12 @@ const ModalResetAgUserPassword: React.FC<ModalResetAgUserPasswordProps> = ({ dat
       return;
     }
 
-    console.log("📝 Reset AG User Password Data:", {
-      adviser: form.adviser,
-      usernameAG: form.usernameAG,
-      newPassword: form.newPassword,
-      position: form.position,
-    });
+    // console.log("📝 Reset AG User Password Data:", {
+    //   adviser: form.adviser,
+    //   usernameAG: form.usernameAG,
+    //   newPassword: form.newPassword,
+    //   position: form.position,
+    // });
 
     try {
       setLoading(true);

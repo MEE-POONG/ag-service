@@ -32,7 +32,7 @@ export default async function handler(
 
   try {
     const token = req.headers['x-widget-token'] as string
-    
+
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -43,7 +43,7 @@ export default async function handler(
     // Decode JWT token to get customer ID
     const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-key'
     let customerId: string
-    
+
     // Validate token format
     if (!token || typeof token !== 'string') {
       return res.status(401).json({
@@ -51,11 +51,11 @@ export default async function handler(
         error: 'Invalid token format'
       })
     }
-    
+
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as any
       customerId = decoded.customerId
-      
+
       if (!customerId) {
         return res.status(401).json({
           success: false,
@@ -63,7 +63,7 @@ export default async function handler(
         })
       }
     } catch (jwtError) {
-      console.error('JWT verification error:', jwtError)
+      // console.error('JWT verification error:', jwtError)
       console.error('Token received:', token)
       return res.status(401).json({
         success: false,
@@ -149,7 +149,7 @@ export default async function handler(
 
       // Widget key is not needed for conversation creation
       // const { widgetId } = JSON.parse(Buffer.from(token, 'base64').toString())
-      
+
       const conversation = await prisma.chatConversationDB.create({
         data: {
           customerId: customer.id,
@@ -187,12 +187,12 @@ export default async function handler(
       })
     }
   } catch (error) {
-    console.error('Widget conversation error:', error)
-    console.error('Error details:', {
-      message: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined,
-      name: error instanceof Error ? error.name : undefined
-    })
+    // console.error('Widget conversation error:', error)
+    // console.error('Error details:', {
+    //   message: error instanceof Error ? error.message : 'Unknown error',
+    //   stack: error instanceof Error ? error.stack : undefined,
+    //   name: error instanceof Error ? error.name : undefined
+    // })
     return res.status(500).json({
       success: false,
       error: 'Failed to process conversation'

@@ -55,7 +55,7 @@ export default async function handler(
         })
       }
     } catch (jwtError) {
-      console.error('JWT verification error:', jwtError)
+     // console.error('JWT verification error:', jwtError)
       return res.status(401).json({
         success: false,
         error: 'Invalid or expired token'
@@ -214,7 +214,7 @@ export default async function handler(
           
           // Check if it's a transaction conflict error
           if (error?.code === 'P2034' && retries > 0) {
-            console.log(`[Widget Messages] Transaction conflict, retrying... (${retries} retries left)`)
+           // console.log(`[Widget Messages] Transaction conflict, retrying... (${retries} retries left)`)
             // Wait a bit before retrying (exponential backoff)
             await new Promise(resolve => setTimeout(resolve, 100 * (3 - retries)))
             continue
@@ -239,7 +239,7 @@ export default async function handler(
       })
     }
   } catch (error) {
-    console.error('Widget message error:', error)
+   // console.error('Widget message error:', error)
     return res.status(500).json({
       success: false,
       error: 'Failed to process message'

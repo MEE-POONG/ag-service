@@ -18,7 +18,7 @@ const CommandWorkModalCreateC: React.FC<CommandWorkModalCreateCProps> = ({ data 
   const handleSave = async () => {
     try {
       setLoading(true);
-      console.log('เอเย่น : ', data.username, 'ยูส : ', data.username + customerStartNew, 'จำนวน : ', createNum);
+     // console.log('เอเย่น : ', data.username, 'ยูส : ', data.username + customerStartNew, 'จำนวน : ', createNum);
       // TODO: call API ที่ใช้บันทึกเครดิตจริง
     } catch (error) {
       console.error('❌ เกิดข้อผิดพลาดในการบันทึก:', error);
