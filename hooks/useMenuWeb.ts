@@ -19,6 +19,8 @@ import axios from "@/lib/axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { qk } from "@/lib/queryKeys";
 import { useAuth } from "@/hooks/useAuth";
+import { menuDev, menuPublic } from "@/data/menuItems";
+import { MenuWebDB } from "@prisma/client";
 
 /* ----------------------------- Return type ----------------------------- */
 
@@ -392,9 +394,25 @@ export function useMenuWeb(): UseMenuReturn {
 
     // ไม่เจอ base ที่อนุญาต → บล็อก
     if (!rule) {
+      // สร้างตัวเช็คเมนูสาธารณะ และเมนู dev
+      const isPublic = menuPublic.some((m: MenuWebDB) => m.link === path);
+
+      // เช็ค menuDev แบบ exact match และ suffix match (เพราะ menuDev อาจเป็น child ที่มี parentId)
+      const isDev = menuDev.some((m: MenuWebDB) => {
+        if (!m.link) return false;
+        // exact match
+        if (m.link === path) return true;
+        // suffix match: /setting/menuweb ตรงกับ /menuweb
+        if (path.endsWith(m.link) && m.parentId) return true;
+        return false;
+      });
+
+      if (isPublic || isDev) {
+        return;
+      }
       if (pathname !== "/404") {
         console.log("[RBAC] No matching base, block:", pathname);
-        router.replace("/404");
+        // router.replace("/404");
       }
       return;
     }
@@ -438,7 +456,7 @@ export function useMenuWeb(): UseMenuReturn {
 
     // ตรวจสิทธิ์
     const hasPerm = Boolean((rule.perm as any)[requiredPermKey]);
-console.log('hasPerm : ', hasPerm);
+    console.log('hasPerm : ', hasPerm);
 
     if (!hasPerm) {
       if (pathname !== "/404") {
@@ -450,7 +468,7 @@ console.log('hasPerm : ', hasPerm);
           "under base",
           rule.base
         );
-        // router.replace("/404");
+        router.replace("/404");
       }
     }
   }, [pathname, menuWebData, router]);

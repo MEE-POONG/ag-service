@@ -18,6 +18,8 @@ import { qk } from '@/lib/queryKeys';
 import PageHeader from '@/components/PageHeader';
 import { Params } from '@/data/interfaceDefault';
 import { useHeadSupport } from '@/hooks/useHeadSupport'
+import { useAuth } from '@/hooks/useAuth';
+import Page404 from '@/components/Page404';
 
 type ImageResp = {
     success: boolean;
@@ -26,7 +28,17 @@ type ImageResp = {
 };
 
 export default function ImagePage() {
+    const { user, userLoading } = useAuth();
     const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
+
+    // ตรวจสอบว่าเป็น dev user หรือไม่
+    const isDevUser = user?.username === "superadmin" ||
+                      user?.username === "admin" ||
+                      user?.adminPosition?.adminDepartment?.name === "IT Department";
+
+    // ถ้าไม่มีสิทธิ์เข้าถึง ให้แสดง 404
+    const isAllowed = hs.ok || isDevUser;
+
     const [params, setParams] = useState<Params>({
         page: 1,
         pageSize: 10,
@@ -74,6 +86,31 @@ export default function ImagePage() {
             }))
         }
     }, [imageResp]);
+
+    // รอให้ user โหลดเสร็จก่อนตรวจสอบสิทธิ์
+    if (userLoading) {
+        return (
+            <TheLayout>
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                        <p className="text-gray-600">กำลังตรวจสอบสิทธิ์...</p>
+                    </div>
+                </div>
+            </TheLayout>
+        );
+    }
+
+    // ถ้าไม่มีสิทธิ์ ให้แสดง 404
+    if (!isAllowed) {
+        return (
+            <Page404
+                title="ไม่มีสิทธิ์เข้าถึง"
+                message="คุณไม่มีสิทธิ์เข้าถึงหน้านี้ กรุณาติดต่อผู้ดูแลระบบ"
+                backUrl="/"
+            />
+        );
+    }
 
     return (
         <TooltipProvider>

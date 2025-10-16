@@ -2,6 +2,8 @@
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "./useAuth";
+import type { MenuWebDB } from "@prisma/client";
+import { menuDev } from "@/data";
 
 /** ผลลัพธ์ที่ต้องการ */
 export interface HeadSupportResult {
@@ -17,7 +19,6 @@ export interface HeadSupportResult {
   support: {
     menuId: string;
     name: string;
-    // สิทธิ์ของ "ผู้ใช้" บนเมนูที่แมตช์ (child)
     canAdvance: boolean;
     canViews: boolean;
     canCreate: boolean;
@@ -25,10 +26,22 @@ export interface HeadSupportResult {
     canDelete: boolean;
     isDeleted: boolean;
   } | null;
-  reason?: string;    // อธิบายถ้าไม่ ok
+  reason?: string;
 }
 
 /* ------------------------ helpers ------------------------ */
+
+/** พาธที่อนุญาตเสมอ (ไม่ต้องอยู่ใน menuWeb) */
+const PUBLIC_ACCESS = new Set<string>([
+  "/profile",
+  // เพิ่มได้ตามต้องการ เช่น "/settings", "/wallet" ...
+]);
+
+/** เงื่อนไข user ที่เข้าถึง menuDev ได้ */
+const isDevUser = (user: any) =>
+  user?.username === "superadmin" ||
+  user?.username === "admin" ||
+  user?.adminPosition?.adminDepartment?.name === "IT Department";
 
 /** ดึง pathname + ตัด / ท้าย (ยกเว้น root) */
 const normPath = (input: string) => {
@@ -38,7 +51,7 @@ const normPath = (input: string) => {
       const u = new URL(raw);
       return normalizeSlash(u.pathname);
     }
-  } catch {/* ignore */}
+  } catch { /* ignore */ }
   return normalizeSlash(raw || "/");
 };
 const normalizeSlash = (p: string) => {
@@ -66,6 +79,29 @@ const buildPermissionMap = (user: any) => {
   return map;
 };
 
+/** แปลง MenuWebDB ให้เป็น head/support output */
+const toHeadOut = (mw: Partial<MenuWebDB>, userCanAdvance: boolean) => ({
+  id: String(mw.id),
+  name: String(mw.name ?? ""),
+  link: String(mw.link ?? ""),
+  head: true as const,
+  userCanAdvance,
+});
+const toSupportOut = (
+  mw: Partial<MenuWebDB>,
+  perm: any,
+  isDeleted = false
+) => ({
+  menuId: String(mw.id),
+  name: String(mw.name ?? ""),
+  canAdvance: !!perm?.canAdvance,
+  canViews: !!perm?.canViews,
+  canCreate: !!perm?.canCreate,
+  canUpdate: !!perm?.canUpdate,
+  canDelete: !!perm?.canDelete,
+  isDeleted: !!isDeleted,
+});
+
 /* ------------------ PURE FUNCTION (no React, no window) ------------------ */
 /** ใช้ได้ทั้ง client/SSR: ส่ง user + path เข้ามา คืนข้อมูลพร้อมใช้ */
 export function resolveHeadSupport(user: any, pathOrUrl: string): HeadSupportResult {
@@ -73,9 +109,28 @@ export function resolveHeadSupport(user: any, pathOrUrl: string): HeadSupportRes
   const adminDefaults: any[] = user?.adminPosition?.AdminDefaultPermissionDB ?? [];
 
   const path = normPath(pathOrUrl);
-  const [, firstSeg = "", secondSeg = ""] = path.split("/"); // ["", "bot-ag", "command-dev", ...]
+  const [, firstSeg = "", secondSeg = ""] = path.split("/"); // ["", "foo", "bar", ...]
 
-  // 1) หา head: head=true และ link === `/${firstSeg}`
+  /** 0) Public allowlist */
+  if (PUBLIC_ACCESS.has(path)) {
+    return {
+      ok: true,
+      path,
+      head: null,
+      support: {
+        menuId: "__public__",
+        name: "Public Access",
+        canAdvance: false,
+        canViews: true,
+        canCreate: false,
+        canUpdate: false,
+        canDelete: false,
+        isDeleted: false,
+      },
+    };
+  }
+
+  /** 1) มาตรฐาน: หา head จาก adminDefaults (menuWeb) */
   const headRow = adminDefaults.find((row) => {
     const m = row?.menuWebDB;
     if (!m?.head) return false;
@@ -83,96 +138,149 @@ export function resolveHeadSupport(user: any, pathOrUrl: string): HeadSupportRes
     return link === `/${firstSeg}`;
   });
 
-  if (!headRow?.menuWebDB) {
+  if (headRow?.menuWebDB) {
+    const headMW = headRow.menuWebDB;
+    const headPerm = permById.get(String(headMW.id)) ?? {};
+    const headOut = toHeadOut(headMW, !!headPerm.canAdvance);
+
+    // 2) child ใต้ head โดย parentId === head.id + จับคู่ secondSeg
+    const childRow = adminDefaults.find((row) => {
+      const m = row?.menuWebDB;
+      if (!m) return false;
+      if (String(m.parentId ?? "") !== String(headMW.id)) return false;
+      return linkMatchesSegment(m.link, secondSeg);
+    });
+
+    if (!childRow?.menuWebDB) {
+      if (!secondSeg) {
+        return {
+          ok: true,
+          path,
+          head: headOut,
+          support: toSupportOut(headMW, headPerm, !!headRow.isDeleted),
+        };
+      }
+      return {
+        ok: false,
+        path,
+        head: headOut,
+        support: null,
+        reason: "ไม่พบเมนูย่อยที่ link ตรงกับ segment ที่สอง",
+      };
+    }
+
+    const childMW = childRow.menuWebDB;
+    const childPerm = permById.get(String(childMW.id)) ?? {};
     return {
-      ok: false,
+      ok: true,
       path,
-      head: null,
-      support: null,
-      reason: "ไม่พบเมนูหัวที่ลิงก์ตรงกับ segment แรก",
+      head: headOut,
+      support: toSupportOut(childMW, childPerm, !!childRow.isDeleted),
     };
   }
 
-  const headMW = headRow.menuWebDB;
-  const headPerm = permById.get(String(headMW.id)) ?? {};
-  const headOut = {
-    id: String(headMW.id),
-    name: String(headMW.name ?? ""),
-    link: String(headMW.link ?? ""),
-    head: true as const,
-    userCanAdvance: !!headPerm.canAdvance, // สิทธิ์ advance ของผู้ใช้บน head
-  };
+  /** 3) Dev fallback: ลองเช็คใน menuDev ถ้าเป็น dev user */
+  if (isDevUser(user)) {
+    // หา head ใน menuDev
+    const devHead = (menuDev as MenuWebDB[]).find(
+      (m) => m.head && normalizeSlash(String(m.link ?? "")) === `/${firstSeg}`
+    );
 
-  // 2) หา child ใต้ head โดย parentId === head.id + จับคู่ secondSeg
-  const childRow = adminDefaults.find((row) => {
-    const m = row?.menuWebDB;
-    if (!m) return false;
-    if (String(m.parentId ?? "") !== String(headMW.id)) return false;
-    return linkMatchesSegment(m.link, secondSeg);
-  });
+    if (devHead) {
+      const headOut = toHeadOut(devHead, true); // dev ให้ advance ได้บน head
 
-  if (!childRow?.menuWebDB) {
-    // ถ้าไม่มี child ที่ตรง secondSeg แต่ path คือแค่ head → support = สิทธิ์ของ head
-    if (!secondSeg) {
+      // หา child ใน menuDev ด้วย parentId
+      const devChild = (menuDev as MenuWebDB[]).find(
+        (m) =>
+          String(m.parentId ?? "") === String(devHead.id) &&
+          linkMatchesSegment(m.link as string, secondSeg)
+      );
+
+      if (!devChild) {
+        if (!secondSeg) {
+          // ไม่มี child และอยู่ที่ head → ใช้สิทธิ์ head
+          return {
+            ok: true,
+            path,
+            head: headOut,
+            support: {
+              menuId: String(devHead.id),
+              name: String(devHead.name ?? ""),
+              canAdvance: true,
+              canViews: true,
+              canCreate: !!devHead.canCreate,
+              canUpdate: !!devHead.canUpdate,
+              canDelete: !!devHead.canDelete,
+              isDeleted: !!devHead.isDeleted,
+            },
+          };
+        }
+        return {
+          ok: false,
+          path,
+          head: headOut,
+          support: null,
+          reason: "DEV: ไม่พบเมนูย่อยที่ link ตรงกับ segment ที่สอง",
+        };
+      }
+
+      // เจอ child ใน dev
       return {
         ok: true,
         path,
         head: headOut,
         support: {
-          menuId: String(headMW.id),
-          name: String(headMW.name ?? ""),
-          canAdvance: !!headPerm.canAdvance,
-          canViews: !!headPerm.canViews,
-          canCreate: !!headPerm.canCreate,
-          canUpdate: !!headPerm.canUpdate,
-          canDelete: !!headPerm.canDelete,
-          isDeleted: !!headRow.isDeleted,
+          menuId: String(devChild.id),
+          name: String(devChild.name ?? ""),
+          canAdvance: true,
+          canViews: true,
+          canCreate: !!devChild.canCreate,
+          canUpdate: !!devChild.canUpdate,
+          canDelete: !!devChild.canDelete,
+          isDeleted: !!devChild.isDeleted,
         },
       };
     }
-    return {
-      ok: false,
-      path,
-      head: headOut,
-      support: null,
-      reason: "ไม่พบเมนูย่อยที่ link ตรงกับ segment ที่สอง",
-    };
   }
 
-  // 3) support = สิทธิ์ของ "ผู้ใช้" บนเมนู child
-  const childMW = childRow.menuWebDB;
-  const childPerm = permById.get(String(childMW.id)) ?? {};
-
-  const supportOut = {
-    menuId: String(childMW.id),
-    name: String(childMW.name ?? ""),
-    canAdvance: !!childPerm.canAdvance,
-    canViews: !!childPerm.canViews,
-    canCreate: !!childPerm.canCreate,
-    canUpdate: !!childPerm.canUpdate,
-    canDelete: !!childPerm.canDelete,
-    isDeleted: !!childRow.isDeleted,
-  };
-
+  /** 4) ไม่เจออะไรเลย */
   return {
-    ok: true,
+    ok: false,
     path,
-    head: headOut,
-    support: supportOut,
+    head: null,
+    support: null,
+    reason: "ไม่พบเมนูหัวที่ลิงก์ตรงกับ segment แรก (รวมถึง dev fallback)",
   };
 }
 
 /* --------------------------- React Hook wrapper --------------------------- */
-/** Hook ที่ "คืนข้อมูล" พร้อมใช้ทันที (ไม่ต้องเรียกฟังก์ชันซ้ำ) */
+/** Hook ที่ "คืนข้อมูล" พร้อมใช้ทันที */
 export function useHeadSupport(pathOverride?: string): HeadSupportResult {
   const { user } = useAuth();
-  const pathname = usePathname(); // ทำงานกับ App Router
+  const pathname = usePathname();
 
-  // ใช้ path จากพารามิเตอร์ก่อน ถ้าไม่ส่งมา ใช้ path ปัจจุบัน
   const path = pathOverride ?? pathname ?? "/";
 
-  return useMemo(
-    () => resolveHeadSupport(user, path),
-    [user, path]
-  );
+  // 🔁 กุญแจผู้ใช้สำหรับ trigger re-compute ให้แน่ใจว่าไม่ต้อง F5
+  const userKey = useMemo(() => {
+    const base = {
+      id: user?.id ?? null,
+      username: user?.username ?? null,
+      adminPosId: user?.adminPosition?.id ?? null,
+      adminDeptName: user?.adminPosition?.adminDepartment?.name ?? null,
+    };
+    const perms = Array.isArray(user?.permissions)
+      ? user.permissions.map((p: any) => ({
+          id: String(p?.menuWebDBId ?? ""),
+          va: !!p?.canAdvance,
+          vv: !!p?.canViews,
+          vc: !!p?.canCreate,
+          vu: !!p?.canUpdate,
+          vd: !!p?.canDelete,
+        }))
+      : [];
+    return JSON.stringify({ base, perms });
+  }, [user]);
+
+  return useMemo(() => resolveHeadSupport(user, path), [userKey, path]);
 }

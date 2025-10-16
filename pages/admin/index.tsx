@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
 import { useAuth } from '@/hooks/useAuth'
 import PageHeader from '@/components/PageHeader'
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 type AdminListResp = {
   success: boolean
@@ -31,6 +32,7 @@ const positionColorByPriority = (p?: number) => {
 }
 
 export default function AdminPage() {
+  const hs = useHeadSupport()
   const { user } = useAuth()
   const [params, setParams] = useState<Params>({
     page: 1,
@@ -100,12 +102,14 @@ export default function AdminPage() {
         description="ระบบจัดการผู้ดูแลระบบ"
         gradient={true}
         actions={
-          <Link
-            href="/admin/add"
-            className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
-          >
-            <FaPlus className="mr-2" /> เพิ่มผู้ดูแล
-          </Link>
+          hs.head?.userCanAdvance || hs.support?.canCreate || user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department" ? (
+            <Link
+              href="/admin/add"
+              className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
+            >
+              <FaPlus className="mr-2" /> เพิ่มผู้ดูแล
+            </Link>
+          ) : null
         }
       />
       <div className="mx-auto">
@@ -164,13 +168,17 @@ export default function AdminPage() {
                           <Link href={`/admin/view/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-green-100 text-green-700 border border-solid border-green-700 hover:bg-green-200">
                             ดู
                           </Link>
-                          <Link href={`/admin/edit/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200">
-                            แก้ไข
-                          </Link>
-                          <AdminModalDelete
-                            data={item}
-                            onSuccess={() => refetch()}
-                          />
+                          {hs.head?.userCanAdvance || hs.support?.canUpdate || user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department" ? (
+                            <Link href={`/admin/edit/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200">
+                              แก้ไข
+                            </Link>
+                          ) : null}
+                          {hs.head?.userCanAdvance || hs.support?.canDelete || user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department" ? (
+                            <AdminModalDelete
+                              data={item}
+                              onSuccess={() => refetch()}
+                            />
+                          ) : null}
                         </TableCell>
                       </TableRow>
                     ))}

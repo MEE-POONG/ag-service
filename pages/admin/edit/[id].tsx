@@ -1,10 +1,11 @@
-// pages/admin/add.tsx
+// pages/admin/edit.tsx
 import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from '@/lib/axios'
 import { TheLayout } from '@/components/TheLayout'
 import { qk } from '@/lib/queryKeys'
+import { useAuth } from '@/hooks/useAuth'
 
 interface AdminDetail {
   id: string
@@ -17,6 +18,7 @@ interface AdminDetail {
   AdminPositionDB?: Position | null
 }
 type AdminResp = { success: boolean; data: AdminDetail; error?: string }
+
 interface Position {
   id: string
   name: string
@@ -32,6 +34,7 @@ type PosDepResp = { positions: Position[]; departments: Department[] }
 
 export default function AdminEditPage() {
   const router = useRouter()
+  const { user } = useAuth()
   const id = typeof router.query.id === 'string' ? router.query.id : ''
   const [positions, setPositions] = useState<Position[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
@@ -39,7 +42,7 @@ export default function AdminEditPage() {
 
   const [form, setForm] = useState({
     username: '',
-    password: '',
+    password: '', // ไม่บังคับ (แก้เฉพาะตอนกรอก)
     name: '',
     email: '',
     tel: '',
@@ -49,21 +52,19 @@ export default function AdminEditPage() {
 
   const queryClient = useQueryClient()
 
-  const {
-    data: adminRes,
-    isPending: adminPending,  // ✅ v5
-    isError: adminError,
-  } = useQuery<AdminResp>({
-    queryKey: qk.admins.detail(id),
-    enabled: !!id,
-    queryFn: async () => {
-      const res = await axios.get<AdminResp>('/api/admin', { params: { id } })
-      if (!res.data?.success) throw new Error(res.data?.error || 'ไม่พบข้อมูลผู้ดูแล')
-      return res.data
-    },
-    placeholderData: (prev) => prev,
-    staleTime: 60_000,
-  })
+  // const {
+  //   data: adminRes,
+  // } = useQuery<AdminResp>({
+  //   queryKey: qk.admins.detail(id),
+  //   enabled: !!id,
+  //   queryFn: async () => {
+  //     const res = await axios.get<AdminResp>('/api/admin', { params: { id } })
+  //     if (!res.data?.success) throw new Error(res.data?.error || 'ไม่พบข้อมูลผู้ดูแล')
+  //     return res.data
+  //   },
+  //   placeholderData: (prev) => prev,
+  //   staleTime: 60_000,
+  // })
 
   const { data: posDep } = useQuery<PosDepResp>({
     queryKey: qk.positions.list,
@@ -101,26 +102,22 @@ export default function AdminEditPage() {
   }, [posDep, selectedDeptId])
 
   useEffect(() => {
-    if (!adminRes?.data) return
-    const a = adminRes.data
+    if (!user) return
 
-    // เซ็ตค่าที่ช่อง input ต้องใช้
     setForm({
-      username: a.username ?? '',
-      password: '',                 // เว้นว่างไว้ (หน้าแก้ไขจะไม่เปลี่ยนถ้าไม่กรอก)
-      name: a.name ?? '',
-      email: a.email ?? '',
-      tel: a.tel ?? '',
-      AdminPositionId: a.AdminPositionId || a.AdminPositionDB?.id || '',
+      username: user.username ?? '',
+      password: '', // เว้นว่างไว้
+      name: user.name ?? '',
+      email: user.email ?? '',
+      tel: user.tel ?? '',
+      AdminPositionId: user.adminPositionId ?? '',
     })
 
-    // ถ้าคุณมี select แผนก ให้เติมค่าไว้ด้วย (ถ้าไม่ได้ใช้ก็ลบทิ้งได้)
     setSelectedDeptId(
-      a.AdminPositionDB?.adminDepartment?.id ||
-      a.AdminPositionDB?.adminDepartmentId ||
-      ''
+      user.adminPosition?.adminDepartmentId ?? ''
     )
-  }, [adminRes])
+    console.log(`124 user: `, user);
+  }, [user])
 
   const filteredPositions = useMemo(() => {
     if (!selectedDeptId) return []
@@ -149,16 +146,27 @@ export default function AdminEditPage() {
       alert('กรุณากรอกข้อมูลให้ครบถ้วน')
       return
     }
-    console.log(152, `form : `, form);
 
     try {
       setLoading(true)
-      const res = await axios.put('/api/admin', {
-        id: id,
-        ...form,
+
+      // ส่ง password เฉพาะตอนที่มีการกรอกจริง ๆ
+      const body: any = {
+        id,
+        username: form.username,
+        name: form.name,
+        email: form.email,
+        tel: form.tel,
+        AdminPositionId: form.AdminPositionId,
         adminDepartmentId: selectedDeptId,
-        createdBy: 'admin',
-      })
+        createdBy: user?.id || '',
+      }
+      if (form.password && form.password.trim().length > 0) {
+        body.password = form.password
+      }
+
+      const res = await axios.put('/api/admin', body)
+
       if (res.data?.success) {
         await queryClient.invalidateQueries({ queryKey: qk.admins.list, exact: false })
         alert('แก้ไข Admin สำเร็จ')
@@ -176,54 +184,104 @@ export default function AdminEditPage() {
 
   return (
     <TheLayout>
-      <div className="max-w-sm sm:max-w-xl mx-auto bg-white shadow rounded-lg p-4 sm:p-8 mt-4 sm:mt-8">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6">แก้ไขผู้ดูแลระบบ</h1>
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+      <div className="max-w-sm sm:max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-6 sm:p-6 mt-0">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-4 text-gray-800 border-b pb-4">แก้ไขข้อมูลผู้ดูแลระบบ</h1>
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           <div>
-            <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">ชื่อผู้ใช้ *</label>
-            <input name="username" value={form.username} onChange={handleChange} required className="input-field text-sm" />
+            <label className="block text-sm sm:text-base font-semibold mb-2 text-gray-700">
+              ชื่อผู้ใช้ <span className="text-red-500">*</span>
+            </label>
+            <input
+              name="username"
+              value={form.username}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+              placeholder="กรอกชื่อผู้ใช้"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm sm:text-base font-semibold mb-2 text-gray-700">
+              ชื่อ-นามสกุล <span className="text-red-500">*</span>
+            </label>
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+              placeholder="กรอกชื่อ-นามสกุล"
+            />
           </div>
           <div>
-            <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">ชื่อ-นามสกุล *</label>
-            <input name="name" value={form.name} onChange={handleChange} required className="input-field text-sm" />
+            <label className="block text-sm sm:text-base font-semibold mb-2 text-gray-700">
+              อีเมล <span className="text-red-500">*</span>
+            </label>
+            <input
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+              placeholder="example@email.com"
+            />
           </div>
           <div>
-            <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">อีเมล *</label>
-            <input name="email" type="email" value={form.email} onChange={handleChange} required className="input-field text-sm" />
-          </div>
-          <div>
-            <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">เบอร์โทร</label>
-            <input name="tel" value={form.tel} onChange={handleChange} className="input-field text-sm" />
+            <label className="block text-sm sm:text-base font-semibold mb-2 text-gray-700">
+              เบอร์โทร
+            </label>
+            <input
+              name="tel"
+              value={form.tel}
+              onChange={handleChange}
+              className="w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+              placeholder="กรอกเบอร์โทร (ไม่บังคับ)"
+            />
           </div>
 
           {/* เลือกแผนก */}
           <div>
-            <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">แผนก *</label>
+            <label className="block text-sm sm:text-base font-semibold mb-2 text-gray-700">
+              แผนก <span className="text-red-500">*</span>
+            </label>
             <select
               value={selectedDeptId}
               onChange={handleDeptChange}
               required
               disabled={departments.length === 0}
-              className={`input-field text-sm ${departments.length === 0 ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+              className={`w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${departments.length === 0
+                ? 'bg-gray-100 cursor-not-allowed opacity-60'
+                : 'bg-white hover:border-gray-400 cursor-pointer'
+                }`}
             >
               <option value="" disabled>{departments.length === 0 ? 'ไม่มีข้อมูลแผนก' : '-- เลือกแผนก --'}</option>
               {departments.map(dep => <option key={dep.id} value={dep.id}>{dep.name}</option>)}
             </select>
             {departments.length === 0 && (
-              <p className="mt-1 text-xs text-red-500">ไม่พบข้อมูลแผนกจาก API — ระบบจะดึงจากตำแหน่งให้อัตโนมัติเมื่อมีข้อมูล</p>
+              <p className="mt-2 text-xs sm:text-sm text-red-600 flex items-start gap-1">
+                <span className="mt-0.5">⚠️</span>
+                <span>ไม่พบข้อมูลแผนกจาก API — ระบบจะดึงจากตำแหน่งให้อัตโนมัติเมื่อมีข้อมูล</span>
+              </p>
             )}
           </div>
 
           {/* ตำแหน่ง */}
           <div>
-            <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">ตำแหน่ง *</label>
+            <label className="block text-sm sm:text-base font-semibold mb-2 text-gray-700">
+              ตำแหน่ง <span className="text-red-500">*</span>
+            </label>
             <select
               name="AdminPositionId"
               value={form.AdminPositionId}
               onChange={handleChange}
               required
               disabled={!selectedDeptId}
-              className={`input-field text-sm ${!selectedDeptId ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+              className={`w-full px-3 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${!selectedDeptId
+                ? 'bg-gray-100 cursor-not-allowed opacity-60'
+                : 'bg-white hover:border-gray-400 cursor-pointer'
+                }`}
             >
               <option value="" disabled>{selectedDeptId ? '-- เลือกตำแหน่ง --' : 'เลือกแผนกก่อน'}</option>
               {filteredPositions.map(pos => (
@@ -234,9 +292,21 @@ export default function AdminEditPage() {
             </select>
           </div>
 
-          <div className="flex gap-2 mt-4">
-            <button type="submit" className="btn-primary text-sm" disabled={loading}>{loading ? 'กำลังบันทึก...' : 'แก้ไขผู้ดูแลระบบ'}</button>
-            <button type="button" className="btn-secondary text-sm" onClick={() => router.push('/admin/admins')}>ยกเลิก</button>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 border-t">
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex-1 px-6 py-3 text-sm sm:text-base font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 shadow-md hover:shadow-lg"
+            >
+              {loading ? '⏳ กำลังบันทึก...' : '✅ บันทึกข้อมูล'}
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push('/admin/admins')}
+              className="flex-1 sm:flex-none px-6 py-3 text-sm sm:text-base font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-all duration-200 border border-gray-300"
+            >
+              ยกเลิก
+            </button>
           </div>
         </form>
       </div>

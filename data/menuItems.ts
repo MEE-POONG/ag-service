@@ -764,7 +764,30 @@ export const menuDev: MenuWebDB[] = [
 
   },
 ];
-
+export const menuPublic: MenuWebDB[] = [
+  {
+    id: "public",
+    name: "หน้าเว็บ",
+    description: "หน้าเว็บ",
+    isVisible: true,
+    showOrder: 1,
+    head: false,
+    link: "/profile",
+    icon: "FaHome",
+    manager: [],
+    parentId: null,
+    canAdvance: false,
+    canViews: false,
+    canCreate: false,
+    canUpdate: false,
+    canDelete: false,
+    createdAt: new Date(),
+    createdBy: "system",
+    updatedAt: new Date(),
+    updatedBy: "system",
+    isDeleted: false,
+  }
+];
 export const bottomMenuItems: MenuWebDBWithChildren[] = [
   {
     id: "setting-index",

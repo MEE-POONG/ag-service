@@ -14,15 +14,20 @@ import PageHeader from '@/components/PageHeader'
 import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 export default function SettingPage() {
-  const { user } = useAuth();
+  const { user, userLoading } = useAuth();
   const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
 
   const [settingData, setSettingData] = useState<Partial<SettingDB>>({});
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [pageLoading, setPageLoading] = useState(false);
 
-  // ถ้าไม่มีสิทธิ์เข้าถึง ให้แสดง 404 (อย่าเรียก Hook แบบมีเงื่อนไข)
-  const isAllowed = !user || user.username === "admin" || user.username === "superadmin";
+  // ตรวจสอบว่าเป็น dev user หรือไม่
+  const isDevUser = user?.username === "superadmin" ||
+                    user?.username === "admin" ||
+                    user?.adminPosition?.adminDepartment?.name === "IT Department";
+
+  // ถ้าไม่มีสิทธิ์เข้าถึง ให้แสดง 404 (ใช้ hs.ok จาก useHeadSupport หรือตรวจสอบว่าเป็น dev user)
+  const isAllowed = hs.ok || isDevUser;
 
   const queryClient = useQueryClient()
   const { data: serverSetting, refetch } = useQuery({
@@ -90,6 +95,20 @@ export default function SettingPage() {
   useEffect(() => {
     if (serverSetting) setSettingData(serverSetting)
   }, [serverSetting])
+
+  // รอให้ user โหลดเสร็จก่อนตรวจสอบสิทธิ์
+  if (userLoading) {
+    return (
+      <TheLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">กำลังตรวจสอบสิทธิ์...</p>
+          </div>
+        </div>
+      </TheLayout>
+    );
+  }
 
   if (!isAllowed) {
     return (

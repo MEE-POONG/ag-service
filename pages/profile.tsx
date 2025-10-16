@@ -289,7 +289,7 @@ export default function ViewAdminPage() {
         </div>
 
         {/* สิทธิ์การเข้าถึง */}
-        {user.permissions && user.permissions.length > 0 && (
+        {/* {user.permissions && user.permissions.length > 0 && (
           <div className="mt-6">
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -313,10 +313,10 @@ export default function ViewAdminPage() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* รายละเอียดสิทธิ์ตามตำแหน่ง */}
-        {user.adminPosition?.AdminDefaultPermissionDB && user.adminPosition.AdminDefaultPermissionDB.length > 0 && (
+        {/* {user.adminPosition?.AdminDefaultPermissionDB && user.adminPosition.AdminDefaultPermissionDB.length > 0 && (
           <div className="mt-6">
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -358,7 +358,7 @@ export default function ViewAdminPage() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Actions */}
       </div>

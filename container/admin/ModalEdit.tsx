@@ -123,55 +123,67 @@ const AdminModalEdit: React.FC<AdminModalEditProps> = ({
         </Modal.Header>
 
         <Modal.Body>
-          <div className="space-y-3">
+          <div className="space-y-5">
             {/* ชื่อผู้ใช้ */}
             <div>
-              <label className="block text-sm font-medium mb-1">ชื่อผู้ใช้ *</label>
+              <label className="block text-sm font-semibold mb-2 text-gray-700">
+                ชื่อผู้ใช้ <span className="text-red-500">*</span>
+              </label>
               <input
                 name="username"
                 value={form.username}
                 onChange={handleChange}
                 required
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                placeholder="กรอกชื่อผู้ใช้"
                 onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               />
             </div>
 
             {/* ชื่อ-นามสกุล */}
             <div>
-              <label className="block text-sm font-medium mb-1">ชื่อ-นามสกุล *</label>
+              <label className="block text-sm font-semibold mb-2 text-gray-700">
+                ชื่อ-นามสกุล <span className="text-red-500">*</span>
+              </label>
               <input
                 name="name"
                 value={form.name}
                 onChange={handleChange}
                 required
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                placeholder="กรอกชื่อ-นามสกุล"
                 onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               />
             </div>
 
             {/* อีเมล */}
             <div>
-              <label className="block text-sm font-medium mb-1">อีเมล *</label>
+              <label className="block text-sm font-semibold mb-2 text-gray-700">
+                อีเมล <span className="text-red-500">*</span>
+              </label>
               <input
                 name="email"
                 type="email"
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                placeholder="example@email.com"
                 onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               />
             </div>
 
             {/* เบอร์โทร */}
             <div>
-              <label className="block text-sm font-medium mb-1">เบอร์โทร</label>
+              <label className="block text-sm font-semibold mb-2 text-gray-700">
+                เบอร์โทร
+              </label>
               <input
                 name="tel"
                 value={form.tel}
                 onChange={handleChange}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
+                placeholder="กรอกเบอร์โทร (ไม่บังคับ)"
                 onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               />
             </div>
@@ -179,19 +191,22 @@ const AdminModalEdit: React.FC<AdminModalEditProps> = ({
         </Modal.Body>
 
         <Modal.Footer>
-          <Button
-            onClick={handleSubmit}
-            disabled={submitting}
-            className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {submitting ? 'กำลังบันทึก...' : 'บันทึก'}
-          </Button>
-          <Button
-            onClick={() => setIsOpen(false)}
-            className="inline-flex items-center px-2 py-1 rounded text-base bg-gray-100 text-gray-700 border border-solid border-gray-700 hover:bg-gray-200"
-          >
-            ยกเลิก
-          </Button>
+          <div className="flex gap-3 w-full">
+            <Button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="flex-1 px-6 py-3 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 shadow-md hover:shadow-lg"
+            >
+              {submitting ? '⏳ กำลังบันทึก...' : '✅ บันทึก'}
+            </Button>
+            <Button
+              onClick={() => setIsOpen(false)}
+              disabled={submitting}
+              className="flex-1 px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-all duration-200 border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              ยกเลิก
+            </Button>
+          </div>
         </Modal.Footer>
       </Modal>
     </>
