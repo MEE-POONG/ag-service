@@ -6,9 +6,11 @@ import { TheLayout } from "@/components/TheLayout";
 import ImageUploader from "@/components/ui/input/ImageUploader";
 import Link from "next/link";
 import PageHeader from '@/components/PageHeader';
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 const ImageAdd: React.FC = () => {
     const router = useRouter();
+    const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
     const [formData, setFormData] = useState({
         modelName: "ImageList",
         nameFile: "",

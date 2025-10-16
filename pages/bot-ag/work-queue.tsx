@@ -5,9 +5,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import PaginationSelect from '@/components/PaginationSelect'
 import { Params } from '@/data/interfaceDefault'
 import { ExtendedAgQueueJobDB } from '@/data/interface'
-import { usePermissions } from '@/hooks/usePermissions'
 import { useQuery } from '@tanstack/react-query'
 import PageHeader from '@/components/PageHeader'
+import { useAuth } from '@/hooks/useAuth'
 
 type WorkQueueListResp = {
   success: boolean
@@ -36,7 +36,7 @@ const typeColorByType = (type?: string) => {
 }
 
 export default function WorkQueuePage() {
-  const { isSuperAdmin } = usePermissions()
+  const { user } = useAuth();
   const [params, setParams] = useState<Params>({
     page: 1,
     pageSize: 10,
@@ -71,6 +71,11 @@ export default function WorkQueuePage() {
     refetchOnWindowFocus: true,
     staleTime: 60_000,
   })
+
+  useEffect(() => {
+    console.log('user : ', user);
+
+  }, [user])
 
   useEffect(() => {
     if (queryData?.data) setWorkQueues(queryData.data)

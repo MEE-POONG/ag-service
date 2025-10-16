@@ -9,7 +9,6 @@ import { Params } from '@/data/interfaceDefault'
 import { ExtendedAdminDB } from '@/data/interface'
 import AdminModalDelete from '@/container/admin/ModalDelete'
 import AdminModalNewPassword from '@/container/admin/ModalNewPassword'
-import { usePermissions } from '@/hooks/usePermissions'
 import { useQuery } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
 import { useAuth } from '@/hooks/useAuth'
@@ -32,7 +31,6 @@ const positionColorByPriority = (p?: number) => {
 }
 
 export default function AdminPage() {
-  const { checkPermission, isSuperAdmin } = usePermissions()
   const { user } = useAuth()
   const [params, setParams] = useState<Params>({
     page: 1,
@@ -41,9 +39,6 @@ export default function AdminPage() {
     totalPages: 1,
   })
   const [admins, setAdmins] = useState<ExtendedAdminDB[]>([])
-
-  const headPermissions = checkPermission('ระบบผู้ดูแล')
-  const supportPermissions = checkPermission('แอดมิน')
 
   // ✅ ใส่ params ลง queryKey และยิงไปกับ API
   const {
@@ -96,10 +91,6 @@ export default function AdminPage() {
     }
   }, [refetch])
 
-  useEffect(() => {
-    console.log('headPermissions : ', headPermissions);
-    console.log('supportPermissions : ', supportPermissions);
-  }, [headPermissions, supportPermissions])
 
   return (
     <TheLayout>
@@ -108,14 +99,14 @@ export default function AdminPage() {
         icon='FaShieldAlt'
         description="ระบบจัดการผู้ดูแลระบบ"
         gradient={true}
-        actions={(headPermissions.canAdvance || supportPermissions.canCreate || (user?.username === 'superadmin' || user?.username === 'admin')) ? (
+        actions={
           <Link
             href="/admin/add"
             className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
           >
             <FaPlus className="mr-2" /> เพิ่มผู้ดูแล
           </Link>
-        ) : null}
+        }
       />
       <div className="mx-auto">
 
@@ -169,24 +160,17 @@ export default function AdminPage() {
                             : <span className="inline-flex px-1 sm:px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">ปิดใช้งาน</span>}
                         </TableCell>
                         <TableCell className="text-right space-x-1">
-                          {headPermissions.canAdvance || supportPermissions.canUpdate || user?.username === `admin` ?
-                            (<AdminModalNewPassword data={item} />) : null}
-                          {headPermissions.canAdvance || supportPermissions.canView || user?.username === `admin` ? (
-                            <Link href={`/admin/view/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-green-100 text-green-700 border border-solid border-green-700 hover:bg-green-200">
-                              ดู
-                            </Link>
-                          ) : null}
-                          {headPermissions.canAdvance || supportPermissions.canUpdate || user?.username === `admin` ? (
-                            <Link href={`/admin/edit/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200">
-                              แก้ไข
-                            </Link>
-                          ) : null}
-                          {headPermissions.canAdvance || supportPermissions.canDelete || user?.username === `admin` ? (
-                            <AdminModalDelete
-                              data={item}
-                              onSuccess={() => refetch()}
-                            />
-                          ) : null}
+                          <AdminModalNewPassword data={item} />
+                          <Link href={`/admin/view/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-green-100 text-green-700 border border-solid border-green-700 hover:bg-green-200">
+                            ดู
+                          </Link>
+                          <Link href={`/admin/edit/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200">
+                            แก้ไข
+                          </Link>
+                          <AdminModalDelete
+                            data={item}
+                            onSuccess={() => refetch()}
+                          />
                         </TableCell>
                       </TableRow>
                     ))}

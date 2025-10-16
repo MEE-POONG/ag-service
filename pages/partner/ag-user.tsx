@@ -13,6 +13,7 @@ import PaginationSelect from '@/components/PaginationSelect'
 import { Params } from '@/data/interfaceDefault'
 import PartnerModalReset from '@/container/partner/ModalReset'
 import { AgUserAccountDB } from '@prisma/client'
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 type AgUserAccountFormData = {
   username: string
@@ -27,6 +28,7 @@ type AgUserAccountFormData = {
 }
 
 const WEBNAME_OPTIONS = ['psd99', 'ufa66'] as const
+
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
   const add = (item: AgUserAccountDB) => setItems(prev => [...prev, item])
@@ -47,6 +49,8 @@ function useTotpRemaining(stepSec = 30) {
 }
 
 export default function AgUserAccountPage() {
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
+
   const queryClient = useQueryClient()
   const { items, add, update, remove, setItems } = useAgUserAccounts()
   const totpRemaining = useTotpRemaining(30)

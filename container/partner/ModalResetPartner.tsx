@@ -74,7 +74,6 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
     <>
       <Button
         onClick={() => setIsOpen(true)}
-        size="xs"
         className="px-3 block p-1 rounded-md ring-1 transition-colors shadow-sm border ring-gray-200 bg-white/90 border-blue-400 hover:bg-gradient-to-r from-[#ff7878c2] to-[#69eeffc2] hover:shadow-md cursor-pointer"
       >
         รีเซ็ตพาร์ทเนอร์
@@ -100,8 +99,6 @@ const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }
               <strong>ข้อมูลจาก:</strong> {data.username} ({data.position})
             </p>
           </div>
-
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

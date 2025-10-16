@@ -15,6 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import { qk } from '@/lib/queryKeys';
 import PageHeader from '@/components/PageHeader';
 import { Params } from '@/data/interfaceDefault';
+import { useHeadSupport } from '@/hooks/useHeadSupport';
 
 type MenusResp = {
   success: boolean;
@@ -26,6 +27,7 @@ type MenusResp = {
 export default function MenuPageWebDB() {
   const router = useRouter();
   const { parentId } = router.query;
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
 
   const [params, setParams] = useState<Params>({
     page: 1,

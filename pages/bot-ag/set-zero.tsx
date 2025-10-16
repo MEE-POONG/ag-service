@@ -8,8 +8,10 @@ import ModalAdJustBetTest from '@/container/bot-ag/ModalAdJustBetTest';
 import { useAdjustBet } from '@/hooks/useAdjustBet';
 import { AdjustBet } from '@/types/adjustBet';
 import toast from 'react-hot-toast';
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 const AdjustBetPage: React.FC = () => {
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
   const {
     adjustBets,
     isLoading,

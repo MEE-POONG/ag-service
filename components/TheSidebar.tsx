@@ -3,9 +3,9 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { MdDashboard as LayoutDashboard } from "react-icons/md";
 import UserInfo from "@/components/UserInfo";
 import { useAuth } from "@/hooks/useAuth";
-import { useMenuWeb } from "@/hooks/useMenuWeb";
 import ReactIconComponent from "./ReactIconComponent";
 import MenuPageWebDB from "./MenuPageWeb";
+import { useMenuWeb } from "@/hooks/useMenuWeb";
 
 interface TheSidebarProps {
   collapsed: boolean;
@@ -65,11 +65,16 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
                 ) : (
                   menuWeb && <MenuPageWebDB dataList={menuWeb} collapsed={collapsed} />
                 )}
-
                 {/* เมนูสำหรับผู้พัฒนา */}
-                {isDev || user?.adminPosition?.adminDepartment?.name === "IT Department" && (
-                  <MenuPageWebDB dataList={menuDev} collapsed={collapsed} />
-                )}
+                {(
+                  user?.username === 'superadmin' ||
+                  user?.username === 'admin' ||
+                  isDev ||
+                  user?.adminPosition?.adminDepartment?.name === 'IT Department'
+                ) && (
+                    <MenuPageWebDB dataList={menuDev} collapsed={collapsed} />
+                  )}
+
               </ul>
             </nav>
           </div>

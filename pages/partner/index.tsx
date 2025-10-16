@@ -1,8 +1,11 @@
 import Link from 'next/link'
 import { TheLayout } from '@/components/TheLayout'
 //import { sampleUser } from '@/data/sampleUser'
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 export default function PartnerPage() {
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
+
   return (
     <TheLayout>
       <div className="pl-1 sm:p-2">

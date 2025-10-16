@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 interface WidgetKey {
   id: string
@@ -51,6 +52,7 @@ interface WidgetKey {
 }
 
 export default function WidgetKeysPage() {
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
   const queryClient = useQueryClient()
   const { user } = useAuth()
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)

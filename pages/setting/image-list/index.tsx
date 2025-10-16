@@ -17,6 +17,7 @@ import { useQuery } from '@tanstack/react-query';
 import { qk } from '@/lib/queryKeys';
 import PageHeader from '@/components/PageHeader';
 import { Params } from '@/data/interfaceDefault';
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 type ImageResp = {
     success: boolean;
@@ -25,6 +26,7 @@ type ImageResp = {
 };
 
 export default function ImagePage() {
+    const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
     const [params, setParams] = useState<Params>({
         page: 1,
         pageSize: 10,

@@ -11,6 +11,7 @@ import WebBaseModalDelete from '@/container/web-ag/ModalDelete'
 import WebBaseModalView from '@/container/web-ag/ModalView'
 import PageHeader from '@/components/PageHeader'
 import { Params } from '@/data/interfaceDefault'
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 type WebBaseResp = {
   success: boolean;
@@ -19,6 +20,7 @@ type WebBaseResp = {
 };
 
 export default function WebAgPage() {
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
   const [params, setParams] = useState<Params>({
     page: 1,
     pageSize: 10,

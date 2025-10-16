@@ -15,8 +15,8 @@ import ModalCreateAgent from '@/container/partner/ModalCreateAgent'
 import ModalResetAgUserPassword from '@/container/partner/ModalResetAgUserPassword'
 import ModalResetPartner from '@/container/partner/ModalResetPartner'
 import ModalCreateMaster from '@/container/partner/ModalCreateMaster'
-import { usePermissions } from '@/hooks/usePermissions'
 import { useAuth } from '@/hooks/useAuth'
+import { useHeadSupport } from "@/hooks/useHeadSupport";
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -28,6 +28,7 @@ function useAgUserAccounts() {
 }
 
 export default function CommandWorkPage() {
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
   const { items, add, update, remove, setItems } = useAgUserAccounts()
   const { user } = useAuth()
   const [params, setParams] = useState<Params>({
@@ -38,14 +39,11 @@ export default function CommandWorkPage() {
     totalItems: 0,
   })
   const debouncedKeyword = useDebouncedValue(params.keyword, 300)
-  const { checkPermission } = usePermissions()
-  const headPermissions = checkPermission('bot-ag')
-  const supportPermissions = checkPermission('คำสั่งงาน')
-
   useEffect(() => {
-   // console.log('headPermissions : ', headPermissions);
-   // console.log('supportPermissions : ', supportPermissions);
-  }, [headPermissions, supportPermissions])
+    console.log('user : ', user);
+    console.log(hs.ok, hs.head, hs.support);
+
+  }, [user])
 
   // Fetch list via react-query (server-side filter by keyword)
   const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: Params }>({
@@ -131,7 +129,7 @@ export default function CommandWorkPage() {
                     <td className="px-3 py-2">{u.userLogin}</td>
                     <td className="px-3 py-2 capitalize">{u.position}</td>
                     <td className="px-3 py-2">
-                      <div className="flex gap-2">
+                      <div className={`flex gap-2 bg-blue-500/10 p-1 border border-blue-500/20 rounded-md ${hs.support?.canCreate || hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
                         {/* ทุกอันจะเป็น modal */}
                         <CommandWorkModalCredit data={u} />
                         {u.position === 'agent' && <>
@@ -143,7 +141,7 @@ export default function CommandWorkPage() {
                         {/* ปลดล็อคMaster Agent*/}
                       </div>
                       {/* เฉพาะสิทธิ advance */}
-                      <div className={`flex gap-2 mt-2 ${headPermissions.canAdvance || supportPermissions.canAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
+                      <div className={`flex gap-2 mt-2 bg-red-500/10 p-1 border border-red-500/20 rounded-md ${hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
                         <ModalReset data={u} />
                         <ModalResetPartner data={u} onSuccess={() => console.log('Success!')} />
                         {u.position === 'master' && <>

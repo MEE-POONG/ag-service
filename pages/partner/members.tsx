@@ -6,12 +6,15 @@ import { ExtendedPartnerDB, usePartners } from '@/hooks/usePartners'
 import PageHeader from '@/components/PageHeader'
 import PaginationSelect from '@/components/PaginationSelect'
 import { Params } from '@/data/interfaceDefault'
-
+import { useHeadSupport } from '@/hooks/useHeadSupport'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function MembersPage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0)
   const [editingPartner, setEditingPartner] = useState<ExtendedPartnerDB | null>(null)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
+  const { user } = useAuth()
   const [params, setParams] = useState<Params>({
     page: 1,
     pageSize: 10,

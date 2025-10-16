@@ -2,9 +2,11 @@ import React from 'react'
 import { TheLayout } from '@/components/TheLayout'
 import { useAuth } from '@/hooks/useAuth'
 import PageHeader from '@/components/PageHeader'
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 export default function ReportsPage() {
   const { user: authUser, userLoading: loading } = useAuth()
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
 
   if (loading) {
     return (

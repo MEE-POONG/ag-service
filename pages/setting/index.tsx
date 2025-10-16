@@ -11,9 +11,11 @@ import { SettingDB } from '@prisma/client'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { qk } from '@/lib/queryKeys'
 import PageHeader from '@/components/PageHeader'
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 export default function SettingPage() {
   const { user } = useAuth();
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
 
   const [settingData, setSettingData] = useState<Partial<SettingDB>>({});
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

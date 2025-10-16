@@ -5,11 +5,12 @@ import { FaEdit, FaArrowLeft, FaUser, FaEnvelope, FaPhone, FaBuilding, FaUserTag
 import { useAuth } from '@/hooks/useAuth'
 import AdminModalNewPassword from '@/container/admin/ModalNewPassword'
 import AdminModalEdit from '@/container/admin/ModalEdit'
+import { useHeadSupport } from '@/hooks/useHeadSupport'
 
 export default function ViewAdminPage() {
   const { user, userLoading } = useAuth()
-  const admin = user;
-  console.log('16 admin : ', admin);
+  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
+  console.log('16 admin : ', user);
 
   const formatDate = (date: string | Date) => {
     if (!date) return 'ไม่ระบุ'
@@ -81,7 +82,7 @@ export default function ViewAdminPage() {
     )
   }
 
-  if (!admin) {
+  if (!user) {
     return (
       <TheLayout>
         <div className="flex flex-col justify-center items-center min-h-screen">
@@ -116,17 +117,17 @@ export default function ViewAdminPage() {
                 ข้อมูลผู้ดูแลระบบ
               </h1>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getRoleBadge(admin.role)}`}>
+                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getRoleBadge(user.role)}`}>
                   <FaShieldAlt className="mr-1" />
-                  {getRoleDisplayName(admin.role)}
+                  {getRoleDisplayName(user.role)}
                 </span>
-                {getStatusBadge(admin.isActive)}
+                {getStatusBadge(user.isActive)}
               </div>
             </div>
           </div>
           <div className="flex space-x-2">
-            <AdminModalNewPassword data={admin} />
-            <AdminModalEdit data={admin} />
+            <AdminModalNewPassword data={user} />
+            <AdminModalEdit data={user} />
           </div>
         </div>
 
@@ -143,7 +144,7 @@ export default function ViewAdminPage() {
                     <FaUser className="inline mr-2" />
                     ชื่อผู้ใช้
                   </label>
-                  <p className="text-lg font-medium text-gray-900">{admin.username}</p>
+                  <p className="text-lg font-medium text-gray-900">{user.username}</p>
                 </div>
 
                 <div>
@@ -151,7 +152,7 @@ export default function ViewAdminPage() {
                     <FaUser className="inline mr-2" />
                     ชื่อ-นามสกุล
                   </label>
-                  <p className="text-lg font-medium text-gray-900">{admin.name}</p>
+                  <p className="text-lg font-medium text-gray-900">{user.name}</p>
                 </div>
 
                 <div>
@@ -159,7 +160,7 @@ export default function ViewAdminPage() {
                     <FaEnvelope className="inline mr-2" />
                     อีเมล
                   </label>
-                  <p className="text-lg text-gray-900">{admin.email}</p>
+                  <p className="text-lg text-gray-900">{user.email}</p>
                 </div>
 
                 <div>
@@ -167,7 +168,7 @@ export default function ViewAdminPage() {
                     <FaPhone className="inline mr-2" />
                     เบอร์โทร
                   </label>
-                  <p className="text-lg text-gray-900">{admin.tel || 'ไม่ระบุ'}</p>
+                  <p className="text-lg text-gray-900">{user.tel || 'ไม่ระบุ'}</p>
                 </div>
               </div>
             </div>
@@ -179,12 +180,12 @@ export default function ViewAdminPage() {
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">สถานะ</h3>
               <div className="flex justify-center">
-                {getStatusBadge(admin.isActive)}
+                {getStatusBadge(user.isActive)}
               </div>
             </div>
 
             {/* ข้อมูล Web Base */}
-            {admin.webBase && (
+            {user.webBase && (
               <div className="bg-white shadow rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">ข้อมูล Web Base</h3>
                 <div className="space-y-3">
@@ -193,17 +194,17 @@ export default function ViewAdminPage() {
                       <FaBuilding className="inline mr-2" />
                       ชื่อ Web Base
                     </label>
-                    <p className="text-lg font-medium text-gray-900">{admin.webBase.name}</p>
+                    <p className="text-lg font-medium text-gray-900">{user.webBase.name}</p>
                   </div>
-                  {(admin.webBase as any)?._count && (
+                  {(user.webBase as any)?._count && (
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <span className="text-gray-500">แอดมิน:</span>
-                        <span className="ml-2 font-medium">{(admin.webBase as any)._count.AdminDB}</span>
+                        <span className="ml-2 font-medium">{(user.webBase as any)._count.AdminDB}</span>
                       </div>
                       <div>
                         <span className="text-gray-500">AG User:</span>
-                        <span className="ml-2 font-medium">{(admin.webBase as any)._count.AGUserDB}</span>
+                        <span className="ml-2 font-medium">{(user.webBase as any)._count.AGUserDB}</span>
                       </div>
                     </div>
                   )}
@@ -215,30 +216,30 @@ export default function ViewAdminPage() {
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">ตำแหน่งงาน</h3>
 
-              {admin.adminPosition?.adminDepartment && (
+              {user.adminPosition?.adminDepartment && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-500 mb-1">
                     <FaBuilding className="inline mr-2" />
                     แผนก
                   </label>
                   <span className="inline-flex px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800 border border-blue-400">
-                    {admin.adminPosition.adminDepartment.name}
+                    {user.adminPosition.adminDepartment.name}
                   </span>
                 </div>
               )}
 
-              {admin.adminPosition && (
+              {user.adminPosition && (
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-500 mb-1">
                     <FaUserTag className="inline mr-2" />
                     ตำแหน่ง
                   </label>
-                  <span className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${getPriorityColor(Number(admin.adminPosition.priority))}`}>
-                    {admin.adminPosition.name}
+                  <span className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold ${getPriorityColor(Number(user.adminPosition.priority))}`}>
+                    {user.adminPosition.name}
                   </span>
-                  {admin.adminPosition.priority && (
+                  {user.adminPosition.priority && (
                     <div className="text-xs text-gray-500 mt-1">
-                      ลำดับความสำคัญ: {Number(admin.adminPosition.priority)}
+                      ลำดับความสำคัญ: {Number(user.adminPosition.priority)}
                     </div>
                   )}
                 </div>
@@ -258,7 +259,7 @@ export default function ViewAdminPage() {
                   <FaCalendarAlt className="inline mr-2" />
                   วันที่สร้าง
                 </label>
-                <p className="text-gray-900">{formatDate(admin.createdAt)}</p>
+                <p className="text-gray-900">{formatDate(user.createdAt)}</p>
               </div>
 
               <div>
@@ -266,29 +267,29 @@ export default function ViewAdminPage() {
                   <FaCalendarAlt className="inline mr-2" />
                   แก้ไขล่าสุด
                 </label>
-                <p className="text-gray-900">{formatDate(admin.updatedAt)}</p>
+                <p className="text-gray-900">{formatDate(user.updatedAt)}</p>
               </div>
 
               <div>
                 <label className="block text-gray-500 mb-1">สร้างโดย</label>
-                <p className="text-gray-900">{admin.createdBy || 'ไม่ระบุ'}</p>
+                <p className="text-gray-900">{user.createdBy || 'ไม่ระบุ'}</p>
               </div>
 
               <div>
                 <label className="block text-gray-500 mb-1">แก้ไขโดย</label>
-                <p className="text-gray-900">{admin.updatedBy || 'ไม่ระบุ'}</p>
+                <p className="text-gray-900">{user.updatedBy || 'ไม่ระบุ'}</p>
               </div>
             </div>
 
             <div className="mt-4 pt-4 border-t border-gray-200">
               <label className="block text-gray-500 mb-1">ID ในระบบ</label>
-              <p className="text-gray-900 font-mono text-sm">{admin.id}</p>
+              <p className="text-gray-900 font-mono text-sm">{user.id}</p>
             </div>
           </div>
         </div>
 
         {/* สิทธิ์การเข้าถึง */}
-        {admin.permissions && admin.permissions.length > 0 && (
+        {user.permissions && user.permissions.length > 0 && (
           <div className="mt-6">
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -296,7 +297,7 @@ export default function ViewAdminPage() {
                 สิทธิ์การเข้าถึง
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                {admin.permissions.map((permission, index) => (
+                {user.permissions.map((permission, index) => (
                   <div
                     key={index}
                     className="inline-flex items-center px-3 py-2 bg-blue-50 text-blue-800 rounded-lg text-sm font-medium border border-blue-200"
@@ -308,14 +309,14 @@ export default function ViewAdminPage() {
               </div>
               <div className="mt-4 text-sm text-gray-500">
                 <FaInfoCircle className="inline mr-1" />
-                รวม {admin.permissions.length} สิทธิ์การเข้าถึง
+                รวม {user.permissions.length} สิทธิ์การเข้าถึง
               </div>
             </div>
           </div>
         )}
 
         {/* รายละเอียดสิทธิ์ตามตำแหน่ง */}
-        {admin.adminPosition?.AdminDefaultPermissionDB && admin.adminPosition.AdminDefaultPermissionDB.length > 0 && (
+        {user.adminPosition?.AdminDefaultPermissionDB && user.adminPosition.AdminDefaultPermissionDB.length > 0 && (
           <div className="mt-6">
             <div className="bg-white shadow rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -323,7 +324,7 @@ export default function ViewAdminPage() {
                 รายละเอียดสิทธิ์ตามตำแหน่ง
               </h3>
               <div className="space-y-4">
-                {admin.adminPosition.AdminDefaultPermissionDB.filter((permission: any) => permission.menuWebDB).map((permission: any, index) => (
+                {user.adminPosition.AdminDefaultPermissionDB.filter((permission: any) => permission.menuWebDB).map((permission: any, index) => (
                   <div key={index} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-medium text-gray-900">{permission.menuWebDB?.name}</h4>
