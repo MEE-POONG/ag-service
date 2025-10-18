@@ -162,7 +162,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
     if (!username || !password || !name || !email || !adminPositionId) {
       return res.status(400).json({
         success: false,
-        error: 'กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน'
+        error: `กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน username: ${username} password: ${password} name: ${name} email: ${email} tel: ${tel} adminPositionId: ${adminPositionId}`
       });
     }
 
@@ -191,21 +191,14 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
           name,
           email,
           tel,
-          adminPosition: {
-            connect: { id: adminPositionId }
-          },
-          adminPositionId: adminPositionId,
+          adminPositionId,
           isActive: true,
           createdAt: new Date(),
           createdBy: currentAdmin.username,
           updatedAt: new Date(),
           updatedBy: currentAdmin.username,
         },
-        include: {
-          adminPosition: {
-            include: { adminDepartment: true }
-          },
-        },
+      
       });
 
       // บันทึกประวัติ
