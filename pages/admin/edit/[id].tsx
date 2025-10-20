@@ -1,5 +1,5 @@
 // pages/admin/edit.tsx
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect,  useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from '@/lib/axios'
@@ -14,7 +14,7 @@ interface AdminDetail {
   email: string
   tel?: string | null
   isActive: boolean
-  AdminPositionId?: string | null
+  adminPositionId?: string | null
   AdminPositionDB?: Position | null
 }
 type AdminResp = { success: boolean; data: AdminDetail; error?: string }
@@ -46,25 +46,25 @@ export default function AdminEditPage() {
     name: '',
     email: '',
     tel: '',
-    AdminPositionId: '',
+    adminPositionId: '',
   })
   const [loading, setLoading] = useState(false)
 
   const queryClient = useQueryClient()
 
-  // const {
-  //   data: adminRes,
-  // } = useQuery<AdminResp>({
-  //   queryKey: qk.admins.detail(id),
-  //   enabled: !!id,
-  //   queryFn: async () => {
-  //     const res = await axios.get<AdminResp>('/api/admin', { params: { id } })
-  //     if (!res.data?.success) throw new Error(res.data?.error || 'ไม่พบข้อมูลผู้ดูแล')
-  //     return res.data
-  //   },
-  //   placeholderData: (prev) => prev,
-  //   staleTime: 60_000,
-  // })
+  const {
+    data: adminRes,
+  } = useQuery<AdminResp>({
+    queryKey: qk.admins.detail(id),
+    enabled: !!id,
+    queryFn: async () => {
+      const res = await axios.get<AdminResp>('/api/admin', { params: { id } })
+      if (!res.data?.success) throw new Error(res.data?.error || 'ไม่พบข้อมูลผู้ดูแล')
+      return res.data
+    },
+    placeholderData: (prev) => prev,
+    staleTime: 60_000,
+  })
 
   const { data: posDep } = useQuery<PosDepResp>({
     queryKey: qk.positions.list,
@@ -92,42 +92,26 @@ export default function AdminEditPage() {
     if (!posDep) return
     setPositions(posDep.positions)
     setDepartments(posDep.departments)
-
-    if (!selectedDeptId && posDep.departments.length === 1) {
-      setSelectedDeptId(posDep.departments[0].id)
-    } else if (selectedDeptId) {
-      const stillExists = posDep.departments.some(d => d.id === selectedDeptId)
-      if (!stillExists) setSelectedDeptId('')
+    if (adminRes?.success) {
+      console.log(`adminRes: `, adminRes?.data);
+      setForm({
+        username: adminRes?.data.username ?? '',
+        password: '',
+        name: adminRes?.data.name ?? '',
+        email: adminRes?.data.email ?? '',
+        tel: adminRes?.data.tel ?? '',
+        adminPositionId: adminRes?.data.adminPositionId ?? '',
+      })
+      setSelectedDeptId(
+        adminRes?.data.adminPositionId ?? ''
+      )
     }
-  }, [posDep, selectedDeptId])
-
-  useEffect(() => {
-    if (!user) return
-
-    setForm({
-      username: user.username ?? '',
-      password: '', // เว้นว่างไว้
-      name: user.name ?? '',
-      email: user.email ?? '',
-      tel: user.tel ?? '',
-      AdminPositionId: user.adminPositionId ?? '',
-    })
-
-    setSelectedDeptId(
-      user.adminPosition?.adminDepartmentId ?? ''
-    )
-    console.log(`124 user: `, user);
-  }, [user])
-
-  const filteredPositions = useMemo(() => {
-    if (!selectedDeptId) return []
-    return positions.filter(p => (p.adminDepartmentId ?? p.adminDepartment?.id) === selectedDeptId)
-  }, [positions, selectedDeptId])
+  }, [adminRes])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setForm(prev => ({ ...prev, [name]: value }))
-    if (name === 'AdminPositionId') {
+    if (name === 'adminPositionId') {
       const pos = positions.find(p => p.id === value)
       const depId = pos?.adminDepartmentId ?? pos?.adminDepartment?.id ?? ''
       if (depId && depId !== selectedDeptId) setSelectedDeptId(depId)
@@ -137,12 +121,12 @@ export default function AdminEditPage() {
   const handleDeptChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const depId = e.target.value
     setSelectedDeptId(depId)
-    setForm(prev => ({ ...prev, AdminPositionId: '' }))
+    setForm(prev => ({ ...prev, adminPositionId: '' }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.username || !form.email || !selectedDeptId || !form.AdminPositionId) {
+    if (!form.username || !form.email || !selectedDeptId || !form.adminPositionId) {
       alert('กรุณากรอกข้อมูลให้ครบถ้วน')
       return
     }
@@ -157,7 +141,7 @@ export default function AdminEditPage() {
         name: form.name,
         email: form.email,
         tel: form.tel,
-        AdminPositionId: form.AdminPositionId,
+        adminPositionId: form.adminPositionId,
         adminDepartmentId: selectedDeptId,
         createdBy: user?.id || '',
       }
@@ -273,8 +257,8 @@ export default function AdminEditPage() {
               ตำแหน่ง <span className="text-red-500">*</span>
             </label>
             <select
-              name="AdminPositionId"
-              value={form.AdminPositionId}
+              name="adminPositionId"
+              value={form.adminPositionId}
               onChange={handleChange}
               required
               disabled={!selectedDeptId}
@@ -284,7 +268,7 @@ export default function AdminEditPage() {
                 }`}
             >
               <option value="" disabled>{selectedDeptId ? '-- เลือกตำแหน่ง --' : 'เลือกแผนกก่อน'}</option>
-              {filteredPositions.map(pos => (
+              {positions.map(pos => (
                 <option key={pos.id} value={pos.id}>
                   {pos.name} {pos.adminDepartment ? `(${pos.adminDepartment.name})` : ''}
                 </option>
