@@ -36,7 +36,7 @@ interface UseAuthReturn {
 }
 
 export function useAuth(): UseAuthReturn {
-  const router = useRouter()
+  const router = useRouter();
   const queryClient = useQueryClient()
 
   // 🔍 ดึงข้อมูลผู้ใช้ปัจจุบันจาก API

@@ -722,7 +722,7 @@ export const menuDev: MenuWebDB[] = [
     name: "แชทและการสื่อสาร",
     description: "ระบบแชทและการสื่อสารกับลูกค้า",
     isVisible: true,
-    showOrder: 7,
+    showOrder: 9,
     head: true,
     link: "/chat",
     icon: "FaComments",

@@ -16,7 +16,7 @@ import ModalResetAgUserPassword from '@/container/partner/ModalResetAgUserPasswo
 import ModalResetPartner from '@/container/partner/ModalResetPartner'
 import ModalCreateMaster from '@/container/partner/ModalCreateMaster'
 import { useAuth } from '@/hooks/useAuth'
-import { useHeadSupport } from "@/hooks/useHeadSupport";
+import { HeadSupportResult, useHeadSupport } from "@/hooks/useHeadSupport";
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -28,9 +28,9 @@ function useAgUserAccounts() {
 }
 
 export default function CommandWorkPage() {
-  const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
   const { items, add, update, remove, setItems } = useAgUserAccounts()
   const { user } = useAuth()
+  const hs = useHeadSupport() // ใช้ path ปัจจุบัน
   const [params, setParams] = useState<Params>({
     page: 1,
     pageSize: 10,
@@ -39,11 +39,13 @@ export default function CommandWorkPage() {
     totalItems: 0,
   })
   const debouncedKeyword = useDebouncedValue(params.keyword, 300)
+
   useEffect(() => {
     console.log('user : ', user);
-    console.log(hs.ok, hs.head, hs.support);
-
   }, [user])
+  useEffect(() => {
+    console.log('hs : ', hs);
+  }, [hs])
 
   // Fetch list via react-query (server-side filter by keyword)
   const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: Params }>({
@@ -129,6 +131,7 @@ export default function CommandWorkPage() {
                     <td className="px-3 py-2">{u.userLogin}</td>
                     <td className="px-3 py-2 capitalize">{u.position}</td>
                     <td className="px-3 py-2">
+                      {hs.support?.canCreate || hs.head?.userCanAdvance ? 'block' : 'hidden'}
                       <div className={`flex gap-2 bg-blue-500/10 p-1 border border-blue-500/20 rounded-md ${hs.support?.canCreate || hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
                         {/* ทุกอันจะเป็น modal */}
                         <CommandWorkModalCredit data={u} />

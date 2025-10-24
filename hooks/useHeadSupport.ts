@@ -258,7 +258,6 @@ export function resolveHeadSupport(user: any, pathOrUrl: string): HeadSupportRes
 export function useHeadSupport(pathOverride?: string): HeadSupportResult {
   const { user } = useAuth();
   const pathname = usePathname();
-
   const path = pathOverride ?? pathname ?? "/";
 
   // 🔁 กุญแจผู้ใช้สำหรับ trigger re-compute ให้แน่ใจว่าไม่ต้อง F5
@@ -271,16 +270,23 @@ export function useHeadSupport(pathOverride?: string): HeadSupportResult {
     };
     const perms = Array.isArray(user?.permissions)
       ? user.permissions.map((p: any) => ({
-          id: String(p?.menuWebDBId ?? ""),
-          va: !!p?.canAdvance,
-          vv: !!p?.canViews,
-          vc: !!p?.canCreate,
-          vu: !!p?.canUpdate,
-          vd: !!p?.canDelete,
-        }))
+        id: String(p?.menuWebDBId ?? ""),
+        va: !!p?.canAdvance,
+        vv: !!p?.canViews,
+        vc: !!p?.canCreate,
+        vu: !!p?.canUpdate,
+        vd: !!p?.canDelete,
+      }))
       : [];
     return JSON.stringify({ base, perms });
   }, [user]);
 
-  return useMemo(() => resolveHeadSupport(user, path), [userKey, path]);
+  // 🔄 ใช้ useMemo เพื่อ cache ผลลัพธ์และ re-compute เมื่อ user หรือ path เปลี่ยน
+  return useMemo(() => {
+    // เพิ่ม debug log เพื่อดูว่าเกิดอะไรขึ้น
+    console.log('useHeadSupport: resolving with user:', user?.username, 'path:', path);
+    const result = resolveHeadSupport(user, path);
+    console.log('useHeadSupport: result:', result);
+    return result;
+  }, [user, path, userKey]);
 }
