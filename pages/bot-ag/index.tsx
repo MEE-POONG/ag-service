@@ -17,6 +17,8 @@ import ModalResetPartner from '@/container/partner/ModalResetPartner'
 import ModalCreateMaster from '@/container/partner/ModalCreateMaster'
 import { useAuth } from '@/hooks/useAuth'
 import { HeadSupportResult, useHeadSupport } from "@/hooks/useHeadSupport";
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 
 function useAgUserAccounts() {
   const [items, setItems] = useState<AgUserAccountDB[]>([])
@@ -26,9 +28,20 @@ function useAgUserAccounts() {
   const remove = (idx: number) => setItems(prev => prev.filter((_, i) => i !== idx))
   return { items, add, update, remove, setItems }
 }
+function useTotpRemaining(stepSec = 30) {
+  const calc = () => stepSec - (Math.floor(Date.now() / 1000) % stepSec)
+  const [remaining, setRemaining] = useState<number>(calc)
+  useEffect(() => {
+    const id = setInterval(() => setRemaining(calc()), 1000)
+    return () => clearInterval(id)
+  }, [stepSec, calc])
+  return remaining
+}
 
 export default function CommandWorkPage() {
   const { items, add, update, remove, setItems } = useAgUserAccounts()
+  const totpRemaining = useTotpRemaining(30)
+
   const { user } = useAuth()
   const hs = useHeadSupport() // ใช้ path ปัจจุบัน
   const [params, setParams] = useState<Params>({
@@ -121,6 +134,7 @@ export default function CommandWorkPage() {
                   <th className="px-3 py-2 font-semibold text-left">Username</th>
                   <th className="px-3 py-2 font-semibold text-left">userLogin</th>
                   <th className="px-3 py-2 font-semibold text-left">position</th>
+                  <th className="px-3 py-2 font-semibold text-left">UserCheck</th>
                   <th className="px-3 py-2 font-semibold text-left">การจัดการ</th>
                 </tr>
               </thead>
@@ -130,8 +144,56 @@ export default function CommandWorkPage() {
                     <td className="px-3 py-2 font-semibold text-gray-900">{u.username}</td>
                     <td className="px-3 py-2">{u.userLogin}</td>
                     <td className="px-3 py-2 capitalize">{u.position}</td>
+                    <td className="px-3 py-2 capitalize">
+                      <div>
+                        {/* ถ้า position คือ senior และ origin มีค่า*/}
+                        {u.position === 'senior' && u.origin && <>
+                          {u.reserve}
+                          <br />
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600 select-none">
+                            เหลือ {totpRemaining}s
+                          </span>
+                          <br />
+                          <Button
+                            size="xs"
+                            className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3 mb-2"
+                            onClick={async () => {
+                              try {
+                                if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
+                                const res = await axios.post('/api/totp/generate', { secret: u.gaSecretEnc })
+                                if (!res.data?.success) throw new Error(res.data?.error || 'สร้าง TOTP ไม่สำเร็จ')
+                                await navigator.clipboard.writeText(res.data.code)
+                                toast.success('คัดลอก TOTP แล้ว')
+                              } catch (e: any) {
+                                toast.error(e?.message || 'สร้าง TOTP ไม่สำเร็จ')
+                              }
+                            }}
+                          >
+                            คัดลอก TOTP
+                          </Button>
+                          <br />
+                          <Button
+                            size="xs"
+                            className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
+                            onClick={async () => {
+                              try {
+                                if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
+                                const res = await axios.post('/api/totp/generate', { secret: u.gaSecretEnc })
+                                if (!res.data?.success) throw new Error(res.data?.error || 'สร้าง TOTP ไม่สำเร็จ')
+                                await navigator.clipboard.writeText(res.data.code)
+                                toast.success('คัดลอก TOTP (ลาว) แล้ว')
+                              } catch (e: any) {
+                                toast.error(e?.message || 'สร้าง TOTP (ลาว) ไม่สำเร็จ')
+                              }
+                            }}
+                          >
+                            คัดลอก TOTP (ลาว)
+                          </Button>
+                        </>}
+                      </div>
+                    </td>
                     <td className="px-3 py-2">
-                      {hs.support?.canCreate || hs.head?.userCanAdvance ? 'block' : 'hidden'}
+                      {/* {hs.support?.canCreate || hs.head?.userCanAdvance ? 'block' : 'hidden'} */}
                       <div className={`flex gap-2 bg-blue-500/10 p-1 border border-blue-500/20 rounded-md ${hs.support?.canCreate || hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
                         {/* ทุกอันจะเป็น modal */}
                         <CommandWorkModalCredit data={u} />
