@@ -111,8 +111,7 @@ export function NotificationCenter() {
         body: payload.message,
         icon: (payload.data as any)?.iconUrl || undefined,
         data: payload.data,
-        tag: (payload.data as any)?.notificationId || payload.title || Date.now().toString(),
-        renotify: true
+        tag: (payload.data as any)?.notificationId || payload.title || Date.now().toString()
       })
 
       notification.onclick = (event) => {
