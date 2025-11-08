@@ -4,6 +4,7 @@ import { ReactNode, useEffect, useState } from 'react'
 import { ExtendedAdminDB } from '@/data/interface'
 import { TheSidebar } from './TheSidebar'
 import { TheHeader } from './TheHeader'
+import { AutoPushSubscriber } from './AutoPushSubscriber'
 
 interface LayoutProps {
   children: ReactNode
@@ -25,6 +26,7 @@ export function TheLayout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-screen bg-background antialiased">
+      <AutoPushSubscriber />
       <div className={`min-h-screen flex ${darkMode ? 'dark' : ''}`}>
         {/* Sidebar - Fixed Position */}
 
