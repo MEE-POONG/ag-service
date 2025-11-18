@@ -17,7 +17,7 @@ type AdjustbetsCockfight {
   statusServe   String?
   work          Boolean
 }
-
+// sss
 type AdjustbetsLottoRcw {
   enabled     Boolean
   lastSavedAt DateTime? @db.Date
