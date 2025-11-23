@@ -7,6 +7,7 @@ const { createServer } = require('http')
 const { parse } = require('url')
 const next = require('next')
 const { Server: SocketIOServer } = require('socket.io')
+const { startAgQueueJobWatcher } = require('./server/changeStreams/agQueueWatcher')
 
 const dev = process.env.NODE_ENV !== 'production'
 const hostname = process.env.HOSTNAME || 'localhost'
@@ -53,6 +54,11 @@ app.prepare().then(() => {
 
   // Store socket.io instance globally for API routes to access
   global.io = io
+
+  // Kick off MongoDB change stream watcher for AgQueueJobDB success events
+  startAgQueueJobWatcher(io).catch((error) => {
+    console.error('[AgQueueWatcher] Initialization error:', error)
+  })
 
   // Socket.IO connection handling
   io.on('connection', (socket) => {
@@ -200,4 +206,3 @@ app.prepare().then(() => {
   process.on('SIGTERM', gracefulShutdown)
   process.on('SIGINT', gracefulShutdown)
 })
-

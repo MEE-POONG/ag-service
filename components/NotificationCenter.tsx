@@ -3,7 +3,7 @@
  * Dropdown showing in-app notifications
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from '@/lib/axios'
 import { Button } from '@/components/ui/button'
@@ -11,6 +11,7 @@ import ReactIconComponent from '@/components/ReactIconComponent'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import { useSocket } from '@/hooks/useSocket'
+import { NotificationPayload } from '@/types/socket'
 import { useAuth } from '@/hooks/useAuth'
 
 type Notification = {
@@ -100,6 +101,34 @@ export function NotificationCenter() {
     },
   })
 
+  const showBrowserNotification = useCallback((payload: NotificationPayload) => {
+    if (typeof window === 'undefined') return
+    if (!('Notification' in window)) return
+    if (Notification.permission !== 'granted') return
+
+    try {
+      const notification = new Notification(payload.title || 'การแจ้งเตือนใหม่', {
+        body: payload.message,
+        icon: (payload.data as any)?.iconUrl || undefined,
+        data: payload.data,
+        tag: (payload.data as any)?.notificationId || payload.title || Date.now().toString()
+      })
+
+      notification.onclick = (event) => {
+        event.preventDefault()
+        window.focus()
+        const actionUrl = (payload.data as any)?.actionUrl
+        if (actionUrl) {
+          router.push(actionUrl)
+          setIsOpen(false)
+        }
+        notification.close()
+      }
+    } catch (error) {
+      console.error('[NotificationCenter] Browser notification failed:', error)
+    }
+  }, [router])
+
   // Real-time: Listen for new notifications
   useEffect(() => {
     if (!socket.isConnected) return
@@ -115,8 +144,11 @@ export function NotificationCenter() {
               payload.type === 'warning' ? '⚠️' : 'ℹ️',
         duration: 5000,
       })
+
+      // Trigger native browser notification (if permission granted)
+      showBrowserNotification(payload)
     })
-  }, [socket, queryClient])
+  }, [socket, queryClient, showBrowserNotification])
 
   const notifications: Notification[] = notificationsData?.data || []
   const unreadCount = countData?.unreadCount || 0
@@ -329,4 +361,3 @@ export function NotificationCenter() {
     </div>
   )
 }
-
