@@ -54,7 +54,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker stop ${{ steps.string.outputs.lowercase }}
+          command: docker stop ${{ steps.string.outputs.lowercase }} || true
 
       - name: SSH Command docker rm
         uses: D3rHase/ssh-command-action@v0.2.2
@@ -62,7 +62,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker rm ${{ steps.string.outputs.lowercase }}
+          command: docker rm ${{ steps.string.outputs.lowercase }} || true
 
       - name: SSH Command docker run
         uses: D3rHase/ssh-command-action@v0.2.2
