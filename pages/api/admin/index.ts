@@ -227,7 +227,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
       message: 'สร้างผู้ดูแลระบบสำเร็จ'
     });
   } catch (error: any) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error?.code) {
       // ชน unique
       if (error.code === 'P2002') {
         const target = Array.isArray(error.meta?.target) ? error.meta!.target.join(',') : String(error.meta?.target || '');
@@ -370,7 +370,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
       message: 'อัปเดตผู้ดูแลระบบสำเร็จ'
     }));
   } catch (error: any) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error?.code) {
       // ชน unique
       if (error.code === 'P2002') {
         const target = Array.isArray(error.meta?.target) ? error.meta!.target.join(',') : String(error.meta?.target || '');
@@ -461,7 +461,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<AdminRespo
       message: 'ลบผู้ดูแลระบบสำเร็จ'
     });
   } catch (error: any) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error?.code) {
       // ชน unique
       if (error.code === 'P2002') {
         const target = Array.isArray(error.meta?.target) ? error.meta!.target.join(',') : String(error.meta?.target || '');
