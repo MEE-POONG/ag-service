@@ -8,6 +8,7 @@
 yarn.lock
 .claude
 NUL
+.env
 # testing
 /coverage
 
