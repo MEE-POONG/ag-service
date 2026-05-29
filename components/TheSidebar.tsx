@@ -14,75 +14,72 @@ interface TheSidebarProps {
 
 export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   const { user } = useAuth();
-  const { menuWeb, menuLoading } = useMenuWeb(); // <- ได้ "เมนูกรองแล้ว"
+  const { menuWeb, menuLoading } = useMenuWeb();
 
-  // useEffect(() => {
-  //   // ถ้ามีข้อมูล ทั้งคุ๋ ให้แสดง
-  //   if (user && menuWeb) {
-  //     console.log('User:', user);
-  //     console.log('MenuWeb:', menuWeb);
-  //   }
-  // }, [user, menuWeb])
   const isDev =
     (user?.username || '').toLowerCase() === 'superadmin' ||
     (user?.username || '').toLowerCase() === 'admin';
 
   return (
-    <div className="fixed top-0 left-0 right-0 w-max">
+    <div className="fixed top-0 left-0 right-0 w-max z-50">
       <div
-        className={`h-screen bg-white/70 backdrop-blur-xl border-r border-gray-200/60 shadow-sm transition-all duration-300 ${collapsed ? "w-16 ml-[-4rem]" : "w-56"
-          } relative z-50 shrink-0`}  // ⬅️ เพิ่มตรงนี้
+        className={`h-screen glass border-r border-border/50 shadow-soft transition-all duration-300 ease-in-out ${
+          collapsed ? "w-16 -translate-x-full md:translate-x-0" : "w-64"
+        } relative flex flex-col shrink-0`}
       >
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              {!collapsed ? (
-                <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                    <LayoutDashboard className="h-4 w-4 text-white" />
-                  </div>
-                  <h1 className="text-lg font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-                    Dashboard
-                  </h1>
-                </div>
-              ) : (
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center mx-auto">
-                  <LayoutDashboard className="h-4 w-4 text-white" />
-                </div>
-              )}
+        {/* Header */}
+        <div className="h-16 flex items-center justify-center border-b border-border/50 px-4">
+          <div className="flex items-center justify-center w-full gap-3 overflow-hidden">
+            <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-md">
+              <LayoutDashboard className="h-5 w-5 text-white" />
             </div>
+            {!collapsed && (
+              <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent whitespace-nowrap transition-all duration-300">
+                AG Service
+              </h1>
+            )}
           </div>
+        </div>
 
-          {/* Main Navigation */}
-          <div className="flex-1 overflow-y-auto p-2">
-            <nav>
-              <ul className="space-y-1">
-                {menuLoading ? (
-                  <li className="text-center text-gray-500 py-4">
-                    <div className="animate-pulse">กำลังโหลดเมนู...</div>
-                  </li>
-                ) : (
-                  menuWeb && <MenuPageWebDB dataList={menuWeb} collapsed={collapsed} />
-                )}
-                {/* เมนูสำหรับผู้พัฒนา */}
-                {(
-                  user?.username === 'superadmin' ||
-                  user?.username === 'admin' ||
-                  isDev ||
-                  user?.adminPosition?.adminDepartment?.name === 'IT Department'
-                ) && (
-                    <MenuPageWebDB dataList={menuDev} collapsed={collapsed} />
+        {/* Main Navigation */}
+        <div className="flex-1 overflow-y-auto scrollbar-thin p-3 space-y-4">
+          <nav>
+            <ul className="space-y-1.5">
+              {menuLoading ? (
+                <li className="text-center text-muted-foreground py-8">
+                  <div className="animate-pulse flex flex-col items-center gap-2">
+                    <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
+                    {!collapsed && <span className="text-sm">กำลังโหลดเมนู...</span>}
+                  </div>
+                </li>
+              ) : (
+                menuWeb && <MenuPageWebDB dataList={menuWeb} collapsed={collapsed} />
+              )}
+              
+              {/* เมนูสำหรับผู้พัฒนา */}
+              {(
+                user?.username === 'superadmin' ||
+                user?.username === 'admin' ||
+                isDev ||
+                user?.adminPosition?.adminDepartment?.name === 'IT Department'
+              ) && (
+                <>
+                  {!collapsed && (
+                    <li className="pt-4 pb-2 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      ระบบผู้พัฒนา
+                    </li>
                   )}
+                  {collapsed && <div className="my-4 border-t border-border/50"></div>}
+                  <MenuPageWebDB dataList={menuDev} collapsed={collapsed} />
+                </>
+              )}
+            </ul>
+          </nav>
+        </div>
 
-              </ul>
-            </nav>
-          </div>
-
-          {/* Bottom */}
-          <div className="mt-auto p-3 border-t border-gray-200/70">
-            <UserInfo collapsed={collapsed} />
-          </div>
+        {/* Bottom User Info */}
+        <div className="p-3 border-t border-border/50 bg-background/50 backdrop-blur-md">
+          <UserInfo collapsed={collapsed} />
         </div>
       </div>
     </div>
@@ -100,9 +97,10 @@ export const CloseButton = ({
   return (
     <button
       onClick={() => setCollapsed(!collapsed)}
-      className="top-2 right-2 text-white-500 hover:text-gray-700"
+      className="p-2 rounded-xl text-primary hover:bg-primary/10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 mr-2 md:mr-0 lg:hidden"
     >
-      <ReactIconComponent icon="FaBars" setClass="h-5 w-5" />
+      <ReactIconComponent icon={collapsed ? "FaBars" : "FaTimes"} setClass="h-5 w-5" />
     </button>
   );
 };
+

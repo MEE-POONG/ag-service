@@ -27,10 +27,9 @@ export function TheHeader({
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
+      setIsScrolled(window.scrollY > 10);
     };
 
-    // เพิ่ม passive: true เพื่อเพิ่มประสิทธิภาพ
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
@@ -49,7 +48,15 @@ export function TheHeader({
   };
 
   return (
-    <header className={` fixed top-0 right-0 z-40 text-white bg-gradient-to-r from-[#A78BFA] to-[#34D399] shadow-lg ${collapsed ? 'left-0' : 'left-56'} transition-all duration-300`}>
+    <header 
+      className={`fixed top-0 right-0 z-40 transition-all duration-300 ease-in-out ${
+        collapsed ? 'left-0 md:left-16' : 'left-0 md:left-64'
+      } ${
+        isScrolled 
+          ? 'bg-background/80 backdrop-blur-lg border-b border-border shadow-sm' 
+          : 'bg-transparent border-b border-transparent'
+      }`}
+    >
       <div className="px-4 mx-auto sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Mobile menu button & Sidebar toggle */}
@@ -57,50 +64,49 @@ export function TheHeader({
             <CloseButton collapsed={collapsed} setCollapsed={setCollapsed} />
           </div>
 
-          {/* Search */}
-          <div className="flex-1 mx-4 max-w-lg">
-            <Breadcrumbs />
+          {/* Search / Breadcrumbs */}
+          <div className="flex-1 mx-4 max-w-lg hidden sm:block">
+            <div className={`transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-90'}`}>
+              <Breadcrumbs />
+            </div>
           </div>
 
           {/* Right side */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center justify-end space-x-2 sm:space-x-4">
             {/* Agent Inbox */}
             <Link href="/chat/agent/inbox">
-              <button className="relative p-2 text-white/80 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#A78BFA] rounded-md transition-colors group">
-                <ReactIconComponent icon="FaInbox" setClass="h-6 w-6" />
-                <span className="block absolute top-0 right-0 w-2 h-2 bg-green-400 rounded-full ring-2 ring-white transition-transform dark:ring-gray-900 group-hover:scale-110"></span>
+              <button className="relative p-2.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 group">
+                <ReactIconComponent icon="FaInbox" setClass="h-5 w-5" />
+                <span className="block absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full ring-2 ring-background transition-transform group-hover:scale-110"></span>
               </button>
             </Link>
 
             {/* Notifications */}
-            <div className="bg-white rounded-lg">
+            <div className="flex items-center justify-center">
               <NotificationCenter />
             </div>
 
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 text-white/80 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#A78BFA] rounded-md"
+              className="p-2.5 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-primary/20"
+              aria-label="Toggle Dark Mode"
             >
               {darkMode ? (
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
-                </svg>
+                <ReactIconComponent icon="FaSun" setClass="h-5 w-5" />
               ) : (
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                </svg>
+                <ReactIconComponent icon="FaMoon" setClass="h-5 w-5" />
               )}
             </button>
 
             {/* Admin Menu */}
-            <div className="relative">
+            <div className="relative ml-2">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="flex items-center text-sm rounded-full focus:outline-none ring-2 ring-transparent hover:ring-primary/30 transition-all p-1"
               >
                 <img
-                  className="w-8 h-8 rounded-full"
+                  className="w-8 h-8 rounded-full object-cover border border-border"
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                   alt="User avatar"
                 />
@@ -108,28 +114,34 @@ export function TheHeader({
 
               {/* Dropdown */}
               {userMenuOpen && (
-                <div className="absolute right-0 z-50 mt-2 w-48 rounded-md ring-1 ring-gray-200 shadow-lg backdrop-blur origin-top-right bg-white/95 focus:outline-none">
-                  <div className="py-1">
-                    <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
-                      <p className="font-semibold">{user?.name || 'ผู้ดูแลระบบ'}</p>
-                      <p className="text-gray-500 dark:text-gray-400">{user?.email || 'admin@test.com'}</p>
+                <div className="absolute right-0 z-50 mt-2 w-56 rounded-2xl border border-border bg-card/95 backdrop-blur-xl shadow-elegant origin-top-right overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                  <div className="py-2">
+                    <div className="px-4 py-3 border-b border-border/50 bg-muted/30">
+                      <p className="font-semibold text-foreground truncate">{user?.name || 'ผู้ดูแลระบบ'}</p>
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{user?.email || 'admin@test.com'}</p>
                     </div>
-                    <Link href="/profile" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      <svg className="mr-3 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                      </svg>
-                      โปรไฟล์
-                    </Link>
-                    <div className="border-t border-gray-200"></div>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center px-4 py-2 w-full text-sm text-red-600 hover:bg-gray-100"
-                    >
-                      <svg className="mr-3 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clipRule="evenodd" />
-                      </svg>
-                      ออกจากระบบ
-                    </button>
+                    <div className="p-1">
+                      <Link 
+                        href="/profile" 
+                        className="flex items-center px-3 py-2 text-sm font-medium text-foreground rounded-xl hover:bg-primary/10 hover:text-primary transition-colors"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <ReactIconComponent icon="FaUserCircle" setClass="mr-3 h-4 w-4" />
+                        โปรไฟล์ของฉัน
+                      </Link>
+                    </div>
+                    <div className="px-3 py-1">
+                      <div className="border-t border-border/50"></div>
+                    </div>
+                    <div className="p-1">
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center px-3 py-2 w-full text-left text-sm font-medium text-destructive rounded-xl hover:bg-destructive/10 transition-colors"
+                      >
+                        <ReactIconComponent icon="FaSignOutAlt" setClass="mr-3 h-4 w-4" />
+                        ออกจากระบบ
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
