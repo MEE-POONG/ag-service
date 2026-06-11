@@ -23,7 +23,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "reports",
@@ -44,7 +44,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   // เมนูย่อยของ reports
   {
@@ -66,7 +66,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "bot-management",
@@ -87,7 +87,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   // เมนูพันธมิตร
   {
@@ -109,7 +109,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "ag-user",
@@ -130,7 +130,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "members",
@@ -151,7 +151,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   // เมนูจัดการผู้ดูแล
   {
@@ -173,7 +173,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "admin-admins",
@@ -194,7 +194,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "admin-departments",
@@ -215,7 +215,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   // เมนูระบบผู้ดูแล
   {
@@ -237,7 +237,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "admin-users",
@@ -258,7 +258,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "admin-permissions",
@@ -279,7 +279,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "admin-system-departments",
@@ -300,7 +300,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   // เมนูตั้งค่า
   {
@@ -322,7 +322,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "setting-index",
@@ -332,7 +332,7 @@ const menuItems = [
     showOrder: 1,
     head: false,
     link: "/setting",
-    icon: "FaGlobe",  
+    icon: "FaGlobe",
     manager: ["/edit"],
     parentId: "setting",
     canAdvance: true,
@@ -343,7 +343,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "web-ag",
@@ -364,7 +364,7 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   },
   {
     id: "menuweb",
@@ -385,13 +385,13 @@ const menuItems = [
     createdBy: "system",
     updatedBy: "system",
     deleteBy: null,
-    
+
   }
 ]
 
 async function seedMenuItems() {
   try {
-   // console.log('🌱 Starting menu items seeding...')
+    // console.log('🌱 Starting menu items seeding...')
 
     // Seed new menu items
     const createdItems = []
@@ -424,7 +424,7 @@ async function seedMenuItems() {
             }
           })
           createdItems.push({ action: 'updated', item: updatedItem })
-         // console.log(`✅ Updated: ${item.name}`)
+          // console.log(`✅ Updated: ${item.name}`)
         } else {
           // Create new item
           const newItem = await prisma.menuWebDB.create({
@@ -449,13 +449,13 @@ async function seedMenuItems() {
             }
           })
           createdItems.push({ action: 'created', item: newItem })
-         // console.log(`✨ Created: ${item.name}`)
+          // console.log(`✨ Created: ${item.name}`)
         }
       } catch (itemError) {
         console.error(`❌ Error processing item ${item.id}:`, itemError.message)
-        createdItems.push({ 
-          action: 'error', 
-          itemId: item.id, 
+        createdItems.push({
+          action: 'error',
+          itemId: item.id,
           error: itemError.message
         })
       }
@@ -467,18 +467,18 @@ async function seedMenuItems() {
         { showOrder: 'asc' },
         { name: 'asc' }
       ],
-      where: {  }
+      where: {}
     })
 
-   // console.log(`\n🎉 Successfully processed ${menuItems.length} menu items`)
-   // console.log(`📊 Total menus in database: ${finalMenus.length}`)
-    
+    // console.log(`\n🎉 Successfully processed ${menuItems.length} menu items`)
+    // console.log(`📊 Total menus in database: ${finalMenus.length}`)
+
     const summary = createdItems.reduce((acc, item) => {
       acc[item.action] = (acc[item.action] || 0) + 1
       return acc
     }, {})
-    
-   // console.log('📈 Summary:', summary)
+
+    // console.log('📈 Summary:', summary)
 
   } catch (error) {
     console.error('❌ Seed error:', error)

@@ -44,7 +44,7 @@ export function TheLayout({ children }: LayoutProps) {
 
           {/* Main Content Area - Adjusted for fixed header */}
 
-          <main className={`md:pt-20 bg-transparent p-2 w-full overflow-y-auto min-h-full transition-all duration-300 ${collapsed ? 'pl-4 md:pl-4' : 'pl-60 md:pl-0'}`}>
+          <main className={`p-2 pt-20 bg-transparent w-full overflow-y-auto min-h-full transition-all duration-300 ${collapsed ? 'pl-2 md:pl-2' : 'pl-2 md:pl-60'}`}>
             <div className="animate-fade-in max-w-full">
               {children}
             </div>
