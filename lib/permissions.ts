@@ -40,70 +40,17 @@ export async function checkUserPermissions(
     return null
   }
 
-  // Superadmin has all permissions
-  if (user.username === 'superadmin') {
-    return {
-      user,
-      permissions: {
-        canAdvance: true,
-        canViews: true,
-        canCreate: true,
-        canUpdate: true,
-        canDelete: true,
-      }
+  // All authenticated admins have full permissions
+  return {
+    user,
+    permissions: {
+      canAdvance: true,
+      canViews: true,
+      canCreate: true,
+      canUpdate: true,
+      canDelete: true,
     }
   }
-
-  // Get user's permissions for the specific menu page from AdminDefaultPermissionDB
-  const admin = await prisma.adminDB.findFirst({
-    where: {
-      username: user.username,
-      isActive: true,
-
-    },
-    include: {
-      adminPosition: {
-        include: {
-          AdminDefaultPermissionDB: {
-            where: {
-              isDeleted: false,
-            },
-            include: {
-              menuWebDB: true,
-            },
-          },
-        },
-      },
-    },
-  }) as any
-
-  if (!admin || !admin.adminPosition) {
-    return {
-      user,
-      permissions: {
-        canAdvance: false,
-        canViews: false,
-        canCreate: false,
-        canUpdate: false,
-        canDelete: false,
-      }
-    }
-  }
-
-  // Get permissions from AdminDefaultPermissionDB
-  const permission = admin.adminPosition?.AdminDefaultPermissionDB?.find(
-    (p: any) => p.menuWebDB?.name === menuPageName
-  )
-
-  const permissions: PermissionContext = {
-    canAdvance: permission?.canAdvance || false,
-    canViews: permission?.canViews || false,
-    canCreate: permission?.canCreate || false,
-    canUpdate: permission?.canUpdate || false,
-    canDelete: permission?.canDelete || false,
-  }
-
-  return { user, permissions }
 }
 
 // Get admin data with full permissions from cookie
@@ -118,59 +65,46 @@ export async function getAdminFromCookie(req: NextApiRequest): Promise<any | nul
     return null
   }
 
-  // For superadmin, get all menu permissions
-  if (user.username === 'superadmin') {
-    const allMenuPages = await prisma.menuWebDB.findMany({
-      where: {  },
-      select: { name: true }
-    })
-    
-    return {
-      ...user,
-      permissions: allMenuPages.map(p => p.name),
-      role: 'superadmin',
-      isSuperAdmin: true,
-    }
-  }
-
-  // Get detailed admin data with permissions
+  // Get admin data from DB
   const admin = await prisma.adminDB.findFirst({
     where: {
       username: user.username,
       isActive: true,
-
     },
     include: {
       adminPosition: {
         include: {
           adminDepartment: true,
           AdminDefaultPermissionDB: {
-            where: {
-              isDeleted: false,
-            },
-            include: {
-              menuWebDB: true,
-            },
+            where: { isDeleted: false },
+            include: { menuWebDB: true },
           },
         },
       },
-      webBase: {
-        include: {}
-      },
+      webBase: { include: {} },
     },
   }) as any
 
   if (!admin) {
+    // superadmin may not be in AdminDB yet — return token payload with full permissions
+    if (user.isSuperAdmin) {
+      return {
+        ...user,
+        id: user.sub,
+        permissions: [],
+        role: 'superadmin',
+        isSuperAdmin: true,
+      }
+    }
     return null
   }
 
-  const permissions = admin.AdminPositionDB?.AdminDefaultPermissionDB?.map((p: any) => p.menuWebDB?.name).filter(Boolean) || []
-
+  // All admins get full permissions
   return {
     ...admin,
-    permissions,
-    role: 'admin',
-    isSuperAdmin: false,
+    permissions: [],
+    role: user.isSuperAdmin ? 'superadmin' : 'admin',
+    isSuperAdmin: user.isSuperAdmin,
   }
 }
 
@@ -182,10 +116,6 @@ export async function hasPermission(
 ): Promise<boolean> {
   const result = await checkUserPermissions(req, menuPageName)
   if (!result) return false
-  
-  // Superadmin has all permissions
-  if (result.user.username === 'superadmin') return true
-  
   return result.permissions[permission]
 }
 
@@ -204,11 +134,6 @@ export function requirePermission(menuPageName: string, permission: keyof Permis
       
       if (!userPermissions) {
         return res.status(401).json({ error: 'ไม่มีสิทธิ์เข้าถึง - กรุณาเข้าสู่ระบบ' })
-      }
-
-      // Superadmin bypasses all permission checks
-      if (userPermissions.user.username === 'superadmin') {
-        return method.apply(this, [req, res, ...args])
       }
 
       if (!userPermissions.permissions[permission]) {

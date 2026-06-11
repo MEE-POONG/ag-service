@@ -38,6 +38,12 @@ export default async function handler(
       })
     }
 
+    // admin.id exists for normal admins; superadmin returns JWT payload where id is in sub
+    const adminId = admin.id || admin.sub
+    if (!adminId) {
+      return res.status(401).json({ success: false, error: 'ไม่สามารถระบุตัวตนผู้ใช้' })
+    }
+
     // Extract keys from subscription
     const keys = subscription.keys || {}
 
@@ -54,11 +60,11 @@ export default async function handler(
         lastUsedAt: new Date()
       },
       create: {
-        userId: admin.id,
         endpoint: subscription.endpoint,
         keys: keys,
         userAgent: userAgent || null,
-        isActive: true
+        isActive: true,
+        user: { connect: { id: adminId } }
       }
     })
 

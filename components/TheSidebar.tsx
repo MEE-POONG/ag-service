@@ -1,5 +1,5 @@
-import { menuDev } from "@/data";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { menuDev, menuItems } from "@/data";
+import { Dispatch, SetStateAction } from "react";
 import { MdDashboard as LayoutDashboard } from "react-icons/md";
 import UserInfo from "@/components/UserInfo";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,6 +26,9 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
   const isDev =
     (user?.username || '').toLowerCase() === 'superadmin' ||
     (user?.username || '').toLowerCase() === 'admin';
+
+  // ถ้า DB ไม่มีเมนู ให้ใช้ static menuItems แทน
+  const effectiveMenuWeb = (menuWeb && menuWeb.length > 0) ? menuWeb : menuItems;
 
   return (
     <div className="fixed top-0 left-0 right-0 w-max">
@@ -63,7 +66,7 @@ export function TheSidebar({ collapsed, setCollapsed }: TheSidebarProps) {
                     <div className="animate-pulse">กำลังโหลดเมนู...</div>
                   </li>
                 ) : (
-                  menuWeb && <MenuPageWebDB dataList={menuWeb} collapsed={collapsed} />
+                  <MenuPageWebDB dataList={effectiveMenuWeb} collapsed={collapsed} />
                 )}
                 {/* เมนูสำหรับผู้พัฒนา */}
                 {(

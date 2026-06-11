@@ -75,19 +75,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
 
   // 🔗 ขั้นตอนที่ 6: รวมข้อมูลผู้ใช้และสิทธิ์
+  const dbPermissions = (user.adminPosition?.AdminDefaultPermissionDB ?? []).map((p: any) => ({
+    id: p.id,
+    menuWebDBId: p.menuWebId,
+    menuName: p.menuWebDB?.name ?? '',
+    canViews: p.canViews,
+    canCreate: p.canCreate,
+    canUpdate: p.canUpdate,
+    canDelete: p.canDelete,
+    canAdvance: p.canAdvance,
+  }))
+
+  // ถ้าไม่มีสิทธิ์ใน DB หรือเป็น superadmin → ให้สิทธิ์เต็มกับทุกเมนู
+  const permissions = dbPermissions.length > 0 && !payload.isSuperAdmin
+    ? dbPermissions
+    : menuWeb.map((m: any) => ({
+        id: m.id,
+        menuWebDBId: m.id,
+        menuName: m.name,
+        canViews: true,
+        canCreate: true,
+        canUpdate: true,
+        canDelete: true,
+        canAdvance: true,
+      }))
+
   const merged = {
     ...user,
     role: payload.role,
-    permissions: (user.adminPosition?.AdminDefaultPermissionDB ?? []).map((p: any) => ({
-      id: p.id,
-      menuWebDBId: p.menuWebId,
-      menuName: p.menuWebDB?.name ?? '',
-      canViews: p.canViews,
-      canCreate: p.canCreate,
-      canUpdate: p.canUpdate,
-      canDelete: p.canDelete,
-      canAdvance: p.canAdvance,
-    })),
+    permissions,
     tokenVersion: payload.tokenVersion ?? 0,
   }
   // 📤 ขั้นตอนที่ 7: ส่งข้อมูลกลับไปยัง Client
