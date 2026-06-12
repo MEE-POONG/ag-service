@@ -76,7 +76,7 @@ export default function ViewAdminPage() {
         <div className="flex flex-col justify-center items-center min-h-screen">
           <div className="text-lg text-red-600 mb-4">{(error as any)?.message || 'ไม่พบข้อมูล Admin'}</div>
           <Link 
-            href="/admin" 
+            href="/admin-management/admins" 
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             <FaArrowLeft className="mr-2" />
@@ -94,7 +94,7 @@ export default function ViewAdminPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
           <div className="flex items-center mb-4 sm:mb-0">
             <Link 
-              href="/admin" 
+              href="/admin-management/admins" 
               className="inline-flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 mr-4"
             >
               <FaArrowLeft className="mr-2" />
@@ -106,7 +106,7 @@ export default function ViewAdminPage() {
           </div>
           <div className="flex space-x-2">
             <Link
-              href={`/admin/edit/${admin.id}`}
+              href={`/admin-management/admins/edit/${admin.id}`}
               className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <FaEdit className="mr-2" />
@@ -247,14 +247,14 @@ export default function ViewAdminPage() {
         {/* Actions */}
         <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href={`/admin/edit/${admin.id}`}
+            href={`/admin-management/admins/edit/${admin.id}`}
             className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <FaEdit className="mr-2" />
             แก้ไขข้อมูล
           </Link>
           <Link
-            href="/admin"
+            href="/admin-management/admins"
             className="inline-flex items-center justify-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
           >
             <FaArrowLeft className="mr-2" />

@@ -114,7 +114,7 @@ export default function AdminAddPage() {
       if (res.data?.success) {
         await queryClient.invalidateQueries({ queryKey: qk.admins.list, exact: false })
         alert('สร้าง Admin สำเร็จ')
-        router.push('/admin')
+        router.push('/admin-management/admins')
       } else {
         alert(res.data?.error || 'เกิดข้อผิดพลาดในการสร้าง Admin')
       }
@@ -261,7 +261,7 @@ export default function AdminAddPage() {
             </button>
             <button
               type="button"
-              onClick={() => router.push('/admin/admins')}
+              onClick={() => router.push('/admin-management/admins')}
               className="flex-1 sm:flex-none px-6 py-3 text-sm sm:text-base font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-all duration-200 border border-gray-300"
             >
               ยกเลิก

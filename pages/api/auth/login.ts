@@ -26,8 +26,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const token = generateToken(payload)
     setAuthCookie(res, token)
 
-    // Log กิจกรรม (login)
-    await prisma.activityLogDB.create({
+    // Log กิจกรรมแบบไม่บล็อกการเข้าสู่ระบบ
+    prisma.activityLogDB.create({
       data: {
         userId: user.id,
         userType: 'admin',
@@ -38,6 +38,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         userAgent: req.headers['user-agent'] || undefined,
         createdAt: new Date(),
       },
+    }).catch((logError) => {
+      console.warn('Login activity log failed:', logError)
     })
 
     // ส่งกลับเฉพาะข้อมูลที่ปลอดภัย (ไม่ต้องส่ง token ใน body)

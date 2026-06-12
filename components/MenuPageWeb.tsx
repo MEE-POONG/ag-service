@@ -56,13 +56,25 @@ export default function MenuPageWebDB({ dataList, collapsed, }: EnhancedMenuProp
         return false;
     }, [currentPath]);
 
+    const resolveMenuHref = useCallback((parentLink: string, childLink?: string) => {
+        const parent = parentLink || "/";
+        if (!childLink) return parent;
+        if (childLink === parent || childLink.startsWith(`${parent.replace(/\/$/, "")}/`)) {
+            return childLink;
+        }
+        if (childLink.startsWith("/")) {
+            return `${parent.replace(/\/$/, "")}${childLink}`;
+        }
+        return `${parent.replace(/\/$/, "")}/${childLink}`;
+    }, []);
+
     const isParentActive = useCallback((item: MenuWebDBWithChildren) => {
         // เช็คว่าตัวเองหรือลูกๆ active หรือไม่
         if (isActive(item.link, item)) return true;
 
         // เช็คลูกๆ
-        return item.children?.some(sub => isActive(item.link + sub.link, sub)) || false;
-    }, [isActive]);
+        return item.children?.some(sub => isActive(resolveMenuHref(item.link, sub.link), sub)) || false;
+    }, [isActive, resolveMenuHref]);
 
     useEffect(() => {
         // แปลงข้อมูลจาก flat array เป็น hierarchical structure
@@ -209,10 +221,10 @@ export default function MenuPageWebDB({ dataList, collapsed, }: EnhancedMenuProp
                     <div className={`ml-4 mt-1 space-y-1  transition-all duration-300 ease-in-out transform ${isOpen ? 'opacity-100 scale-100 max-h-96' : 'opacity-0 scale-95 max-h-0 overflow-hidden'}`}>
                         <ul className="space-y-1">
                             {item.children?.map((subItem, index) => (
-                                <li key={subItem.link} className={`transition-all duration-300 ease-in-out ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`} style={{ transitionDelay: `${index * 50}ms` }}>
+                                <li key={resolveMenuHref(item.link, subItem.link)} className={`transition-all duration-300 ease-in-out ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`} style={{ transitionDelay: `${index * 50}ms` }}>
                                     <Link
-                                        href={item.link + subItem.link}
-                                        className={`flex items-center w-full p-2 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md bg-gradient-to-r ${isActive(item.link + subItem.link, subItem)
+                                        href={resolveMenuHref(item.link, subItem.link)}
+                                        className={`flex items-center w-full p-2 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md bg-gradient-to-r ${isActive(resolveMenuHref(item.link, subItem.link), subItem)
                                             ? "scale-105 from-[#A78BFA] to-[#34D399] text-white"
                                             : "from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-600 hover:text-gray-900"
                                             }`}

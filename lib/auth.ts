@@ -211,6 +211,7 @@ export async function authenticateAdmin(
     ...admin,
     permissions,
     role,
+    isSuperAdmin: isRootLogin,
     tokenVersion,
   }) as ExtendedAdminDB & { tokenVersion?: number }
 

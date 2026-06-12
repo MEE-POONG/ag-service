@@ -22,6 +22,17 @@ import { useAuth } from "@/hooks/useAuth";
 import { menuDev, menuPublic } from "@/data/menuItems";
 import { MenuWebDB } from "@prisma/client";
 
+const isFullAccessUser = (user: any) => {
+  const username = String(user?.username || "").toLowerCase();
+  return (
+    user?.isSuperAdmin === true ||
+    user?.role === "superadmin" ||
+    username === "superadmin" ||
+    username === "admin" ||
+    user?.adminPosition?.adminDepartment?.name === "IT Department"
+  );
+};
+
 /* ----------------------------- Return type ----------------------------- */
 
 interface UseMenuReturn {
@@ -284,7 +295,7 @@ export function useMenuWeb(): UseMenuReturn {
   const router = useRouter();
   const pathname = usePathname();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, userLoading } = useAuth();
 
   // ⛔️ กฎใหม่สำหรับควบคุมการบล็อกเส้นทาง (แทน disallowedRef เดิม)
   const rulesRef = useRef<AccessRule[]>([]);
@@ -382,6 +393,8 @@ export function useMenuWeb(): UseMenuReturn {
    *    - ถ้าไม่เจอ action → ใช้ canViews
    */
   useEffect(() => {
+    if (userLoading) return; // รอ user โหลดก่อน เพื่อป้องกัน race condition ที่จะ redirect superadmin ไป 404 ผิดๆ
+    if (isFullAccessUser(user)) return;
     if (!pathname || rulesRef.current.length === 0) return;
 
     const path = norm(pathname);
@@ -411,8 +424,7 @@ export function useMenuWeb(): UseMenuReturn {
         return;
       }
       if (pathname !== "/404") {
-        console.log("[RBAC] No matching base, block:", pathname);
-        // router.replace("/404");
+        router.replace("/404");
       }
       return;
     }
@@ -456,8 +468,6 @@ export function useMenuWeb(): UseMenuReturn {
 
     // ตรวจสิทธิ์
     const hasPerm = Boolean((rule.perm as any)[requiredPermKey]);
-    console.log('hasPerm : ', hasPerm);
-
     if (!hasPerm) {
       if (pathname !== "/404") {
         console.log(
@@ -471,7 +481,7 @@ export function useMenuWeb(): UseMenuReturn {
         router.replace("/404");
       }
     }
-  }, [pathname, menuWebData, router]);
+  }, [pathname, menuWebData, router, user, userLoading]);
 
   // แปลงข้อมูล query เป็น menuWeb
   const menuWeb = useMemo(

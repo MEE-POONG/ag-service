@@ -104,7 +104,7 @@ export default function AdminPage() {
         actions={
           hs.head?.userCanAdvance || hs.support?.canCreate || user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department" ? (
             <Link
-              href="/admin/add"
+              href="/admin-management/admins/add"
               className="inline-flex items-center px-2 py-1 text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-full"
             >
               <FaPlus className="mr-2" /> เพิ่มผู้ดูแล
@@ -165,11 +165,11 @@ export default function AdminPage() {
                         </TableCell>
                         <TableCell className="text-right space-x-1">
                           <AdminModalNewPassword data={item} />
-                          <Link href={`/admin/view/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-green-100 text-green-700 border border-solid border-green-700 hover:bg-green-200">
+                          <Link href={`/admin-management/admins/view/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-green-100 text-green-700 border border-solid border-green-700 hover:bg-green-200">
                             ดู
                           </Link>
                           {hs.head?.userCanAdvance || hs.support?.canUpdate || user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department" ? (
-                            <Link href={`/admin/edit/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200">
+                            <Link href={`/admin-management/admins/edit/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200">
                               แก้ไข
                             </Link>
                           ) : null}

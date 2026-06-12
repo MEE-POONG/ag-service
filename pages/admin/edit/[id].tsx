@@ -15,7 +15,7 @@ interface AdminDetail {
   tel?: string | null
   isActive: boolean
   adminPositionId?: string | null
-  AdminPositionDB?: Position | null
+  adminPosition?: Position | null
 }
 type AdminResp = { success: boolean; data: AdminDetail; error?: string }
 
@@ -93,7 +93,6 @@ export default function AdminEditPage() {
     setPositions(posDep.positions)
     setDepartments(posDep.departments)
     if (adminRes?.success) {
-      console.log(`adminRes: `, adminRes?.data);
       setForm({
         username: adminRes?.data.username ?? '',
         password: '',
@@ -103,10 +102,12 @@ export default function AdminEditPage() {
         adminPositionId: adminRes?.data.adminPositionId ?? '',
       })
       setSelectedDeptId(
-        adminRes?.data.adminPositionId ?? ''
+        adminRes?.data.adminPosition?.adminDepartmentId ??
+        adminRes?.data.adminPosition?.adminDepartment?.id ??
+        ''
       )
     }
-  }, [adminRes])
+  }, [adminRes, posDep])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -154,7 +155,7 @@ export default function AdminEditPage() {
       if (res.data?.success) {
         await queryClient.invalidateQueries({ queryKey: qk.admins.list, exact: false })
         alert('แก้ไข Admin สำเร็จ')
-        router.push('/admin')
+        router.push('/admin-management/admins')
       } else {
         alert(res.data?.error || 'เกิดข้อผิดพลาดในการแก้ไข Admin')
       }
@@ -286,7 +287,7 @@ export default function AdminEditPage() {
             </button>
             <button
               type="button"
-              onClick={() => router.push('/admin/admins')}
+              onClick={() => router.push('/admin-management/admins')}
               className="flex-1 sm:flex-none px-6 py-3 text-sm sm:text-base font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-all duration-200 border border-gray-300"
             >
               ยกเลิก

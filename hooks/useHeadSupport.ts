@@ -43,6 +43,17 @@ const isDevUser = (user: any) =>
   user?.username === "admin" ||
   user?.adminPosition?.adminDepartment?.name === "IT Department";
 
+const isFullAccessUser = (user: any) => {
+  const username = String(user?.username || "").toLowerCase();
+  return (
+    user?.isSuperAdmin === true ||
+    user?.role === "superadmin" ||
+    username === "superadmin" ||
+    username === "admin" ||
+    user?.adminPosition?.adminDepartment?.name === "IT Department"
+  );
+};
+
 /** ดึง pathname + ตัด / ท้าย (ยกเว้น root) */
 const normPath = (input: string) => {
   const raw = (input ?? "").split(/[?#]/)[0].trim();
@@ -110,6 +121,30 @@ export function resolveHeadSupport(user: any, pathOrUrl: string): HeadSupportRes
 
   const path = normPath(pathOrUrl);
   const [, firstSeg = "", secondSeg = ""] = path.split("/"); // ["", "foo", "bar", ...]
+
+  if (isFullAccessUser(user)) {
+    return {
+      ok: true,
+      path,
+      head: {
+        id: "__full_access__",
+        name: "Full Access",
+        link: `/${firstSeg}`,
+        head: true,
+        userCanAdvance: true,
+      },
+      support: {
+        menuId: "__full_access__",
+        name: "Full Access",
+        canAdvance: true,
+        canViews: true,
+        canCreate: true,
+        canUpdate: true,
+        canDelete: true,
+        isDeleted: false,
+      },
+    };
+  }
 
   /** 0) Public allowlist */
   if (PUBLIC_ACCESS.has(path)) {
@@ -283,10 +318,6 @@ export function useHeadSupport(pathOverride?: string): HeadSupportResult {
 
   // 🔄 ใช้ useMemo เพื่อ cache ผลลัพธ์และ re-compute เมื่อ user หรือ path เปลี่ยน
   return useMemo(() => {
-    // เพิ่ม debug log เพื่อดูว่าเกิดอะไรขึ้น
-    console.log('useHeadSupport: resolving with user:', user?.username, 'path:', path);
-    const result = resolveHeadSupport(user, path);
-    console.log('useHeadSupport: result:', result);
-    return result;
+    return resolveHeadSupport(user, path);
   }, [user, path, userKey]);
 }

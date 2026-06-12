@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
@@ -44,20 +44,11 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const redirectTo = typeof router.query?.redirect === 'string' ? router.query.redirect : '/'
-
-  const requestNotificationPermission = useCallback(async () => {
-    if (typeof window === 'undefined' || !('Notification' in window)) return
-    if (Notification.permission !== 'default') return
-
-    try {
-      const permission = await Notification.requestPermission()
-      if (permission === 'granted') {
-        toast.success('เปิดใช้งานการแจ้งเตือนเรียบร้อย')
-      }
-    } catch (error) {
-      console.error('[Login] Notification permission request failed:', error)
-    }
-  }, [])
+  const safeRedirectUrl = (() => {
+    if (!redirectTo.startsWith('/') || redirectTo.startsWith('//')) return '/'
+    if (redirectTo.startsWith('/auth/login')) return '/'
+    return redirectTo
+  })()
 
   const { data: user, isLoading: isCheckingAuth } = useQuery({
     queryKey: qk.auth.me,
@@ -82,10 +73,8 @@ export default function LoginPage() {
     onSuccess: (data) => {
       queryClient.setQueryData(qk.auth.me, data.user)
       toast.success(data.message || 'เข้าสู่ระบบสำเร็จ')
-      requestNotificationPermission()
 
-      const targetUrl = redirectTo.startsWith('/') ? redirectTo : '/'
-      router.push(targetUrl)
+      router.replace(safeRedirectUrl)
     },
     onError: (error: any) => {
       const errorMessage =
@@ -100,10 +89,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user && router.isReady) {
-      const targetUrl = redirectTo.startsWith('/') ? redirectTo : '/'
-      router.push(targetUrl)
+      router.replace(safeRedirectUrl)
     }
-  }, [user, router.isReady, redirectTo, router])
+  }, [user, router.isReady, safeRedirectUrl, router])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()

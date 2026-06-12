@@ -66,7 +66,7 @@ export default function DashboardPage() {
             <p className="mb-3 text-sm text-gray-600 sm:text-base sm:mb-4">
               จัดการผู้ดูแลระบบ ตำแหน่ง และแผนก
             </p>
-            <Link href="/admin/admins" className="inline-flex items-center justify-center text-sm sm:text-base btn-theme rounded-full px-4 py-2 hover:!brightness-95">
+            <Link href="/admin-management/admins" className="inline-flex items-center justify-center text-sm sm:text-base btn-theme rounded-full px-4 py-2 hover:!brightness-95">
               จัดการ Admin
             </Link>
           </div>

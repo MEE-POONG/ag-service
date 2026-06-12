@@ -43,21 +43,77 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // 🗃️ ขั้นตอนที่ 3: ดึงข้อมูลผู้ใช้จาก Database พร้อมข้อมูลเพิ่มเติม
   const user = await prisma.adminDB.findUnique({
     where: { id: payload.sub }, // ใช้ User ID จาก Token Payload
-    include: {
+    select: {
+      id: true,
+      username: true,
+      name: true,
+      email: true,
+      tel: true,
+      isActive: true,
+      adminPositionId: true,
+      webBaseId: true,
+      createdAt: true,
+      createdBy: true,
+      updatedAt: true,
+      updatedBy: true,
+      deleteAt: true,
+      deleteBy: true,
+      profile: true,
       adminPosition: {
-        include: {
-          adminDepartment: true, // ข้อมูลแผนก
+        select: {
+          id: true,
+          name: true,
+          priority: true,
+          adminDepartmentId: true,
+          isActive: true,
+          isDeleted: true,
+          createdAt: true,
+          createdBy: true,
+          updatedAt: true,
+          updatedBy: true,
+          adminDepartment: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              isActive: true,
+              isDeleted: true,
+            },
+          },
           AdminDefaultPermissionDB: {
-            include: { menuWebDB: true },
+            where: { isDeleted: false },
+            select: {
+              id: true,
+              menuWebId: true,
+              canViews: true,
+              canCreate: true,
+              canUpdate: true,
+              canDelete: true,
+              canAdvance: true,
+              menuWebDB: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
           },
         },
       },
       webBase: {
-        include: {} // ข้อมูล Website Base (ถ้ามี)
+        select: {
+          id: true,
+          name: true,
+          _count: {
+            select: {
+              AdminDB: true,
+            },
+          },
+        },
       },
     },
   })
-  console.log('60 user : ', JSON.stringify(user, null, 2), ' Ok ');
+
   // 🚫 ขั้นตอนที่ 4: ตรวจสอบสถานะของผู้ใช้
   if (!user || user.isActive === false) {
     // ไม่พบผู้ใช้หรือบัญชีถูกปิดใช้งาน
@@ -103,6 +159,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const merged = {
     ...user,
     role: payload.role,
+    isSuperAdmin: payload.isSuperAdmin,
     permissions,
     tokenVersion: payload.tokenVersion ?? 0,
   }

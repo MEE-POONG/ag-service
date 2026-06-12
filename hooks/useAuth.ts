@@ -42,7 +42,6 @@ export function useAuth(): UseAuthReturn {
   // 🔍 ดึงข้อมูลผู้ใช้ปัจจุบันจาก API
   const {
     data: meData,
-    isFetching,
     isPending,
     error,
   } = useQuery({
@@ -52,18 +51,19 @@ export function useAuth(): UseAuthReturn {
       return res.data?.user ?? null // ดึงเฉพาะข้อมูล user
     },
     staleTime: 5 * 60 * 1000,      // Cache เป็นเวลา 5 นาที
-    retry: 1,                      // ลองใหม่ 1 ครั้งหากเกิดข้อผิดพลาด
+    retry: false,                  // ไม่หน่วง redirect ด้วย retry เมื่อ session ใช้ไม่ได้
     refetchOnWindowFocus: false,   // ไม่ต้อง refetch เมื่อกลับมาที่ window
   })
 
   // 🛡️ Auto-redirect ไป login page เมื่อไม่ได้ authenticate (client-side safeguard)
   useEffect(() => {
     if (!router.isReady) return                      // รอให้ router พร้อม
-    if (router.pathname === '/auth/login') return    // ถ้าอยู่ที่หน้า login แล้วไม่ต้องทำอะไร
+    if (router.pathname === '/auth/login' || router.pathname === '/404') return
+    if (isPending) return                            // รอผลตรวจ session รอบแรกก่อน
     if (meData === null) {                          // หากไม่มีข้อมูลผู้ใช้
-      router.push('/auth/login')                     // redirect ไป login page
+      router.replace('/auth/login')                  // redirect ไป login page
     }
-  }, [router.isReady, router.pathname, meData, router])
+  }, [router.isReady, router.pathname, isPending, meData, router])
 
   // 🚪 จัดการการ logout
   const logoutMutation = useMutation({
@@ -86,19 +86,19 @@ export function useAuth(): UseAuthReturn {
   const logout = async () => {
     try {
       await logoutMutation.mutateAsync()  // ลองเรียก API logout
-      router.push('/auth/login')          // redirect ไป login page
+      router.replace('/auth/login')       // redirect ไป login page
     } catch (err) {
       // 🚨 แม้ว่า API logout จะล้มเหลว ก็ยังต้องล้างข้อมูลและ redirect
       queryClient.setQueryData(qk.auth.me, null)
       try { localStorage.removeItem('auth-token') } catch {}
-      router.push('/auth/login')
+      router.replace('/auth/login')
     }
   }
 
   // 📤 ส่งข้อมูลและฟังก์ชันกลับไปยัง component
   return {
     user: meData ?? null,                                            // ข้อมูลผู้ใช้ปัจจุบัน
-    userLoading: isPending || isFetching,                           // สถานะการโหลด
+    userLoading: isPending,                                        // ไม่บล็อกหน้าระหว่าง background refetch
     error: error ? (error as any)?.message ?? 'การตรวจสอบสิทธิ์ล้มเหลว' : null, // ข้อผิดพลาด
     logout,                                                         // ฟังก์ชัน logout
   }
