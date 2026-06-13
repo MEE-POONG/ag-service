@@ -283,9 +283,9 @@ export default function AgUserAccountPage() {
 
             </div>
 
-            <div className="overflow-hidden overflow-x-auto rounded-xl ring-1 ring-gray-200">
-              <table className="w-full text-sm table-auto">
-                <thead>
+            <div className="overflow-hidden md:overflow-x-auto rounded-xl ring-1 ring-gray-200">
+              <table className="w-full text-sm block md:table">
+                <thead className="hidden md:table-header-group">
                   <tr className="text-white bg-gradient-to-r from-[#A78BFA] to-[#34D399]">
                     <th className="px-3 py-2 font-semibold text-left">Username</th>
                     <th className="px-3 py-2 font-semibold text-left">userLogin</th>
@@ -297,37 +297,59 @@ export default function AgUserAccountPage() {
                     <th className="px-3 py-2 font-semibold text-left">การจัดการ</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200 block md:table-row-group">
                   {list.map((u, idx) => (
-                    <tr key={u.id ?? `${u.username}-${idx}`} className="hover:bg-[#A78BFA]/5 transition-colors">
-                      <td className="px-3 py-2 font-semibold text-gray-900">{u.username}</td>
-                      <td className="px-3 py-2">{u.userLogin}</td>
-                      <td className="px-3 py-2">{u.reserve}</td>
-                      <td className="px-3 py-2">{u.webname || '-'}</td>
-                      <td className="px-3 py-2">{u.origin || '-'}</td>
-                      <td className="px-3 py-2 capitalize">{u.position}</td>
-                      <td className="px-3 py-2 truncate max-w-[12rem]" title={u.gaSecretEnc}>
-                        {u.gaSecretEnc && (
-                          <Button
-                            size="xs"
-                            className="bg-blue-200 !text-gray-700 !border border-blue-500 hover:!bg-blue-100 rounded-full px-3"
-                            onClick={async () => {
-                              try {
-                                if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
-                                // Generate TOTP using otplib (Google Auth compatible)
-                                await navigator.clipboard.writeText(u.gaSecretEnc)
-                                toast.success('คัดลอก SecretEnc แล้ว')
-                              } catch (e: any) {
-                                toast.error(e?.message || 'สร้าง SecretEnc ไม่สำเร็จ')
-                              }
-                            }}
-                          >
-                            คัดลอก SecretEnc
-                          </Button>
-                        )}
+                    <tr key={u.id ?? `${u.username}-${idx}`} className="hover:bg-[#A78BFA]/5 transition-colors block md:table-row border-b border-gray-200 md:border-none py-3 md:py-0">
+                      <td className="px-3 py-2 font-semibold text-gray-900 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">Username</span>
+                        <span>{u.username}</span>
                       </td>
-                      <td className="px-3 py-2">
-                        <div className="flex gap-2 items-center">
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">userLogin</span>
+                        <span>{u.userLogin || '-'}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">Reserve</span>
+                        <span>{u.reserve || '-'}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">webname</span>
+                        <span>{u.webname || '-'}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">origin</span>
+                        <span>{u.origin || '-'}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">position</span>
+                        <span className="capitalize">{u.position}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0" title={u.gaSecretEnc}>
+                        <span className="font-semibold text-gray-500 md:hidden">gaSecretEnc</span>
+                        <div className="truncate max-w-[12rem] md:max-w-none">
+                          {u.gaSecretEnc ? (
+                            <Button
+                              size="xs"
+                              className="bg-blue-200 !text-gray-700 !border border-blue-500 hover:!bg-blue-100 rounded-full px-3"
+                              onClick={async () => {
+                                try {
+                                  if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
+                                  // Generate TOTP using otplib (Google Auth compatible)
+                                  await navigator.clipboard.writeText(u.gaSecretEnc)
+                                  toast.success('คัดลอก SecretEnc แล้ว')
+                                } catch (e: any) {
+                                  toast.error(e?.message || 'สร้าง SecretEnc ไม่สำเร็จ')
+                                }
+                              }}
+                            >
+                              คัดลอก SecretEnc
+                            </Button>
+                          ) : '-'}
+                        </div>
+                      </td>
+                      <td className="px-3 py-2 flex flex-col md:table-cell gap-2">
+                        <span className="font-semibold text-gray-500 md:hidden mb-1">การจัดการ</span>
+                        <div className="flex flex-wrap gap-2 items-center">
                           <Button
                             size="xs"
                             className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
@@ -392,7 +414,7 @@ export default function AgUserAccountPage() {
                             <PartnerModalReset data={u} />
                           )}
                         </div>
-                        <div className={`flex gap-2 bg-blue-500/10 p-1 border border-blue-500/20 rounded-md ${hs.support?.canCreate || hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
+                        <div className={`gap-2 bg-blue-500/10 p-1 border border-blue-500/20 rounded-md ${hs.support?.canCreate || hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'flex flex-wrap' : 'hidden'}`}>
                           {/* ทุกอันจะเป็น modal */}
                           <CommandWorkModalCredit data={u} />
                           {u.position === 'agent' && <>
@@ -403,7 +425,7 @@ export default function AgUserAccountPage() {
                           </>}
                           {/* ปลดล็อคMaster Agent*/}
                         </div>
-                        <div className={`flex gap-2 mt-2 bg-red-500/10 p-1 border border-red-500/20 rounded-md ${hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
+                        <div className={`gap-2 mt-2 bg-red-500/10 p-1 border border-red-500/20 rounded-md ${hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
                           <ModalReset data={u} />
                           <ModalResetPartner data={u} onSuccess={() => console.log('Success!')} />
                           {u.position === 'master' && <>
@@ -417,8 +439,8 @@ export default function AgUserAccountPage() {
                     </tr>
                   ))}
                   {list.length === 0 && (
-                    <tr>
-                      <td className="px-3 py-6 text-center text-gray-500" colSpan={7}>
+                    <tr className="block md:table-row">
+                      <td className="px-3 py-6 text-center text-gray-500 block md:table-cell" colSpan={8}>
                         ไม่พบข้อมูล
                       </td>
                     </tr>
