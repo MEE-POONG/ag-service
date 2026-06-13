@@ -94,8 +94,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         title={title}
         ref={ref}
-        className={`inline-flex items-center transition-colors disabled:opacity-50 disabled:pointer-events-none ${variantClass} ${sizeClass} ${className}`}
-        {...props}
+        className={`inline-flex items-center transition-colors disabled:opacity-50 disabled:pointer-events-none w-max sm:w-auto mb-2 sm:mb-0 ${variantClass} ${sizeClass} ${className}`}        {...props}
       />
     )
   }

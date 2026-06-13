@@ -16,6 +16,14 @@ import { AgUserAccountDB } from '@prisma/client'
 import { useHeadSupport } from '@/hooks/useHeadSupport'
 import WebBaseModalView from '@/container/web-ag/ModalView'
 import { ExtendedWebBaseDB } from '@/data/interface'
+import CommandWorkModalCredit from '@/container/bot-ag/CommandWork/ModalCredit'
+import CommandWorkModalLockUnLockC from '@/container/bot-ag/CommandWork/ModalLockUnLockC'
+import ModalAdJustBet from '@/container/bot-ag/ModalAdJustBet'
+import ModalReset from '@/container/partner/ModalReset'
+import ModalResetPartner from '@/container/partner/ModalResetPartner'
+import ModalCreateAgent from '@/container/partner/ModalCreateAgent'
+import ModalCreateMaster from '@/container/partner/ModalCreateMaster'
+import { useAuth } from '@/hooks/useAuth'
 
 type AgUserAccountFormData = {
   username: string
@@ -54,6 +62,15 @@ export default function AgUserAccountPage() {
   const hs = useHeadSupport(); // ใช้ path ปัจจุบัน
 
   const queryClient = useQueryClient()
+  const { user } = useAuth()
+
+  useEffect(() => {
+    console.log('user : ', user);
+  }, [user])
+  useEffect(() => {
+    console.log('hs : ', hs);
+  }, [hs])
+
   const { items, add, update, remove, setItems } = useAgUserAccounts()
   const totpRemaining = useTotpRemaining(30)
   const [openAdd, setOpenAdd] = useState(false)
@@ -374,6 +391,27 @@ export default function AgUserAccountPage() {
                           {['agent', 'master'].includes(u.position) && (
                             <PartnerModalReset data={u} />
                           )}
+                        </div>
+                        <div className={`flex gap-2 bg-blue-500/10 p-1 border border-blue-500/20 rounded-md ${hs.support?.canCreate || hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
+                          {/* ทุกอันจะเป็น modal */}
+                          <CommandWorkModalCredit data={u} />
+                          {u.position === 'agent' && <>
+                            {/* <CommandWorkModalCreateC data={u} /> */}
+                            <CommandWorkModalLockUnLockC data={u} />
+                            <ModalAdJustBet agUser={{ ...u, userLogin: u.userLogin ?? '' }} mode="create" />
+
+                          </>}
+                          {/* ปลดล็อคMaster Agent*/}
+                        </div>
+                        <div className={`flex gap-2 mt-2 bg-red-500/10 p-1 border border-red-500/20 rounded-md ${hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? 'block' : 'hidden'}`}>
+                          <ModalReset data={u} />
+                          <ModalResetPartner data={u} onSuccess={() => console.log('Success!')} />
+                          {u.position === 'master' && <>
+                            <ModalCreateAgent data={u} onSuccess={() => console.log('Success!')} />
+                          </>}
+                          {u.position === 'senior' && <>
+                            <ModalCreateMaster data={u} onSuccess={() => console.log('Success!')} />
+                          </>}
                         </div>
                       </td>
                     </tr>
