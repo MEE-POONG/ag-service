@@ -284,7 +284,7 @@ export default function AgUserAccountPage() {
             </div>
 
             <div className="overflow-hidden md:overflow-x-auto rounded-xl ring-1 ring-gray-200">
-              <table className="w-full text-sm block md:table">
+              <table className="w-full text-sm block md:table border-collapse">
                 <thead className="hidden md:table-header-group">
                   <tr className="text-white bg-gradient-to-r from-[#A78BFA] to-[#34D399]">
                     <th className="px-3 py-2 font-semibold text-left">Username</th>
@@ -297,170 +297,173 @@ export default function AgUserAccountPage() {
                     <th className="px-3 py-2 font-semibold text-left">การจัดการ</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200 block md:table-row-group">
-                  {list.map((u, idx) => (
-                    <Fragment key={u.id ?? `${u.username}-${idx}`}>
-                      {/* แถวที่ 1: ข้อมูลตารางหลัก */}
-                      <tr className="hover:bg-[#A78BFA]/5 transition-colors block md:table-row border-b border-gray-100 md:border-none py-2 md:py-0">
-                        <td className="px-3 py-2 font-semibold text-gray-900 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
-                          <span className="font-semibold text-gray-500 md:hidden">Username</span>
-                          <span>{u.username}</span>
-                        </td>
-                        <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
-                          <span className="font-semibold text-gray-500 md:hidden">userLogin</span>
-                          <span>{u.userLogin || '-'}</span>
-                        </td>
-                        <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
-                          <span className="font-semibold text-gray-500 md:hidden">Reserve</span>
-                          <span>{u.reserve || '-'}</span>
-                        </td>
-                        <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
-                          <span className="font-semibold text-gray-500 md:hidden">webname</span>
-                          <span>{u.webname || '-'}</span>
-                        </td>
-                        <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
-                          <span className="font-semibold text-gray-500 md:hidden">origin</span>
-                          <span>{u.origin || '-'}</span>
-                        </td>
-                        <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
-                          <span className="font-semibold text-gray-500 md:hidden">position</span>
-                          <span className="capitalize">{u.position}</span>
-                        </td>
-                        <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0" title={u.gaSecretEnc}>
-                          <span className="font-semibold text-gray-500 md:hidden">gaSecretEnc</span>
-                          <div className="truncate max-w-[12rem] md:max-w-none">
-                            {u.gaSecretEnc ? (
-                              <Button
-                                size="xs"
-                                className="bg-blue-200 !text-gray-700 !border border-blue-500 hover:!bg-blue-100 rounded-full px-3"
-                                onClick={async () => {
-                                  try {
-                                    if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
-                                    await navigator.clipboard.writeText(u.gaSecretEnc)
-                                    toast.success('คัดลอก SecretEnc แล้ว')
-                                  } catch (e: any) {
-                                    toast.error(e?.message || 'สร้าง SecretEnc ไม่สำเร็จ')
-                                  }
-                                }}
-                              >
-                                คัดลอก SecretEnc
-                              </Button>
-                            ) : '-'}
-                          </div>
-                        </td>
-                        <td className="px-3 py-2 flex flex-col md:table-cell gap-2">
-                          <span className="font-semibold text-gray-500 md:hidden mb-1">การจัดการ</span>
-                          <div className="flex flex-wrap gap-2 items-center">
+                {list.map((u, idx) => (
+                  <tbody
+                    key={u.id ?? `${u.username}-${idx}`}
+                    className="bg-white block md:table-row-group border-b-8 border-gray-100 md:border-b-4 md:border-[#A78BFA]/20 hover:bg-[#A78BFA]/5 transition-colors"
+                  >
+                    {/* แถวที่ 1: ข้อมูลตารางหลัก */}
+                    <tr className="hover:bg-[#A78BFA]/5 transition-colors block md:table-row border-b border-gray-100 md:border-none py-2 md:py-0">
+                      <td className="px-3 py-2 font-semibold text-gray-900 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">Username</span>
+                        <span>{u.username}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">userLogin</span>
+                        <span>{u.userLogin || '-'}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">Reserve</span>
+                        <span>{u.reserve || '-'}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">webname</span>
+                        <span>{u.webname || '-'}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">origin</span>
+                        <span>{u.origin || '-'}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0">
+                        <span className="font-semibold text-gray-500 md:hidden">position</span>
+                        <span className="capitalize">{u.position}</span>
+                      </td>
+                      <td className="px-3 py-2 flex md:table-cell justify-between items-center border-b border-gray-100 md:border-b-0" title={u.gaSecretEnc}>
+                        <span className="font-semibold text-gray-500 md:hidden">gaSecretEnc</span>
+                        <div className="truncate max-w-[12rem] md:max-w-none">
+                          {u.gaSecretEnc ? (
                             <Button
                               size="xs"
-                              className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
+                              className="bg-blue-200 !text-gray-700 !border border-blue-500 hover:!bg-blue-100 rounded-full px-3"
                               onClick={async () => {
                                 try {
                                   if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
-                                  const res = await axios.post('/api/totp/generate', { secret: u.gaSecretEnc })
-                                  if (!res.data?.success) throw new Error(res.data?.error || 'สร้าง TOTP ไม่สำเร็จ')
-                                  await navigator.clipboard.writeText(res.data.code)
-                                  toast.success('คัดลอก TOTP แล้ว')
+                                  await navigator.clipboard.writeText(u.gaSecretEnc)
+                                  toast.success('คัดลอก SecretEnc แล้ว')
                                 } catch (e: any) {
-                                  toast.error(e?.message || 'สร้าง TOTP ไม่สำเร็จ')
+                                  toast.error(e?.message || 'สร้าง SecretEnc ไม่สำเร็จ')
                                 }
                               }}
                             >
-                              คัดลอก TOTP
+                              คัดลอก SecretEnc
                             </Button>
-                            <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600 select-none">
-                              เหลือ {totpRemaining}s
-                            </span>
-                            <Button
-                              size="xs"
-                              className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
-                              onClick={async () => {
-                                try {
-                                  if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
-                                  const res = await axios.post('/api/totp/generate', { secret: u.gaSecretEnc })
-                                  if (!res.data?.success) throw new Error(res.data?.error || 'สร้าง TOTP ไม่สำเร็จ')
-                                  await navigator.clipboard.writeText(res.data.code)
-                                  toast.success('คัดลอก TOTP (ลาว) แล้ว')
-                                } catch (e: any) {
-                                  toast.error(e?.message || 'สร้าง TOTP (ลาว) ไม่สำเร็จ')
-                                }
-                              }}
-                            >
-                              คัดลอก TOTP (ลาว)
-                            </Button>
-                            <Button
-                              size="xs"
-                              className="!bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-3 disabled:opacity-60"
-                              onClick={() => startEdit(idx)}
-                            >
-                              แก้ไข
-                            </Button>
-                            <Button
-                              size="xs"
-                              disabled={deleteMutation.isPending}
-                              className="!bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-3 disabled:opacity-60"
-                              onClick={() => startDelete(idx)}
-                            >
-                              {deleteMutation.isPending ? (
-                                <span className="inline-flex gap-1 items-center">
-                                  <ReactIconComponent icon="FaSpinner" setClass="h-3.5 w-3.5 animate-spin" />
-                                  ลบ
-                                </span>
-                              ) : 'ลบ'}
-                            </Button>
-                            {['senior'].includes(u.position) && (
-                              <PartnerModalFuctionSetting data={u} />
-                            )}
-                            {['agent', 'master'].includes(u.position) && (
-                              <PartnerModalReset data={u} />
-                            )}
-                          </div>
-                        </td>
-                      </tr>
+                          ) : '-'}
+                        </div>
+                      </td>
+                      <td className="px-3 py-2 flex flex-col md:table-cell gap-2">
+                        <span className="font-semibold text-gray-500 md:hidden mb-1">การจัดการ</span>
+                        <div className="flex flex-wrap gap-2 items-center">
+                          <Button
+                            size="xs"
+                            className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
+                            onClick={async () => {
+                              try {
+                                if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
+                                const res = await axios.post('/api/totp/generate', { secret: u.gaSecretEnc })
+                                if (!res.data?.success) throw new Error(res.data?.error || 'สร้าง TOTP ไม่สำเร็จ')
+                                await navigator.clipboard.writeText(res.data.code)
+                                toast.success('คัดลอก TOTP แล้ว')
+                              } catch (e: any) {
+                                toast.error(e?.message || 'สร้าง TOTP ไม่สำเร็จ')
+                              }
+                            }}
+                          >
+                            คัดลอก TOTP
+                          </Button>
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600 select-none">
+                            เหลือ {totpRemaining}s
+                          </span>
+                          <Button
+                            size="xs"
+                            className="!bg-white !text-gray-700 !border !border-gray-300 hover:!bg-gray-100 rounded-full px-3"
+                            onClick={async () => {
+                              try {
+                                if (!u.gaSecretEnc) throw new Error('ไม่พบรหัสลับ 2FA')
+                                const res = await axios.post('/api/totp/generate', { secret: u.gaSecretEnc })
+                                if (!res.data?.success) throw new Error(res.data?.error || 'สร้าง TOTP ไม่สำเร็จ')
+                                await navigator.clipboard.writeText(res.data.code)
+                                toast.success('คัดลอก TOTP (ลาว) แล้ว')
+                              } catch (e: any) {
+                                toast.error(e?.message || 'สร้าง TOTP (ลาว) ไม่สำเร็จ')
+                              }
+                            }}
+                          >
+                            คัดลอก TOTP (ลาว)
+                          </Button>
+                          <Button
+                            size="xs"
+                            className="!bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-3 disabled:opacity-60"
+                            onClick={() => startEdit(idx)}
+                          >
+                            แก้ไข
+                          </Button>
+                          <Button
+                            size="xs"
+                            disabled={deleteMutation.isPending}
+                            className="!bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-3 disabled:opacity-60"
+                            onClick={() => startDelete(idx)}
+                          >
+                            {deleteMutation.isPending ? (
+                              <span className="inline-flex gap-1 items-center">
+                                <ReactIconComponent icon="FaSpinner" setClass="h-3.5 w-3.5 animate-spin" />
+                                ลบ
+                              </span>
+                            ) : 'ลบ'}
+                          </Button>
+                          {['senior'].includes(u.position) && (
+                            <PartnerModalFuctionSetting data={u} />
+                          )}
+                          {['agent', 'master'].includes(u.position) && (
+                            <PartnerModalReset data={u} />
+                          )}
+                        </div>
+                      </td>
+                    </tr>
 
-                      {/* แถวที่ 2: ปุ่มฟังก์ชันอันตราย/เครดิต (Blue Box) */}
-                      <tr className={`block md:table-row border-b border-gray-100 md:border-none py-1 md:py-0 ${hs.support?.canCreate || hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? '' : 'hidden'}`}>
-                        <td colSpan={8} className="px-3 py-1.5 block md:table-cell">
-                          <div className="flex flex-wrap gap-2 bg-blue-500/10 p-1.5 border border-blue-500/20 rounded-md items-center">
-                            <span className="font-semibold text-blue-800 text-xs md:hidden mr-1">ฟังก์ชันเพิ่มเติม (Blue):</span>
-                            <CommandWorkModalCredit data={u} />
-                            {u.position === 'agent' && (
-                              <>
-                                <CommandWorkModalLockUnLockC data={u} />
-                                <ModalAdJustBet agUser={{ ...u, userLogin: u.userLogin ?? '' }} mode="create" />
-                              </>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
+                    {/* แถวที่ 2: ปุ่มฟังก์ชันอันตราย/เครดิต (Blue Box) */}
+                    <tr className={`block md:table-row border-b border-gray-100 md:border-none py-1 md:py-0 ${hs.support?.canCreate || hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? '' : 'hidden'}`}>
+                      <td colSpan={8} className="px-3 py-1.5 block md:table-cell">
+                        <div className="flex flex-wrap gap-2 bg-blue-500/10 p-1.5 border border-blue-500/20 rounded-md items-center">
+                          <span className="font-semibold text-blue-800 text-xs md:hidden mr-1">ฟังก์ชันเพิ่มเติม (Blue):</span>
+                          <CommandWorkModalCredit data={u} />
+                          {u.position === 'agent' && (
+                            <>
+                              <CommandWorkModalLockUnLockC data={u} />
+                              <ModalAdJustBet agUser={{ ...u, userLogin: u.userLogin ?? '' }} mode="create" />
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
 
-                      {/* แถวที่ 3: ปุ่มรีเซ็ต/จัดการบทบาท (Red Box) */}
-                      <tr className={`block md:table-row border-b border-gray-200 md:border-none pb-3 md:pb-0 ${hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? '' : 'hidden'}`}>
-                        <td colSpan={8} className="px-3 py-1.5 block md:table-cell">
-                          <div className="flex flex-wrap gap-2 bg-red-500/10 p-1.5 border border-red-500/20 rounded-md items-center">
-                            <span className="font-semibold text-red-800 text-xs md:hidden mr-1">ฟังก์ชันเพิ่มเติม (Red):</span>
-                            <ModalReset data={u} />
-                            <ModalResetPartner data={u} onSuccess={() => console.log('Success!')} />
-                            {u.position === 'master' && (
-                              <ModalCreateAgent data={u} onSuccess={() => console.log('Success!')} />
-                            )}
-                            {u.position === 'senior' && (
-                              <ModalCreateMaster data={u} onSuccess={() => console.log('Success!')} />
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    </Fragment>
-                  ))}
+                    {/* แถวที่ 3: ปุ่มรีเซ็ต/จัดการบทบาท (Red Box) */}
+                    <tr className={`block md:table-row border-b border-gray-200 md:border-none pb-3 md:pb-0 ${hs.head?.userCanAdvance || (user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department") ? '' : 'hidden'}`}>
+                      <td colSpan={8} className="px-3 py-1.5 block md:table-cell">
+                        <div className="flex flex-wrap gap-2 bg-red-500/10 p-1.5 border border-red-500/20 rounded-md items-center">
+                          <span className="font-semibold text-red-800 text-xs md:hidden mr-1">ฟังก์ชันเพิ่มเติม (Red):</span>
+                          <ModalReset data={u} />
+                          <ModalResetPartner data={u} onSuccess={() => console.log('Success!')} />
+                          {u.position === 'master' && (
+                            <ModalCreateAgent data={u} onSuccess={() => console.log('Success!')} />
+                          )}
+                          {u.position === 'senior' && (
+                            <ModalCreateMaster data={u} onSuccess={() => console.log('Success!')} />
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                ))}
 
-                  {list.length === 0 && (
+                {list.length === 0 && (
+                  <tbody className="block md:table-row-group">
                     <tr className="block md:table-row">
                       <td className="px-3 py-6 text-center text-gray-500 block md:table-cell" colSpan={8}>
                         ไม่พบข้อมูล
                       </td>
                     </tr>
-                  )}
-                </tbody>
+                  </tbody>
+                )}
               </table>
             </div>
             <div className="my-2 sm:mt-3">
