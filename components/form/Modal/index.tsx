@@ -195,7 +195,21 @@ export const Modal = ({
       {/* Panel */}
       <div
         ref={panelRef}
-        className={`relative z-[1001] w-full ${sizeClass} mx-4 rounded-2xl bg-white/95 backdrop-blur ring-1 ring-gray-200 shadow-2xl outline-none focus:outline-none transform ${open && !animatingOut ? 'animate-modal-in' : 'animate-modal-out'}`}
+        className={`
+    relative z-[1001]
+    w-full ${sizeClass}
+    mx-4
+    rounded-2xl
+    bg-white/95
+    backdrop-blur
+    ring-1 ring-gray-200
+    shadow-2xl
+    outline-none focus:outline-none
+    transform
+    max-h-[98vh] sm:max-h-none
+    overflow-x-auto overflow-y-auto
+    ${open && !animatingOut ? 'animate-modal-in' : 'animate-modal-out'}
+  `}
         tabIndex={-1}
         onMouseDown={(e) => {
           // ป้องกันการลากแล้วปล่อยเมาส์ไปโดน overlay ทำให้ปิด

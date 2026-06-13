@@ -14,6 +14,8 @@ import { Params } from '@/data/interfaceDefault'
 import PartnerModalReset from '@/container/partner/ModalReset'
 import { AgUserAccountDB } from '@prisma/client'
 import { useHeadSupport } from '@/hooks/useHeadSupport'
+import WebBaseModalView from '@/container/web-ag/ModalView'
+import { ExtendedWebBaseDB } from '@/data/interface'
 
 type AgUserAccountFormData = {
   username: string
@@ -501,7 +503,98 @@ export default function AgUserAccountPage() {
           </ModalFooter>
         </Modal>
       )}
+      {/* Floating Password Viewer Button (Bottom Right) */}
+      <FloatingWebBaseViewer />
     </TheLayout>
+  )
+}
+
+function FloatingWebBaseViewer() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const { data: webBasesData } = useQuery<{ success: boolean; data: ExtendedWebBaseDB[] }>({
+    queryKey: qk.webBase.list('', '', 1, 100),
+    queryFn: async () => {
+      const res = await axios.get('/api/web-base')
+      return res.data
+    },
+    staleTime: 60 * 1000,
+  })
+
+  const webBases = webBasesData?.data || []
+
+  const filteredWebBases = useMemo(() => {
+    if (!searchQuery) return webBases
+    return webBases.filter(wb =>
+      wb.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  }, [webBases, searchQuery])
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+      {isOpen && (
+        <div className="mb-3 w-80 bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200 shadow-2xl overflow-hidden transition-all duration-300">
+          {/* Header */}
+          <div className="px-4 py-3 bg-gradient-to-r from-[#A78BFA] to-[#34D399] text-white flex justify-between items-center">
+            <span className="font-semibold text-sm flex items-center gap-1.5">
+              <ReactIconComponent icon="FaKey" setClass="h-4 w-4" />
+              ดูรหัส Web Base
+            </span>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="text-white hover:text-gray-200 focus:outline-none"
+            >
+              <ReactIconComponent icon="FaTimes" setClass="h-4 w-4" />
+            </button>
+          </div>
+          {/* Search Input */}
+          <div className="p-3 border-b border-gray-100 bg-gray-50/50">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="ค้นหา Web Base..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-[#A78BFA] focus:border-transparent"
+              />
+              <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-gray-400">
+                <ReactIconComponent icon="FaSearch" setClass="h-3 w-3" />
+              </div>
+            </div>
+          </div>
+          {/* List of Web Bases */}
+          <div className="max-h-60 overflow-y-auto divide-y divide-gray-100">
+            {filteredWebBases.length === 0 ? (
+              <div className="px-4 py-6 text-center text-xs text-gray-400">
+                ไม่พบข้อมูล Web Base
+              </div>
+            ) : (
+              filteredWebBases.map((wb) => (
+                <div key={wb.id} className="px-4 py-2.5 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                  <span className="text-xs font-semibold text-gray-700 truncate max-w-[12rem]">
+                    {wb.name}
+                  </span>
+                  <WebBaseModalView data={wb} />
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+      {/* Floating Action Button (FAB) */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-[#A78BFA] to-[#34D399] text-white rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none border border-white/20"
+        title="ดูรหัส Web Base"
+      >
+        {isOpen ? (
+          <ReactIconComponent icon="FaTimes" setClass="h-6 w-6" />
+        ) : (
+          <ReactIconComponent icon="FaKey" setClass="h-6 w-6 animate-pulse" />
+        )}
+      </button>
+    </div>
   )
 }
 
