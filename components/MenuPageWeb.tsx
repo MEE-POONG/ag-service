@@ -153,13 +153,10 @@ export default function MenuPageWebDB({ dataList, collapsed, }: EnhancedMenuProp
     useEffect(() => {
         if (!hierarchicalMenus) return;
 
-        // เปิด group ที่มีลูก active
-        const autoOpen = hierarchicalMenus
-            .filter((item) => isParentActive(item))
-            .map((item) => item.name);
-
-        setOpenGroups(autoOpen);
-    }, [hierarchicalMenus, isParentActive]);
+        // เปิดทุก group ให้เห็นเมนูทั้งหมด
+        const allGroupNames = hierarchicalMenus.map((item) => item.name);
+        setOpenGroups(allGroupNames);
+    }, [hierarchicalMenus]);
 
     const toggleGroup = (itemTitle: string) => {
         setOpenGroups(prev =>

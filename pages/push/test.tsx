@@ -114,7 +114,7 @@ export default function PushNotificationTestPage() {
             ))}
           </div>
           <div className="flex gap-3 flex-wrap">
-            <Button type="button" variant="outline" onClick={handleRequestPermission} disabled={!isSupported || isPending}>
+            <Button type="button" variant="secondary" onClick={handleRequestPermission} disabled={!isSupported || isPending}>
               ขอสิทธิ์แจ้งเตือน
             </Button>
             <Button type="button" onClick={handleSubscribe} disabled={!isSupported || isPending || isSubscribed}>

@@ -319,13 +319,10 @@ export function useMenuWeb(): UseMenuReturn {
 
       const permMap = makePermissionMap(currentUser);
 
-      // สำหรับเรนเดอร์เมนู (เหมือนเดิม)
-      const { filtered } = filterMenusByPermissions(rawMenu, permMap);
-
-      // สำหรับการบล็อกเส้นทาง (ใหม่)
+      // สำหรับการบล็อกเส้นทาง
       rulesRef.current = buildAccessRules(rawMenu, permMap);
 
-      return filtered;
+      return rawMenu;
     },
     staleTime: 5 * 60 * 1000,
     retry: 1,
@@ -361,11 +358,10 @@ export function useMenuWeb(): UseMenuReturn {
       }
 
       const permMap = makePermissionMap(currentUser);
-      const { filtered } = filterMenusByPermissions(rawMenu, permMap);
 
       // rebuild rules
       rulesRef.current = buildAccessRules(rawMenu, permMap);
-      return filtered;
+      return rawMenu;
     },
     onSuccess: (filtered) => {
       queryClient.setQueryData(qk.menus.all, filtered);
