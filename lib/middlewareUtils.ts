@@ -30,7 +30,11 @@ export function shouldSkipAuth(pathname: string): boolean {
     pathname === '/auth/login' ||
     pathname.startsWith('/uploads') ||
     pathname.startsWith('/public') ||
-    pathname === '/favicon.ico'
+    pathname === '/favicon.ico' ||
+    pathname === '/manifest.json' ||
+    pathname === '/sw.js' ||
+    pathname.startsWith('/icon-') ||
+    pathname.startsWith('/chat-widget')
   )
 }
 

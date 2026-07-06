@@ -34,9 +34,13 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - manifest.json (PWA manifest file)
+     * - sw.js (service worker)
+     * - chat-widget (chat widget resources)
+     * - icon- (PWA icons)
      * - uploads (uploaded files)
      * - public (public files)
      */
-    '/((?!api/auth/(?:login|logout|me)|auth/login|_next/static|_next/image|favicon.ico|uploads|public).*)',
+    '/((?!api/auth/(?:login|logout|me)|auth/login|_next/static|_next/image|favicon.ico|manifest\\.json|sw\\.js|chat-widget|icon-|uploads|public).*)',
   ],
 }
