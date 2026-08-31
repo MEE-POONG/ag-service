@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getTokenFromRequest, shouldSkipAuth } from '@/lib/middlewareUtils'
+import { isAuthBypassEnabled } from '@/lib/authBypass'
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  if (isAuthBypassEnabled()) {
+    const response = NextResponse.next()
+    response.headers.set('X-Auth-Bypass', 'enabled')
+    return response
+  }
 
   // Skip middleware for static files, API routes that don't need auth, and login page
   if (shouldSkipAuth(pathname)) {

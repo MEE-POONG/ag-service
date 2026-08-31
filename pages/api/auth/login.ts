@@ -3,11 +3,20 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { authenticateAdmin, buildJwtPayload, generateToken, sanitizeAdminForClient } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { setAuthCookie } from '@/lib/cookieUtils'
+import { getAuthBypassUser, isAuthBypassEnabled } from '@/lib/authBypass'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
     return res.status(405).json({ error: 'Method not allowed' })
+  }
+
+  if (isAuthBypassEnabled()) {
+    res.setHeader('X-Auth-Bypass', 'enabled')
+    return res.status(200).json({
+      message: 'ข้ามการเข้าสู่ระบบชั่วคราว',
+      user: getAuthBypassUser(),
+    })
   }
 
   try {

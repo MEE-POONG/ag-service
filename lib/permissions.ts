@@ -2,6 +2,7 @@ import { NextApiRequest } from 'next'
 import { verifyToken } from './auth'
 import { prisma } from './prisma'
 import { getAuthToken } from './cookieUtils'
+import { getAuthBypassUser, isAuthBypassEnabled } from './authBypass'
 
 export interface PermissionContext {
   canAdvance: boolean
@@ -15,6 +16,19 @@ export async function checkUserPermissions(
   req: NextApiRequest, 
   menuPageName: string
 ): Promise<{ user: any; permissions: PermissionContext } | null> {
+  if (isAuthBypassEnabled()) {
+    return {
+      user: getAuthBypassUser(),
+      permissions: {
+        canAdvance: true,
+        canViews: true,
+        canCreate: true,
+        canUpdate: true,
+        canDelete: true,
+      },
+    }
+  }
+
   // Get token from cookie using cookie utility or Authorization header
   let token = getAuthToken(req)
   
@@ -55,6 +69,10 @@ export async function checkUserPermissions(
 
 // Get admin data with full permissions from cookie
 export async function getAdminFromCookie(req: NextApiRequest): Promise<any | null> {
+  if (isAuthBypassEnabled()) {
+    return getAuthBypassUser()
+  }
+
   const token = getAuthToken(req)
   if (!token) {
     return null

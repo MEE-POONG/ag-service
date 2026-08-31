@@ -24,8 +24,17 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { verifyToken, sanitizeAdminForClient } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { getAuthToken } from '@/lib/cookieUtils'
+import { getAuthBypassUser, isAuthBypassEnabled } from '@/lib/authBypass'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (isAuthBypassEnabled()) {
+    res.setHeader('X-Auth-Bypass', 'enabled')
+    return res.status(200).json({
+      user: getAuthBypassUser(),
+      menuWeb: [],
+    })
+  }
+
   // 🍪 ขั้นตอนที่ 1: ดึง Authentication Token จาก Cookie
   const token = getAuthToken(req) // ใช้ helper function จาก cookieUtils.ts
   if (!token) {
