@@ -9,7 +9,7 @@ const ADMINS_TO_SEED = [
     username: 'superadmin',
     password: 'Admin@5678',
     name: 'Administrator 01',
-    email: 'humansaees0@gmail.com',
+    email: 'ufa66.oa14@gmail.com',
     tel: '0800000002',
     isActive: true,
     position: {

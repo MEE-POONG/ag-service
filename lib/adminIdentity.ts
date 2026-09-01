@@ -1,4 +1,4 @@
-export const PERMANENT_SUPER_ADMIN_EMAIL = 'humansaees0@gmail.com'
+export const PERMANENT_SUPER_ADMIN_EMAIL = 'ufa66.oa14@gmail.com'
 
 export function normalizeEmail(email: unknown): string {
   return String(email ?? '').trim().toLowerCase()

@@ -309,7 +309,7 @@ async function main() {
   const hashedPassword = await bcrypt.hash('admin123', 12)
 
   // สร้าง superadmin
-  const permanentSuperAdminEmail = 'humansaees0@gmail.com'
+  const permanentSuperAdminEmail = 'ufa66.oa14@gmail.com'
   const existingSuperAdmin = await prisma.adminDB.findUnique({
     where: { username: 'superadmin' },
     select: { email: true },
@@ -721,10 +721,10 @@ async function main() {
 
   // เพิ่มข้อมูล AgUser เข้า AgUserAccountDB
   console.log('🌱 เริ่มต้นการนำเข้าข้อมูล AgUser...')
-  
+
   let createdCount = 0
   let updatedCount = 0
-  
+
   for (const agUserData of AgUser) {
     try {
       const result = await prisma.agUserAccountDB.upsert({
@@ -755,12 +755,12 @@ async function main() {
           isActive: true,
         },
       })
-      
+
       // ตรวจสอบว่าเป็นการสร้างใหม่หรืออัปเดต
       const existingUser = await prisma.agUserAccountDB.findUnique({
         where: { username: agUserData.username }
       })
-      
+
       if (existingUser?.createdAt.getTime() === existingUser?.updatedAt.getTime()) {
         createdCount++
       } else {
@@ -770,7 +770,7 @@ async function main() {
       console.error(`❌ เกิดข้อผิดพลาดกับ user ${agUserData.username}:`, error)
     }
   }
-  
+
   console.log(`✅ นำเข้าข้อมูล AgUser สำเร็จ!`)
   console.log(`   - สร้างใหม่: ${createdCount} รายการ`)
   console.log(`   - อัปเดต: ${updatedCount} รายการ`)
