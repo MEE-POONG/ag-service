@@ -174,7 +174,7 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-3 text-center flex justify-between">
               <Button
                 type="submit"
                 className="w-full !bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-4 py-2 disabled:opacity-60"

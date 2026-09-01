@@ -301,6 +301,8 @@ model AgUserAccountDB {
   partnerLogin    String?
   CustomerAgentDB CustomerAgentDB[]
   PartnerDB       PartnerDB[]
+
+  @@map("AgUserDB")
 }
 
 model CustomerAgentDB {

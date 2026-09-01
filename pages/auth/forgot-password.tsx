@@ -70,10 +70,11 @@ export default function ForgotPasswordPage() {
               {message ? <p className="text-green-700">{message}</p> : null}
               {error ? <p className="text-red-700">{error}</p> : null}
             </div>
-
-            <Button type="submit" className="w-full rounded-full !bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6]" disabled={submitting}>
-              {submitting ? 'กำลังส่ง...' : 'ส่งรหัส OTP'}
-            </Button>
+            <div className="mt-6 text-center">
+              <Button type="submit" className="w-full rounded-full !bg-[#A78BFA] px-4 !text-white hover:!bg-[#8B5CF6]" disabled={submitting}>
+                {submitting ? 'กำลังส่ง...' : 'ส่งรหัส OTP'}
+              </Button>
+            </div>
           </form>
 
           <div className="mt-6 text-center">
