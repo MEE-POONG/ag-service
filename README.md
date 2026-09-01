@@ -228,12 +228,14 @@ docker build -t ag-db-portal:latest .
 # Run with production environment
 docker run -d \
   --name ag-db-portal \
-  -p 3000:3000 \
+  -p 10001:3000 \
   -e DATABASE_URL="your-mongodb-url" \
   -e NEXTAUTH_SECRET="your-secret" \
   -e JWT_SECRET="your-jwt-secret" \
   ag-db-portal:latest
 ```
+
+Production เปิดใช้งานผ่าน host port `10001` ส่วนแอปภายใน container ยังคงฟังที่ port `3000`
 
 ### Docker Compose Production
 ```bash
@@ -294,4 +296,4 @@ npm run db:generate
 
 ## License
 
-MIT License 
+MIT License
