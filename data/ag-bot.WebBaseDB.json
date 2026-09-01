@@ -1,0 +1,66 @@
+[{
+  "_id": {
+    "$oid": "6860536a3402161740bb4a99"
+  },
+  "name": "psd99",
+  "passS": "superadmin654",
+  "passM": "manager654",
+  "passA": "admin654",
+  "otpS": "123456+",
+  "otpM": "123456+",
+  "otpA": "123456+",
+  "isActive": true,
+  "createdAt": {
+    "$date": "2025-06-28T20:41:14.275Z"
+  },
+  "createdBy": "system",
+  "updatedAt": {
+    "$date": "2025-07-08T19:08:29.633Z"
+  },
+  "updatedBy": "system",
+  "isDeleted": false
+},
+{
+  "_id": {
+    "$oid": "68c3c5b693c4322097a6c25c"
+  },
+  "createdAt": {
+    "$date": "2025-09-12T07:03:18.379Z"
+  },
+  "createdBy": "",
+  "isActive": true,
+  "isDeleted": false,
+  "name": "ufa66",
+  "otpA": "221308",
+  "otpM": "591501",
+  "otpS": "419554",
+  "passA": "Di991166+m11++",
+  "passM": "SixSix@2568+-",
+  "passS": "Est@15460607",
+  "updatedAt": {
+    "$date": "2025-09-12T07:03:18.379Z"
+  },
+  "updatedBy": ""
+},
+{
+  "_id": {
+    "$oid": "6a3f9bc3f13d8b18ea6d8bc2"
+  },
+  "createdAt": {
+    "$date": "2026-06-27T09:45:39.611Z"
+  },
+  "createdBy": "system",
+  "isActive": true,
+  "isDeleted": false,
+  "name": "AG Main Database",
+  "otpA": "123456",
+  "otpM": "123456",
+  "otpS": "123456",
+  "passA": "admin123",
+  "passM": "manager123",
+  "passS": "superadmin123",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:39.611Z"
+  },
+  "updatedBy": "system"
+}]

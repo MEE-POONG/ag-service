@@ -1,0 +1,22 @@
+[{
+  "_id": {
+    "$oid": "69e8824d39789378e3ea2b57"
+  },
+  "name": "UFA-66",
+  "passS": "Est@15460607",
+  "passM": "SixSix@2568+-",
+  "passA": "Di991166+m11++",
+  "otpS": "419554",
+  "otpM": "591501",
+  "otpA": "221308",
+  "isActive": true,
+  "createdAt": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "createdBy": null,
+  "updatedAt": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "updatedBy": null,
+  "deleteBy": null
+}]

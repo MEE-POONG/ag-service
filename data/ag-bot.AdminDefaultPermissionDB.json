@@ -1,0 +1,200 @@
+[{
+  "_id": {
+    "$oid": "6a3f9bc2f13d8b18ea6d8bba"
+  },
+  "adminPositionId": {
+    "$oid": "6a291a4ede0c593db01d9275"
+  },
+  "menuWebId": {
+    "$oid": "6a3f9bc1f13d8b18ea6d8bb6"
+  },
+  "canAdvance": true,
+  "canViews": true,
+  "canCreate": true,
+  "canUpdate": true,
+  "canDelete": true,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2026-06-27T09:45:38.348Z"
+  },
+  "createdBy": "system",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:38.348Z"
+  },
+  "updatedBy": "system"
+},
+{
+  "_id": {
+    "$oid": "6a3f9bc2f13d8b18ea6d8bbb"
+  },
+  "adminPositionId": {
+    "$oid": "6a291a4ede0c593db01d9275"
+  },
+  "menuWebId": {
+    "$oid": "6a3f9bc1f13d8b18ea6d8bb7"
+  },
+  "canAdvance": true,
+  "canViews": true,
+  "canCreate": true,
+  "canUpdate": true,
+  "canDelete": true,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2026-06-27T09:45:38.535Z"
+  },
+  "createdBy": "system",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:38.535Z"
+  },
+  "updatedBy": "system"
+},
+{
+  "_id": {
+    "$oid": "6a3f9bc2f13d8b18ea6d8bbc"
+  },
+  "adminPositionId": {
+    "$oid": "6a291a4ede0c593db01d9275"
+  },
+  "menuWebId": {
+    "$oid": "6a3f9bc2f13d8b18ea6d8bb8"
+  },
+  "canAdvance": true,
+  "canViews": true,
+  "canCreate": true,
+  "canUpdate": true,
+  "canDelete": true,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2026-06-27T09:45:38.697Z"
+  },
+  "createdBy": "system",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:38.697Z"
+  },
+  "updatedBy": "system"
+},
+{
+  "_id": {
+    "$oid": "6a3f9bc2f13d8b18ea6d8bbd"
+  },
+  "adminPositionId": {
+    "$oid": "6a291a4ede0c593db01d9275"
+  },
+  "menuWebId": {
+    "$oid": "6a3f9bc2f13d8b18ea6d8bb9"
+  },
+  "canAdvance": true,
+  "canViews": true,
+  "canCreate": true,
+  "canUpdate": true,
+  "canDelete": true,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2026-06-27T09:45:38.848Z"
+  },
+  "createdBy": "system",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:38.848Z"
+  },
+  "updatedBy": "system"
+},
+{
+  "_id": {
+    "$oid": "6a3f9bc3f13d8b18ea6d8bbe"
+  },
+  "adminPositionId": {
+    "$oid": "6a2b16cddb44a48d8c9ec3cb"
+  },
+  "menuWebId": {
+    "$oid": "6a3f9bc1f13d8b18ea6d8bb6"
+  },
+  "canAdvance": true,
+  "canViews": true,
+  "canCreate": false,
+  "canUpdate": false,
+  "canDelete": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2026-06-27T09:45:38.996Z"
+  },
+  "createdBy": "system",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:38.996Z"
+  },
+  "updatedBy": "system"
+},
+{
+  "_id": {
+    "$oid": "6a3f9bc3f13d8b18ea6d8bbf"
+  },
+  "adminPositionId": {
+    "$oid": "6a2b16cddb44a48d8c9ec3cb"
+  },
+  "menuWebId": {
+    "$oid": "6a3f9bc1f13d8b18ea6d8bb7"
+  },
+  "canAdvance": true,
+  "canViews": true,
+  "canCreate": true,
+  "canUpdate": true,
+  "canDelete": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2026-06-27T09:45:39.146Z"
+  },
+  "createdBy": "system",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:39.146Z"
+  },
+  "updatedBy": "system"
+},
+{
+  "_id": {
+    "$oid": "6a3f9bc3f13d8b18ea6d8bc0"
+  },
+  "adminPositionId": {
+    "$oid": "6a2b16cddb44a48d8c9ec3cb"
+  },
+  "menuWebId": {
+    "$oid": "6a3f9bc2f13d8b18ea6d8bb8"
+  },
+  "canAdvance": false,
+  "canViews": true,
+  "canCreate": false,
+  "canUpdate": false,
+  "canDelete": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2026-06-27T09:45:39.299Z"
+  },
+  "createdBy": "system",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:39.299Z"
+  },
+  "updatedBy": "system"
+},
+{
+  "_id": {
+    "$oid": "6a3f9bc3f13d8b18ea6d8bc1"
+  },
+  "adminPositionId": {
+    "$oid": "6a2b16cddb44a48d8c9ec3cb"
+  },
+  "menuWebId": {
+    "$oid": "6a3f9bc2f13d8b18ea6d8bb9"
+  },
+  "canAdvance": false,
+  "canViews": true,
+  "canCreate": false,
+  "canUpdate": false,
+  "canDelete": false,
+  "isDeleted": false,
+  "createdAt": {
+    "$date": "2026-06-27T09:45:39.462Z"
+  },
+  "createdBy": "system",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:39.462Z"
+  },
+  "updatedBy": "system"
+}]

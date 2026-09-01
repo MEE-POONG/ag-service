@@ -1,0 +1,34 @@
+[{
+  "_id": {
+    "$oid": "6a291a40bea899bd54a522e5"
+  },
+  "createdAt": {
+    "$date": "2026-06-10T08:03:12.145Z"
+  },
+  "createdBy": "system",
+  "description": "แผนกเทคโนโลยีสารสนเทศ",
+  "isActive": true,
+  "isDeleted": false,
+  "name": "IT Department",
+  "updatedAt": {
+    "$date": "2026-06-11T20:55:10.755Z"
+  },
+  "updatedBy": "system"
+},
+{
+  "_id": {
+    "$oid": "6a3f9ba8eb9cd9902f787c9f"
+  },
+  "createdAt": {
+    "$date": "2026-06-27T09:45:12.622Z"
+  },
+  "createdBy": "system",
+  "description": "แผนกทรัพยากรบุคคล",
+  "isActive": true,
+  "isDeleted": false,
+  "name": "HR Department",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:12.622Z"
+  },
+  "updatedBy": "system"
+}]

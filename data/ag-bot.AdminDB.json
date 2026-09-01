@@ -1,0 +1,72 @@
+[{
+  "_id": {
+    "$oid": "6a3f9bc4f13d8b18ea6d8bc3"
+  },
+  "adminPositionId": {
+    "$oid": "6a291a4ede0c593db01d9275"
+  },
+  "webBaseId": {
+    "$oid": "6a3f9bc3f13d8b18ea6d8bc2"
+  },
+  "createdAt": {
+    "$date": "2026-06-27T09:45:40.248Z"
+  },
+  "createdBy": "system",
+  "email": "superadmin@ag-db.com",
+  "isActive": true,
+  "name": "Super Administrator",
+  "password": "$2a$12$KetP6tKyRhNHM.9phB8A9OE0td9u7LCR.H1lWxVVsbVsdAvQNbd/u",
+  "tel": "0812345678",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:40.248Z"
+  },
+  "updatedBy": "system",
+  "username": "superadmin"
+},
+{
+  "_id": {
+    "$oid": "6a3f9bc4f13d8b18ea6d8bc4"
+  },
+  "adminPositionId": {
+    "$oid": "6a2b16cddb44a48d8c9ec3cb"
+  },
+  "webBaseId": {
+    "$oid": "6a3f9bc3f13d8b18ea6d8bc2"
+  },
+  "createdAt": {
+    "$date": "2026-06-27T09:45:40.441Z"
+  },
+  "createdBy": "system",
+  "email": "admin@ag-db.com",
+  "isActive": true,
+  "name": "Administrator",
+  "password": "$2a$12$zkza827Ywep/H7OMxkh6c.T5t3mjuRHcfshqGI8V2kufp1pG0JYVy",
+  "tel": "0812345679",
+  "updatedAt": {
+    "$date": "2026-06-28T04:59:29.703Z"
+  },
+  "updatedBy": "system",
+  "username": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3f9d9ef7ed5e3e13a0ebf2"
+  },
+  "adminPositionId": {
+    "$oid": "6a291a4ede0c593db01d9275"
+  },
+  "createdAt": {
+    "$date": "2026-06-27T09:53:34.115Z"
+  },
+  "createdBy": "superadmin",
+  "email": "ufa66.oa14@gmail.com",
+  "isActive": true,
+  "name": "Est Ace",
+  "password": "$2a$12$w0FRN5WySMOgHFdtLplTP.7WvSOGpSEuWmZpdkV17ZZj.z.090LxK",
+  "tel": "0644482650",
+  "updatedAt": {
+    "$date": "2026-06-27T09:55:04.171Z"
+  },
+  "updatedBy": "system",
+  "username": "devilzeros"
+}]

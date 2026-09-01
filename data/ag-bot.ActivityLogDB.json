@@ -1,0 +1,237 @@
+[{
+  "_id": {
+    "$oid": "6a291ab9e8b7d323c1d21ef5"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-10T08:05:13.486Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "6a291a4ede0c593db01d9276",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a2b21202ff41b4c046ee9a3"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-11T20:57:04.159Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "6a2b1febb45815d7b4f40b06",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a2b243e2ff41b4c046ee9a4"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-11T21:10:22.245Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.26200; th-TH) PowerShell/7.5.5",
+  "userId": "6a2b1febb45815d7b4f40b06",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a2b24632ff41b4c046ee9a5"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-11T21:10:59.061Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.26200; th-TH) PowerShell/7.5.5",
+  "userId": "6a2b1febb45815d7b4f40b06",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a2b2cd92ff41b4c046ee9a6"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-11T21:47:05.699Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.26200; th-TH) PowerShell/7.5.5",
+  "userId": "6a2b1febb45815d7b4f40b06",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a2b9402fa82844bf8070e4b"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-12T05:07:14.982Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "6a2b1febb45815d7b4f40b06",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a2b9408fa82844bf8070e4c"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-12T05:07:20.590Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "6a2b1febb45815d7b4f40b06",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a2bcb80fa82844bf8070e4e"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-12T09:04:00.963Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.26200; th-TH) PowerShell/7.5.5",
+  "userId": "6a2b1febb45815d7b4f40b06",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a2bcba1fa82844bf8070e4f"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-12T09:04:33.247Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.26200; th-TH) PowerShell/7.5.5",
+  "userId": "6a2b1febb45815d7b4f40b06",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a2bcca2fa82844bf8070e52"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-12T09:08:50.748Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "6a2bcbc1fa82844bf8070e50",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3f9cd7f7ed5e3e13a0ebf0"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-27T09:50:15.766Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "6a3f9bc4f13d8b18ea6d8bc3",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3f9df8f7ed5e3e13a0ebf4"
+  },
+  "action": "reset_password",
+  "createdAt": {
+    "$date": "2026-06-27T09:55:04.372Z"
+  },
+  "newData": "{\"action\":\"password_reset\",\"timestamp\":\"2026-06-27T09:55:04.372Z\",\"resetBy\":\"system\"}",
+  "recordId": "6a3f9d9ef7ed5e3e13a0ebf2",
+  "tableName": "AdminDB",
+  "userId": "6a3f9d9ef7ed5e3e13a0ebf2",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3f9dfbf7ed5e3e13a0ebf5"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-27T09:55:07.944Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "6a3f9d9ef7ed5e3e13a0ebf2",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3fa9c1f7ed5e3e13a0ebfa"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-27T10:45:21.793Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "6a3f9d9ef7ed5e3e13a0ebf2",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3faa31f7ed5e3e13a0ebfb"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-27T10:47:13.499Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "6a3f9d9ef7ed5e3e13a0ebf2",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a40a9ee73f6f475e81487f9"
+  },
+  "action": "reset_password",
+  "createdAt": {
+    "$date": "2026-06-28T04:58:22.857Z"
+  },
+  "newData": "{\"action\":\"password_reset\",\"timestamp\":\"2026-06-28T04:58:22.857Z\",\"resetBy\":\"system\"}",
+  "recordId": "6a3f9bc4f13d8b18ea6d8bc4",
+  "tableName": "AdminDB",
+  "userId": "6a3f9bc4f13d8b18ea6d8bc4",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a40aa3173f6f475e81487fa"
+  },
+  "action": "reset_password",
+  "createdAt": {
+    "$date": "2026-06-28T04:59:29.897Z"
+  },
+  "newData": "{\"action\":\"password_reset\",\"timestamp\":\"2026-06-28T04:59:29.897Z\",\"resetBy\":\"system\"}",
+  "recordId": "6a3f9bc4f13d8b18ea6d8bc4",
+  "tableName": "AdminDB",
+  "userId": "6a3f9bc4f13d8b18ea6d8bc4",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a40abf273f6f475e81487fc"
+  },
+  "action": "login",
+  "createdAt": {
+    "$date": "2026-06-28T05:06:58.649Z"
+  },
+  "ipAddress": "::1",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "6a3f9bc4f13d8b18ea6d8bc3",
+  "userType": "admin"
+}]

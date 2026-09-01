@@ -1,0 +1,703 @@
+[{
+  "_id": {
+    "$oid": "6a02e2852efafb0915b72dd9"
+  },
+  "work": "unlock",
+  "user": "ufh270",
+  "agent": null,
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"user\":\"ufh270\",\"work\":\"unlock\",\"mode\":\"partner\"}",
+  "note": null,
+  "status": "completed",
+  "createdAt": {
+    "$date": "2026-05-12T08:19:17.973Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-12T08:24:03.680Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a0fee89f841c9fa7d931529"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a2",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-22T05:50:01.545Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":{\"password\":true,\"sc\":false,\"mfa\":false}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-22T05:50:01.547Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-22T05:50:01.547Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a0ffd18f841c9fa7d931531"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a10002",
+  "agent": "ufrcb68a1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-22T06:52:08.573Z\",\"statusMessages\":[],\"options\":null}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-22T06:52:08.575Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-22T06:52:08.575Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a0ffd66f841c9fa7d931534"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a10002",
+  "agent": "ufrcb68a1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-22T06:53:26.359Z\",\"statusMessages\":[],\"options\":null}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-22T06:53:26.360Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-22T06:53:26.360Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a0ffdf5f841c9fa7d931537"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a1",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-22T06:55:49.326Z\",\"statusMessages\":[\"Google Authenticator removed successfully.\"],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-22T06:55:49.328Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-22T06:55:49.328Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a0ffe0af841c9fa7d931538"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a10002",
+  "agent": "ufrcb68a1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-22T06:56:10.403Z\",\"statusMessages\":[],\"options\":null}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-22T06:56:10.404Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-22T06:56:10.404Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1001bff841c9fa7d93153c"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a1",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-22T07:11:59.837Z\",\"statusMessages\":[],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-22T07:11:59.839Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-22T07:11:59.839Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1001d4f841c9fa7d93153d"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a10002",
+  "agent": "ufrcb68a1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-22T07:12:20.883Z\",\"statusMessages\":[],\"options\":null}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-22T07:12:20.885Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-22T07:12:20.885Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1001fff841c9fa7d931540"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a1",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-22T07:13:03.243Z\",\"statusMessages\":[],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-22T07:13:03.245Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-22T07:13:03.245Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a100235f841c9fa7d931543"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a1",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-22T07:13:57.478Z\",\"statusMessages\":[\"Security code reset successfully.\"],\"options\":{\"password\":false,\"sc\":true,\"mfa\":false}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-22T07:13:57.480Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-22T07:13:57.480Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1007bef841c9fa7d93154c"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a10002",
+  "agent": "ufrcb68a1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-22T07:37:34.444Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":null}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-22T07:37:34.445Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-22T07:37:34.445Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a184aaf11b2cad5fd4e00cf"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68a70077",
+  "agent": "ufrcb68a7",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-05-28T14:01:19.251Z\",\"statusMessages\":[\"Password reset successfully.\",\"Profile updated successfully.\"],\"options\":null}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-05-28T14:01:19.253Z"
+  },
+  "updatedAt": {
+    "$date": "2026-05-28T14:01:19.253Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a1e6a9c035e850e60c31029"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufh27ka20808",
+  "agent": "ufh27ka2",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-02T05:31:08.291Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":null}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-02T05:31:08.293Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-02T05:31:08.293Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a2001d836dbb61e9edcd6e1"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb8",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-03T10:28:40.221Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":null}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-03T10:28:40.222Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-03T10:28:40.222Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a206a2036dbb61e9edcd6e6"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-03T17:53:36.335Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":{\"password\":true,\"sc\":false,\"mfa\":false}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-03T17:53:36.336Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-03T17:53:36.336Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a207ec5d132bf5298af29f1"
+  },
+  "work": "SETCREATEAGENT",
+  "user": "ufh27oe3",
+  "agent": "ufh27o",
+  "authenticator": false,
+  "jobType": "SETCREATEAGENT",
+  "jobData": "{\"createdAt\":\"2026-06-03T19:21:41.416Z\",\"position\":\"agent\",\"parentUsername\":\"ufh27o\"}",
+  "status": "completed",
+  "createdAt": {
+    "$date": "2026-06-03T19:21:41.418Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-04T07:34:40.260Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a21163b13798278b45f5f5d"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb68",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-04T06:07:55.716Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":{\"password\":true,\"sc\":false,\"mfa\":false}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-04T06:07:55.719Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-04T06:07:55.719Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22bbe8df222f4ccb00b5ab"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcey",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-05T12:07:04.599Z\",\"statusMessages\":[\"Password reset successfully.\",\"Profile updated successfully.\"],\"options\":{\"password\":true,\"sc\":false,\"mfa\":false}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-05T12:07:04.608Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-05T12:07:04.608Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c01cdf222f4ccb00b5b2"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcey",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-05T12:25:00.144Z\",\"statusMessages\":[\"Google Authenticator removed successfully.\"],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-05T12:25:00.146Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-05T12:25:00.146Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a22c092df222f4ccb00b5b5"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcey",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-05T12:26:58.385Z\",\"statusMessages\":[],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-05T12:26:58.387Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-05T12:26:58.387Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23a4c5df222f4ccb00b5c6"
+  },
+  "work": "SETCREATEAGENT",
+  "user": "ufh27za",
+  "agent": "ufh27",
+  "authenticator": false,
+  "jobType": "SETCREATEAGENT",
+  "jobData": "{\"createdAt\":\"2026-06-06T04:40:37.725Z\",\"position\":\"master\",\"parentUsername\":\"ufh27\"}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T04:40:37.726Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T04:40:37.726Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23a558df222f4ccb00b5ca"
+  },
+  "work": "SETCREATEAGENT",
+  "user": "ufh27zb",
+  "agent": "ufh27",
+  "authenticator": false,
+  "jobType": "SETCREATEAGENT",
+  "jobData": "{\"createdAt\":\"2026-06-06T04:43:04.336Z\",\"position\":\"master\",\"parentUsername\":\"ufh27\"}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T04:43:04.337Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T04:43:04.337Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23a597df222f4ccb00b5ce"
+  },
+  "work": "SETCREATEAGENT",
+  "user": "ufh27zc",
+  "agent": "ufh27",
+  "authenticator": false,
+  "jobType": "SETCREATEAGENT",
+  "jobData": "{\"createdAt\":\"2026-06-06T04:44:07.309Z\",\"position\":\"master\",\"parentUsername\":\"ufh27\"}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T04:44:07.311Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T04:44:07.311Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23b75adf222f4ccb00b5d4"
+  },
+  "work": "SETCREATEAGENT",
+  "user": "ufh27zd",
+  "agent": "ufh27",
+  "authenticator": false,
+  "jobType": "SETCREATEAGENT",
+  "jobData": "{\"createdAt\":\"2026-06-06T05:59:54.206Z\",\"position\":\"master\",\"parentUsername\":\"ufh27\"}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T05:59:54.208Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T05:59:54.208Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23e420df222f4ccb00b5ea"
+  },
+  "work": "SETCREATEAGENT",
+  "user": "ufh27bf",
+  "agent": "ufh27",
+  "authenticator": false,
+  "jobType": "SETCREATEAGENT",
+  "jobData": "{\"createdAt\":\"2026-06-06T09:10:56.656Z\",\"position\":\"master\",\"parentUsername\":\"ufh27\"}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T09:10:56.659Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T09:10:56.659Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23ec42df222f4ccb00b5f1"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcbbc5",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-06T09:45:38.591Z\",\"statusMessages\":[\"Password reset successfully.\",\"Profile updated successfully.\"],\"options\":{\"password\":true,\"sc\":false,\"mfa\":false}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T09:45:38.593Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T09:45:38.593Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23eccbdf222f4ccb00b5f6"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcbbc5",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-06T09:47:55.347Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":{\"password\":true,\"sc\":false,\"mfa\":false}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T09:47:55.348Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T09:47:55.348Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23ed2fdf222f4ccb00b5f9"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcbbc5",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-06T09:49:35.911Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":{\"password\":true,\"sc\":false,\"mfa\":false}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T09:49:35.913Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T09:49:35.913Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23eedddf222f4ccb00b5fc"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufh27oa10002",
+  "agent": "ufh27oa1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-06T09:56:45.880Z\",\"statusMessages\":[],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T09:56:45.882Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T09:56:45.882Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23ef52df222f4ccb00b5ff"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufh27oa10002",
+  "agent": "ufh27oa1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-06T09:58:42.455Z\",\"statusMessages\":[],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T09:58:42.457Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T09:58:42.457Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23f1f5df222f4ccb00b602"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufh27oa10002",
+  "agent": "ufh27oa1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-06T10:09:57.970Z\",\"statusMessages\":[],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T10:09:57.971Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T10:09:57.971Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23f39ddf222f4ccb00b605"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufh27oa10002",
+  "agent": "ufh27oa1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-06T10:17:01.381Z\",\"statusMessages\":[],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T10:17:01.382Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T10:17:01.382Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23f73fdf222f4ccb00b608"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufh27oa10002",
+  "agent": "ufh27oa1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-06T10:32:31.418Z\",\"statusMessages\":[],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T10:32:31.420Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T10:32:31.420Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a23f7dbdf222f4ccb00b60b"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufh27oa10002",
+  "agent": "ufh27oa1",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-06T10:35:07.833Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-06T10:35:07.835Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-06T10:35:07.835Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a2506324274bcea098c92c4"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufh276a20107",
+  "agent": "ufh276a2",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-07T05:48:34.972Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-07T05:48:34.973Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-07T05:48:34.973Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a25066b4274bcea098c92c7"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufh276a20107",
+  "agent": "ufh276a2",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-07T05:49:31.013Z\",\"statusMessages\":[\"Profile updated successfully.\"],\"options\":{\"password\":false,\"sc\":false,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-07T05:49:31.015Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-07T05:49:31.015Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a2b97d567f89d91af291ca0"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb9d30015",
+  "agent": "ufrcb9d3",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-12T05:23:33.001Z\",\"statusMessages\":[],\"options\":{\"password\":true,\"sc\":false,\"mfa\":false}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-12T05:23:33.002Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-12T05:23:33.002Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a2bc43e67f89d91af291ca3"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb9d30015",
+  "agent": "ufrcb9d3",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-12T08:33:02.376Z\",\"statusMessages\":[\"Password reset successfully.\",\"Profile updated successfully.\"],\"options\":{\"password\":true,\"sc\":false,\"mfa\":false}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-12T08:33:02.377Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-12T08:33:02.377Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6a2ceed79b75a96b53e7a56a"
+  },
+  "work": "SETUNLOCK",
+  "user": "ufrcb9d3",
+  "agent": "",
+  "authenticator": false,
+  "jobType": "SETUNLOCK",
+  "jobData": "{\"completedAt\":\"2026-06-13T05:47:03.062Z\",\"statusMessages\":[\"Security code reset successfully.\",\"Google Authenticator removed successfully.\"],\"options\":{\"password\":false,\"sc\":true,\"mfa\":true}}",
+  "status": "doing",
+  "createdAt": {
+    "$date": "2026-06-13T05:47:03.064Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-13T05:47:03.064Z"
+  }
+}]

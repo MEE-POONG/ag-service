@@ -1,0 +1,210 @@
+[{
+  "_id": {
+    "$oid": "6a2bcbc1fa82844bf8070e51"
+  },
+  "action": "CREATE",
+  "createdAt": {
+    "$date": "2026-06-12T09:05:05.844Z"
+  },
+  "errorMsg": null,
+  "ipAddress": "::1",
+  "isSuccess": true,
+  "newData": "{\"id\":\"6a2bcbc1fa82844bf8070e50\",\"adminPositionId\":\"6a291a4ede0c593db01d9275\",\"webBaseId\":null,\"createdAt\":\"2026-06-12T09:05:05.760Z\",\"createdBy\":\"superadmin\",\"deleteAt\":null,\"deleteBy\":null,\"email\":\"ufa66.oa14@gmail.com\",\"isActive\":true,\"name\":\"โอเอ หนึ่งสี่\",\"password\":\"$2a$12$QqvPogZCJ8Py8vxyyzQF3uJiALI8HiCYcJBhhWWvqD5ouTcKX1V5m\",\"profile\":null,\"tel\":\"0123456789\",\"updatedAt\":\"2026-06-12T09:05:05.760Z\",\"updatedBy\":\"superadmin\",\"username\":\"ufa66oa14\"}",
+  "oldData": null,
+  "recordId": {
+    "$oid": "6a2bcbc1fa82844bf8070e50"
+  },
+  "tableName": "AdminDB",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "superadmin",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3f9d9ef7ed5e3e13a0ebf3"
+  },
+  "action": "CREATE",
+  "createdAt": {
+    "$date": "2026-06-27T09:53:34.195Z"
+  },
+  "errorMsg": null,
+  "ipAddress": "::1",
+  "isSuccess": true,
+  "newData": "{\"id\":\"6a3f9d9ef7ed5e3e13a0ebf2\",\"adminPositionId\":\"6a291a4ede0c593db01d9275\",\"webBaseId\":null,\"createdAt\":\"2026-06-27T09:53:34.115Z\",\"createdBy\":\"superadmin\",\"deleteAt\":null,\"deleteBy\":null,\"email\":\"ufa66.oa14@gmail.com\",\"isActive\":true,\"name\":\"Est Ace\",\"password\":\"$2a$12$eRY5RWvFPYIrXUl.3Mj4oej30hgM2y8e.ezx6ozrBupZnGUKeXUB6\",\"profile\":null,\"tel\":\"0644482650\",\"updatedAt\":\"2026-06-27T09:53:34.115Z\",\"updatedBy\":\"superadmin\",\"username\":\"devilzeros\"}",
+  "oldData": null,
+  "recordId": {
+    "$oid": "6a3f9d9ef7ed5e3e13a0ebf2"
+  },
+  "tableName": "AdminDB",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "superadmin",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3fa014f7ed5e3e13a0ebf9"
+  },
+  "action": "UPDATE",
+  "createdAt": {
+    "$date": "2026-06-27T10:04:04.405Z"
+  },
+  "errorMsg": null,
+  "ipAddress": "::1",
+  "isSuccess": true,
+  "newData": "{\"id\":\"6a3f9bcff13d8b18ea6d8c00\",\"createdAt\":\"2026-06-27T09:45:51.038Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"PA7HMJLFFFYHGYLDH4YUGS2UF5VVEUCTLNIFMPTCNNMDCUJYLBUA\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufh27c\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-27T10:04:04.209Z\",\"updatedBy\":\"devilzeros\",\"userLogin\":\"ufh27cl2ufa66\",\"username\":\"ufh27cl2\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "oldData": "{\"id\":\"6a3f9bcff13d8b18ea6d8c00\",\"createdAt\":\"2026-06-27T09:45:51.038Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufh27c\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-27T09:45:51.038Z\",\"updatedBy\":\"system\",\"userLogin\":\"ufh27cl2ufa66\",\"username\":\"ufh27cl2\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "recordId": {
+    "$oid": "6a3f9bcff13d8b18ea6d8c00"
+  },
+  "tableName": "AgUserAccountDB",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "devilzeros",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3fab38f7ed5e3e13a0ebfd"
+  },
+  "action": "UPDATE",
+  "createdAt": {
+    "$date": "2026-06-27T10:51:36.564Z"
+  },
+  "errorMsg": null,
+  "ipAddress": "::1",
+  "isSuccess": true,
+  "newData": "{\"id\":\"6a3f9c13f13d8b18ea6d8d67\",\"createdAt\":\"2026-06-27T09:46:59.218Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufh27\",\"position\":\"master\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-27T10:51:36.392Z\",\"updatedBy\":\"devilzeros\",\"userLogin\":\"ufh27cmt66\",\"username\":\"ufh27c\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "oldData": "{\"id\":\"6a3f9c13f13d8b18ea6d8d67\",\"createdAt\":\"2026-06-27T09:46:59.218Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufh27\",\"position\":\"master\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-27T09:46:59.218Z\",\"updatedBy\":\"system\",\"userLogin\":\"ufh27cufa66\",\"username\":\"ufh27c\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "recordId": {
+    "$oid": "6a3f9c13f13d8b18ea6d8d67"
+  },
+  "tableName": "AgUserAccountDB",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "devilzeros",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3fac8ff7ed5e3e13a0ebff"
+  },
+  "action": "CREATE",
+  "createdAt": {
+    "$date": "2026-06-27T10:57:19.278Z"
+  },
+  "errorMsg": null,
+  "ipAddress": "::1",
+  "isSuccess": true,
+  "newData": "{\"id\":\"6a3fac8ff7ed5e3e13a0ebfe\",\"createdAt\":\"2026-06-27T10:57:19.161Z\",\"createdBy\":\"devilzeros\",\"gaSecretEnc\":\"IBCXAWCRHZZGKTBFGRYE6M2JJJJXAWRRGI7FW2ZWKRUC6QZMNRSA\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-27T10:57:19.161Z\",\"updatedBy\":\"devilzeros\",\"userLogin\":\"ufh27cp3ufa66\",\"username\":\"ufh27cp3\",\"webname\":\"ufa66\",\"partnerAG\":\"ufh27c\",\"partnerLogin\":null}",
+  "oldData": null,
+  "recordId": {
+    "$oid": "6a3fac8ff7ed5e3e13a0ebfe"
+  },
+  "tableName": "AgUserAccountDB",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "devilzeros",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a3fac9af7ed5e3e13a0ec00"
+  },
+  "action": "UPDATE",
+  "createdAt": {
+    "$date": "2026-06-27T10:57:30.912Z"
+  },
+  "errorMsg": null,
+  "ipAddress": "::1",
+  "isSuccess": true,
+  "newData": "{\"id\":\"6a3fac8ff7ed5e3e13a0ebfe\",\"createdAt\":\"2026-06-27T10:57:19.161Z\",\"createdBy\":\"devilzeros\",\"gaSecretEnc\":\"IBCXAWCRHZZGKTBFGRYE6M2JJJJXAWRRGI7FW2ZWKRUC6QZMNRSA\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufh27c\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-27T10:57:30.756Z\",\"updatedBy\":\"devilzeros\",\"userLogin\":\"ufh27cp3ufa66\",\"username\":\"ufh27cp3\",\"webname\":\"ufa66\",\"partnerAG\":\"\",\"partnerLogin\":null}",
+  "oldData": "{\"id\":\"6a3fac8ff7ed5e3e13a0ebfe\",\"createdAt\":\"2026-06-27T10:57:19.161Z\",\"createdBy\":\"devilzeros\",\"gaSecretEnc\":\"IBCXAWCRHZZGKTBFGRYE6M2JJJJXAWRRGI7FW2ZWKRUC6QZMNRSA\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-27T10:57:19.161Z\",\"updatedBy\":\"devilzeros\",\"userLogin\":\"ufh27cp3ufa66\",\"username\":\"ufh27cp3\",\"webname\":\"ufa66\",\"partnerAG\":\"ufh27c\",\"partnerLogin\":null}",
+  "recordId": {
+    "$oid": "6a3fac8ff7ed5e3e13a0ebfe"
+  },
+  "tableName": "AgUserAccountDB",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "devilzeros",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a40af1373f6f475e81487ff"
+  },
+  "action": "UPDATE",
+  "createdAt": {
+    "$date": "2026-06-28T05:20:19.429Z"
+  },
+  "errorMsg": null,
+  "ipAddress": "::1",
+  "isSuccess": true,
+  "newData": "{\"id\":\"6a3f9bf0f13d8b18ea6d8cb0\",\"createdAt\":\"2026-06-27T09:46:24.544Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"OAVD6UTQMFWGQQKIJZZUGQCKNNKVKYJFJFSDO6LRHN2ESNRDF5QQ\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufrcb68\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-28T05:20:19.272Z\",\"updatedBy\":\"superadmin\",\"userLogin\":\"ufrcb68a7ufa66\",\"username\":\"ufrcb68a7\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "oldData": "{\"id\":\"6a3f9bf0f13d8b18ea6d8cb0\",\"createdAt\":\"2026-06-27T09:46:24.544Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufrcb68\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-27T09:46:24.544Z\",\"updatedBy\":\"system\",\"userLogin\":\"ufrcb68a7ufa66\",\"username\":\"ufrcb68a7\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "recordId": {
+    "$oid": "6a3f9bf0f13d8b18ea6d8cb0"
+  },
+  "tableName": "AgUserAccountDB",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "superadmin",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a40af3873f6f475e8148800"
+  },
+  "action": "UPDATE",
+  "createdAt": {
+    "$date": "2026-06-28T05:20:56.603Z"
+  },
+  "errorMsg": null,
+  "ipAddress": "::1",
+  "isSuccess": true,
+  "newData": "{\"id\":\"6a3f9bf0f13d8b18ea6d8cb0\",\"createdAt\":\"2026-06-27T09:46:24.544Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"GJ5DMWD2EVHW2YSROJXTQ4KOHAVGG2BSEQXTQ2BJPM4G4MBQNBGA\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufrcb68\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-28T05:20:56.395Z\",\"updatedBy\":\"superadmin\",\"userLogin\":\"ufrcb68a7ufa66\",\"username\":\"ufrcb68a7\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "oldData": "{\"id\":\"6a3f9bf0f13d8b18ea6d8cb0\",\"createdAt\":\"2026-06-27T09:46:24.544Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"OAVD6UTQMFWGQQKIJZZUGQCKNNKVKYJFJFSDO6LRHN2ESNRDF5QQ\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufrcb68\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-28T05:20:19.272Z\",\"updatedBy\":\"superadmin\",\"userLogin\":\"ufrcb68a7ufa66\",\"username\":\"ufrcb68a7\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "recordId": {
+    "$oid": "6a3f9bf0f13d8b18ea6d8cb0"
+  },
+  "tableName": "AgUserAccountDB",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "superadmin",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a40afc373f6f475e8148801"
+  },
+  "action": "UPDATE",
+  "createdAt": {
+    "$date": "2026-06-28T05:23:15.089Z"
+  },
+  "errorMsg": null,
+  "ipAddress": "::1",
+  "isSuccess": true,
+  "newData": "{\"id\":\"6a3f9c0ef13d8b18ea6d8d4e\",\"createdAt\":\"2026-06-27T09:46:54.558Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"O5ID6MCXOFYHUJKNPATFAQCNOJKDAPDNKE5DG4THGM5FUULZFF4Q\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufrcer\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-28T05:23:14.893Z\",\"updatedBy\":\"superadmin\",\"userLogin\":\"ufrcera6ufa66\",\"username\":\"ufrcera6\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "oldData": "{\"id\":\"6a3f9c0ef13d8b18ea6d8d4e\",\"createdAt\":\"2026-06-27T09:46:54.558Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufrcer\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-27T09:46:54.558Z\",\"updatedBy\":\"system\",\"userLogin\":\"ufrcera6ufa66\",\"username\":\"ufrcera6\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "recordId": {
+    "$oid": "6a3f9c0ef13d8b18ea6d8d4e"
+  },
+  "tableName": "AgUserAccountDB",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "superadmin",
+  "userType": "admin"
+},
+{
+  "_id": {
+    "$oid": "6a40f8b573f6f475e8148803"
+  },
+  "action": "UPDATE",
+  "createdAt": {
+    "$date": "2026-06-28T10:34:29.156Z"
+  },
+  "errorMsg": null,
+  "ipAddress": "::1",
+  "isSuccess": true,
+  "newData": "{\"id\":\"6a3f9bdff13d8b18ea6d8c56\",\"createdAt\":\"2026-06-27T09:46:07.292Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"OAXFQ3COH4UVQMDRERFWQRLXI4SGIVCYOZ6W23LEN52T63JFF4TA\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufh27v\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-28T10:34:28.957Z\",\"updatedBy\":\"superadmin\",\"userLogin\":\"ufh27va6ufa66\",\"username\":\"ufh27va6\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "oldData": "{\"id\":\"6a3f9bdff13d8b18ea6d8c56\",\"createdAt\":\"2026-06-27T09:46:07.292Z\",\"createdBy\":\"system\",\"gaSecretEnc\":\"\",\"isActive\":true,\"meta\":null,\"note\":null,\"origin\":\"ufh27v\",\"position\":\"agent\",\"reserve\":\"\",\"statusServe\":\"PENDING\",\"updatedAt\":\"2026-06-27T09:46:07.292Z\",\"updatedBy\":\"system\",\"userLogin\":\"ufh27va6ufa66\",\"username\":\"ufh27va6\",\"webname\":\"ufa66\",\"partnerAG\":null,\"partnerLogin\":null}",
+  "recordId": {
+    "$oid": "6a3f9bdff13d8b18ea6d8c56"
+  },
+  "tableName": "AgUserAccountDB",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "userId": "superadmin",
+  "userType": "admin"
+}]

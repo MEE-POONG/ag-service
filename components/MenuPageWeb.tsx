@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, type MouseEvent } from 'react'
 import { useRouter } from 'next/router'
 import ReactIconComponent from './ReactIconComponent'
 
@@ -55,6 +55,18 @@ export default function MenuPageWebDB({ dataList, collapsed, }: EnhancedMenuProp
 
         return false;
     }, [currentPath]);
+
+    const isCurrentHref = useCallback((href: string) => {
+        const currentHref = router.asPath.split('#')[0];
+        const targetHref = href.split('#')[0];
+        return currentHref === targetHref;
+    }, [router.asPath]);
+
+    const preventCurrentRouteNavigation = useCallback((event: MouseEvent<HTMLAnchorElement>, href: string) => {
+        if (isCurrentHref(href)) {
+            event.preventDefault();
+        }
+    }, [isCurrentHref]);
 
     const resolveMenuHref = useCallback((parentLink: string, childLink?: string) => {
         const parent = parentLink || "/";
@@ -173,12 +185,15 @@ export default function MenuPageWebDB({ dataList, collapsed, }: EnhancedMenuProp
         const hasSubItems = item.children && item.children.length > 0;
         const isOpen = openGroups.includes(item.name);
         const parentActive = isParentActive(item);
+        const itemIsCurrentHref = isCurrentHref(item.link);
 
         if (!hasSubItems) {
             return (
                 <li className="mb-2">
                     <Link
                         href={item.link}
+                        aria-current={itemIsCurrentHref ? 'page' : undefined}
+                        onClick={(event) => preventCurrentRouteNavigation(event, item.link)}
                         className={`flex items-center rounded-md ${collapsed ? 'justify-center w-10 h-10 mx-auto px-0 py-0' : 'w-full p-2'} transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${isActive(item.link, item)
                             ? "scale-105 from-[#A78BFA] to-[#34D399] text-white shadow-lg"
                             : "from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-700 shadow-md"
@@ -217,22 +232,29 @@ export default function MenuPageWebDB({ dataList, collapsed, }: EnhancedMenuProp
                 {!collapsed && (
                     <div className={`ml-4 mt-1 space-y-1  transition-all duration-300 ease-in-out transform ${isOpen ? 'opacity-100 scale-100 max-h-96' : 'opacity-0 scale-95 max-h-0 overflow-hidden'}`}>
                         <ul className="space-y-1">
-                            {item.children?.map((subItem, index) => (
-                                <li key={resolveMenuHref(item.link, subItem.link)} className={`transition-all duration-300 ease-in-out ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`} style={{ transitionDelay: `${index * 50}ms` }}>
-                                    <Link
-                                        href={resolveMenuHref(item.link, subItem.link)}
-                                        className={`flex items-center w-full p-2 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md bg-gradient-to-r ${isActive(resolveMenuHref(item.link, subItem.link), subItem)
-                                            ? "scale-105 from-[#A78BFA] to-[#34D399] text-white"
-                                            : "from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-600 hover:text-gray-900"
-                                            }`}
-                                    >
-                                        {subItem.icon && <ReactIconComponent icon={subItem.icon} setClass="h-3 w-3 flex-shrink-0 transition-transform duration-300 hover:rotate-12 font-bold" />}
-                                        <span className={`transition-all duration-300 font-bold ${subItem.icon ? "ml-2" : ""}`}>
-                                            {subItem.name}
-                                        </span>
-                                    </Link>
-                                </li>
-                            ))}
+                            {item.children?.map((subItem, index) => {
+                                const subItemHref = resolveMenuHref(item.link, subItem.link);
+                                const subItemIsCurrentHref = isCurrentHref(subItemHref);
+
+                                return (
+                                    <li key={subItemHref} className={`transition-all duration-300 ease-in-out ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`} style={{ transitionDelay: `${index * 50}ms` }}>
+                                        <Link
+                                            href={subItemHref}
+                                            aria-current={subItemIsCurrentHref ? 'page' : undefined}
+                                            onClick={(event) => preventCurrentRouteNavigation(event, subItemHref)}
+                                            className={`flex items-center w-full p-2 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md bg-gradient-to-r ${isActive(subItemHref, subItem)
+                                                ? "scale-105 from-[#A78BFA] to-[#34D399] text-white"
+                                                : "from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-600 hover:text-gray-900"
+                                                }`}
+                                        >
+                                            {subItem.icon && <ReactIconComponent icon={subItem.icon} setClass="h-3 w-3 flex-shrink-0 transition-transform duration-300 hover:rotate-12 font-bold" />}
+                                            <span className={`transition-all duration-300 font-bold ${subItem.icon ? "ml-2" : ""}`}>
+                                                {subItem.name}
+                                            </span>
+                                        </Link>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     </div>
                 )}

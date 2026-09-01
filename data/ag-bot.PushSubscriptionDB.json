@@ -1,0 +1,27 @@
+[{
+  "_id": {
+    "$oid": "6a293b819eb1cb2a8ee4cf15"
+  },
+  "userId": {
+    "$oid": "6a291a4ede0c593db01d9276"
+  },
+  "endpoint": "https://fcm.googleapis.com/fcm/send/ey2QtKxgfT8:APA91bGvHGibP8yBg3m5uj_QBfceVJb78UHXTyUolt9yu6dfIcWA-x9NuxbOWEJX27sW1CsIbo102Ift_aEyA39XM1_zxaNOXvdPo-6KQ4rPmbjZorxTKO8PuEOKWpMD2I56vtkkYqUy",
+  "keys": {
+    "p256dh": "BO4_bbT66c8RquusgU0F8Drnwgh73Fj64I8ec6wGHTTVaIty6zaeFxdJe_isJtrdvY1zuHQGMOnVxph1ODW338c",
+    "auth": "cnLncR5-elWuvMbZZf0Vfw"
+  },
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "isActive": true,
+  "failCount": {
+    "$numberLong": "0"
+  },
+  "lastUsedAt": {
+    "$date": "2026-06-29T06:14:22.258Z"
+  },
+  "createdAt": {
+    "$date": "2026-06-10T10:25:05.233Z"
+  },
+  "updatedAt": {
+    "$date": "2026-06-29T06:14:22.260Z"
+  }
+}]

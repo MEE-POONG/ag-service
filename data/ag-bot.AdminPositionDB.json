@@ -1,0 +1,66 @@
+[{
+  "_id": {
+    "$oid": "6a291a4ede0c593db01d9275"
+  },
+  "adminDepartmentId": {
+    "$oid": "6a291a40bea899bd54a522e5"
+  },
+  "createdAt": {
+    "$date": "2026-06-10T08:03:26.086Z"
+  },
+  "createdBy": "system",
+  "isActive": true,
+  "isDeleted": false,
+  "name": "Super Admin",
+  "priority": {
+    "$numberLong": "1"
+  },
+  "updatedAt": {
+    "$date": "2026-06-10T08:03:26.086Z"
+  },
+  "updatedBy": "system"
+},
+{
+  "_id": {
+    "$oid": "6a2b16cddb44a48d8c9ec3cb"
+  },
+  "adminDepartmentId": {
+    "$oid": "6a291a40bea899bd54a522e5"
+  },
+  "createdAt": {
+    "$date": "2026-06-11T20:13:01.900Z"
+  },
+  "createdBy": "system",
+  "isActive": true,
+  "isDeleted": false,
+  "name": "Admin",
+  "priority": {
+    "$numberLong": "2"
+  },
+  "updatedAt": {
+    "$date": "2026-06-11T20:55:10.950Z"
+  },
+  "updatedBy": "system"
+},
+{
+  "_id": {
+    "$oid": "6a3f9bc1f13d8b18ea6d8bb5"
+  },
+  "adminDepartmentId": {
+    "$oid": "6a3f9ba8eb9cd9902f787c9f"
+  },
+  "createdAt": {
+    "$date": "2026-06-27T09:45:37.516Z"
+  },
+  "createdBy": "system",
+  "isActive": true,
+  "isDeleted": false,
+  "name": "Manager",
+  "priority": {
+    "$numberLong": "3"
+  },
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:37.516Z"
+  },
+  "updatedBy": "system"
+}]

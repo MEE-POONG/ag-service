@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "6a3f9bc4f13d8b18ea6d8bc5"
+  },
+  "createdAt": {
+    "$date": "2026-06-27T09:45:40.591Z"
+  },
+  "createdBy": "system",
+  "email": "user@ag-db.com",
+  "firstname": "User",
+  "isActive": true,
+  "isDeleted": false,
+  "lastname": "Test",
+  "password": "$2a$12$KetP6tKyRhNHM.9phB8A9OE0td9u7LCR.H1lWxVVsbVsdAvQNbd/u",
+  "tel": "0812345680",
+  "updatedAt": {
+    "$date": "2026-06-27T09:45:40.591Z"
+  },
+  "updatedBy": "system",
+  "username": "user"
+}]
