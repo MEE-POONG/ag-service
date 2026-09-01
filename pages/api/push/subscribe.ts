@@ -6,6 +6,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 import { requireAuth } from '@/lib/permissions'
+import { serializeBigIntToString } from '@/lib/bigintUtils'
 
 interface SubscribeResponse {
   success?: boolean
@@ -68,11 +69,11 @@ export default async function handler(
       }
     })
 
-    return res.status(200).json({
+    return res.status(200).json(serializeBigIntToString({
       success: true,
       data: pushSubscription,
       message: 'Push subscription saved successfully'
-    })
+    }))
   } catch (error) {
     console.error('Save push subscription error:', error)
     return res.status(500).json({

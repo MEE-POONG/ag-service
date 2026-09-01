@@ -105,7 +105,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<DepartmentRes
       prisma.adminDepartmentDB.count({ where: whereClause }),
     ]);
 
-    return res.status(200).json({
+    return res.status(200).json(serializeBigIntToString({
       success: true,
       data: departments,
       pagination: {
@@ -115,7 +115,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<DepartmentRes
         pageSize: pageSizeNum,
       },
       message: 'ดึงข้อมูลแผนกสำเร็จ',
-    });
+    }));
   } catch (error) {
     console.error('Get departments error:', error);
     return res.status(500).json({

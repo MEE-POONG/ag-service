@@ -17,6 +17,7 @@ type AdjustbetsCockfight {
   statusServe   String?
   work          Boolean
 }
+
 // sss
 type AdjustbetsLottoRcw {
   enabled     Boolean
@@ -143,6 +144,11 @@ type CreditTopUpAdviserDetails {
   webname     String
 }
 
+type PushSubscriptionDbKeys {
+  auth   String
+  p256dh String
+}
+
 model ActivityLogDB {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   action    String
@@ -199,9 +205,9 @@ model AdminDefaultPermissionDB {
   canUpdate       Boolean          @default(false)
   canDelete       Boolean          @default(false)
   isDeleted       Boolean          @default(false)
-  createdAt       DateTime         @default(now())
+  createdAt       DateTime         @default(now()) @db.Date
   createdBy       String?
-  updatedAt       DateTime         @updatedAt
+  updatedAt       DateTime         @updatedAt @db.Date
   updatedBy       String?
   adminPositionDB AdminPositionDB? @relation(fields: [adminPositionId], references: [id])
   menuWebDB       MenuWebDB?       @relation(fields: [menuWebId], references: [id])
@@ -211,15 +217,15 @@ model AdminDefaultPermissionDB {
 }
 
 model AdminDepartmentDB {
-  id             String            @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt      DateTime          @db.Date
-  createdBy      String
-  description    String
-  isActive       Boolean
-  isDeleted      Boolean
-  name           String            @unique
-  updatedAt      DateTime          @db.Date
-  updatedBy      String
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime          @db.Date
+  createdBy       String
+  description     String
+  isActive        Boolean
+  isDeleted       Boolean
+  name            String            @unique
+  updatedAt       DateTime          @db.Date
+  updatedBy       String
   adminPositionDB AdminPositionDB[]
 }
 
@@ -232,7 +238,7 @@ model AdminPositionDB {
   isActive                 Boolean
   isDeleted                Boolean
   name                     String
-  priority                 Int
+  priority                 BigInt
   updatedAt                DateTime                   @db.Date
   updatedBy                String
   AdminDB                  AdminDB[]
@@ -258,6 +264,22 @@ model AgQueueJobDB {
   username     String?
 }
 
+// Queue collection imported from ag-bot.QueueJob.json.
+// This is distinct from AgQueueJobDB, which has a different document shape.
+model QueueJob {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  agent         String?
+  authenticator Boolean
+  createdAt     DateTime @db.Date
+  jobData       String
+  jobType       String
+  note          Json?
+  status        String
+  updatedAt     DateTime @db.Date
+  user          String
+  work          String
+}
+
 model AgUserAccountDB {
   id              String            @id @default(auto()) @map("_id") @db.ObjectId
   createdAt       DateTime          @db.Date
@@ -281,6 +303,27 @@ model AgUserAccountDB {
   partnerLogin    String?
   CustomerAgentDB CustomerAgentDB[]
   PartnerDB       PartnerDB[]
+}
+
+// AG user collection imported from ag-bot.AgUserDB.json.
+// Keep separate from AGUserDB because both the collection name and fields differ.
+model AgUserDB {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  v            Int?     @map("__v")
+  createdAt    DateTime @db.Date
+  createdBy    String?
+  deleteBy     Json?
+  gaSecretEnc  String?
+  isActive     Boolean
+  origin       String
+  partnerAG    String?
+  partnerLogin String?
+  position     String
+  reserve      String?
+  updatedAt    DateTime @db.Date
+  updatedBy    String?
+  userLogin    String?
+  username     String
 }
 
 model CustomerAgentDB {
@@ -435,6 +478,24 @@ model WebBaseDB {
   AdminDB   AdminDB[]
 
   @@index([isActive], map: "isActive_1")
+}
+
+// Web configuration imported from ag-bot.WebDB.json.
+model WebDB {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @db.Date
+  createdBy Json?
+  deleteBy  Json?
+  isActive  Boolean
+  name      String
+  otpA      String
+  otpM      String
+  otpS      String
+  passA     String
+  passM     String
+  passS     String
+  updatedAt DateTime @db.Date
+  updatedBy Json?
 }
 
 model WorkHistoryDB {
@@ -987,23 +1048,23 @@ model NotificationDB {
 
 // Web Push Subscriptions
 model PushSubscriptionDB {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         String                 @id @default(auto()) @map("_id") @db.ObjectId
   // User
-  userId     String   @db.ObjectId
-  user       AdminDB  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String                 @db.ObjectId
+  user       AdminDB                @relation(fields: [userId], references: [id], onDelete: Cascade)
   // Subscription data (from browser)
-  endpoint   String   @unique
-  keys       Json // { p256dh: string, auth: string }
+  endpoint   String                 @unique
+  keys       PushSubscriptionDbKeys
   // Metadata
   userAgent  String?
   deviceName String? // Browser/Device info
   // Status
-  isActive   Boolean  @default(true)
-  failCount  Int      @default(0) // Track failed push attempts
-  lastUsedAt DateTime @default(now()) @db.Date
+  isActive   Boolean                @default(true)
+  failCount  BigInt                 @default(0) // Stored as BSON Long in MongoDB
+  lastUsedAt DateTime               @default(now()) @db.Date
   // Timestamps
-  createdAt  DateTime @default(now()) @db.Date
-  updatedAt  DateTime @updatedAt @db.Date
+  createdAt  DateTime               @default(now()) @db.Date
+  updatedAt  DateTime               @updatedAt @db.Date
 
   @@index([userId])
   @@index([isActive])
@@ -1336,7 +1397,6 @@ model AgentWinLoseReportDB {
   webname      String
 }
 
-
 model CreateAgentDB {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   /// Multiple data types found: Int: 85.7%, BigInt: 14.3% out of 21 sampled entries
@@ -1411,4 +1471,3 @@ model MasterWinLoseReportDB {
   usernameAG     String
   webname        String
 }
-

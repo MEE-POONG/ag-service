@@ -22,6 +22,7 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { prisma } from './prisma'
 import { ExtendedAdminDB } from '@/data/interface'
+import { serializeBigIntToString } from './bigintUtils'
 
 /** 👥 รองรับบทบาทต่างๆ ในระบบ */
 export type AppRole = 'superadmin' | 'admin' | 'user' | 'aguser'
@@ -133,7 +134,7 @@ export function sanitizeAdminForClient<T extends Record<string, any>>(admin: T):
   if ('passwordHash' in copy) delete copy.passwordHash
   if ('resetToken' in copy) delete copy.resetToken
   if ('resetTokenExpire' in copy) delete copy.resetTokenExpire
-  return copy
+  return serializeBigIntToString(copy) as T
 }
 
 /**

@@ -1,5 +1,11 @@
 import { Prisma } from '@prisma/client';
 
+function stringifyAuditData(value: unknown): string {
+  return JSON.stringify(value, (_key, nestedValue) =>
+    typeof nestedValue === 'bigint' ? nestedValue.toString() : nestedValue
+  );
+}
+
 // บันทึกประวัติการทำงาน
 export async function recordWorkHistory(
   tx: Prisma.TransactionClient,
@@ -21,8 +27,8 @@ export async function recordWorkHistory(
         tableName,
         recordId,
         action,
-        oldData: oldData ? JSON.stringify(oldData) : null,
-        newData: newData ? JSON.stringify(newData) : null,
+        oldData: oldData ? stringifyAuditData(oldData) : null,
+        newData: newData ? stringifyAuditData(newData) : null,
         isSuccess,
         errorMsg,
         userId,

@@ -14,7 +14,9 @@
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:admin": "node scripts/seed-admin.js",
-    "db:seed:menu": "node scripts/seed-menu.js"
+    "db:seed:menu": "node scripts/seed-menu.js",
+    "db:import-json": "node --env-file=.env scripts/import-json-data.js",
+    "db:import-json:dry-run": "node --env-file=.env scripts/import-json-data.js --dry-run"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

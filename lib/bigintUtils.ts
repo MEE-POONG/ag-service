@@ -12,6 +12,10 @@ export function serializeBigIntToNumber(obj: any): any {
   if (typeof obj === 'bigint') {
     return Number(obj);
   }
+
+  if (obj instanceof Date) {
+    return obj;
+  }
   
   if (Array.isArray(obj)) {
     return obj.map(serializeBigIntToNumber);
@@ -39,6 +43,10 @@ export function serializeBigIntToString(obj: any): any {
   
   if (typeof obj === 'bigint') {
     return obj.toString();
+  }
+
+  if (obj instanceof Date) {
+    return obj;
   }
   
   if (Array.isArray(obj)) {

@@ -76,11 +76,11 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminResponse
       // 3) (ออปชัน) ตั้ง cache header เล็กน้อยให้หน้าแก้ไขลื่นขึ้น (เฉพาะฝั่ง browser)
       res.setHeader('Cache-Control', 'private, max-age=30') // เบา ๆ 30 วินาที
 
-      return res.status(200).json({
+      return res.status(200).json(serializeBigIntToString({
         success: true,
         data: admin,
         message: 'ดึงข้อมูล Admin สำเร็จ',
-      })
+      }))
     }
 
     // ใช้ `page` และ `pageSize` สำหรับ Pagination
@@ -122,7 +122,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminResponse
       prisma.adminDB.count({ where: whereClause }),
     ]);
 
-    return res.status(200).json({
+    return res.status(200).json(serializeBigIntToString({
       success: true,
       data: admins,
       pagination: {
@@ -132,7 +132,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminResponse
         pageSize: pageSizeNum,
       },
       message: 'ดึงข้อมูลผู้ดูแลระบบสำเร็จ'
-    });
+    }));
   } catch (error) {
     console.error('Get admins error:', error);
     return res.status(500).json({

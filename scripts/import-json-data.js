@@ -58,6 +58,8 @@ function loadExport(filePath) {
   }
 
   const ids = new Set()
+  const documents = []
+  let duplicateIds = 0
 
   parsed.forEach((document, index) => {
     if (!document || typeof document !== 'object' || Array.isArray(document)) {
@@ -70,12 +72,19 @@ function loadExport(filePath) {
 
     const idKey = getDocumentIdKey(document)
     if (ids.has(idKey)) {
-      throw new Error(`${path.basename(filePath)} contains a duplicate _id`)
+      duplicateIds += 1
+      return
     }
+
     ids.add(idKey)
+    documents.push(document)
   })
 
-  return parsed
+  return {
+    documents,
+    duplicateIds,
+    sourceCount: parsed.length,
+  }
 }
 
 async function countMatchingIds(collection, documents) {
@@ -91,9 +100,9 @@ async function countMatchingIds(collection, documents) {
 
 async function importCollection(collection, documents) {
   const result = {
-    matched: 0,
-    modified: 0,
     inserted: 0,
+    skippedExisting: 0,
+    skippedUniqueKey: 0,
   }
 
   for (let index = 0; index < documents.length; index += BATCH_SIZE) {
@@ -104,15 +113,34 @@ async function importCollection(collection, documents) {
       return {
         updateOne: {
           filter: { _id },
-          update: { $set: fields },
+          update: { $setOnInsert: fields },
           upsert: true,
         },
       }
     })
 
-    const batchResult = await collection.bulkWrite(operations, { ordered: false })
-    result.matched += batchResult.matchedCount
-    result.modified += batchResult.modifiedCount
+    let batchResult
+
+    try {
+      batchResult = await collection.bulkWrite(operations, { ordered: false })
+    } catch (error) {
+      const writeErrors = Array.isArray(error.writeErrors) ? error.writeErrors : []
+      const onlyDuplicateKeys =
+        writeErrors.length > 0 && writeErrors.every((writeError) => writeError.code === 11000)
+
+      if (!onlyDuplicateKeys || !error.result) {
+        throw error
+      }
+
+      batchResult = error.result
+      result.skippedUniqueKey += writeErrors.length
+    }
+
+    if (batchResult.modifiedCount !== 0) {
+      throw new Error('Insert-only import unexpectedly modified an existing document')
+    }
+
+    result.skippedExisting += batchResult.matchedCount
     result.inserted += batchResult.upsertedCount
   }
 
@@ -141,8 +169,8 @@ async function main() {
 
   const exportsToImport = fileNames.map((fileName) => ({
     collectionName: getCollectionName(fileName),
-    documents: loadExport(path.join(dataDirectory, fileName)),
     fileName,
+    ...loadExport(path.join(dataDirectory, fileName)),
   }))
 
   const dnsFallbackUsed = configureDnsFallback()
@@ -166,17 +194,25 @@ async function main() {
     )
 
     let sourceTotal = 0
+    let uniqueSourceTotal = 0
     let insertedTotal = 0
-    let matchedTotal = 0
-    let modifiedTotal = 0
+    let skippedExistingTotal = 0
+    let skippedDuplicateIdTotal = 0
+    let skippedUniqueKeyTotal = 0
 
     for (const exportItem of exportsToImport) {
-      const { collectionName, documents, fileName } = exportItem
+      const { collectionName, documents, duplicateIds, fileName, sourceCount } = exportItem
       const collection = database.collection(collectionName)
       const before = await collection.countDocuments({})
       const overlappingIds = await countMatchingIds(collection, documents)
 
-      sourceTotal += documents.length
+      sourceTotal += sourceCount
+      uniqueSourceTotal += documents.length
+      skippedDuplicateIdTotal += duplicateIds
+
+      if (dryRun) {
+        skippedExistingTotal += overlappingIds
+      }
 
       if (dryRun || documents.length === 0) {
         console.log(
@@ -184,9 +220,12 @@ async function main() {
             event: dryRun ? 'preflight' : 'skipped-empty',
             file: fileName,
             collection: collectionName,
-            source: documents.length,
+            source: sourceCount,
+            uniqueSource: documents.length,
             before,
-            overlappingIds,
+            skippedDuplicateId: duplicateIds,
+            skippedExisting: overlappingIds,
+            candidateInserts: documents.length - overlappingIds,
           })
         )
         continue
@@ -195,28 +234,31 @@ async function main() {
       const imported = await importCollection(collection, documents)
       const verifiedIds = await countMatchingIds(collection, documents)
       const after = await collection.countDocuments({})
+      const expectedVerifiedIds = documents.length - imported.skippedUniqueKey
 
-      if (verifiedIds !== documents.length) {
+      if (verifiedIds !== expectedVerifiedIds) {
         throw new Error(
-          `${collectionName} verification failed: expected ${documents.length} source IDs, found ${verifiedIds}`
+          `${collectionName} verification failed: expected ${expectedVerifiedIds} source IDs, found ${verifiedIds}`
         )
       }
 
       insertedTotal += imported.inserted
-      matchedTotal += imported.matched
-      modifiedTotal += imported.modified
+      skippedExistingTotal += imported.skippedExisting
+      skippedUniqueKeyTotal += imported.skippedUniqueKey
 
       console.log(
         JSON.stringify({
           event: 'imported',
           file: fileName,
           collection: collectionName,
-          source: documents.length,
+          source: sourceCount,
+          uniqueSource: documents.length,
           before,
           after,
-          matched: imported.matched,
-          modified: imported.modified,
           inserted: imported.inserted,
+          skippedDuplicateId: duplicateIds,
+          skippedExisting: imported.skippedExisting,
+          skippedUniqueKey: imported.skippedUniqueKey,
           verifiedIds,
         })
       )
@@ -228,9 +270,11 @@ async function main() {
         mode: dryRun ? 'dry-run' : 'import',
         files: exportsToImport.length,
         sourceTotal,
+        uniqueSourceTotal,
         insertedTotal,
-        matchedTotal,
-        modifiedTotal,
+        skippedExistingTotal,
+        skippedDuplicateIdTotal,
+        skippedUniqueKeyTotal,
       })
     )
   } finally {
