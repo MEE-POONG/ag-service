@@ -20,8 +20,11 @@ function getMailConfig() {
   const legacyUser = process.env.MAIL_USER?.trim()
   const legacyPass = process.env.MAIL_PASS
   const user = process.env.SMTP_USER?.trim() || legacyUser
-  const pass = process.env.SMTP_PASSWORD || legacyPass
-  const host = process.env.SMTP_HOST?.trim() || (user && pass ? 'smtp.gmail.com' : undefined)
+  const rawPass = process.env.SMTP_PASSWORD || legacyPass
+  const host = process.env.SMTP_HOST?.trim() || (user && rawPass ? 'smtp.gmail.com' : undefined)
+  const pass = host?.toLowerCase() === 'smtp.gmail.com'
+    ? rawPass?.replace(/\s+/g, '')
+    : rawPass
   const port = Number(process.env.SMTP_PORT || 587)
   const from = process.env.EMAIL_FROM?.trim() || user
 
@@ -47,6 +50,12 @@ function getMailConfig() {
 export function assertEmailDeliveryConfigured(): void {
   getMailConfig()
   getAppBaseUrl()
+}
+
+export async function verifyEmailDelivery(): Promise<void> {
+  const config = getMailConfig()
+  const transporter = nodemailer.createTransport(config.transport)
+  await transporter.verify()
 }
 
 function getAppBaseUrl(): string {
@@ -115,22 +124,41 @@ function createActionEmail(params: {
   }
 }
 
-export async function sendPasswordResetEmail(admin: { email: string; name: string }, token: string) {
-  const url = new URL('/auth/reset-password', getAppBaseUrl())
-  url.searchParams.set('token', token)
-  const content = createActionEmail({
-    recipientName: admin.name,
-    heading: 'ตั้งรหัสผ่านใหม่',
-    description: 'เราได้รับคำขอให้ตั้งรหัสผ่านใหม่สำหรับบัญชี AG Service ของคุณ',
-    actionLabel: 'ตั้งรหัสผ่านใหม่',
-    actionUrl: url.toString(),
-    expiresText: 'ลิงก์นี้ใช้ได้ครั้งเดียวและหมดอายุภายใน 30 นาที',
-  })
-
+export async function sendPasswordResetOtpEmail(
+  admin: { email: string; name: string },
+  otp: string,
+  referenceCode: string
+) {
+  const name = escapeHtml(admin.name || 'ผู้ใช้งาน')
+  const safeOtp = escapeHtml(otp)
+  const safeReference = escapeHtml(referenceCode)
   await sendMail({
     to: admin.email,
-    subject: 'ตั้งรหัสผ่านใหม่สำหรับ AG Service',
-    ...content,
+    subject: `รหัส OTP ตั้งรหัสผ่านใหม่ [${referenceCode}]`,
+    text: [
+      `สวัสดี ${admin.name || 'ผู้ใช้งาน'}`,
+      '',
+      'รหัส OTP สำหรับตั้งรหัสผ่านใหม่:',
+      otp,
+      `เลขอ้างอิง: ${referenceCode}`,
+      '',
+      'รหัสนี้ใช้ได้ครั้งเดียวและหมดอายุภายใน 10 นาที',
+      'หากคุณไม่ได้เป็นผู้ดำเนินการ โปรดละเว้นอีเมลฉบับนี้',
+    ].join('\n'),
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;color:#1f2937;line-height:1.6">
+        <h1 style="font-size:24px;color:#6d28d9">รหัส OTP ตั้งรหัสผ่านใหม่</h1>
+        <p>สวัสดี ${name}</p>
+        <p>กรอกรหัส OTP ด้านล่างในหน้า AG Service เพื่อตั้งรหัสผ่านใหม่</p>
+        <div style="margin:24px 0;padding:20px;border:1px solid #c4b5fd;border-radius:12px;background:#faf5ff;text-align:center">
+          <div style="font-size:13px;color:#6b7280">รหัส OTP</div>
+          <div style="font-size:34px;font-weight:700;letter-spacing:8px;color:#6d28d9">${safeOtp}</div>
+          <div style="margin-top:14px;font-size:14px;color:#4b5563">เลขอ้างอิง: <strong>${safeReference}</strong></div>
+        </div>
+        <p style="font-size:14px;color:#6b7280">รหัสนี้ใช้ได้ครั้งเดียวและหมดอายุภายใน 10 นาที</p>
+        <p style="font-size:14px;color:#6b7280">หากคุณไม่ได้เป็นผู้ดำเนินการ โปรดละเว้นอีเมลฉบับนี้</p>
+      </div>
+    `,
   })
 }
 

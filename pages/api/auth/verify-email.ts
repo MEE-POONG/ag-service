@@ -39,7 +39,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const claimed = await prisma.adminAuthTokenDB.updateMany({
-      where: { id: tokenRecord.id, usedAt: null, expiresAt: { gt: now } },
+      where: {
+        id: tokenRecord.id,
+        expiresAt: { gt: now },
+        OR: [
+          { usedAt: null },
+          { usedAt: { isSet: false } },
+        ],
+      },
       data: { usedAt: now },
     })
 
@@ -72,7 +79,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       where: {
         adminId: tokenRecord.adminId,
         type: ADMIN_TOKEN_TYPES.emailVerification,
-        usedAt: null,
+        OR: [
+          { usedAt: null },
+          { usedAt: { isSet: false } },
+        ],
       },
       data: { usedAt: now },
     })

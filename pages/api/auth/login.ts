@@ -14,14 +14,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { username, password } = req.body ?? {}
-    if (!username || !password) {
-      return res.status(400).json({ error: 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน' })
+    const { identifier, username, password } = req.body ?? {}
+    const loginIdentifier = String(identifier ?? username ?? '').trim()
+
+    if (!loginIdentifier || !password) {
+      return res.status(400).json({ error: 'กรุณากรอกอีเมลหรือชื่อผู้ใช้ และรหัสผ่าน' })
     }
 
-    const user = await authenticateAdmin(username, password)
+    const user = await authenticateAdmin(loginIdentifier, password)
     if (!user) {
-      return res.status(401).json({ error: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' })
+      return res.status(401).json({ error: 'อีเมล ชื่อผู้ใช้ หรือรหัสผ่านไม่ถูกต้อง' })
     }
 
     if (!user.emailVerifiedAt) {

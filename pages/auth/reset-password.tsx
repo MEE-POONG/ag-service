@@ -11,7 +11,9 @@ import { MIN_PASSWORD_LENGTH } from '@/lib/passwordPolicy'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
-  const token = typeof router.query.token === 'string' ? router.query.token : ''
+  const queryReference = typeof router.query.reference === 'string' ? router.query.reference : ''
+  const referenceCode = queryReference.trim().toUpperCase()
+  const [otp, setOtp] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [message, setMessage] = useState('')
@@ -20,8 +22,8 @@ export default function ResetPasswordPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!token) {
-      setError('ไม่พบโทเคนในลิงก์ กรุณาขอลิงก์ใหม่')
+    if (!referenceCode || otp.length !== 6) {
+      setError('กรุณากรอกเลขอ้างอิงและรหัส OTP 6 หลักให้ครบ')
       return
     }
 
@@ -31,11 +33,12 @@ export default function ResetPasswordPage() {
 
     try {
       const response = await axios.post('/api/auth/reset-password', {
-        token,
+        referenceCode,
+        otp,
         password,
-        confirmPassword: password,
       })
       setMessage(response.data.message)
+      setOtp('')
       setPassword('')
     } catch (requestError: any) {
       setError(requestError?.response?.data?.error || 'ไม่สามารถตั้งรหัสผ่านใหม่ได้')
@@ -52,7 +55,7 @@ export default function ResetPasswordPage() {
             <ReactIconComponent icon="FaKey" setClass="h-8 w-8 text-purple-500" />
           </div>
           <CardTitle className="text-2xl font-bold">ตั้งรหัสผ่านใหม่</CardTitle>
-          <CardDescription>ตั้งรหัสผ่านใหม่อย่างน้อย {MIN_PASSWORD_LENGTH} ตัวอักษร</CardDescription>
+          <CardDescription>กรอก OTP จากอีเมล แล้วตั้งรหัสผ่านใหม่อย่างน้อย {MIN_PASSWORD_LENGTH} ตัวอักษร</CardDescription>
         </CardHeader>
         <CardContent>
           {message ? (
@@ -67,6 +70,40 @@ export default function ResetPasswordPage() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <p id="reference-code-label" className="text-sm font-medium">เลขอ้างอิง</p>
+                <div
+                  aria-labelledby="reference-code-label"
+                  aria-live="polite"
+                  className="w-full rounded-md border border-purple-200 bg-purple-50 px-3 py-2 font-mono font-semibold tracking-wide text-purple-900"
+                >
+                  {referenceCode || (router.isReady ? 'ไม่พบเลขอ้างอิง' : 'กำลังโหลด...')}
+                </div>
+                <input type="hidden" name="reference-code" value={referenceCode} />
+                <p className="text-xs text-muted-foreground">เลขนี้ต้องตรงกับเลขอ้างอิงที่แนบในอีเมล</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="one-time-code">รหัส OTP</Label>
+                <Input
+                  id="one-time-code"
+                  name="one-time-code"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  enterKeyHint="next"
+                  pattern="[0-9]{6}"
+                  maxLength={6}
+                  value={otp}
+                  onChange={(event) => setOtp(event.target.value.replace(/\D/g, '').slice(0, 6))}
+                  disabled={submitting}
+                  aria-describedby="otp-hint"
+                  className="text-center font-mono text-xl font-bold tracking-[0.35em]"
+                  required
+                />
+                <p id="otp-hint" className="text-xs text-muted-foreground">กรอกรหัสตัวเลข 6 หลัก รหัสหมดอายุภายใน 10 นาที</p>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="new-password">รหัสผ่านใหม่</Label>
                 <div className="relative">
@@ -95,11 +132,10 @@ export default function ResetPasswordPage() {
               </div>
 
               <div aria-live="polite" className="min-h-6 text-sm">
-                {!token && router.isReady ? <p className="text-red-700">ลิงก์ไม่ถูกต้อง กรุณาขอลิงก์ใหม่</p> : null}
                 {error ? <p className="text-red-700">{error}</p> : null}
               </div>
 
-              <Button type="submit" className="w-full rounded-full !bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6]" disabled={submitting || !token}>
+              <Button type="submit" className="w-full rounded-full !bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6]" disabled={submitting || !referenceCode}>
                 {submitting ? 'กำลังบันทึก...' : 'ตั้งรหัสผ่านใหม่'}
               </Button>
             </form>
@@ -107,7 +143,7 @@ export default function ResetPasswordPage() {
 
           <div className="mt-6 text-center">
             <Link href="/auth/forgot-password" className="text-sm font-medium text-purple-700 hover:underline">
-              ขอลิงก์ใหม่
+              ขอรหัส OTP ใหม่
             </Link>
           </div>
         </CardContent>

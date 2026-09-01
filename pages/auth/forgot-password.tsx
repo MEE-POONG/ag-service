@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import axios from '@/lib/axios'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import ReactIconComponent from '@/components/ReactIconComponent'
 
 export default function ForgotPasswordPage() {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -22,6 +24,13 @@ export default function ForgotPasswordPage() {
     try {
       const response = await axios.post('/api/auth/forgot-password', { email })
       setMessage(response.data.message)
+      const referenceCode = response.data.referenceCode
+      if (referenceCode) {
+        await router.push({
+          pathname: '/auth/reset-password',
+          query: { reference: referenceCode },
+        })
+      }
     } catch (requestError: any) {
       setError(requestError?.response?.data?.error || 'ไม่สามารถส่งคำขอได้ กรุณาลองใหม่อีกครั้ง')
     } finally {
@@ -37,7 +46,7 @@ export default function ForgotPasswordPage() {
             <ReactIconComponent icon="FaEnvelope" setClass="h-8 w-8 text-purple-500" />
           </div>
           <CardTitle className="text-2xl font-bold">ลืมรหัสผ่าน</CardTitle>
-          <CardDescription>กรอกอีเมลของบัญชีเพื่อรับลิงก์ตั้งรหัสผ่านใหม่</CardDescription>
+          <CardDescription>กรอกอีเมลของบัญชีเพื่อรับรหัส OTP ตั้งรหัสผ่านใหม่</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -63,7 +72,7 @@ export default function ForgotPasswordPage() {
             </div>
 
             <Button type="submit" className="w-full rounded-full !bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6]" disabled={submitting}>
-              {submitting ? 'กำลังส่ง...' : 'ส่งลิงก์ตั้งรหัสผ่านใหม่'}
+              {submitting ? 'กำลังส่ง...' : 'ส่งรหัส OTP'}
             </Button>
           </form>
 

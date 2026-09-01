@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import ReactIconComponent from '@/components/ReactIconComponent'
 
 interface LoginFormData {
-  username: string
+  identifier: string
   password: string
 }
 
@@ -39,7 +39,7 @@ const LoadingSpinner = () => (
 export default function LoginPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const [username, setUsername] = useState("")
+  const [identifier, setIdentifier] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -101,14 +101,14 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!username || !password) {
-      toast.error('กรุณากรอกชื่อผู้ใช้และรหัสผ่าน')
+    if (!identifier.trim() || !password) {
+      toast.error('กรุณากรอกอีเมลหรือชื่อผู้ใช้ และรหัสผ่าน')
       return
     }
 
     setLoading(true)
     try {
-      await loginMutation.mutateAsync({ username, password })
+      await loginMutation.mutateAsync({ identifier: identifier.trim(), password })
     } catch {
       // Error handled by mutation onError
     } finally {
@@ -136,23 +136,25 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">ชื่อผู้ใช้</Label>
+              <Label htmlFor="identifier">อีเมลหรือชื่อผู้ใช้</Label>
               <Input
-                id="username"
-                name="username"
+                id="identifier"
+                name="identifier"
                 type="text"
-                placeholder="กรอกชื่อผู้ใช้"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="กรอกอีเมลหรือชื่อผู้ใช้"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
                 autoComplete="username"
+                autoCapitalize="none"
+                spellCheck={false}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">รหัสผ่าน</Label>
+              <Label htmlFor="current-password">รหัสผ่าน</Label>
               <div className="relative">
                 <Input
-                  id="password"
+                  id="current-password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="กรอกรหัสผ่าน"

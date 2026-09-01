@@ -151,27 +151,32 @@ function extractPermissionNames(admin: any): string[] {
 
 /**
  * 🎯 ตรวจสอบสิทธิ์การเข้าถึงของผู้ใช้ (Main Authentication Function)
- * @param username ชื่อผู้ใช้
+ * @param identifier ชื่อผู้ใช้หรืออีเมล
  * @param password รหัสผ่าน
  * @returns ข้อมูลผู้ใช้ที่ปลอดภัย หรือ null หากการตรวจสอบล้มเหลว
  *
  * 🔄 Process Flow:
- * 1. ตรวจสอบชื่อผู้ใช้และค้นหาในฐานข้อมูล
+ * 1. ตรวจสอบชื่อผู้ใช้หรืออีเมลและค้นหาในฐานข้อมูล
  * 2. ตรวจสอบสถานะ active ของผู้ใช้
  * 3. ตรวจสอบรหัสผ่าน
  * 4. ดึงข้อมูลสิทธิ์และบทบาท
  * 5. ทำความสะอาดข้อมูลก่อนส่งกลับ
  */
 export async function authenticateAdmin(
-  username: string,
+  identifier: string,
   password: string
 ): Promise<ExtendedAdminDB | null> {
-  const uname = String(username).trim()
+  const normalizedIdentifier = String(identifier).trim()
+
+  if (!normalizedIdentifier) return null
 
   // 🔍 ค้นหาผู้ใช้ในฐานข้อมูลพร้อมข้อมูลที่เกี่ยวข้อง
   const admin = await prisma.adminDB.findFirst({
     where: {
-      username: uname,
+      OR: [
+        { username: { equals: normalizedIdentifier, mode: 'insensitive' } },
+        { email: { equals: normalizedIdentifier, mode: 'insensitive' } },
+      ],
     },
     include: {
       adminPosition: {
