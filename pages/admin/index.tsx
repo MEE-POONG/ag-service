@@ -159,18 +159,24 @@ export default function AdminPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          {item.isActive
-                            ? <span className="inline-flex px-1 sm:px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">เปิดใช้งาน</span>
-                            : <span className="inline-flex px-1 sm:px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">ปิดใช้งาน</span>}
+                          {item.registrationStatus === 'PENDING_EMAIL' ? (
+                            <span className="inline-flex px-1 sm:px-2 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">รอยืนยันอีเมล</span>
+                          ) : item.registrationStatus === 'PENDING_APPROVAL' ? (
+                            <span className="inline-flex px-1 sm:px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">รออนุมัติ</span>
+                          ) : item.isActive ? (
+                            <span className="inline-flex px-1 sm:px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">เปิดใช้งาน</span>
+                          ) : (
+                            <span className="inline-flex px-1 sm:px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">ปิดใช้งาน</span>
+                          )}
                         </TableCell>
                         <TableCell className="text-right space-x-1">
-                          <AdminModalNewPassword data={item} />
+                          {item.registrationStatus === 'APPROVED' || !item.registrationStatus ? <AdminModalNewPassword data={item} /> : null}
                           <Link href={`/admin-management/admins/view/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-green-100 text-green-700 border border-solid border-green-700 hover:bg-green-200">
                             ดู
                           </Link>
                           {hs.head?.userCanAdvance || hs.support?.canUpdate || user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department" ? (
                             <Link href={`/admin-management/admins/edit/${item.id}`} className="inline-flex items-center px-2 py-1 rounded text-base bg-blue-100 text-blue-700 border border-solid border-blue-700 hover:bg-blue-200">
-                              แก้ไข
+                              {item.registrationStatus === 'PENDING_APPROVAL' ? 'อนุมัติ' : 'แก้ไข'}
                             </Link>
                           ) : null}
                           {hs.head?.userCanAdvance || hs.support?.canDelete || user?.username === 'superadmin' || user?.username === 'admin' || user?.adminPosition?.adminDepartment?.name === "IT Department" ? (

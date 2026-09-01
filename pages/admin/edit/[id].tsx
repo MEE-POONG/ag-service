@@ -14,6 +14,8 @@ interface AdminDetail {
   email: string
   tel?: string | null
   isActive: boolean
+  emailVerifiedAt?: string | null
+  registrationStatus?: string
   adminPositionId?: string | null
   adminPosition?: Position | null
 }
@@ -47,6 +49,7 @@ export default function AdminEditPage() {
     email: '',
     tel: '',
     adminPositionId: '',
+    isActive: false,
   })
   const [loading, setLoading] = useState(false)
 
@@ -100,6 +103,7 @@ export default function AdminEditPage() {
         email: adminRes?.data.email ?? '',
         tel: adminRes?.data.tel ?? '',
         adminPositionId: adminRes?.data.adminPositionId ?? '',
+        isActive: adminRes?.data.isActive ?? false,
       })
       setSelectedDeptId(
         adminRes?.data.adminPosition?.adminDepartmentId ??
@@ -144,6 +148,7 @@ export default function AdminEditPage() {
         tel: form.tel,
         adminPositionId: form.adminPositionId,
         adminDepartmentId: selectedDeptId,
+        isActive: form.isActive,
         createdBy: user?.id || '',
       }
       if (form.password && form.password.trim().length > 0) {
@@ -159,9 +164,9 @@ export default function AdminEditPage() {
       } else {
         alert(res.data?.error || 'เกิดข้อผิดพลาดในการแก้ไข Admin')
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('Edit admin failed:', e)
-      alert('เกิดข้อผิดพลาดในการเชื่อมต่อ')
+      alert(e?.response?.data?.error || 'เกิดข้อผิดพลาดในการเชื่อมต่อ')
     } finally {
       setLoading(false)
     }
@@ -171,6 +176,16 @@ export default function AdminEditPage() {
     <TheLayout>
       <div className="max-w-sm sm:max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-6 sm:p-6 mt-0">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-4 text-gray-800 border-b pb-4">แก้ไขข้อมูลผู้ดูแลระบบ</h1>
+        {adminRes?.data.registrationStatus === 'PENDING_EMAIL' ? (
+          <div className="mb-5 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+            บัญชีนี้ยังไม่ได้ยืนยันอีเมล จึงยังไม่สามารถอนุมัติให้เข้าใช้งานได้
+          </div>
+        ) : null}
+        {adminRes?.data.registrationStatus === 'PENDING_APPROVAL' ? (
+          <div className="mb-5 rounded-lg border border-orange-300 bg-orange-50 p-4 text-sm text-orange-900">
+            ผู้สมัครยืนยันอีเมลแล้ว กรุณาเลือกแผนกและตำแหน่งจริง จากนั้นเปิดใช้งานเพื่ออนุมัติบัญชี
+          </div>
+        ) : null}
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
           <div>
             <label className="block text-sm sm:text-base font-semibold mb-2 text-gray-700">
@@ -277,13 +292,34 @@ export default function AdminEditPage() {
             </select>
           </div>
 
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <label htmlFor="is-active" className="flex cursor-pointer items-center gap-3 text-sm sm:text-base font-semibold text-gray-700">
+              <input
+                id="is-active"
+                name="isActive"
+                type="checkbox"
+                checked={form.isActive}
+                onChange={(event) => setForm((current) => ({ ...current, isActive: event.target.checked }))}
+                disabled={adminRes?.data.registrationStatus === 'PENDING_EMAIL'}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:cursor-not-allowed"
+              />
+              {adminRes?.data.registrationStatus === 'PENDING_APPROVAL'
+                ? 'อนุมัติและเปิดใช้งานบัญชี'
+                : 'เปิดใช้งานบัญชี'}
+            </label>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 border-t">
             <button
               type="submit"
               disabled={loading}
               className="flex-1 px-6 py-3 text-sm sm:text-base font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600 shadow-md hover:shadow-lg"
             >
-              {loading ? '⏳ กำลังบันทึก...' : '✅ บันทึกข้อมูล'}
+              {loading
+                ? '⏳ กำลังบันทึก...'
+                : adminRes?.data.registrationStatus === 'PENDING_APPROVAL' && form.isActive
+                  ? '✅ อนุมัติและบันทึก'
+                  : '✅ บันทึกข้อมูล'}
             </button>
             <button
               type="button"

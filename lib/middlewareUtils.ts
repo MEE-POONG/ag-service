@@ -25,9 +25,18 @@ export function shouldSkipAuth(pathname: string): boolean {
     pathname.startsWith('/api/auth/login') ||
     pathname.startsWith('/api/auth/logout') ||
     pathname.startsWith('/api/auth/me') ||
+    pathname.startsWith('/api/auth/forgot-password') ||
+    pathname.startsWith('/api/auth/reset-password') ||
+    pathname.startsWith('/api/auth/verify-email') ||
+    pathname.startsWith('/api/auth/resend-verification') ||
+    pathname.startsWith('/api/auth/register') ||
     pathname.startsWith('/api/debug') ||
     pathname.startsWith('/api/widget') || // Widget APIs are public
     pathname === '/auth/login' ||
+    pathname === '/auth/forgot-password' ||
+    pathname === '/auth/reset-password' ||
+    pathname === '/auth/verify-email' ||
+    pathname === '/auth/register' ||
     pathname.startsWith('/uploads') ||
     pathname.startsWith('/public') ||
     pathname === '/favicon.ico' ||

@@ -24,6 +24,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { verifyToken, sanitizeAdminForClient } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { getAuthToken } from '@/lib/cookieUtils'
+import { isPermanentSuperAdmin } from '@/lib/adminIdentity'
+import { REGISTRATION_STATUSES } from '@/lib/registration'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // 🍪 ขั้นตอนที่ 1: ดึง Authentication Token จาก Cookie
@@ -48,8 +50,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       username: true,
       name: true,
       email: true,
+      emailVerifiedAt: true,
       tel: true,
       isActive: true,
+      tokenVersion: true,
+      registrationStatus: true,
       adminPositionId: true,
       webBaseId: true,
       createdAt: true,
@@ -115,7 +120,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
 
   // 🚫 ขั้นตอนที่ 4: ตรวจสอบสถานะของผู้ใช้
-  if (!user || user.isActive === false) {
+  if (
+    !user ||
+    user.isActive === false ||
+    !user.emailVerifiedAt ||
+    user.registrationStatus !== REGISTRATION_STATUSES.approved ||
+    Number(user.tokenVersion || 0) !== Number(payload.tokenVersion || 0)
+  ) {
     // ไม่พบผู้ใช้หรือบัญชีถูกปิดใช้งาน
     return res.status(200).json({ user: null })
   }
@@ -142,8 +153,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     canAdvance: p.canAdvance,
   }))
 
+  const isSuperAdmin = isPermanentSuperAdmin(user)
+
   // ถ้าไม่มีสิทธิ์ใน DB หรือเป็น superadmin → ให้สิทธิ์เต็มกับทุกเมนู
-  const permissions = dbPermissions.length > 0 && !payload.isSuperAdmin
+  const permissions = dbPermissions.length > 0 && !isSuperAdmin
     ? dbPermissions
     : menuWeb.map((m: any) => ({
         id: m.id,
@@ -158,10 +171,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const merged = {
     ...user,
-    role: payload.role,
-    isSuperAdmin: payload.isSuperAdmin,
+    role: isSuperAdmin ? 'superadmin' : 'admin',
+    isSuperAdmin,
     permissions,
-    tokenVersion: payload.tokenVersion ?? 0,
+    tokenVersion: user.tokenVersion ?? 0,
   }
   // 📤 ขั้นตอนที่ 7: ส่งข้อมูลกลับไปยัง Client
   return res.status(200).json({

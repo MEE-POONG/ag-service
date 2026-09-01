@@ -22,6 +22,8 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { prisma } from './prisma'
 import { ExtendedAdminDB } from '@/data/interface'
+import { isPermanentSuperAdmin } from './adminIdentity'
+import { REGISTRATION_STATUSES } from './registration'
 
 /** 👥 รองรับบทบาทต่างๆ ในระบบ */
 export type AppRole = 'superadmin' | 'admin' | 'user' | 'aguser'
@@ -40,7 +42,6 @@ export interface JwtUserPayload {
 }
 
 // 🔑 การตั้งค่าความปลอดภัย
-const ROOT_USERNAME = (process.env.NEXT_PUBLIC_ROOT_USERNAME || 'superadmin').toLowerCase()
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret'
 
 // ⚠️ เตือนเมื่อไม่มี JWT_SECRET ใน Production
@@ -166,13 +167,11 @@ export async function authenticateAdmin(
   password: string
 ): Promise<ExtendedAdminDB | null> {
   const uname = String(username).trim()
-  const isRootLogin = uname.toLowerCase() === ROOT_USERNAME
 
   // 🔍 ค้นหาผู้ใช้ในฐานข้อมูลพร้อมข้อมูลที่เกี่ยวข้อง
   const admin = await prisma.adminDB.findFirst({
     where: {
       username: uname,
-      isActive: true, // เฉพาะบัญชีที่เปิดใช้งาน
     },
     include: {
       adminPosition: {
@@ -201,7 +200,8 @@ export async function authenticateAdmin(
 
   // 📋 สร้างรายการสิทธิ์และกำหนดบทบาท
   const permissions = extractPermissionNames(admin)
-  const role: AppRole = isRootLogin ? 'superadmin' : 'admin'
+  const isSuperAdmin = isPermanentSuperAdmin(admin)
+  const role: AppRole = isSuperAdmin ? 'superadmin' : 'admin'
 
   // 🔢 ดึง tokenVersion สำหรับการจัดการ token revocation
   const tokenVersion = Number((admin as any).tokenVersion || 0)
@@ -211,7 +211,7 @@ export async function authenticateAdmin(
     ...admin,
     permissions,
     role,
-    isSuperAdmin: isRootLogin,
+    isSuperAdmin,
     tokenVersion,
   }) as ExtendedAdminDB & { tokenVersion?: number }
 
@@ -224,7 +224,7 @@ export async function authenticateAdmin(
  * @returns JwtUserPayload สำหรับสร้าง JWT Token
  */
 export function buildJwtPayload(admin: any): JwtUserPayload {
-  const isRoot = (admin?.username || '').toLowerCase() === ROOT_USERNAME
+  const isRoot = isPermanentSuperAdmin(admin)
   return {
     sub: String(admin.id),                        // User ID
     username: admin.username,                     // ชื่อผู้ใช้

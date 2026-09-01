@@ -41,6 +41,7 @@ export default function LoginPage() {
   const queryClient = useQueryClient()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const redirectTo = typeof router.query?.redirect === 'string' ? router.query.redirect : '/'
@@ -84,6 +85,11 @@ export default function LoginPage() {
         'เกิดข้อผิดพลาดในการเข้าสู่ระบบ'
 
       toast.error(errorMessage)
+
+      if (error?.response?.data?.code === 'EMAIL_VERIFICATION_REQUIRED') {
+        const email = error.response.data.email
+        router.push(`/auth/verify-email${email ? `?email=${encodeURIComponent(email)}` : ''}`)
+      }
     }
   })
 
@@ -133,6 +139,7 @@ export default function LoginPage() {
               <Label htmlFor="username">ชื่อผู้ใช้</Label>
               <Input
                 id="username"
+                name="username"
                 type="text"
                 placeholder="กรอกชื่อผู้ใช้"
                 value={username}
@@ -143,54 +150,53 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">รหัสผ่าน</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="กรอกรหัสผ่าน"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="กรอกรหัสผ่าน"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  className="pr-24"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((current) => !current)}
+                  className="absolute inset-y-0 right-3 text-sm font-medium text-purple-700 hover:underline"
+                  aria-pressed={showPassword}
+                >
+                  {showPassword ? 'ซ่อน' : 'แสดง'}รหัสผ่าน
+                </button>
+              </div>
             </div>
-            <div className="flex gap-2 justify-center">
+            <div className="space-y-3">
               <Button
                 type="submit"
-                className="!bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-4 py-2 disabled:opacity-60"
+                className="w-full !bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-4 py-2 disabled:opacity-60"
                 disabled={loading}
               >
                 {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
               </Button>
-              {/* ปุ่มลืมรหัสผ่าน Modal */}
-              <Button
-                type="button"
-                className="!bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6] rounded-full px-4 py-2 disabled:opacity-60"
-                disabled={loading}
-                onClick={() => router.push('/')}
+              <Link
+                href="/auth/forgot-password"
+                className="block text-center text-sm font-medium text-purple-700 hover:underline"
               >
-                {loading ? "กำลังเข้าสู่ระบบ..." : "ยกเลิก"}
-              </Button>
+                ลืมรหัสผ่าน?
+              </Link>
             </div>
           </form>
-          {/* <div className="mt-6 text-center space-y-2">
-            <div className="text-sm text-muted-foreground">
-              ยังไม่มีบัญชี?{" "}
-              <Link
-                href="/auth/register"
-                className="text-primary hover:underline font-medium"
-              >
-                สมัครสมาชิก
-              </Link>
-            </div>
-            <div>
-              <Link
-                href="/"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                กลับหน้าหลัก
-              </Link>
-            </div>
-          </div> */}
+          <div className="mt-6 border-t border-purple-200 pt-5 text-center">
+            <p className="mb-3 text-sm text-muted-foreground">ยังไม่มีบัญชี?</p>
+            <Link
+              href="/auth/register"
+              className="inline-flex w-full items-center justify-center rounded-full border border-purple-400 px-4 py-2 font-medium text-purple-700 transition-colors hover:bg-purple-100"
+            >
+              สมัครสมาชิก
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -309,14 +309,31 @@ async function main() {
   const hashedPassword = await bcrypt.hash('admin123', 12)
 
   // สร้าง superadmin
+  const permanentSuperAdminEmail = 'humansaees0@gmail.com'
+  const existingSuperAdmin = await prisma.adminDB.findUnique({
+    where: { username: 'superadmin' },
+    select: { email: true },
+  })
+  const superAdminEmailChanged = Boolean(
+    existingSuperAdmin && existingSuperAdmin.email.toLowerCase() !== permanentSuperAdminEmail
+  )
   const superAdmin = await prisma.adminDB.upsert({
     where: { username: 'superadmin' },
-    update: {},
+    update: {
+      email: permanentSuperAdminEmail,
+      adminPositionId: superAdminPositionDB.id,
+      isActive: true,
+      ...(superAdminEmailChanged
+        ? { emailVerifiedAt: null, tokenVersion: { increment: 1 } }
+        : {}),
+      updatedBy: 'system',
+      updatedAt: new Date(),
+    },
     create: {
       username: 'superadmin',
       password: hashedPassword,
       name: 'Super Administrator',
-      email: 'superadmin@ag-db.com',
+      email: permanentSuperAdminEmail,
       tel: '0812345678',
       adminPositionId: superAdminPositionDB.id,
       webBaseId: WebBaseDB.id,

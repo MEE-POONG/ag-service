@@ -17,6 +17,7 @@ type AdjustbetsCockfight {
   statusServe   String?
   work          Boolean
 }
+
 // sss
 type AdjustbetsLottoRcw {
   enabled     Boolean
@@ -168,6 +169,7 @@ model AdminDB {
   /// Could not determine type: the field only had null or empty values in the sample set.
   deleteBy                Json?
   email                   String                     @unique
+  emailVerifiedAt         DateTime?                  @db.Date
   isActive                Boolean
   name                    String
   password                String
@@ -177,6 +179,9 @@ model AdminDB {
   updatedAt               DateTime                   @db.Date
   updatedBy               String
   username                String                     @unique
+  tokenVersion            Int                        @default(0)
+  registrationStatus      String                     @default("APPROVED")
+  authTokens              AdminAuthTokenDB[]
   // Chat system relations
   assignedConversations   ChatConversationDB[]
   // Widget keys relations
@@ -187,6 +192,21 @@ model AdminDB {
   notifications           NotificationDB[]
   pushSubscriptions       PushSubscriptionDB[]
   notificationPreferences NotificationPreferencesDB?
+}
+
+model AdminAuthTokenDB {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  adminId   String    @db.ObjectId
+  admin     AdminDB   @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  type      String
+  email     String
+  tokenHash String    @unique
+  expiresAt DateTime  @db.Date
+  usedAt    DateTime? @db.Date
+  createdAt DateTime  @default(now()) @db.Date
+
+  @@index([adminId, type])
+  @@index([expiresAt])
 }
 
 model AdminDefaultPermissionDB {
@@ -211,15 +231,15 @@ model AdminDefaultPermissionDB {
 }
 
 model AdminDepartmentDB {
-  id             String            @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt      DateTime          @db.Date
-  createdBy      String
-  description    String
-  isActive       Boolean
-  isDeleted      Boolean
-  name           String            @unique
-  updatedAt      DateTime          @db.Date
-  updatedBy      String
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime          @db.Date
+  createdBy       String
+  description     String
+  isActive        Boolean
+  isDeleted       Boolean
+  name            String            @unique
+  updatedAt       DateTime          @db.Date
+  updatedBy       String
   adminPositionDB AdminPositionDB[]
 }
 
@@ -1336,7 +1356,6 @@ model AgentWinLoseReportDB {
   webname      String
 }
 
-
 model CreateAgentDB {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   /// Multiple data types found: Int: 85.7%, BigInt: 14.3% out of 21 sampled entries
@@ -1411,4 +1430,3 @@ model MasterWinLoseReportDB {
   usernameAG     String
   webname        String
 }
-

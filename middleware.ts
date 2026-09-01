@@ -41,6 +41,6 @@ export const config = {
      * - uploads (uploaded files)
      * - public (public files)
      */
-    '/((?!api/auth/(?:login|logout|me)|auth/login|_next/static|_next/image|favicon.ico|manifest\\.json|sw\\.js|chat-widget|icon-|uploads|public).*)',
+    '/((?!api/auth/(?:login|logout|me|forgot-password|reset-password|verify-email|resend-verification|register)|auth/(?:login|forgot-password|reset-password|verify-email|register)|_next/static|_next/image|favicon.ico|manifest\\.json|sw\\.js|chat-widget|icon-|uploads|public).*)',
   ],
 }

@@ -3,6 +3,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { authenticateAdmin, buildJwtPayload, generateToken, sanitizeAdminForClient } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { setAuthCookie } from '@/lib/cookieUtils'
+import { assertEmailDeliveryConfigured } from '@/lib/accountEmail'
+import { sendVerificationForAdmin } from '@/lib/adminAuthTokens'
+import { REGISTRATION_STATUSES } from '@/lib/registration'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -19,6 +22,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const user = await authenticateAdmin(username, password)
     if (!user) {
       return res.status(401).json({ error: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' })
+    }
+
+    if (!user.emailVerifiedAt) {
+      try {
+        assertEmailDeliveryConfigured()
+        await sendVerificationForAdmin({
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        })
+      } catch (emailError) {
+        console.error('Login verification email failed:', emailError)
+        return res.status(503).json({
+          code: 'EMAIL_DELIVERY_UNAVAILABLE',
+          error: 'บัญชียังไม่ได้ยืนยันอีเมล และระบบส่งอีเมลยังไม่พร้อมใช้งาน กรุณาติดต่อผู้ดูแลระบบ',
+        })
+      }
+
+      return res.status(403).json({
+        code: 'EMAIL_VERIFICATION_REQUIRED',
+        error: 'กรุณายืนยันอีเมลก่อนเข้าสู่ระบบ เราได้ส่งลิงก์ยืนยันให้แล้ว',
+        email: user.email,
+      })
+    }
+
+    const registrationStatus = user.registrationStatus || REGISTRATION_STATUSES.approved
+    if (registrationStatus !== REGISTRATION_STATUSES.approved) {
+      return res.status(403).json({
+        code: 'ACCOUNT_PENDING_APPROVAL',
+        error: 'ยืนยันอีเมลแล้ว บัญชีกำลังรอผู้ดูแลระบบอนุมัติ',
+      })
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({
+        code: 'ACCOUNT_DISABLED',
+        error: 'บัญชีนี้ถูกปิดใช้งาน กรุณาติดต่อผู้ดูแลระบบ',
+      })
     }
 
     // สร้าง JWT payload เล็ก ๆ แล้วเซ็ตเป็น HttpOnly cookie

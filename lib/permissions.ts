@@ -2,6 +2,8 @@ import { NextApiRequest } from 'next'
 import { verifyToken } from './auth'
 import { prisma } from './prisma'
 import { getAuthToken } from './cookieUtils'
+import { isPermanentSuperAdmin } from './adminIdentity'
+import { REGISTRATION_STATUSES } from './registration'
 
 export interface PermissionContext {
   canAdvance: boolean
@@ -35,7 +37,7 @@ export async function checkUserPermissions(
     return null
   }
 
-  const user = verifyToken(token)
+  const user = await getAdminFromCookie(req, token)
   if (!user) {
     return null
   }
@@ -54,8 +56,11 @@ export async function checkUserPermissions(
 }
 
 // Get admin data with full permissions from cookie
-export async function getAdminFromCookie(req: NextApiRequest): Promise<any | null> {
-  const token = getAuthToken(req)
+export async function getAdminFromCookie(
+  req: NextApiRequest,
+  tokenOverride?: string
+): Promise<any | null> {
+  const token = tokenOverride || getAuthToken(req)
   if (!token) {
     return null
   }
@@ -86,25 +91,25 @@ export async function getAdminFromCookie(req: NextApiRequest): Promise<any | nul
   }) as any
 
   if (!admin) {
-    // superadmin may not be in AdminDB yet — return token payload with full permissions
-    if (user.isSuperAdmin) {
-      return {
-        ...user,
-        id: user.sub,
-        permissions: [],
-        role: 'superadmin',
-        isSuperAdmin: true,
-      }
-    }
     return null
   }
+
+  if (
+    !admin.emailVerifiedAt ||
+    admin.registrationStatus !== REGISTRATION_STATUSES.approved ||
+    Number(admin.tokenVersion || 0) !== Number(user.tokenVersion || 0)
+  ) {
+    return null
+  }
+
+  const isSuperAdmin = isPermanentSuperAdmin(admin)
 
   // All admins get full permissions
   return {
     ...admin,
     permissions: [],
-    role: user.isSuperAdmin ? 'superadmin' : 'admin',
-    isSuperAdmin: user.isSuperAdmin,
+    role: isSuperAdmin ? 'superadmin' : 'admin',
+    isSuperAdmin,
   }
 }
 

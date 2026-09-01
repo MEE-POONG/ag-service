@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 import { hashPassword } from '@/lib/auth'
+import { requireAuth } from '@/lib/permissions'
+import { isPermanentSuperAdminEmail } from '@/lib/adminIdentity'
 
 interface ResetPasswordResponse {
   success?: boolean;
@@ -21,6 +23,9 @@ export default async function handler(
   }
 
   try {
+    const currentAdmin = await requireAuth(req, res)
+    if (!currentAdmin) return
+
     const { id, newPassword } = req.body;
 
     // Validation
@@ -55,6 +60,7 @@ export default async function handler(
       select: {
         id: true,
         username: true,
+        email: true,
         isActive: true
       }
     });
@@ -74,6 +80,13 @@ export default async function handler(
       });
     }
 
+    if (isPermanentSuperAdminEmail(existingAdmin.email)) {
+      return res.status(403).json({
+        success: false,
+        error: 'ผู้ดูแลระบบสูงสุดต้องตั้งรหัสผ่านใหม่ผ่านลิงก์ยืนยันทางอีเมลเท่านั้น',
+      })
+    }
+
     // Hash รหัสผ่านใหม่
     const hashedPassword = await hashPassword(newPassword);
 
@@ -82,8 +95,9 @@ export default async function handler(
       where: { id },
       data: {
         password: hashedPassword,
-        updatedBy: req.body.updatedBy || 'system', // รับจาก request หรือใช้ default
-        updatedAt: new Date()
+        tokenVersion: { increment: 1 },
+        updatedBy: currentAdmin.username,
+        updatedAt: new Date(),
       }
     });
 
@@ -99,7 +113,7 @@ export default async function handler(
           newData: JSON.stringify({
             action: 'password_reset',
             timestamp: new Date().toISOString(),
-            resetBy: 'system' // TODO: เปลี่ยนเป็น admin ที่ login
+            resetBy: currentAdmin.username,
           }),
           createdAt: new Date()
         }

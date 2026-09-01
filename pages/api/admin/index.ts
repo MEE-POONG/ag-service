@@ -1,10 +1,21 @@
   import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
-import { hashPassword } from '@/lib/auth'
+import { hashPassword, sanitizeAdminForClient } from '@/lib/auth'
 import { Prisma } from '@prisma/client'
 import { requireAuth, hasPermission } from '@/lib/permissions'
 import { recordWorkHistory, extractUserInfo } from '@/utils/workHistoryUtils'
 import { serializeBigIntToString } from '@/lib/bigintUtils'
+import {
+  isPermanentSuperAdminEmail,
+  isValidEmail,
+  normalizeEmail,
+} from '@/lib/adminIdentity'
+import { assertEmailDeliveryConfigured } from '@/lib/accountEmail'
+import { sendVerificationForAdmin } from '@/lib/adminAuthTokens'
+import {
+  isPendingRegistrationPosition,
+  REGISTRATION_STATUSES,
+} from '@/lib/registration'
 
 interface AdminResponse {
   success?: boolean;
@@ -51,8 +62,10 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminResponse
           username: true,
           name: true,
           email: true,
+          emailVerifiedAt: true,
           tel: true,
           isActive: true,
+          registrationStatus: true,
           adminPositionId: true,      // ให้ฟอร์มรู้ตำแหน่งเดิม
           // ❌ ไม่ select password/passwordHash เพื่อความปลอดภัย + ลด payload
           adminPosition: {
@@ -124,7 +137,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse<AdminResponse
 
     return res.status(200).json({
       success: true,
-      data: admins,
+      data: admins.map((admin) => sanitizeAdminForClient(admin)),
       pagination: {
         totalItems: totalAdmins,
         totalPages: Math.ceil(totalAdmins / pageSizeNum),
@@ -157,6 +170,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
 
   try {
     const { username, password, name, email, tel, adminPositionId } = req.body;
+    const normalizedEmail = normalizeEmail(email)
 
     // Validation
     if (!username || !password || !name || !email || !adminPositionId) {
@@ -166,10 +180,17 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
       });
     }
 
+    if (!isValidEmail(normalizedEmail)) {
+      return res.status(400).json({ success: false, error: 'รูปแบบอีเมลไม่ถูกต้อง' })
+    }
+
     // Check for existing admin
     const existing = await prisma.adminDB.findFirst({
       where: {
-        OR: [{ username }, { email }],
+        OR: [
+          { username },
+          { email: { equals: normalizedEmail, mode: 'insensitive' } },
+        ],
 
       },
     });
@@ -189,7 +210,10 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
           username,
           password: hashedPassword,
           name,
-          email,
+          email: normalizedEmail,
+          emailVerifiedAt: null,
+          tokenVersion: 0,
+          registrationStatus: REGISTRATION_STATUSES.approved,
           tel,
           adminPositionId,
           isActive: true,
@@ -209,7 +233,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
         admin.id,
         'CREATE',
         null,
-        admin,
+        sanitizeAdminForClient(admin),
         currentAdmin.username,
         'admin',
         true,
@@ -221,10 +245,23 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse<AdminRespons
       return admin;
     });
 
+    let verificationMessage = 'กรุณาให้ผู้ใช้ตรวจอีเมลเพื่อยืนยันบัญชีก่อนเข้าสู่ระบบ'
+    try {
+      assertEmailDeliveryConfigured()
+      await sendVerificationForAdmin({
+        id: newAdmin.id,
+        email: newAdmin.email,
+        name: newAdmin.name,
+      })
+    } catch (emailError) {
+      console.error('New admin verification email failed:', emailError)
+      verificationMessage = 'สร้างบัญชีแล้ว แต่ยังส่งอีเมลยืนยันไม่ได้ ผู้ใช้สามารถขอส่งใหม่จากหน้าเข้าสู่ระบบ'
+    }
+
     return res.status(201).json({
       success: true,
-      admin: newAdmin,
-      message: 'สร้างผู้ดูแลระบบสำเร็จ'
+      admin: sanitizeAdminForClient(newAdmin),
+      message: `สร้างผู้ดูแลระบบสำเร็จ — ${verificationMessage}`
     });
   } catch (error: any) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -263,7 +300,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
   // }
 
   try {
-    const { id, username, name, email, tel, adminPositionId, isActive, updatedBy } = req.body;
+    const { id, username, name, email, tel, adminPositionId, isActive } = req.body;
 
 
 
@@ -286,6 +323,31 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
       });
     }
 
+    const existingIsPermanentAdmin = isPermanentSuperAdminEmail(existingAdmin.email)
+    const normalizedEmail = email === undefined ? undefined : normalizeEmail(email)
+
+    if (normalizedEmail !== undefined && !isValidEmail(normalizedEmail)) {
+      return res.status(400).json({ success: false, error: 'รูปแบบอีเมลไม่ถูกต้อง' })
+    }
+
+    if (
+      existingIsPermanentAdmin &&
+      normalizedEmail !== undefined &&
+      normalizedEmail !== normalizeEmail(existingAdmin.email)
+    ) {
+      return res.status(403).json({
+        success: false,
+        error: 'ไม่สามารถเปลี่ยนอีเมลของผู้ดูแลระบบสูงสุดได้',
+      })
+    }
+
+    if (existingIsPermanentAdmin && isActive === false) {
+      return res.status(403).json({
+        success: false,
+        error: 'ไม่สามารถปิดใช้งานผู้ดูแลระบบสูงสุดได้',
+      })
+    }
+
     // Check for duplicate username/email (excluding current admin)
     if (username && username !== existingAdmin.username) {
       const duplicateUsername = await prisma.adminDB.findFirst({
@@ -304,10 +366,10 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
       }
     }
 
-    if (email && email !== existingAdmin.email) {
+    if (normalizedEmail && normalizedEmail !== normalizeEmail(existingAdmin.email)) {
       const duplicateEmail = await prisma.adminDB.findFirst({
         where: {
-          email,
+          email: { equals: normalizedEmail, mode: 'insensitive' },
 
           id: { not: id }
         }
@@ -321,6 +383,36 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
       }
     }
 
+    const emailChanged = Boolean(
+      normalizedEmail && normalizedEmail !== normalizeEmail(existingAdmin.email)
+    )
+
+    const existingRegistrationStatus =
+      existingAdmin.registrationStatus || REGISTRATION_STATUSES.approved
+    const approvalRequested =
+      existingRegistrationStatus !== REGISTRATION_STATUSES.approved && isActive === true
+
+    if (approvalRequested) {
+      if (!existingAdmin.emailVerifiedAt || emailChanged) {
+        return res.status(400).json({
+          success: false,
+          error: 'ต้องยืนยันอีเมลปัจจุบันก่อนอนุมัติบัญชี',
+        })
+      }
+
+      const targetPosition = await prisma.adminPositionDB.findUnique({
+        where: { id: adminPositionId || existingAdmin.adminPositionId },
+        include: { adminDepartment: true },
+      })
+
+      if (!targetPosition || isPendingRegistrationPosition(targetPosition)) {
+        return res.status(400).json({
+          success: false,
+          error: 'กรุณาเลือกแผนกและตำแหน่งจริงก่อนอนุมัติบัญชี',
+        })
+      }
+    }
+
     // Update admin
     const admin = await prisma.$transaction(async (tx) => {
       const updatedAdmin = await tx.adminDB.update({
@@ -328,10 +420,23 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
         data: {
           ...(username && { username }),
           ...(name && { name }),
-          ...(email && { email }),
+          ...(normalizedEmail && { email: normalizedEmail }),
+          ...(emailChanged && {
+            emailVerifiedAt: null,
+            tokenVersion: { increment: 1 },
+            ...(existingRegistrationStatus !== REGISTRATION_STATUSES.approved
+              ? {
+                  registrationStatus: REGISTRATION_STATUSES.pendingEmail,
+                  isActive: false,
+                }
+              : {}),
+          }),
           ...(tel !== undefined && { tel }),
           ...(adminPositionId && { adminPositionId: adminPositionId }),
           ...(isActive !== undefined && { isActive }),
+          ...(approvalRequested && {
+            registrationStatus: REGISTRATION_STATUSES.approved,
+          }),
           updatedBy: currentAdmin.username,
           updatedAt: new Date(),
         },
@@ -349,8 +454,8 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
         'AdminDB',
         id,
         'UPDATE',
-        existingAdmin,
-        updatedAdmin,
+        sanitizeAdminForClient(existingAdmin),
+        sanitizeAdminForClient(updatedAdmin),
         currentAdmin.username,
         'admin',
         true,
@@ -364,10 +469,24 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<AdminResponse
 
 
 
+    let message = emailChanged
+      ? 'อัปเดตผู้ดูแลระบบสำเร็จ กรุณายืนยันอีเมลใหม่ก่อนเข้าสู่ระบบอีกครั้ง'
+      : 'อัปเดตผู้ดูแลระบบสำเร็จ'
+
+    if (emailChanged) {
+      try {
+        assertEmailDeliveryConfigured()
+        await sendVerificationForAdmin({ id: admin.id, email: admin.email, name: admin.name })
+      } catch (emailError) {
+        console.error('Updated admin verification email failed:', emailError)
+        message = 'อัปเดตผู้ดูแลระบบสำเร็จ แต่ยังส่งอีเมลยืนยันไม่ได้ กรุณาขอส่งใหม่จากหน้าเข้าสู่ระบบ'
+      }
+    }
+
     return res.status(200).json(serializeBigIntToString({
       success: true,
-      data: admin, // เปลี่ยนจาก admin เป็น data เพื่อความสอดคล้อง
-      message: 'อัปเดตผู้ดูแลระบบสำเร็จ'
+      data: sanitizeAdminForClient(admin), // เปลี่ยนจาก admin เป็น data เพื่อความสอดคล้อง
+      message
     }));
   } catch (error: any) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -431,6 +550,13 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<AdminRespo
       });
     }
 
+    if (isPermanentSuperAdminEmail(existingAdmin.email)) {
+      return res.status(403).json({
+        success: false,
+        error: 'ไม่สามารถลบผู้ดูแลระบบสูงสุดได้',
+      })
+    }
+
     // Hard delete with work history
     await prisma.$transaction(async (tx) => {
       // บันทึกประวัติก่อนลบ
@@ -440,7 +566,7 @@ async function handleDelete(req: NextApiRequest, res: NextApiResponse<AdminRespo
         'AdminDB',
         id,
         'DELETE',
-        existingAdmin,
+        sanitizeAdminForClient(existingAdmin),
         null,
         currentAdmin.username,
         'admin',

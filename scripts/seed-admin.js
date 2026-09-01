@@ -9,12 +9,12 @@ const ADMINS_TO_SEED = [
     username: 'superadmin',
     password: 'Admin@5678',
     name: 'Administrator 01',
-    email: 'admin01@ag-service.com',
+    email: 'humansaees0@gmail.com',
     tel: '0800000002',
     isActive: true,
     position: {
-      name: 'Admin',
-      priority: 2,
+      name: 'Super Admin',
+      priority: 1,
       department: {
         name: 'IT Department',
         description: 'แผนกเทคโนโลยีสารสนเทศ',
@@ -116,6 +116,13 @@ async function seedAdmins() {
     const hashedPassword = await bcrypt.hash(adminData.password, 12)
 
     // 4. Admin
+    const existingAdmin = await prisma.adminDB.findUnique({
+      where: { username: adminData.username },
+      select: { email: true },
+    })
+    const emailChanged = Boolean(
+      existingAdmin && existingAdmin.email.toLowerCase() !== adminData.email.toLowerCase()
+    )
     const admin = await prisma.adminDB.upsert({
       where: { username: adminData.username },
       update: {
@@ -126,6 +133,9 @@ async function seedAdmins() {
         adminPositionId: position.id,
         webBaseId: webBaseId,
         isActive: adminData.isActive,
+        ...(emailChanged
+          ? { emailVerifiedAt: null, tokenVersion: { increment: 1 } }
+          : {}),
         updatedBy: 'system',
         updatedAt: new Date()
       },
