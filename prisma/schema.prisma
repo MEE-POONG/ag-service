@@ -280,63 +280,49 @@ model QueueJob {
   work          String
 }
 
-model AgUserAccountDB {
-  id              String            @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt       DateTime          @db.Date
-  createdBy       String
-  gaSecretEnc     String
-  isActive        Boolean
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  meta            Json?
-  /// Could not determine type: the field only had null or empty values in the sample set.
-  note            Json?
-  origin          String
-  position        String
-  reserve         String
-  statusServe     String
-  updatedAt       DateTime          @db.Date
-  updatedBy       String
-  userLogin       String?
-  username        String            @unique
-  webname         String
-  partnerAG       String?
-  partnerLogin    String?
-  CustomerAgentDB CustomerAgentDB[]
-  PartnerDB       PartnerDB[]
-}
-
-// AG user collection imported from ag-bot.AgUserDB.json.
-// Keep separate from AGUserDB because both the collection name and fields differ.
+// Canonical AG user collection. Data from the former AgUserAccountDB collection
+// is merged here so every AG feature reads and writes one complete record.
 model AgUserDB {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  v            Int?     @map("__v")
-  createdAt    DateTime @db.Date
-  createdBy    String?
-  deleteBy     Json?
-  gaSecretEnc  String?
-  isActive     Boolean
-  origin       String
-  partnerAG    String?
-  partnerLogin String?
-  position     String
-  reserve      String?
-  updatedAt    DateTime @db.Date
-  updatedBy    String?
-  userLogin    String?
-  username     String
+  id             String            @id @default(auto()) @map("_id") @db.ObjectId
+  v              Int?              @map("__v")
+  createdAt      DateTime          @db.Date
+  createdBy      String
+  deleteBy       Json?
+  gaSecretEnc    String
+  isActive       Boolean
+  meta           Json?
+  note           Json?
+  origin         String
+  partnerAG      String?
+  partnerLogin   String?
+  position       String
+  reserve        String
+  statusServe    String
+  updatedAt      DateTime          @db.Date
+  updatedBy      String
+  userLogin      String            @unique
+  username       String            @unique
+  webname        String
+  webBaseId      String            @db.ObjectId
+  webBase        WebBaseDB         @relation(fields: [webBaseId], references: [id], onDelete: Cascade)
+  customerAgents CustomerAgentDB[]
+  partners       PartnerDB[]
+
+  @@index([statusServe])
+  @@index([webBaseId])
 }
 
 model CustomerAgentDB {
-  id              String          @id @default(auto()) @map("_id") @db.ObjectId
-  agentId         String          @db.ObjectId
-  agUserAccountDB AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  createdAt       DateTime        @db.Date
-  createdBy       String
-  customerId      String          @unique
-  isActive        Boolean
-  note            String
-  updatedAt       DateTime        @db.Date
-  updatedBy       String
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  agentId    String   @db.ObjectId
+  agUserDB   AgUserDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @db.Date
+  createdBy  String
+  customerId String   @unique
+  isActive   Boolean
+  note       String
+  updatedAt  DateTime @db.Date
+  updatedBy  String
 }
 
 model ImageList {
@@ -380,21 +366,21 @@ model MenuWebDB {
 }
 
 model PartnerDB {
-  id              String          @id @default(auto()) @map("_id") @db.ObjectId
-  agentId         String          @db.ObjectId
-  agUserAccountDB AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
-  bankName        String
-  bankNumber      String
-  createdAt       DateTime        @db.Date
-  createdBy       String
-  line            String
-  method          String
-  name            String
-  startDate       DateTime        @db.Date
-  status          String
-  tel             String
-  updatedAt       DateTime        @db.Date
-  updatedBy       String
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  agentId    String   @db.ObjectId
+  agUserDB   AgUserDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  bankName   String
+  bankNumber String
+  createdAt  DateTime @db.Date
+  createdBy  String
+  line       String
+  method     String
+  name       String
+  startDate  DateTime @db.Date
+  status     String
+  tel        String
+  updatedAt  DateTime @db.Date
+  updatedBy  String
 }
 
 model SetZero {
@@ -461,21 +447,22 @@ model UserDB {
 }
 
 model WebBaseDB {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime  @db.Date
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime   @db.Date
   createdBy String
   isActive  Boolean
   isDeleted Boolean
-  name      String    @unique
+  name      String     @unique
   otpA      String
   otpM      String
   otpS      String
   passA     String
   passM     String
   passS     String
-  updatedAt DateTime  @db.Date
+  updatedAt DateTime   @db.Date
   updatedBy String
   AdminDB   AdminDB[]
+  agUsers   AgUserDB[]
 
   @@index([isActive], map: "isActive_1")
 }

@@ -7,12 +7,12 @@
 #### ฟิลด์ที่เปลี่ยนแปลง:
 - **ชื่อ**: ไม่ต้องกรอก (สร้างอัตโนมัติจาก AG User ที่เลือก)
 - **รหัสลูกค้า**: กรอกเอง (text input)
-- **Username AG**: เอามาจาก AgUserAccountDB.username (ใช้ search autocomplete)
+- **Username AG**: เอามาจาก AgUserDB.username (ใช้ search autocomplete)
 - **PIN/OTP**: ไม่ต้องกรอก (ว่างเปล่า)
 - **Commission (Main, X12, Par, Other)**: Read Only
 
 #### ฟิลด์ใหม่:
-- **AG User Search**: Search autocomplete ที่แสดง AgUserAccountDB.username
+- **AG User Search**: Search autocomplete ที่แสดง AgUserDB.username
 - **Auto-generated Name**: สร้างชื่ออัตโนมัติจาก AG User ที่เลือก
 
 ### 2. การทำงานของ AG User Search

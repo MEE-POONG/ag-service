@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { API_ENDPOINTS } from '@/data/apiEndpoints'
-import { AgUserAccountDB, PartnerDB } from '@prisma/client'
+import { AgUserDB, PartnerDB } from '@prisma/client'
 
 export interface ExtendedPartnerDB extends PartnerDB {
-  agUserAccountDB: AgUserAccountDB
+  agUserDB: AgUserDB
 }
 
 

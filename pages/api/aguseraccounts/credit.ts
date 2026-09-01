@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     // Locate agent by id or username
-    const agent = await prisma.agUserAccountDB.findFirst({
+    const agent = await prisma.agUserDB.findFirst({
       where: {
         OR: [
           id ? { id } : undefined,
@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return res.status(404).json({ success: false, error: 'ไม่พบ AG User' })
     }
 
-    const adviser = await prisma.agUserAccountDB.findFirst({
+    const adviser = await prisma.agUserDB.findFirst({
       where: {
         username: agent.origin,
       },

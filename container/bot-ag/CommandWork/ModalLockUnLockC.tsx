@@ -3,13 +3,13 @@ import { Button, ButtonProps } from "@/components/ui/button"
 import React, { useState } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
-import { AgUserAccountDB } from '@prisma/client';
+import { AgUserDB } from '@prisma/client';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 
 interface CommandWorkModalLockUnLockCProps {
   onSuccess?: () => void;
-  data: AgUserAccountDB;
+  data: AgUserDB;
 }
 
 const CommandWorkModalLockUnLockC: React.FC<CommandWorkModalLockUnLockCProps> = ({ data, onSuccess }) => {

@@ -36,7 +36,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
       const customerAgent = await prisma.customerAgentDB.findUnique({
         where: { customerId: customerId as string },
         include: {
-          agUserAccountDB: true
+          agUserDB: true
         }
       });
 
@@ -52,7 +52,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
           isActive: true
         },
         include: {
-          agUserAccountDB: true
+          agUserDB: true
         },
         orderBy: {
           createdAt: 'desc'
@@ -68,7 +68,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
       const customerAgents = await prisma.customerAgentDB.findMany({
         where: { isActive: true },
         include: {
-          agUserAccountDB: true
+          agUserDB: true
         },
         orderBy: {
           createdAt: 'desc'
@@ -102,7 +102,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     // ตรวจสอบว่า agent มีอยู่จริง
-    const agentExists = await prisma.agUserAccountDB.findUnique({
+    const agentExists = await prisma.agUserDB.findUnique({
       where: { id: agentId }
     });
 
@@ -138,7 +138,7 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         updatedBy: 'current-user-id'
       },
       include: {
-        agUserAccountDB: true
+        agUserDB: true
       }
     });
 
@@ -188,7 +188,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse) {
 
     if (agentId) {
       // ตรวจสอบว่า agent ใหม่มีอยู่จริง
-      const agentExists = await prisma.agUserAccountDB.findUnique({
+      const agentExists = await prisma.agUserDB.findUnique({
         where: { id: agentId }
       });
 

@@ -40,3 +40,6 @@ next-env.d.ts
 
 # prisma
 /prisma/migrations/ 
+
+# Local database migration backups (may contain credentials and TOTP secrets)
+/data/backups/

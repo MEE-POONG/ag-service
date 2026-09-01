@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     // หา agent จาก usernameAG เพื่อเติม adviser อัตโนมัติถ้าไม่ได้ส่งมา
     const agent = usernameAG
-      ? await prisma.agUserAccountDB.findFirst({ where: { username: usernameAG } })
+      ? await prisma.agUserDB.findFirst({ where: { username: usernameAG } })
       : null
     if (!agent) {
       // ถ้าหา agent ไม่เจอ แต่มี adviser กับ usernameAG อาจจะยังต้องอนุญาตให้คิวทำต่อ

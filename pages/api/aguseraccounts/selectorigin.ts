@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // 1) หา originUser จาก username ที่ตรงกับ origin
     let originUser = null as any
     if (origin) {
-      originUser = await prisma.agUserAccountDB.findFirst({
+      originUser = await prisma.agUserDB.findFirst({
         where: { username: { equals: origin, mode: 'insensitive' } },
       })
     }
@@ -81,13 +81,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         pagination = { totalItems: 0, totalPages: 0, currentPage: pageNum, pageSize: sizeNum }
       } else {
         [higherUsers, total] = await Promise.all([
-          prisma.agUserAccountDB.findMany({
+          prisma.agUserDB.findMany({
             where: { position: { in: allowedPositions as any } },
             skip,
             take: sizeNum,
             orderBy: { createdAt: 'desc' },
           }),
-          prisma.agUserAccountDB.count({
+          prisma.agUserDB.count({
             where: { position: { in: allowedPositions as any } },
           }),
         ])

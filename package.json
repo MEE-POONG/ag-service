@@ -16,7 +16,9 @@
     "db:seed:admin": "node scripts/seed-admin.js",
     "db:seed:menu": "node scripts/seed-menu.js",
     "db:import-json": "node --env-file=.env scripts/import-json-data.js",
-    "db:import-json:dry-run": "node --env-file=.env scripts/import-json-data.js --dry-run"
+    "db:import-json:dry-run": "node --env-file=.env scripts/import-json-data.js --dry-run",
+    "db:migrate-ag-users:dry-run": "node --env-file=.env scripts/migrate-ag-users.js",
+    "db:migrate-ag-users": "node --env-file=.env scripts/migrate-ag-users.js --apply --drop-source"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

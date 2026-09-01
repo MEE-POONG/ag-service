@@ -5,13 +5,13 @@ import Modal from "@/components/form/Modal";
 import ReactIconComponent from "@/components/ReactIconComponent";
 import toast from "react-hot-toast";
 import axios, { AxiosError } from "axios";
-import { AgUserAccountDB } from "@prisma/client";
+import { AgUserDB } from "@prisma/client";
 
 type Position = "master" | "agent";
 
 interface PartnerModalResetProps {
   onSuccess?: () => void;
-  data: AgUserAccountDB;
+  data: AgUserDB;
 }
 
 /** เลือก endpoint ตามตำแหน่ง */

@@ -702,7 +702,7 @@ async function main() {
   console.log('  - Settings (3 sub-items)');
   console.log('🎯 Total: 5 main menus + 12 sub-menus = 17 menu items');
 
-  // เพิ่มข้อมูล AgUser เข้า AgUserAccountDB
+  // เพิ่มข้อมูล AgUser เข้า AgUserDB
   console.log('🌱 เริ่มต้นการนำเข้าข้อมูล AgUser...')
   
   let createdCount = 0
@@ -710,12 +710,18 @@ async function main() {
   
   for (const agUserData of AgUser) {
     try {
-      const result = await prisma.agUserAccountDB.upsert({
+      const webBase = await prisma.webBaseDB.findUnique({
+        where: { name: agUserData.webname || 'ufa66' },
+      })
+      if (!webBase) throw new Error(`WebBaseDB not found for ${agUserData.webname || 'ufa66'}`)
+
+      const result = await prisma.agUserDB.upsert({
         where: { username: agUserData.username },
         update: {
           reserve: agUserData.reserve || '',
           userLogin: agUserData.userLogin,
           webname: agUserData.webname || 'ufa66',
+          webBaseId: webBase.id,
           origin: agUserData.origin,
           position: agUserData.position,
           gaSecretEnc: agUserData.gaSecretEnc || '',
@@ -724,9 +730,11 @@ async function main() {
         },
         create: {
           username: agUserData.username,
+          v: 0,
           reserve: agUserData.reserve || '',
           userLogin: agUserData.userLogin,
           webname: agUserData.webname || 'ufa66',
+          webBaseId: webBase.id,
           origin: agUserData.origin,
           position: agUserData.position,
           gaSecretEnc: agUserData.gaSecretEnc || '',
@@ -740,7 +748,7 @@ async function main() {
       })
       
       // ตรวจสอบว่าเป็นการสร้างใหม่หรืออัปเดต
-      const existingUser = await prisma.agUserAccountDB.findUnique({
+      const existingUser = await prisma.agUserDB.findUnique({
         where: { username: agUserData.username }
       })
       

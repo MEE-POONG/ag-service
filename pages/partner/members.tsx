@@ -46,7 +46,7 @@ export default function MembersPage() {
       partner?.name?.toLowerCase().includes(params.keyword.toLowerCase()) ||
       partner?.tel?.includes(params.keyword) ||
       partner?.bankNumber?.includes(params.keyword) ||
-      partner?.agUserAccountDB?.username?.toLowerCase().includes(params.keyword.toLowerCase())
+      partner?.agUserDB?.username?.toLowerCase().includes(params.keyword.toLowerCase())
 
     const matchesStatus = params.status === 'all' || partner?.status === params.status
 
@@ -183,7 +183,7 @@ export default function MembersPage() {
                           {(params.page - 1) * params.pageSize + index + 1}
                         </td>
                         <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
-                          {partner?.agUserAccountDB?.username}
+                          {partner?.agUserDB?.username}
                         </td>
                         <td className="px-2 sm:px-4 py-3 text-xs sm:text-sm">
                           {partner?.bankNumber}

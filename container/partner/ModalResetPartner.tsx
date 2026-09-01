@@ -3,13 +3,13 @@ import React, { useState, useEffect } from "react";
 import Modal from "@/components/form/Modal";
 import ReactIconComponent from "@/components/ReactIconComponent";
 import toast from "react-hot-toast";
-import { AgUserAccountDB } from "@prisma/client";
+import { AgUserDB } from "@prisma/client";
 import axios from "axios";
 // import axios, { AxiosError } from "axios";
 
 interface ModalResetPartnerProps {
   onSuccess?: () => void;
-  data: AgUserAccountDB;
+  data: AgUserDB;
 }
 
 const ModalResetPartner: React.FC<ModalResetPartnerProps> = ({ data, onSuccess }) => {

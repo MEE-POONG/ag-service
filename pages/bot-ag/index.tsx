@@ -4,7 +4,7 @@ import { qk } from '@/lib/queryKeys'
 import { TheLayout } from '@/components/TheLayout'
 import { useEffect, useState } from 'react'
 import CommandWorkModalCredit from '@/container/bot-ag/CommandWork/ModalCredit'
-import { AgUserAccountDB } from '@prisma/client'
+import { AgUserDB } from '@prisma/client'
 import CommandWorkModalLockUnLockC from '@/container/bot-ag/CommandWork/ModalLockUnLockC'
 import PageHeader from '@/components/PageHeader'
 import PaginationSelect from '@/components/PaginationSelect'
@@ -21,9 +21,9 @@ import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 
 function useAgUserAccounts() {
-  const [items, setItems] = useState<AgUserAccountDB[]>([])
-  const add = (item: AgUserAccountDB) => setItems(prev => [...prev, item])
-  const update = (idx: number, item: AgUserAccountDB) =>
+  const [items, setItems] = useState<AgUserDB[]>([])
+  const add = (item: AgUserDB) => setItems(prev => [...prev, item])
+  const update = (idx: number, item: AgUserDB) =>
     setItems(prev => prev.map((v, i) => (i === idx ? item : v)))
   const remove = (idx: number) => setItems(prev => prev.filter((_, i) => i !== idx))
   return { items, add, update, remove, setItems }
@@ -61,7 +61,7 @@ export default function CommandWorkPage() {
   }, [hs])
 
   // Fetch list via react-query (server-side filter by keyword)
-  const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: Params }>({
+  const { data, isFetching } = useQuery<{ items: AgUserDB[]; pagination?: Params }>({
     queryKey: qk.agUsers.listPaged(debouncedKeyword, params.page, params.pageSize),
     queryFn: async () => {
       const res = await axios.get('/api/aguseraccounts', {
@@ -73,7 +73,7 @@ export default function CommandWorkPage() {
       })
       if (!res.data?.success) throw new Error(res.data?.error || 'โหลดข้อมูลล้มเหลว')
       return {
-        items: (res.data.data || []) as AgUserAccountDB[],
+        items: (res.data.data || []) as AgUserDB[],
         pagination: res.data.pagination as Params | undefined,
       }
     },

@@ -3,12 +3,12 @@ import React, { useState, useEffect } from "react";
 import Modal from "@/components/form/Modal";
 import ReactIconComponent from "@/components/ReactIconComponent";
 import toast from "react-hot-toast";
-import { AgUserAccountDB } from "@prisma/client";
+import { AgUserDB } from "@prisma/client";
 import axios, { AxiosError } from "axios";
 
 interface ModalCreateAgentProps {
   onSuccess?: () => void;
-  data: AgUserAccountDB;
+  data: AgUserDB;
 }
 
 const ModalCreateAgent: React.FC<ModalCreateAgentProps> = ({ data, onSuccess }) => {

@@ -10,9 +10,9 @@ import { ExtendedWebBaseDB } from '@/data/interface';
 import axios from '@/lib/axios';
 import qs from 'qs';
 import { useAuth } from '@/hooks/useAuth';
-// import { AgUserAccountDB } from '@prisma/client';
+// import { AgUserDB } from '@prisma/client';
 
-import { AgUserAccountDB } from "@prisma/client";
+import { AgUserDB } from "@prisma/client";
 
 type WebBaseResp = {
   success: boolean;
@@ -22,7 +22,7 @@ type WebBaseResp = {
 
 interface ModalFuctionSettingProps {
   onSuccess?: () => void;
-  data: AgUserAccountDB;
+  data: AgUserDB;
 }
 
 const ModalFuctionSetting: React.FC<ModalFuctionSettingProps> = ({ data }) => {

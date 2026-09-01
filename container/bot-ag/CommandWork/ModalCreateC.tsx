@@ -3,11 +3,11 @@ import { Button, ButtonProps } from "@/components/ui/button"
 import React, { useState } from 'react';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
-import { AgUserAccountDB } from '@prisma/client';
+import { AgUserDB } from '@prisma/client';
 
 interface CommandWorkModalCreateCProps {
   onSuccess?: () => void;
-  data: AgUserAccountDB;
+  data: AgUserDB;
 }
 
 const CommandWorkModalCreateC: React.FC<CommandWorkModalCreateCProps> = ({ data }) => {

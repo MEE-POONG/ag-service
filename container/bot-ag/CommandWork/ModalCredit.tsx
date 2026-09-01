@@ -5,13 +5,13 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import Modal from '@/components/form/Modal';
 import ReactIconComponent from '@/components/ReactIconComponent';
-import { AgUserAccountDB } from '@prisma/client';
+import { AgUserDB } from '@prisma/client';
 import { qk } from '@/lib/queryKeys';
 import { useQuery } from '@tanstack/react-query';
 
 interface CommandWorkModalCreditProps {
   onSuccess?: () => void;
-  data: AgUserAccountDB;
+  data: AgUserDB;
 }
 
 

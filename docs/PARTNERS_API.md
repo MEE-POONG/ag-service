@@ -322,7 +322,7 @@ DELETE /api/partners/507f1f77bcf86cd799439011
 model PartnerDB {
   id         String          @id @default(auto()) @map("_id") @db.ObjectId
   agentId    String          @db.ObjectId
-  agent      AgUserAccountDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  agent      AgUserDB @relation(fields: [agentId], references: [id], onDelete: Cascade)
   bankName   String
   bankNumber String
   name       String

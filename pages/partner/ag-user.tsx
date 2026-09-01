@@ -12,7 +12,7 @@ import PartnerModalFuctionSetting from '@/container/partner/ModalFuctionSetting'
 import PaginationSelect from '@/components/PaginationSelect'
 import { Params } from '@/data/interfaceDefault'
 import PartnerModalReset from '@/container/partner/ModalReset'
-import { AgUserAccountDB } from '@prisma/client'
+import { AgUserDB } from '@prisma/client'
 import { useHeadSupport } from '@/hooks/useHeadSupport'
 import WebBaseModalView from '@/container/web-ag/ModalView'
 import { ExtendedWebBaseDB } from '@/data/interface'
@@ -40,9 +40,9 @@ type AgUserAccountFormData = {
 const WEBNAME_OPTIONS = ['psd99', 'ufa66'] as const
 
 function useAgUserAccounts() {
-  const [items, setItems] = useState<AgUserAccountDB[]>([])
-  const add = (item: AgUserAccountDB) => setItems(prev => [...prev, item])
-  const update = (idx: number, item: AgUserAccountDB) =>
+  const [items, setItems] = useState<AgUserDB[]>([])
+  const add = (item: AgUserDB) => setItems(prev => [...prev, item])
+  const update = (idx: number, item: AgUserDB) =>
     setItems(prev => prev.map((v, i) => (i === idx ? item : v)))
   const remove = (idx: number) => setItems(prev => prev.filter((_, i) => i !== idx))
   return { items, add, update, remove, setItems }
@@ -87,7 +87,7 @@ export default function AgUserAccountPage() {
   const debouncedKeyword = useDebouncedValue(params.keyword, 300)
 
   // Fetch list via react-query (server-side filter by keyword)
-  const { data, isFetching } = useQuery<{ items: AgUserAccountDB[]; pagination?: Params }>({
+  const { data, isFetching } = useQuery<{ items: AgUserDB[]; pagination?: Params }>({
     queryKey: qk.agUsers.listPaged(debouncedKeyword, params.page, params.pageSize),
     queryFn: async () => {
       const res = await axios.get('/api/aguseraccounts', {
@@ -99,7 +99,7 @@ export default function AgUserAccountPage() {
       })
       if (!res.data?.success) throw new Error(res.data?.error || 'โหลดข้อมูลล้มเหลว')
       return {
-        items: (res.data.data || []) as AgUserAccountDB[],
+        items: (res.data.data || []) as AgUserDB[],
         pagination: res.data.pagination as Params | undefined,
       }
     },
@@ -149,7 +149,7 @@ export default function AgUserAccountPage() {
     mutationFn: async (val: AgUserAccountFormData) => {
       const res = await axios.post('/api/aguseraccounts', val)
       if (!res.data?.success) throw new Error(res.data?.error || 'บันทึกไม่สำเร็จ')
-      return res.data.data as AgUserAccountDB
+      return res.data.data as AgUserDB
     },
     onError: (e: any, _vars, ctx) => {
       if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
@@ -195,7 +195,7 @@ export default function AgUserAccountPage() {
     mutationFn: async (payload: AgUserAccountFormData & { id: string }) => {
       const res = await axios.put('/api/aguseraccounts', payload)
       if (!res.data?.success) throw new Error(res.data?.error || 'อัปเดตไม่สำเร็จ')
-      return res.data.data as AgUserAccountDB
+      return res.data.data as AgUserDB
     },
     onError: (e: any, _vars, ctx) => {
       if (ctx?.prev) queryClient.setQueryData(listKey, ctx.prev)
@@ -690,7 +690,7 @@ function AgUserAccountFormModal({
   open: boolean
   onOpenChange: (v: boolean) => void
   onSubmit: (val: AgUserAccountFormData, helpers: FormHelpers) => void
-  initialValue?: AgUserAccountDB
+  initialValue?: AgUserDB
   loading?: boolean
 }) {
   const [form, setForm] = useState<AgUserAccountFormData>(

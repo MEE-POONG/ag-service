@@ -84,7 +84,7 @@ export default async function handler(
       }
 
       // Check if agent exists
-      const agent = await (prisma as any).agUserAccountDB.findUnique({
+      const agent = await (prisma as any).agUserDB.findUnique({
         where: { id: agentId }
       });
 
