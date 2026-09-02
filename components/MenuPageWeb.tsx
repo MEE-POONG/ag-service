@@ -179,6 +179,7 @@ export default function MenuPageWebDB({ dataList, collapsed, }: EnhancedMenuProp
                 <li className="mb-2">
                     <Link
                         href={item.link}
+                        prefetch={false}
                         className={`flex items-center rounded-md ${collapsed ? 'justify-center w-10 h-10 mx-auto px-0 py-0' : 'w-full p-2'} transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg bg-gradient-to-r ${isActive(item.link, item)
                             ? "scale-105 from-[#A78BFA] to-[#34D399] text-white shadow-lg"
                             : "from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-700 shadow-md"
@@ -221,6 +222,7 @@ export default function MenuPageWebDB({ dataList, collapsed, }: EnhancedMenuProp
                                 <li key={resolveMenuHref(item.link, subItem.link)} className={`transition-all duration-300 ease-in-out ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`} style={{ transitionDelay: `${index * 50}ms` }}>
                                     <Link
                                         href={resolveMenuHref(item.link, subItem.link)}
+                                        prefetch={false}
                                         className={`flex items-center w-full p-2 rounded-md transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md bg-gradient-to-r ${isActive(resolveMenuHref(item.link, subItem.link), subItem)
                                             ? "scale-105 from-[#A78BFA] to-[#34D399] text-white"
                                             : "from-[#F3E8FF] to-[#ECFDF5] hover:from-[#EDE4FF] hover:to-[#E6FBF3] text-gray-600 hover:text-gray-900"
