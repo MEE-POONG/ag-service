@@ -2,12 +2,25 @@
  * Service Worker for PWA and Push Notifications
  */
 
-const CACHE_NAME = 'ag-service-v1'
-const urlsToCache = [
-  '/',
-  '/chat/agent/inbox',
-  '/manifest.json'
+const CACHE_PREFIX = 'ag-service-'
+const CACHE_NAME = `${CACHE_PREFIX}static-v2`
+const PRECACHE_URLS = [
+  '/manifest.json',
+  '/icon-192x192.svg',
+  '/icon-512x512.svg'
 ]
+const PRECACHE_PATHS = new Set(PRECACHE_URLS)
+
+function shouldCache(request) {
+  if (request.method !== 'GET') return false
+
+  const url = new URL(request.url)
+
+  if (!['http:', 'https:'].includes(url.protocol)) return false
+  if (url.origin !== self.location.origin) return false
+
+  return url.pathname.startsWith('/_next/static/') || PRECACHE_PATHS.has(url.pathname)
+}
 
 // Install event
 self.addEventListener('install', (event) => {
@@ -15,8 +28,8 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('[Service Worker] Caching app shell')
-        return cache.addAll(urlsToCache)
+        console.log('[Service Worker] Caching public static assets')
+        return cache.addAll(PRECACHE_URLS)
       })
       .then(() => self.skipWaiting())
   )
@@ -29,7 +42,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
+          if (cacheName.startsWith(CACHE_PREFIX) && cacheName !== CACHE_NAME) {
             console.log('[Service Worker] Deleting old cache:', cacheName)
             return caches.delete(cacheName)
           }
@@ -39,26 +52,28 @@ self.addEventListener('activate', (event) => {
   )
 })
 
-// Fetch event - Network first, then cache
+// Cache only same-origin public static assets. Auth pages, API responses and
+// unsupported schemes such as chrome-extension:// must always bypass the worker.
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return
+  if (!shouldCache(event.request)) return
 
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Clone the response
-        const responseToCache = response.clone()
-        
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache)
-        })
-        
-        return response
-      })
-      .catch(() => {
-        // If network fails, try cache
-        return caches.match(event.request)
-      })
+    caches.match(event.request).then(async (cachedResponse) => {
+      if (cachedResponse) return cachedResponse
+
+      const response = await fetch(event.request)
+
+      if (response.status === 200 && response.type === 'basic') {
+        try {
+          const cache = await caches.open(CACHE_NAME)
+          await cache.put(event.request, response.clone())
+        } catch (error) {
+          console.warn('[Service Worker] Static asset cache failed:', error)
+        }
+      }
+
+      return response
+    })
   )
 })
 
@@ -81,8 +96,8 @@ self.addEventListener('push', (event) => {
   const {
     title = 'AG Service',
     body = 'New notification',
-    icon = '/icon-192x192.png',
-    badge = '/icon-72x72.png',
+    icon = '/icon-192x192.svg',
+    badge = '/icon-192x192.svg',
     tag = 'default',
     data = {},
     actions = [],

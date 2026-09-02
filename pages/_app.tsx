@@ -3,7 +3,7 @@ import '@/styles/globals.scss'
 import { Kanit } from 'next/font/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const kanit = Kanit({
   subsets: ['thai', 'latin'],
@@ -13,6 +13,28 @@ const kanit = Kanit({
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient())
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return
+
+    let cancelled = false
+
+    navigator.serviceWorker
+      .register('/sw.js', {
+        scope: '/',
+        updateViaCache: 'none',
+      })
+      .then((registration) => registration.update())
+      .catch((error) => {
+        if (!cancelled) {
+          console.error('[Service Worker] Registration failed:', error)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
     <QueryClientProvider client={queryClient}>
