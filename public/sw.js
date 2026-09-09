@@ -3,7 +3,7 @@
  */
 
 const CACHE_PREFIX = 'ag-service-'
-const CACHE_NAME = `${CACHE_PREFIX}static-v2`
+const CACHE_NAME = `${CACHE_PREFIX}static-v3`
 const PRECACHE_URLS = [
   '/manifest.json',
   '/icon-192x192.svg',
@@ -18,6 +18,18 @@ function shouldCache(request) {
 
   if (!['http:', 'https:'].includes(url.protocol)) return false
   if (url.origin !== self.location.origin) return false
+
+  // Next.js development assets use stable paths and change in place. Caching
+  // them on localhost can mix chunks from different dev builds and trigger an
+  // infinite Fast Refresh reload loop after the server restarts.
+  const isLocalDevelopment =
+    url.hostname === 'localhost' ||
+    url.hostname === '127.0.0.1' ||
+    url.hostname === '[::1]'
+
+  if (isLocalDevelopment && url.pathname.startsWith('/_next/static/')) {
+    return false
+  }
 
   return url.pathname.startsWith('/_next/static/') || PRECACHE_PATHS.has(url.pathname)
 }
