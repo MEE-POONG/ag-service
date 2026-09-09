@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
@@ -43,6 +43,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const redirectStartedRef = useRef(false)
 
   const redirectTo = typeof router.query?.redirect === 'string' ? router.query.redirect : '/'
   const safeRedirectUrl = (() => {
@@ -74,8 +75,6 @@ export default function LoginPage() {
     onSuccess: (data) => {
       queryClient.setQueryData(qk.auth.me, data.user)
       toast.success(data.message || 'เข้าสู่ระบบสำเร็จ')
-
-      router.replace(safeRedirectUrl)
     },
     onError: (error: any) => {
       const errorMessage =
@@ -94,10 +93,15 @@ export default function LoginPage() {
   })
 
   useEffect(() => {
-    if (user && router.isReady) {
-      router.replace(safeRedirectUrl)
-    }
-  }, [user, router.isReady, safeRedirectUrl, router])
+    if (!user || !router.isReady || redirectStartedRef.current) return
+    if (router.asPath === safeRedirectUrl) return
+
+    redirectStartedRef.current = true
+    void router.replace(safeRedirectUrl).catch((error) => {
+      redirectStartedRef.current = false
+      console.error('[Auth] Redirect after login failed:', error)
+    })
+  }, [user, router.isReady, router.asPath, safeRedirectUrl, router])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
