@@ -6,6 +6,7 @@ import {
   createPasswordResetReference,
   sendPasswordResetOtpForAdmin,
 } from '@/lib/adminAuthTokens'
+import { PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS } from '@/lib/accountRecoveryPolicy'
 import { checkRequestRateLimit } from '@/lib/requestRateLimit'
 
 const GENERIC_MESSAGE = 'หากอีเมลนี้มีบัญชีอยู่ในระบบ เราจะส่งรหัส OTP สำหรับตั้งรหัสผ่านใหม่ให้ทางอีเมล'
@@ -30,10 +31,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'กรุณากรอกอีเมลให้ถูกต้อง' })
   }
 
-  const rateLimit = checkRequestRateLimit(`forgot-password:${getRequestIp(req)}`)
+  const rateLimit = checkRequestRateLimit(
+    `forgot-password:${getRequestIp(req)}:${email}`,
+    1,
+    PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS * 1000
+  )
   if (!rateLimit.allowed) {
     res.setHeader('Retry-After', String(rateLimit.retryAfterSeconds))
-    return res.status(429).json({ error: 'ส่งคำขอถี่เกินไป กรุณารอสักครู่แล้วลองใหม่' })
+    return res.status(429).json({
+      error: `ส่งรหัส OTP ใหม่ได้ใน ${rateLimit.retryAfterSeconds} วินาที`,
+      retryAfterSeconds: rateLimit.retryAfterSeconds,
+    })
   }
 
   try {
@@ -57,7 +65,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ? (await sendPasswordResetOtpForAdmin(admin)).referenceCode
       : createPasswordResetReference()
 
-    return res.status(200).json({ message: GENERIC_MESSAGE, referenceCode })
+    return res.status(200).json({
+      message: GENERIC_MESSAGE,
+      referenceCode,
+      retryAfterSeconds: PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS,
+    })
   } catch (error) {
     // Do not reveal whether the submitted email belongs to an account.
     console.error('Password reset request failed:', error)

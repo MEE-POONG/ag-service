@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from '@/lib/axios'
@@ -19,14 +19,17 @@ export default function ResetPasswordPage() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const requestInFlight = useRef(false)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (requestInFlight.current) return
     if (!referenceCode || otp.length !== 6) {
       setError('กรุณากรอกเลขอ้างอิงและรหัส OTP 6 หลักให้ครบ')
       return
     }
 
+    requestInFlight.current = true
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -37,12 +40,13 @@ export default function ResetPasswordPage() {
         otp,
         password,
       })
-      setMessage(response.data.message)
+      setMessage(response.data.message || 'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว')
       setOtp('')
       setPassword('')
     } catch (requestError: any) {
       setError(requestError?.response?.data?.error || 'ไม่สามารถตั้งรหัสผ่านใหม่ได้')
     } finally {
+      requestInFlight.current = false
       setSubmitting(false)
     }
   }
@@ -54,12 +58,16 @@ export default function ResetPasswordPage() {
           <div className="flex justify-center mb-4" aria-hidden="true">
             <ReactIconComponent icon="FaKey" setClass="h-8 w-8 text-purple-500" />
           </div>
-          <CardTitle className="text-2xl font-bold">ตั้งรหัสผ่านใหม่</CardTitle>
-          <CardDescription>กรอก OTP จากอีเมล แล้วตั้งรหัสผ่านใหม่อย่างน้อย {MIN_PASSWORD_LENGTH} ตัวอักษร</CardDescription>
+          <CardTitle className="text-2xl font-bold">{message ? 'เรียบร้อย' : 'ตั้งรหัสผ่านใหม่'}</CardTitle>
+          <CardDescription>
+            {message
+              ? 'ระบบบันทึกรหัสผ่านใหม่แล้ว'
+              : `กรอก OTP จากอีเมล แล้วตั้งรหัสผ่านใหม่อย่างน้อย ${MIN_PASSWORD_LENGTH} ตัวอักษร`}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {message ? (
-            <div className="space-y-5 text-center" aria-live="polite">
+            <div className="space-y-5 text-center" role="status">
               <p className="text-green-700">{message}</p>
               <Link
                 href="/auth/login"
@@ -141,11 +149,13 @@ export default function ResetPasswordPage() {
             </form>
           )}
 
-          <div className="mt-6 text-center">
-            <Link href="/auth/forgot-password" className="text-sm font-medium text-purple-700 hover:underline">
-              ขอรหัส OTP ใหม่
-            </Link>
-          </div>
+          {!message ? (
+            <div className="mt-6 text-center">
+              <Link href="/auth/forgot-password" className="text-sm font-medium text-purple-700 hover:underline">
+                ขอรหัส OTP ใหม่
+              </Link>
+            </div>
+          ) : null}
         </CardContent>
       </Card>
     </main>

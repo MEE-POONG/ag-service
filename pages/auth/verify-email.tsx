@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from '@/lib/axios'
@@ -16,25 +16,30 @@ export default function VerifyEmailPage() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const requestInFlight = useRef(false)
 
   async function handleVerify() {
-    if (!token) return
+    if (!token || requestInFlight.current) return
+    requestInFlight.current = true
     setSubmitting(true)
     setMessage('')
     setError('')
 
     try {
       const response = await axios.post('/api/auth/verify-email', { token })
-      setMessage(response.data.message)
+      setMessage(response.data.message || 'ยืนยันอีเมลเรียบร้อยแล้ว')
     } catch (requestError: any) {
       setError(requestError?.response?.data?.error || 'ไม่สามารถยืนยันอีเมลได้')
     } finally {
+      requestInFlight.current = false
       setSubmitting(false)
     }
   }
 
   async function handleResend(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (requestInFlight.current) return
+    requestInFlight.current = true
     setSubmitting(true)
     setMessage('')
     setError('')
@@ -45,6 +50,7 @@ export default function VerifyEmailPage() {
     } catch (requestError: any) {
       setError(requestError?.response?.data?.error || 'ไม่สามารถส่งอีเมลยืนยันได้')
     } finally {
+      requestInFlight.current = false
       setSubmitting(false)
     }
   }
@@ -56,13 +62,27 @@ export default function VerifyEmailPage() {
           <div className="flex justify-center mb-4" aria-hidden="true">
             <ReactIconComponent icon="FaRegEnvelopeOpen" setClass="h-8 w-8 text-purple-500" />
           </div>
-          <CardTitle className="text-2xl font-bold">ยืนยันอีเมล</CardTitle>
+          <CardTitle className="text-2xl font-bold">{message && token ? 'เรียบร้อย' : 'ยืนยันอีเมล'}</CardTitle>
           <CardDescription>
-            {token ? 'กดยืนยันเพื่อเปิดใช้งานอีเมลของบัญชีนี้' : 'กรอกอีเมลเพื่อขอลิงก์ยืนยันใหม่'}
+            {message && token
+              ? 'ระบบบันทึกการยืนยันอีเมลแล้ว'
+              : token
+                ? 'กดยืนยันเพื่อเปิดใช้งานอีเมลของบัญชีนี้'
+                : 'กรอกอีเมลเพื่อขอลิงก์ยืนยันใหม่'}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {token ? (
+          {message && token ? (
+            <div className="space-y-5 text-center" role="status">
+              <p className="text-green-700">{message}</p>
+              <Link
+                href="/auth/login"
+                className="block w-full rounded-full bg-[#A78BFA] px-4 py-2 text-center font-medium text-white hover:bg-[#8B5CF6]"
+              >
+                ไปหน้าเข้าสู่ระบบ
+              </Link>
+            </div>
+          ) : token ? (
             <Button type="button" onClick={handleVerify} className="w-full rounded-full !bg-[#A78BFA] !text-white hover:!bg-[#8B5CF6]" disabled={submitting || Boolean(message)}>
               {submitting ? 'กำลังยืนยัน...' : 'ยืนยันอีเมล'}
             </Button>
@@ -89,15 +109,17 @@ export default function VerifyEmailPage() {
           )}
 
           <div aria-live="polite" className="mt-4 min-h-6 text-sm text-center">
-            {message ? <p className="text-green-700">{message}</p> : null}
+            {message && !token ? <p className="text-green-700">{message}</p> : null}
             {error ? <p className="text-red-700">{error}</p> : null}
           </div>
 
-          <div className="mt-4 text-center">
-            <Link href="/auth/login" className="text-sm font-medium text-purple-700 hover:underline">
-              กลับไปหน้าเข้าสู่ระบบ
-            </Link>
-          </div>
+          {!message || !token ? (
+            <div className="mt-4 text-center">
+              <Link href="/auth/login" className="text-sm font-medium text-purple-700 hover:underline">
+                กลับไปหน้าเข้าสู่ระบบ
+              </Link>
+            </div>
+          ) : null}
         </CardContent>
       </Card>
     </main>

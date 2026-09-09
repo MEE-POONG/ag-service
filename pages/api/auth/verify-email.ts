@@ -8,6 +8,27 @@ function isTokenShapeValid(token: unknown): token is string {
   return typeof token === 'string' && /^[a-f0-9]{64}$/i.test(token)
 }
 
+function getVerificationResult(admin: {
+  email: string
+  registrationStatus: string
+}) {
+  const isPermanentAdmin = isPermanentSuperAdminEmail(admin.email)
+  const registrationStatus = isPermanentAdmin
+    ? REGISTRATION_STATUSES.approved
+    : admin.registrationStatus === REGISTRATION_STATUSES.pendingEmail
+      ? REGISTRATION_STATUSES.pendingApproval
+      : admin.registrationStatus
+  const isAwaitingApproval = registrationStatus === REGISTRATION_STATUSES.pendingApproval
+
+  return {
+    isPermanentAdmin,
+    registrationStatus,
+    message: isAwaitingApproval
+      ? 'ยืนยันอีเมลเรียบร้อยแล้ว บัญชีกำลังรอผู้ดูแลระบบอนุมัติ'
+      : 'ยืนยันอีเมลเรียบร้อยแล้ว คุณสามารถเข้าสู่ระบบได้',
+  }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Cache-Control', 'no-store')
 
@@ -31,10 +52,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (
       !tokenRecord ||
       tokenRecord.type !== ADMIN_TOKEN_TYPES.emailVerification ||
-      tokenRecord.usedAt ||
-      tokenRecord.expiresAt <= now ||
       normalizeEmail(tokenRecord.email) !== normalizeEmail(tokenRecord.admin.email)
     ) {
+      return res.status(400).json({ error: 'ลิงก์ยืนยันอีเมลไม่ถูกต้องหรือหมดอายุแล้ว' })
+    }
+
+    const verificationResult = getVerificationResult(tokenRecord.admin)
+
+    // A completed verification is idempotent: reopening the same legitimate link
+    // reports the current successful state instead of presenting it as a failure.
+    if (tokenRecord.admin.emailVerifiedAt) {
+      return res.status(200).json({
+        message: verificationResult.message,
+        status: verificationResult.registrationStatus,
+        alreadyCompleted: true,
+      })
+    }
+
+    if (tokenRecord.usedAt || tokenRecord.expiresAt <= now) {
       return res.status(400).json({ error: 'ลิงก์ยืนยันอีเมลไม่ถูกต้องหรือหมดอายุแล้ว' })
     }
 
@@ -54,26 +89,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'ลิงก์ยืนยันอีเมลถูกใช้ไปแล้ว' })
     }
 
-    const isPermanentAdmin = isPermanentSuperAdminEmail(tokenRecord.admin.email)
-    const isPublicRegistration =
-      tokenRecord.admin.registrationStatus === REGISTRATION_STATUSES.pendingEmail
-    const registrationStatus = isPermanentAdmin
-      ? REGISTRATION_STATUSES.approved
-      : isPublicRegistration
-        ? REGISTRATION_STATUSES.pendingApproval
-        : tokenRecord.admin.registrationStatus
-    await prisma.adminDB.update({
-      where: { id: tokenRecord.adminId },
-      data: {
-        email: normalizeEmail(tokenRecord.admin.email),
-        emailVerifiedAt: now,
-        ...(isPermanentAdmin ? { isActive: true } : {}),
-        registrationStatus,
-        tokenVersion: { increment: 1 },
-        updatedAt: now,
-        updatedBy: 'email-verification',
-      },
-    })
+    try {
+      await prisma.adminDB.update({
+        where: { id: tokenRecord.adminId },
+        data: {
+          email: normalizeEmail(tokenRecord.admin.email),
+          emailVerifiedAt: now,
+          ...(verificationResult.isPermanentAdmin ? { isActive: true } : {}),
+          registrationStatus: verificationResult.registrationStatus,
+          tokenVersion: { increment: 1 },
+          updatedAt: now,
+          updatedBy: 'email-verification',
+        },
+      })
+    } catch (error) {
+      // Do not burn a valid link when persisting the account change fails.
+      await prisma.adminAuthTokenDB.updateMany({
+        where: { id: tokenRecord.id, usedAt: now },
+        data: { usedAt: null },
+      }).catch(() => undefined)
+      throw error
+    }
 
     await prisma.adminAuthTokenDB.updateMany({
       where: {
@@ -88,10 +124,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
     return res.status(200).json({
-      message: isPublicRegistration
-        ? 'ยืนยันอีเมลสำเร็จ บัญชีกำลังรอผู้ดูแลระบบอนุมัติ'
-        : 'ยืนยันอีเมลสำเร็จ คุณสามารถเข้าสู่ระบบได้แล้ว',
-      status: registrationStatus,
+      message: verificationResult.message,
+      status: verificationResult.registrationStatus,
     })
   } catch (error) {
     console.error('Email verification failed:', error)
