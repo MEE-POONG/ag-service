@@ -59,7 +59,10 @@ export async function verifyEmailDelivery(): Promise<void> {
 }
 
 function getAppBaseUrl(): string {
-  const configuredUrl = process.env.APP_BASE_URL?.trim() || process.env.NEXTAUTH_URL?.trim()
+  const configuredUrl =
+    process.env.APP_BASE_URL?.trim() ||
+    process.env.NEXTAUTH_URL?.trim() ||
+    process.env.NEXT_DOMAIN?.trim()
 
   if (configuredUrl) {
     const parsed = new URL(configuredUrl)
@@ -73,7 +76,7 @@ function getAppBaseUrl(): string {
     return `http://localhost:${process.env.PORT || '3002'}`
   }
 
-  throw new Error('APP_BASE_URL is required in production.')
+  throw new Error('APP_BASE_URL, NEXTAUTH_URL or NEXT_DOMAIN is required in production.')
 }
 
 async function sendMail(content: MailContent): Promise<void> {

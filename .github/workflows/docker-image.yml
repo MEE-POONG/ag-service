@@ -85,6 +85,7 @@ jobs:
             -e JWT_SECRET="${{ secrets.JWT_SECRET }}"
             -e APP_BASE_URL="https://ag-service.me-prompt-technology.com"
             -e NEXTAUTH_URL="https://ag-service.me-prompt-technology.com"
+            -e NEXT_DOMAIN="http://localhost:3002/"
             -e MAIL_USER="${{ secrets.MAIL_USER }}"
             -e MAIL_PASS="${{ secrets.MAIL_PASS }}"
             --memory=512m --memory-swap=512m --cpus=1.5
